@@ -29,3 +29,10 @@ IP is the IP-address to your gateway
 KEY is written on the back of your IKEA Tradfri Gateway
 
 ```
+
+Examples of commands in the prompt:
+```
+List all lights: lights
+Set brighness of item 1 to 50 in lights list: lights[1].set_light_brightness(50)
+
+```

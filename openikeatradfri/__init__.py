@@ -1,10 +1,4 @@
 """
-This is the Ikea Tradfri code from @ggravlingen extracted into a lib.
-https://github.com/ggravlingen/home-assistant/blob/master/custom_components/light/ikeatradfri.py
-
-Depends on modified coap-client with dtls support. Build instructions here:
-https://community.home-assistant.io/t/ikea-tradfri-gateway-zigbee-very-basic-working-implementation/14788/19?u=balloob
-
 Run with python3 -i pytradfri.py IP KEY
 
 Will give you an interactive Python shell:
