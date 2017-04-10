@@ -1,10 +1,11 @@
 This is a Python class to communicate with the IKEA Tradfri (Trådfri) ZigBee-based Gateway.
 
-This is an implementation based on analysis I found here:
-https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/
+This is an implementation based on analysis I found here:  
+https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/  
 
+A lot of work was also put in by Paulus Schoutsen who took the initial code concept into this class library.
 
-In order to use this, you first need to install libcoap (https://github.com/obgm/libcoap) as per the following instructions:
+In order to use the code, you first need to install libcoap (https://github.com/obgm/libcoap) as per the following instructions:
 
 ```
 apt-get install libtool
