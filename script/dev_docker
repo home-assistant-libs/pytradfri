@@ -7,9 +7,17 @@
 # Stop on errors
 set -e
 
+MACHINE=$(uname -m)
+PWD=$(pwd)
+
 cd "$(dirname "$0")/.."
 
-docker build -t tradfri-dev .
+DOCKERFILE=$(case "$MACHINE" in
+  armv7l)   echo "DockerfileRPI" ;;
+  *)        echo "Dockerfile" ;;
+esac)
+
+docker build -t tradfri-dev -f "$PWD/$DOCKERFILE" .
 
 docker run \
   --net=host \
