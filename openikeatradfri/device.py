@@ -75,7 +75,7 @@ class Device(object):
         })
 
     def set_values(self, values):
-        """Helper to set values for group."""
+        """Helper to set values for device."""
         self.api('put', [ROOT_DEVICES, self.id], values)
 
     def update(self):
