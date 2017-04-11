@@ -1,6 +1,5 @@
 .pypirc
 pip-selfcheck.json
-
 # Python stuff
 *.py[cod]
 
@@ -8,3 +7,7 @@ pip-selfcheck.json
 bin
 lib
 pyvenv.cfg
+
+# Python setuptools
+.cache
+*.egg-info

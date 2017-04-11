@@ -36,6 +36,10 @@ class Group:
         return datetime.utcfromtimestamp(self.raw[ATTR_CREATED_AT])
 
     @property
+    def path(self):
+        return [ROOT_GROUPS, self.id]
+
+    @property
     def state(self):
         """Boolean representing the light state of the group."""
         return self.raw.get(ATTR_LIGHT_STATE) == 1
@@ -82,11 +86,11 @@ class Group:
 
     def set_values(self, values):
         """Helper to set values for group."""
-        self.api('put', [ROOT_GROUPS, self.id], values)
+        self.api('put', self.path, values)
 
     def update(self):
         """Update the group."""
-        self.raw = self.api('get', [ROOT_GROUPS, self.id])
+        self.raw = self.api('get', self.path)
 
     def __repr__(self):
         state = 'on' if self.state else 'off'

@@ -39,6 +39,10 @@ class Device(object):
         return self.raw.get(ATTR_NAME)
 
     @property
+    def path(self):
+        return [ROOT_DEVICES, self.id]
+
+    @property
     def device_info(self):
         return DeviceInfo(self)
 
@@ -75,10 +79,10 @@ class Device(object):
 
     def set_values(self, values):
         """Helper to set values for device."""
-        self.api('put', [ROOT_DEVICES, self.id], values)
+        self.api('put', self.path, values)
 
     def update(self):
-        self.raw = self.api('get', [ROOT_DEVICES, self.id])
+        self.raw = self.api('get', self.path)
 
     def __repr__(self):
         return "<{} - {} ({})>".format(self.id, self.name,
@@ -170,57 +174,40 @@ class LightControl:
 
     def set_state(self, state, *, index=0):
         """Set state of a light."""
-        assert len(self.raw) == 1, \
-            'Only devices with 1 light supported'
-
-        self._device.api('put', [ROOT_DEVICES, self._device.id], {
-            ATTR_LIGHT_CONTROL: [
-                {
-                    ATTR_LIGHT_STATE: int(state)
-                }
-            ]
-        })
+        self.set_values({
+            ATTR_LIGHT_STATE: int(state)
+        }, index=index)
 
     def set_dimmer(self, dimmer, *, index=0):
         """Set dimmer value of a light.
 
         Integer between 0..255
         """
-        assert len(self.raw) == 1, \
-            'Only devices with 1 light supported'
-
-        self._device.api('put', [ROOT_DEVICES, self._device.id], {
-            ATTR_LIGHT_CONTROL: [
-                {
-                    ATTR_LIGHT_DIMMER: dimmer
-                }
-            ]
-        })
+        self.set_values({
+            ATTR_LIGHT_DIMMER: dimmer,
+        }, index=index)
 
     def set_hex_color(self, color, *, index=0):
         """Set xy color of the light."""
-        assert len(self.raw) == 1, \
-            'Only devices with 1 light supported'
-
-        self._device.api('put', [ROOT_DEVICES, self._device.id], {
-            ATTR_LIGHT_CONTROL: [
-                {
-                    ATTR_LIGHT_COLOR: color,
-                }
-            ]
-        })
+        self.set_values({
+            ATTR_LIGHT_COLOR: color,
+        }, index=index)
 
     def set_xy_color(self, color_x, color_y, *, index=0):
         """Set xy color of the light."""
+        self.set_values({
+            ATTR_LIGHT_COLOR_X: color_x,
+            ATTR_LIGHT_COLOR_Y: color_y
+        }, index=index)
+
+    def set_values(self, values, *, index=0):
+        """Set values on light control."""
         assert len(self.raw) == 1, \
             'Only devices with 1 light supported'
 
-        self._device.api('put', [ROOT_DEVICES, self._device.id], {
+        self._device.api('put', self._device.path, {
             ATTR_LIGHT_CONTROL: [
-                {
-                    ATTR_LIGHT_COLOR_X: color_x,
-                    ATTR_LIGHT_COLOR_Y: color_y
-                }
+                values
             ]
         })
 
