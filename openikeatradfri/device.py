@@ -1,4 +1,5 @@
 """Classes to interact with devices."""
+from copy import deepcopy
 from datetime import datetime
 
 from .const import (
@@ -14,7 +15,8 @@ from .const import (
     ATTR_LIGHT_STATE,
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_COLOR_X,
-    ATTR_LIGHT_COLOR_Y
+    ATTR_LIGHT_COLOR_Y,
+    ATTR_LIGHT_COLOR
 )
 
 
@@ -152,12 +154,30 @@ class LightControl:
         """Return light objects of the light control."""
         return [Light(self._device, i) for i in range(len(self.raw))]
 
+    @property
+    def raw(self):
+        """Return raw data that it represents."""
+        return self._device.raw[ATTR_LIGHT_CONTROL]
+
+    def set_state(self, state, *, index=0):
+        """Set state of a light."""
+        assert len(self.raw) == 1, \
+            'Only devices with 1 light supported'
+
+        self._device.api('put', [ROOT_DEVICES, self._device.id], {
+            ATTR_LIGHT_CONTROL: [
+                {
+                    ATTR_LIGHT_STATE: int(state)
+                }
+            ]
+        })
+
     def set_dimmer(self, dimmer, *, index=0):
         """Set dimmer value of a light.
 
         Integer between 0..255
         """
-        assert len(self.raw.get(ATTR_LIGHT_CONTROL, [])) == 1, \
+        assert len(self.raw) == 1, \
             'Only devices with 1 light supported'
 
         self._device.api('put', [ROOT_DEVICES, self._device.id], {
@@ -168,26 +188,32 @@ class LightControl:
             ]
         })
 
-    def set_light_xy_color(self, color_x, color_y, *, index=0):
+    def set_hex_color(self, color, *, index=0):
         """Set xy color of the light."""
-        assert len(self.raw.get(ATTR_LIGHT_CONTROL, [])) == 1, \
+        assert len(self.raw) == 1, \
             'Only devices with 1 light supported'
 
-        # TODO doesn't work yet
+        self._device.api('put', [ROOT_DEVICES, self._device.id], {
+            ATTR_LIGHT_CONTROL: [
+                {
+                    ATTR_LIGHT_COLOR: color,
+                }
+            ]
+        })
+
+    def set_xy_color(self, color_x, color_y, *, index=0):
+        """Set xy color of the light."""
+        assert len(self.raw) == 1, \
+            'Only devices with 1 light supported'
 
         self._device.api('put', [ROOT_DEVICES, self._device.id], {
             ATTR_LIGHT_CONTROL: [
                 {
                     ATTR_LIGHT_COLOR_X: color_x,
-                    ATTR_LIGHT_COLOR_Y: color_y,
+                    ATTR_LIGHT_COLOR_Y: color_y
                 }
             ]
         })
-
-    @property
-    def raw(self):
-        """Return raw data that it represents."""
-        return self._device[ATTR_LIGHT_CONTROL]
 
     def __repr__(self):
         return '<LightControl for {} ({} lights)>'.format(self._device.name,
@@ -211,6 +237,10 @@ class Light:
     @property
     def dimmer(self):
         return self.raw.get(ATTR_LIGHT_DIMMER)
+
+    @property
+    def hex_color(self):
+        return self.raw.get(ATTR_LIGHT_COLOR)
 
     @property
     def xy_color(self):
