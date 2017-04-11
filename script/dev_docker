@@ -1,0 +1,18 @@
+#!/bin/sh
+# Build and run Home Assinstant in Docker.
+
+# Optional: pass in a timezone as first argument
+# If not given will attempt to mount /etc/localtime
+
+# Stop on errors
+set -e
+
+cd "$(dirname "$0")/.."
+
+docker build -t tradfri-dev .
+
+docker run \
+  --net=host \
+  -v /etc/localtime:/etc/localtime:ro \
+  -v `pwd`:/usr/src/app \
+  -t -i --rm tradfri-dev

@@ -11,7 +11,6 @@ from datetime import datetime
 import json
 import logging
 import subprocess
-import sys
 
 PATH_ROOT = "15001"
 
@@ -218,24 +217,3 @@ class Light:
     def __repr__(self):
         state = "on" if self.is_on else "off"
         return "<Light #{} - {}>".format(self.index, state)
-
-
-if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print('Call with {} <host> <key>'.format(sys.argv[0]))
-        sys.exit(1)
-
-    logging.basicConfig(level=logging.DEBUG)
-
-    api = api_factory(sys.argv[1], sys.argv[2])
-    hub = Hub(api)
-    lights = hub.get_lights()
-    light = lights[0]
-
-    print()
-    print("Example commands:")
-    print("> hub.get_devices()")
-    print("> light.lights")
-    print("> light.set_light_brightness(10)")
-    print("> light.set_light_brightness(254)")
-    print("> light.set_light_xy_color(254)")
