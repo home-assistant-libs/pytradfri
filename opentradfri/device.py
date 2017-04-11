@@ -187,14 +187,6 @@ class LightControl:
             ATTR_LIGHT_DIMMER: dimmer,
         }, index=index)
 
-    # Test by Patrik 2017-04-11
-    def get_dimmer(self):
-        """Get dimmer value of a light.
-
-        Integer between 0..255
-        """
-        return self.raw[0][ATTR_LIGHT_DIMMER]
-
     def set_hex_color(self, color, *, index=0):
         """Set xy color of the light."""
         self.set_values({
