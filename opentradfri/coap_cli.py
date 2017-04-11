@@ -15,6 +15,7 @@ def api_factory(host, security_code):
     """Generate a request method."""
     def request(method, path, data=None, *, parse_json=True):
         """Make a request."""
+
         path = '/'.join(str(v) for v in path)
         command_string = 'coaps://{}:5684/{}'.format(host, path)
 
@@ -35,7 +36,7 @@ def api_factory(host, security_code):
             'timeout': 10,
             'stderr': subprocess.STDOUT,
         }
-
+        
         if data is not None:
             kwargs['input'] = json.dumps(data).encode('utf-8')
             command.append('-f')

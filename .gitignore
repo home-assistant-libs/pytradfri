@@ -8,6 +8,9 @@ bin
 lib
 pyvenv.cfg
 
+# Folders
+dist/
+
 # Python setuptools
 .cache
 *.egg-info

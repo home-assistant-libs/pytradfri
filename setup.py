@@ -1,11 +1,11 @@
 from setuptools import setup
 setup(
-  name = 'openikeatradfri',
-  packages = ['openikeatradfri'],
-  version = '0.1',
-  description = 'A python library for communicating with the IKEA Tradfri (Trådfri) Gateway',
-  author = 'Patrik L',
+  name = 'Opentradfri',
+  packages = ['opentradfri'],
+  version = '0.3',
+  description = 'A python library for communicating with the Tradfri Gateway',
+  author = 'Patrik',
   author_email = 'slasktratt@gammelgravlingen.com',
-  url = 'https://github.com/ggravlingen/python-openikeatradfri',
-  download_url = 'https://github.com/ggravlingen/python-openikeatradfri/archive/v1.tar.gz'
+  url = 'https://github.com/ggravlingen/python-opentradfri',
+  download_url = 'https://github.com/ggravlingen/python-opentradfri/archive/v0.3.zip'
 )

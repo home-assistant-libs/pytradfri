@@ -1,4 +1,4 @@
-# Open IKEA Tradfri
+# Open Tradfri
 
 This is a Python class to communicate with the [IKEA Tradfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Trådfri) ZigBee-based Gateway.
 
@@ -22,7 +22,11 @@ $ ./configure --disable-documentation --disable-shared
 $ make
 $ sudo make install
 ```
+python3 -i -m opentradfri IP KEY
 
+where:
+IP is the IP-address to your gateway
+KEY is written on the back of your Tradfri Gateway
 
 ## Stand-alone
 If you want to test this library stand-alone:
