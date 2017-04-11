@@ -68,6 +68,16 @@ class Device(object):
     def light_control(self):
         return LightControl(self)
 
+    def set_name(self, name):
+        """Set group name."""
+        self.set_values({
+            ATTR_NAME: name
+        })
+
+    def set_values(self, values):
+        """Helper to set values for group."""
+        self.api('put', [ROOT_DEVICES, self.id], values)
+
     def update(self):
         self.raw = self.api('get', [ROOT_DEVICES, self.id])
 

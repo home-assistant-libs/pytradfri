@@ -3,6 +3,7 @@ import logging
 from pprint import pprint
 import sys
 
+from .const import *  # noqa
 from .coap_cli import api_factory
 from .gateway import Gateway
 

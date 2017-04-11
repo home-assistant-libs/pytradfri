@@ -25,6 +25,10 @@ class Mood:
             return None
         return datetime.utcfromtimestamp(self.raw[ATTR_CREATED_AT])
 
+    def set_values(self, values):
+        """Helper to set values for group."""
+        self.api('put', [ROOT_MOODS, self._parent, self.id], values)
+
     def update(self):
         self.raw = self.api('get', [ROOT_MOODS, self._parent, self.id])
 

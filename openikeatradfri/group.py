@@ -1,11 +1,3 @@
-[{'5850': 1,
-  '5851': 0,
-  '9001': 'TRADFRI group',
-  '9002': 1491771290,
-  '9003': 150742,
-  '9018': {'15002': {'9003': [65536, 65537]}},
-  '9039': 211803}]
-
 from datetime import datetime
 
 from .const import (
@@ -26,6 +18,7 @@ class Group:
     """Represent a group."""
     def __init__(self, gateway, raw):
         self._gateway = gateway
+        self.api = gateway.api
         self.raw = raw
 
     @property
@@ -74,6 +67,22 @@ class Group:
     def mood(self):
         """"Active mood."""
         return self._gateway.get_mood(self.mood_id)
+
+    def activate_mood(self, mood_id):
+        """Activate a mood."""
+        self.set_values({
+            ATTR_MOOD: mood_id
+        })
+
+    def set_name(self, name):
+        """Set group name."""
+        self.set_values({
+            ATTR_NAME: name
+        })
+
+    def set_values(self, values):
+        """Helper to set values for group."""
+        self.api('put', [ROOT_GROUPS, self.id], values)
 
     def update(self):
         """Update the group."""
