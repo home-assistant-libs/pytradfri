@@ -1,5 +1,6 @@
 """Provide a CLI for Tradfri."""
 import logging
+from pprint import pprint
 import sys
 
 from . import api_factory, Hub
@@ -16,10 +17,14 @@ if __name__ == '__main__':
     lights = hub.get_lights()
     light = lights[0]
 
+    def show_all():
+        pprint([d.raw for d in hub.get_devices()])
+
     print()
     print("Example commands:")
+    print("> show_all()")
     print("> hub.get_devices()")
-    print("> light.lights")
-    print("> light.set_light_brightness(10)")
-    print("> light.set_light_brightness(254)")
-    print("> light.set_light_xy_color(254)")
+    print("> light.light_control.lights")
+    print("> light.light_control.set_brightness(10)")
+    print("> light.light_control.set_brightness(254)")
+    print("> light.light_control.set_xy_color(254)")

@@ -1,5 +1,10 @@
 .pypirc
+pip-selfcheck.json
 
 # Python stuff
 *.py[cod]
 
+# Python venv stuff
+bin
+lib
+pyvenv.cfg
