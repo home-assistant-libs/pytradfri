@@ -1,3 +1,5 @@
+# Open Ikea Tradfri
+
 This is a Python class to communicate with the IKEA Tradfri (Trådfri) ZigBee-based Gateway.
 
 This is an implementation based on analysis I found here:  
@@ -20,9 +22,10 @@ make
 sudo make install
 ```
 
-If you want to test this library stand-alone, 
+If you want to test this library stand-alone:
+
 ```
-python3 -i __init__.py IP KEY
+python3 -i -m openikeatradfri IP KEY
 
 where:
 IP is the IP-address to your gateway
@@ -36,3 +39,7 @@ List all lights: lights
 Set brighness of item 1 to 50 in lights list: lights[1].set_light_brightness(50)
 
 ```
+
+### Docker
+
+There is a Docker script available to bootstrap a dev environment. Run `./script/dev_docker` and you will build and launch a container that is ready to go. After launching, follow the above instructions to test the library stand-alone.
