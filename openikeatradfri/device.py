@@ -1,5 +1,4 @@
 """Classes to interact with devices."""
-from copy import deepcopy
 from datetime import datetime
 
 from .const import (
