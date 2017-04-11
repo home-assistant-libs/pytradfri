@@ -1,29 +1,26 @@
 # Open Tradfri
 
-This is a Python class to communicate with the Tradfri (Trådfri) ZigBee-based Gateway.
+This is a Python class to communicate with the [IKEA Tradfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Trådfri) ZigBee-based Gateway.
 
-This is an implementation based on analysis I found here:  
-https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/  
+This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/).
 
-A lot of work was also put in by Paulus Schoutsen (@balloob) who took the initial code concept into this class library.
+A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this class library.
 
-In order to use the code, you first need to install libcoap (https://github.com/obgm/libcoap) as per the following instructions:
 
-```
-apt-get install libtool
+## Installation
+In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap) as per the following instructions:
 
-git clone --recursive https://github.com/obgm/libcoap.git
-cd libcoap
-git checkout dtls
-git submodule update --init --recursive
-./autogen.sh
-./configure --disable-documentation --disable-shared
-make
-sudo make install
-```
+```shell
+$ apt-get install libtool
 
-If you want to test this library stand-alone:
-
+$ git clone --recursive https://github.com/obgm/libcoap.git
+$ cd libcoap
+$ git checkout dtls
+$ git submodule update --init --recursive
+$ ./autogen.sh
+$ ./configure --disable-documentation --disable-shared
+$ make
+$ sudo make install
 ```
 python3 -i -m opentradfri IP KEY
 
@@ -31,13 +28,25 @@ where:
 IP is the IP-address to your gateway
 KEY is written on the back of your Tradfri Gateway
 
-```
+## Stand-alone
+If you want to test this library stand-alone:
 
-Examples of commands in the prompt:
+```shell
+$ python3 -i -m openikeatradfri IP KEY
 ```
-List all lights: lights
-Set brighness of item 1 to 50 in lights list: lights[1].set_light_brightness(50)
+Where the following variables are substituted:
+- **IP** is the IP-address to your gateway.
+- **KEY** is written on the back of your IKEA Tradfri Gateway.
 
+### Examples of commands in the prompt:
+
+List all lights: 
+```shell
+lights
+```
+Set brightnes of item 1 to 50 in lights list: 
+```shell
+lights[1].set_light_brightness(50)
 ```
 
 ### Docker
