@@ -22,17 +22,11 @@ $ ./configure --disable-documentation --disable-shared
 $ make
 $ sudo make install
 ```
-python3 -i -m opentradfri IP KEY
-
-where:
-IP is the IP-address to your gateway
-KEY is written on the back of your Tradfri Gateway
-
 ## Stand-alone
 If you want to test this library stand-alone:
 
 ```shell
-$ python3 -i -m openikeatradfri IP KEY
+$ python3 -i -m opentradfri IP KEY
 ```
 Where the following variables are substituted:
 - **IP** is the IP-address to your gateway.
