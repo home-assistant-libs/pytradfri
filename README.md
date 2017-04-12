@@ -32,6 +32,18 @@ Where the following variables are substituted:
 - **IP** is the IP-address to your gateway.
 - **KEY** is written on the back of your IKEA Tradfri Gateway.
 
+### Examples of commands in the stand-alone prompt:
+
+List all lights: 
+```shell
+lights
+```
+Set brightnes of item 1 to 50 in lights list: 
+```shell
+lights[1].set_light_brightness(50)
+```
+
+
 ## Implement in your own Python platform
 ```
 #!/usr/bin/env python3
@@ -68,17 +80,6 @@ print(lights[1].name)
 
 # Example 4: Set the light level of light 2
 lights[1].light_control.set_dimmer(20)
-```
-
-### Examples of commands in the prompt:
-
-List all lights: 
-```shell
-lights
-```
-Set brightnes of item 1 to 50 in lights list: 
-```shell
-lights[1].set_light_brightness(50)
 ```
 
 ### Docker
