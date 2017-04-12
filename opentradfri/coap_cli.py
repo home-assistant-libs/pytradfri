@@ -3,12 +3,13 @@ import json
 import logging
 import subprocess
 
-from .error import CommandError, NotFoundError
+from .error import RequestError, ClientError, ServerError, RequestTimeout
 
 _LOGGER = logging.getLogger(__name__)
 
 
-NOT_FOUND = '4.04 Not Found'
+CLIENT_ERROR_PREFIX = '4.'
+SERVER_ERROR_PREFIX = '5.'
 
 
 def api_factory(host, security_code):
@@ -48,8 +49,11 @@ def api_factory(host, security_code):
         try:
             return_value = subprocess.check_output(command, **kwargs)
             out = return_value.strip().decode('utf-8')
-        except subprocess.CalledProcessError:
-            raise CommandError() from None
+        except subprocess.TimeoutExpired:
+            raise RequestTimeout() from None
+        except subprocess.CalledProcessError as err:
+            raise RequestError(
+                'Error executing request: %s'.format(err)) from None
 
         # Return only the last line, where there's JSON
         lines = [line for line in out.split('\n')[1:]
@@ -61,12 +65,18 @@ def api_factory(host, security_code):
         output = lines[0]
         _LOGGER.debug('Received: %s', output)
 
-        if not parse_json:
+        if output.startswith(CLIENT_ERROR_PREFIX):
+            raise ClientError(output)
+
+        elif output.startswith(SERVER_ERROR_PREFIX):
+            raise ServerError(output)
+
+        elif not parse_json:
             return output
 
-        if output == NOT_FOUND:
-            raise NotFoundError()
-
         return json.loads(output)
+
+    # This will cause a RequestError to be raised if credentials invalid
+    request('get', ['status'])
 
     return request
