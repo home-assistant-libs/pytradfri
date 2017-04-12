@@ -3,12 +3,13 @@ import json
 import logging
 import subprocess
 
-from .error import CommandError, NotFoundError
+from .error import CommandError, ClientError, ServerError
 
 _LOGGER = logging.getLogger(__name__)
 
 
-NOT_FOUND = '4.04 Not Found'
+CLIENT_ERROR_PREFIX = '4.'
+SERVER_ERROR_PREFIX = '5.'
 
 
 def api_factory(host, security_code):
@@ -61,12 +62,18 @@ def api_factory(host, security_code):
         output = lines[0]
         _LOGGER.debug('Received: %s', output)
 
-        if not parse_json:
+        if output.startswith(CLIENT_ERROR_PREFIX):
+            raise ClientError(output)
+
+        elif output.startswith(SERVER_ERROR_PREFIX):
+            raise ServerError(output)
+
+        elif not parse_json:
             return output
 
-        if output == NOT_FOUND:
-            raise NotFoundError()
-
         return json.loads(output)
+
+    # This will cause a CommandError to be raised if credentials invalid
+    request('get', ['status'])
 
     return request
