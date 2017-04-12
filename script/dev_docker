@@ -12,6 +12,7 @@ PWD=$(pwd)
 
 cd "$(dirname "$0")/.."
 
+# Should be amended with other platforms
 DOCKERFILE=$(case "$MACHINE" in
   armv7l)   echo "DockerfileRPI" ;;
   *)        echo "Dockerfile" ;;
