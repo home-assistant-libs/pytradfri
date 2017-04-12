@@ -37,6 +37,9 @@ Where the following variables are substituted:
 #!/usr/bin/env python3
 
 # put all of this in test_pytradfri.py
+# Run by executing the following command from shell, from the same folder you have stored test_pytradfri.py in.
+# python3 -m test_pytradfri IP KEY
+
 # Pre-requisites
 # pip3 install pytradfri
 
