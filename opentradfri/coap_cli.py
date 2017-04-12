@@ -36,7 +36,7 @@ def api_factory(host, security_code):
             'timeout': 10,
             'stderr': subprocess.STDOUT,
         }
-        
+
         if data is not None:
             kwargs['input'] = json.dumps(data).encode('utf-8')
             command.append('-f')
