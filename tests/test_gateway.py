@@ -1,5 +1,5 @@
-from opentradfri.const import ROOT_DEVICES, ATTR_NAME
-from opentradfri.gateway import Gateway
+from pytradfri.const import ROOT_DEVICES, ATTR_NAME
+from pytradfri.gateway import Gateway
 
 
 def test_get_device(mock_api):

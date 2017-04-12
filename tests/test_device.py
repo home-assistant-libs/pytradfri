@@ -1,5 +1,5 @@
-from opentradfri.const import ROOT_DEVICES, ATTR_NAME
-from opentradfri.device import Device
+from pytradfri.const import ROOT_DEVICES, ATTR_NAME
+from pytradfri.device import Device
 
 LIGHT = {
     '3': {

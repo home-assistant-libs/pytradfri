@@ -1,10 +1,10 @@
-# Open Tradfri
+# Pytradfri
 
 This is a Python class to communicate with the [IKEA Tradfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Trådfri) ZigBee-based Gateway.
 
 This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/).
 
-A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this class library.
+A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this library.
 
 
 ## Installation
@@ -26,7 +26,7 @@ $ sudo make install
 If you want to test this library stand-alone:
 
 ```shell
-$ python3 -i -m opentradfri IP KEY
+$ python3 -i -m pytradfri IP KEY
 ```
 Where the following variables are substituted:
 - **IP** is the IP-address to your gateway.
