@@ -1,6 +1,10 @@
 """Represent the gateway."""
+from datetime import datetime
+
 from .const import (
-    ROOT_DEVICES, ROOT_GROUPS, ROOT_MOODS, PATH_NTP)
+    ROOT_DEVICES, ROOT_GROUPS, ROOT_MOODS, PATH_GATEWAY_INFO,
+    ATTR_NTP, ATTR_FIRMWARE_VERSION, ATTR_CURRENT_TIME_UNIX,
+    ATTR_CURRENT_TIME_ISO8601, ATTR_FIRST_SETUP, ATTR_GATEWAY_ID)
 from .device import Device
 from .group import Group
 from .mood import Mood
@@ -37,9 +41,9 @@ class Gateway(object):
         """Return specified group."""
         return Group(self, self.api('get', [ROOT_GROUPS, group_id]))
 
-    def get_ntp(self):
-        """Return the ntp server in use by the gateway."""
-        return self.api('get', PATH_NTP)
+    def get_gateway_info(self):
+        """Return the gateway info."""
+        return GatewayInfo(self.api, self.api('get', PATH_GATEWAY_INFO))
 
     def get_moods(self):
         """Return moods defined on the gateway."""
@@ -60,3 +64,55 @@ class Gateway(object):
     def _get_mood_parent(self):
         """Get the parent of all moods."""
         return self.api('get', [ROOT_MOODS])[0]
+
+
+class GatewayInfo:
+    def __init__(self, api, raw):
+        self.api = api
+        self.raw = raw
+
+    @property
+    def id(self):
+        """This looks like a value representing an id."""
+        return self.raw.get(ATTR_GATEWAY_ID)
+
+    @property
+    def ntp_server(self):
+        """NTP server in use."""
+        return self.raw.get(ATTR_NTP)
+
+    @property
+    def firmware_version(self):
+        """NTP server in use."""
+        return self.raw.get(ATTR_FIRMWARE_VERSION)
+
+    @property
+    def current_time(self):
+        if ATTR_CURRENT_TIME_UNIX not in self.raw:
+            return None
+        return datetime.utcfromtimestamp(self.raw[ATTR_CURRENT_TIME_UNIX])
+
+    @property
+    def current_time_iso8601(self):
+        return self.raw.get(ATTR_CURRENT_TIME_ISO8601)
+
+    @property
+    def first_setup(self):
+        """This is a guess of the meaning of this value."""
+        if ATTR_FIRST_SETUP not in self.raw:
+            return None
+        return datetime.utcfromtimestamp(self.raw[ATTR_FIRST_SETUP])
+
+    @property
+    def path(self):
+        return PATH_GATEWAY_INFO
+
+    def set_values(self, values):
+        """Helper to set values for mood."""
+        self.api('put', self.path, values)
+
+    def update(self):
+        self.raw = self.api('get', self.path)
+
+    def __repr__(self):
+        return '<GatewayInfo>'
