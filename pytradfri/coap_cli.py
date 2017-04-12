@@ -21,7 +21,7 @@ def api_factory(host, security_code):
         command_string = 'coaps://{}:5684/{}'.format(host, path)
 
         command = [
-            '/usr/local/bin/coap-client',
+            'coap-client',
             '-u',
             'Client_identity',
             '-k',
