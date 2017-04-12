@@ -3,7 +3,7 @@ import json
 import logging
 import subprocess
 
-from .error import CommandError, ClientError, ServerError
+from .error import RequestError, ClientError, ServerError, RequestTimeout
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -49,8 +49,11 @@ def api_factory(host, security_code):
         try:
             return_value = subprocess.check_output(command, **kwargs)
             out = return_value.strip().decode('utf-8')
-        except subprocess.CalledProcessError:
-            raise CommandError() from None
+        except subprocess.TimeoutExpired:
+            raise RequestTimeout() from None
+        except subprocess.CalledProcessError as err:
+            raise RequestError(
+                'Error executing request: %s'.format(err)) from None
 
         # Return only the last line, where there's JSON
         lines = [line for line in out.split('\n')[1:]
@@ -73,7 +76,7 @@ def api_factory(host, security_code):
 
         return json.loads(output)
 
-    # This will cause a CommandError to be raised if credentials invalid
+    # This will cause a RequestError to be raised if credentials invalid
     request('get', ['status'])
 
     return request
