@@ -1,5 +1,5 @@
-from openikeatradfri.const import ROOT_DEVICES, ATTR_NAME
-from openikeatradfri.device import Device
+from opentradfri.const import ROOT_DEVICES, ATTR_NAME
+from opentradfri.device import Device
 
 LIGHT = {
     '3': {
