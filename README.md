@@ -32,7 +32,7 @@ Where the following variables are substituted:
 - **IP** is the IP-address to your gateway.
 - **KEY** is written on the back of your IKEA Tradfri Gateway.
 
-### Examples of commands in the prompt:
+### Examples of commands in the stand-alone prompt:
 
 List all lights: 
 ```shell
@@ -41,6 +41,45 @@ lights
 Set brightnes of item 1 to 50 in lights list: 
 ```shell
 lights[1].set_light_brightness(50)
+```
+
+
+## Implement in your own Python platform
+```
+#!/usr/bin/env python3
+
+# put all of this in test_pytradfri.py
+# Run by executing the following command from shell, from the same folder you have stored test_pytradfri.py in.
+# python3 -m test_pytradfri IP KEY
+
+# Pre-requisites
+# pip3 install pytradfri
+
+import sys
+import pytradfri
+
+# Assign configuration variables. The configuration check takes care they are present.
+api = pytradfri.coap_cli.api_factory(sys.argv[1], sys.argv[2])
+gateway = pytradfri.gateway.Gateway(api)
+devices = gateway.get_devices()
+lights = [dev for dev in devices if dev.has_light_control]
+
+# Print all lights
+print(lights)
+
+# Lights can be accessed by its index, so lights[1] is the second light
+
+# Example 1: checks state of the light 2 (true=on)
+print(lights[1].light_control.lights[0].state)
+
+# Example 2: get dimmer level of light 2
+print(lights[1].light_control.lights[0].dimmer)
+
+# Example 3: What is the name of light 2
+print(lights[1].name)
+
+# Example 4: Set the light level of light 2
+lights[1].light_control.set_dimmer(20)
 ```
 
 ### Docker
