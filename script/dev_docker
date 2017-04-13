@@ -1,5 +1,5 @@
 #!/bin/sh
-# Build and run Home Assinstant in Docker.
+# Build and run Home Assistant in Docker.
 
 # Optional: pass in a timezone as first argument
 # If not given will attempt to mount /etc/localtime
