@@ -80,6 +80,9 @@ print(lights[1].name)
 
 # Example 4: Set the light level of light 2
 lights[1].light_control.set_dimmer(20)
+
+# Example 5: Change color of light 2
+lights[1].light_control.set_hex_color('f5faf6') # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
 ```
 
 ### Docker
