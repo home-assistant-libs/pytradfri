@@ -1,6 +1,6 @@
 # Pytradfri
 
-This is a Python class to communicate with the [IKEA Tradfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Trådfri) ZigBee-based Gateway.
+This is a Python class to communicate with the [IKEA Tradfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Trådfri) ZigBee-based Gateway. The gateway can control IKEA lights and also Philips Hue bulbs.
 
 This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/).
 
