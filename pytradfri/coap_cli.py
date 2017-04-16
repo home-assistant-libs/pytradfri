@@ -14,7 +14,7 @@ SERVER_ERROR_PREFIX = '5.'
 
 def api_factory(host, security_code):
     """Generate a request method."""
-    def request(method, path, data=None, *, parse_json=True):
+    def request(method, path, data=None, *, parse_json=True, timeout=10):
         """Make a request."""
 
         path = '/'.join(str(v) for v in path)
@@ -34,7 +34,7 @@ def api_factory(host, security_code):
         ]
 
         kwargs = {
-            'timeout': 10,
+            'timeout': timeout,
             'stderr': subprocess.STDOUT,
         }
 
