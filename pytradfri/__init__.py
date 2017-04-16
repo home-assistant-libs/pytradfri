@@ -1,5 +1,6 @@
 """Implement an API wrapper around Ikea Tradfri."""
 
+from .api import retry_timeout
 from .coap_cli import api_factory as cli_api_factory
 from .error import (
     PyTradFriError, RequestError, ClientError, ServerError, RequestTimeout)
