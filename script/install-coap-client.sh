@@ -1,8 +1,6 @@
 #!/bin/sh
-git clone --recursive https://github.com/obgm/libcoap.git
+git clone --depth 1 --recursive -b dtls https://github.com/home-assistant/libcoap.git
 cd libcoap
-git checkout dtls
-git submodule update --init --recursive
 ./autogen.sh
 ./configure --disable-documentation --disable-shared
 make
