@@ -7,4 +7,4 @@ from .error import (
 from .gateway import Gateway
 
 __all__ = ['Gateway', 'cli_api_factory', 'PyTradFriError', 'RequestError',
-           'ClientError', 'ServerError', 'RequestTimeout']
+           'ClientError', 'ServerError', 'RequestTimeout', 'retry_timeout']
