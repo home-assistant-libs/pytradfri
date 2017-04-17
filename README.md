@@ -13,15 +13,14 @@ In order to use the code, you first need to install [libcoap](https://github.com
 ```shell
 $ apt-get install libtool
 
-$ git clone --recursive https://github.com/obgm/libcoap.git
+$ git clone --depth 1 --recursive -b dtls https://github.com/home-assistant/libcoap.git
 $ cd libcoap
-$ git checkout dtls
-$ git submodule update --init --recursive
 $ ./autogen.sh
 $ ./configure --disable-documentation --disable-shared
 $ make
-$ sudo make install
+$ make install
 ```
+
 ## Stand-alone
 If you want to test this library stand-alone:
 
