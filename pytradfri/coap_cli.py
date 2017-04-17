@@ -35,7 +35,7 @@ def api_factory(host, security_code):
 
         kwargs = {
             'timeout': timeout,
-            'stderr': subprocess.STDOUT,
+            'stderr': subprocess.DEVNULL,
         }
 
         if data is not None:
@@ -48,21 +48,13 @@ def api_factory(host, security_code):
 
         try:
             return_value = subprocess.check_output(command, **kwargs)
-            out = return_value.strip().decode('utf-8')
+            output = return_value.strip().decode('utf-8')
         except subprocess.TimeoutExpired:
             raise RequestTimeout() from None
         except subprocess.CalledProcessError as err:
             raise RequestError(
                 'Error executing request: %s'.format(err)) from None
 
-        # Return only the last line, where there's JSON
-        lines = [line for line in out.split('\n')[1:]
-                 if 'decrypt_verify' not in line]
-
-        if not lines:
-            return None
-
-        output = lines[0]
         _LOGGER.debug('Received: %s', output)
 
         if output.startswith(CLIENT_ERROR_PREFIX):
