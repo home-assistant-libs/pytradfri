@@ -8,7 +8,7 @@ A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com
 
 
 ## Installation
-In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap) as per the following instructions:
+In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap) (which contain "coap-client") as per the following instructions:
 
 ```shell
 $ apt-get install libtool
@@ -18,7 +18,7 @@ $ cd libcoap
 $ ./autogen.sh
 $ ./configure --disable-documentation --disable-shared
 $ make
-$ make install
+$ sudo make install
 ```
 
 ## Stand-alone
