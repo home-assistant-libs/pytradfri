@@ -2,7 +2,7 @@
 
 This is a Python class to communicate with the [Ikea Tradfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Trådfri) Gateway over your local-network using encrypted [CoAP (Constrained Application Protocol)](http://coap.technology/). The gateway acts as an ZigBee-based IoT (Internet of Things) hub which can control Ikea "Trådfri" series lights and also Philips Hue lightbulbs.
 
-This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/). Jaime Jiménez (who is an active member of the IPSO Alliance working group) have also posted a very good teardown [here](http://jaimejim.github.io/tradfri/) of the Ikea Trådfri implementation which follows IPSO Smart Object guidelines.
+This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/). Jaime Jiménez (who is an active member of the IPSO Alliance working group) have also posted a very good teardown [here](http://jaimejim.github.io/tradfri/) of the Ikea Trådfri implementation which follows IPSO Smart Object guidelines. In addition, Matthew Garrett (Google security dev) have posted a deeper security analysis of the gateway [here](https://mjg59.dreamwidth.org/47803.html).
 
 A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this library.
 
