@@ -22,8 +22,6 @@ def api_factory(host, security_code):
 
         command = [
             'coap-client',
-            '-u',
-            'Client_identity',
             '-k',
             security_code,
             '-v',
