@@ -57,7 +57,16 @@ def api_factory(host, security_code):
 
         _LOGGER.debug('Received: %s', output)
 
-        if output.startswith(CLIENT_ERROR_PREFIX):
+        if not output:
+            return None
+
+        elif 'decrypt_verify' in output:
+            raise RequestError(
+                'Please compile coap-client without debug output. See '
+                'instructions at '
+                'https://github.com/ggravlingen/pytradfri#installation')
+
+        elif output.startswith(CLIENT_ERROR_PREFIX):
             raise ClientError(output)
 
         elif output.startswith(SERVER_ERROR_PREFIX):
