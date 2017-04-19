@@ -1,14 +1,14 @@
 # Pytradfri
 
-This is a Python class to communicate with the [IKEA Tradfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Trådfri) ZigBee-based Gateway. The gateway can control IKEA lights and also Philips Hue bulbs.
+This is a Python class to communicate with the [Ikea Tradfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Trådfri) Gateway over your local-network using encrypted [CoAP (Constrained Application Protocol)](http://coap.technology/). The gateway acts as an ZigBee-based IoT (Internet of Things) hub which can control Ikea "Trådfri" series lights and also Philips Hue lightbulbs.
 
-This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/).
+This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/). Jaime Jiménez (who is an active member of the IPSO Alliance working group) have also posted a very good teardown [here](http://jaimejim.github.io/tradfri/) of the Ikea Trådfri implementation which follows IPSO Smart Object guidelines. In addition, Matthew Garrett (Google security dev) have posted a deeper security analysis of the gateway [here](https://mjg59.dreamwidth.org/47803.html).
 
 A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this library.
 
 
 ## Installation
-In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap) as per the following instructions:
+In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap) (which contain "coap-client") as per the following instructions:
 
 ```shell
 $ apt-get install libtool
@@ -18,7 +18,7 @@ $ cd libcoap
 $ ./autogen.sh
 $ ./configure --disable-documentation --disable-shared --without-debug CFLAGS="-D COAP_DEBUG_FD=stderr"
 $ make
-$ make install
+$ sudo make install
 ```
 
 ## Stand-alone
@@ -28,8 +28,8 @@ If you want to test this library stand-alone:
 $ python3 -i -m pytradfri IP KEY
 ```
 Where the following variables are substituted:
-- **IP** is the IP-address to your gateway.
-- **KEY** is written on the back of your IKEA Tradfri Gateway.
+- **IP** is the IP-address to your gateway (or FQDN if you have your own DNS server).
+- **KEY** is the PKG-key written on the back of your Ikea Tradfri Gateway.
 
 ### Examples of commands in the stand-alone prompt:
 
