@@ -27,9 +27,9 @@ ATTR_LIGHT_COLOR = "5706"  # string representing a value in some color space
 ATTR_LIGHT_COLOR_X = "5709"
 ATTR_LIGHT_COLOR_Y = "5710"
 
-ATTR_START_ACTION = "9042" # array
+ATTR_START_ACTION = "9042"  # array
 
-ATTR_SMART_TASK_TYPE = "9040" # 4 = transition | 1 = not home | 2 = on/off
+ATTR_SMART_TASK_TYPE = "9040"  # 4 = transition | 1 = not home | 2 = on/off
 ATTR_SMART_TASK_NOT_AT_HOME = 1
 ATTR_SMART_TASK_LIGHTS_OFF = 2
 ATTR_SMART_TASK_WAKE_UP = 4
