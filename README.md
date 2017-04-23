@@ -1,14 +1,20 @@
-# Pytradfri
+# Pytradfri #
 
-This is a Python class to communicate with the [IKEA Tradfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Trådfri) ZigBee-based Gateway. The gateway can control IKEA lights and also Philips Hue bulbs.
+This is a Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. The gateway can control IKEA lights and also Philips Hue bulbs. Some of the features include:
+- Get information on the gateway
+- List all devices connected to gateway
+- List all lights and get attributes of lights (name, state, color temp, dimmer level etc)
+- Change attribute values of lights (name, state, color temp, dimmer level etc)
 
-This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/).
+Table of contents:
+1. Installation
+2. Stand-alone use (command-line interface)
+3. Implement in your own Python platform
+4. Docker support
+5. Acknowledgements
 
-A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this library.
-
-
-## Installation
-In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap) as per the following instructions:
+## 1. Installation ##
+In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap) as per the following instructions (you might have to use sudo for some commands to work):
 
 ```shell
 $ apt-get install libtool
@@ -21,8 +27,8 @@ $ make
 $ make install
 ```
 
-## Stand-alone
-If you want to test this library stand-alone:
+## 2. Stand-alone use (command-line interface) ##
+If you want to test this library stand-alone in a command-line interface:
 
 ```shell
 $ python3 -i -m pytradfri IP KEY
@@ -31,7 +37,7 @@ Where the following variables are substituted:
 - **IP** is the IP-address to your gateway.
 - **KEY** is written on the back of your IKEA Tradfri Gateway.
 
-### Examples of commands in the stand-alone prompt:
+### Examples of commands in the stand-alone prompt: ###
 
 List all lights: 
 ```shell
@@ -43,7 +49,7 @@ lights[1].set_light_brightness(50)
 ```
 
 
-## Implement in your own Python platform
+## 3. Implement in your own Python platform
 ```
 #!/usr/bin/env python3
 
@@ -84,6 +90,11 @@ lights[1].light_control.set_dimmer(20)
 lights[1].light_control.set_hex_color('f5faf6') # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
 ```
 
-### Docker
+## 4. Docker support
 
 There is a Docker script available to bootstrap a dev environment. Run `./script/dev_docker` and you will build and launch a container that is ready to go. After launching, follow the above instructions to test the library stand-alone.
+
+## 5. Acknowledgements
+This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/).
+
+A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this library.
