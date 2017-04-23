@@ -38,8 +38,8 @@ def api_factory(host, security_code):
 
         if data is not None:
             kwargs['input'] = json.dumps(data).encode('utf-8')
-            command.append('-f')
-            command.append('-')
+            command.insert(1, '-f')
+            command.insert(2, '-')
             _LOGGER.debug('Executing %s %s %s: %s', host, method, path, data)
         else:
             _LOGGER.debug('Executing %s %s %s', host, method, path)
