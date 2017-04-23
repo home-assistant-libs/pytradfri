@@ -54,7 +54,7 @@ class BitChoices(object):
 
     def get_selected_keys(self, selection):
         """Return a list of keys for the given selection."""
-        return [k for k, b in self._lookup.iteritems() if b & selection]
+        return [k for k, b in self._lookup.items() if b & selection]
 
     def get_selected_values(self, selection):
         """Return a list of values for the given selection."""
@@ -146,7 +146,7 @@ class SmartTask(object):
     @property
     def repeat_days_list(self):
         """Binary representation of weekdays the event takes place."""
-        print(WEEKDAYS.get_selected_values(self.raw.get(ATTR_REPEAT_DAYS)))
+        return WEEKDAYS.get_selected_values(self.raw.get(ATTR_REPEAT_DAYS))
 
     @property
     def start_action(self):
