@@ -1,6 +1,6 @@
 """Smart tasks set timers to turn on/off lights in various ways.
 
-v1:
+v1: Added support to show states for wake up smart task.
 
 """
 
@@ -25,15 +25,64 @@ from .const import (
 )
 
 
-# The gateway stores days as bit
-CONST_ONCE = 0
-CONST_MON = 1
-CONST_TUE = 2
-CONST_WED = 4
-CONST_THU = 8
-CONST_FRI = 16
-CONST_SAT = 32
-CONST_SUN = 64
+class BitChoices(object):
+    """Helper class for bitwise dates.
+
+    http://stackoverflow.com/questions/3663898/representing-a-multi-select-field-for-weekdays-in-a-django-model
+    """
+
+    def __init__(self, choices):
+        """Initialize BitChoices class."""
+        self._choices = []
+        self._lookup = {}
+        for index, (key, val) in enumerate(choices):
+            index = 2**index
+            self._choices.append((index, val))
+            self._lookup[key] = index
+
+    def __iter__(self):
+        return iter(self._choices)
+
+    def __len__(self):
+        return len(self._choices)
+
+    def __getattr__(self, attr):
+        try:
+            return self._lookup[attr]
+        except KeyError:
+            raise AttributeError(attr)
+
+    def get_selected_keys(self, selection):
+        """Return a list of keys for the given selection."""
+        return [k for k, b in self._lookup.iteritems() if b & selection]
+
+    def get_selected_values(self, selection):
+        """Return a list of values for the given selection."""
+        return [v for b, v in self._choices if b & selection]
+
+
+WEEKDAYS = BitChoices(
+    (
+        ('mon', 'Monday'),
+        ('tue', 'Tuesday'),
+        ('wed', 'Wednesday'),
+        ('thu', 'Thursday'),
+        ('fri', 'Friday'),
+        ('sat', 'Saturday'),
+        ('sun', 'Sunday')
+    )
+)
+
+
+"""
+{'5850': 1, // Fungerar
+ '9002': 1492349682, // Fungerar
+ '9003': 317094, // Fungerar
+ '9040': 4, // Fungerar
+ '9041': 48, // Fungerar
+ '9042': {'15013': [{'5712': 18000, '5851': 254, '9003': 65537}], '5850': 1},
+ '9044': [{'9046': 8, '9047': 15}]} // Fungerar
+"""
 
 
 class SmartTask:
@@ -102,31 +151,34 @@ class SmartTask:
 
     @property
     def repeat_days(self):
-        """Numeric (binary) representation of weekdays the event takes place."""
+        """Return int (bit) for enabled weekdays."""
         return self.raw.get(ATTR_REPEAT_DAYS)
 
     @property
-    def repeat_days_bin(self):
+    def repeat_days_list(self):
         """Binary representation of weekdays the event takes place."""
-        return bin(self.raw.get(ATTR_REPEAT_DAYS))
+        print(WEEKDAYS.get_selected_values(self.raw.get(ATTR_REPEAT_DAYS)))
 
     @property
     def start_action(self):
+        """Return state and all devices in smart action."""
         return self.raw.get(ATTR_START_ACTION)
 
     @property
     def start_action_state(self):
+        """Return state of start action task."""
         return self.start_action[ATTR_LIGHT_STATE]
 
     @property
     def task_start_parameters(self):
+        """Return hour and minute that task starts."""
         return self.raw.get(ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL)[0]
 
     @property
     def task_start_time_seconds(self):
         """Return the hour and minute (represented in seconds) the task starts.
 
-        Time is set according to iso8601
+        Time is set according to iso8601.
         """
         hour = self.task_start_parameters[
             ATTR_SMART_TASK_TRIGGER_TIME_START_HOUR] * 60 * 60
@@ -137,9 +189,11 @@ class SmartTask:
 
     @property
     def task_control(self):
+        """Method to control a task."""
         return TaskControl(self)
 
     def __repr__(self):
+        """Return a readable name for smart task."""
         state = 'on' if self.state else 'off'
         return '<Task {} - {} - {}>'.format(
             self.id, self.task_type_name, state)
@@ -147,12 +201,6 @@ class SmartTask:
     def update(self):
         """Update the group."""
         self.raw = self.api('get', self.path)
-
-#  >>> light.light_control.lights[0].dimmer
-#  >>> task.light_control.tasks
-#  '9042': {'15013': [{'5712': 18000, '5851': 254, '9003': 65538},
-#                     {'5712': 18000, '5851': 254, '9003': 65537}],
-#           '5850': 1},
 
 
 class TaskControl:
@@ -166,46 +214,6 @@ class TaskControl:
     def tasks(self):
         """Return task objects of the task control."""
         return [TaskInfo(self._task, i) for i in range(len(self.raw))]
-
-    def set_dimmer(self, dimmer, *, index=0):
-        """Set dimmer value of a light.
-
-        Integer between 0..255
-        """
-        self.set_values({
-            ATTR_LIGHT_DIMMER: dimmer,
-        }, index=index)
-
-    @property
-    def create_commando(self):
-        nested = {'babba', 'goo'}
-        data = {
-           ATTR_START_ACTION: 'ACME',
-           'shares': 100,
-           'price': nested
-        }
-        json_str = json.dumps(data)
-        return json_str
-
-    def set_transiton_time(self, transition_time, *, index=0):
-        """Set transition time for dimmer."""
-        self.set_values({
-            ATTR_TRANSITION_TIME: transition_time * 60 * 10,
-        }, index=index)
-
-    def set_values(self, values, *, index=0):
-        """Set values on light control."""
-#        assert len(self.raw) == 1, \
-#            'Only devices with 1 light supported'
-        print(self._task.path)
-        print(values)
-        jsonstring = ATTR_START_ACTION
-        print(jsonstring)
-        self._task.api('put', self._task.path, {
-            [ATTR_START_ACTION]: [
-                values
-            ]
-        })
 
     @property
     def raw(self):
@@ -223,7 +231,8 @@ class TaskInfo:
 
     @property
     def id(self):
-        return self.raw[self.index].get(ATTR_ID)
+        """Return ID (device id) of task."""
+        return self.raw.get(ATTR_ID)
 
     @property
     def transition_time(self):
@@ -235,9 +244,10 @@ class TaskInfo:
 
     @property
     def dimmer(self):
+        """Return dimmer level."""
         return self.raw.get(ATTR_LIGHT_DIMMER)
 
     @property
     def raw(self):
         """Return raw data that it represents."""
-        return self.task
+        return self.task.raw[ATTR_START_ACTION][ROOT_START_ACTION][self.index]
