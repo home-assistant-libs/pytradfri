@@ -38,8 +38,22 @@ def api_factory(host, security_code):
 
         if data is not None:
             kwargs['input'] = json.dumps(data).encode('utf-8')
-            command.append('-f')
-            command.append('-')
+#            command.append('-f')
+#            command.append('-')
+            command = [
+                'coap-client',
+                '-f',
+                '-',
+                '-u',
+                'Client_identity',
+                '-k',
+                security_code,
+                '-v',
+                '0',
+                '-m',
+                method,
+                command_string
+            ]
             _LOGGER.debug('Executing %s %s %s: %s', host, method, path, data)
         else:
             _LOGGER.debug('Executing %s %s %s', host, method, path)
