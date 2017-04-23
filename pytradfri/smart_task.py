@@ -204,14 +204,16 @@ class TaskControl:
         """Return task objects of the task control."""
         return [TaskInfo(self._task, i) for i in range(len(self.raw))]
 
-    def set_start_time(self, hour, minute):
+    def set_dimmer_start_time(self, hour, minute):
         """Set start time for task (hh:mm) in iso8601.
+
+        NB: dimmer starts 30 mins before time in app
 
         To-do: get value from here:
         self.api.get_gateway_info().current_time_iso8601
         """
         newtime = datetime.datetime(100,1,1,hour,minute,00) + \
-                  datetime.timedelta(minutes=-150) #  Todo: Remove hard coding
+                  datetime.timedelta(minutes=-120) #  Todo: Remove hard coding
         command = {
             ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL:
                 [{
