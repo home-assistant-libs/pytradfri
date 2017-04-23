@@ -2,16 +2,18 @@
 from datetime import datetime
 
 from .const import (
-    ROOT_DEVICES, ROOT_GROUPS, ROOT_MOODS, PATH_GATEWAY_INFO,
-    ATTR_NTP, ATTR_FIRMWARE_VERSION, ATTR_CURRENT_TIME_UNIX,
-    ATTR_CURRENT_TIME_ISO8601, ATTR_FIRST_SETUP, ATTR_GATEWAY_ID)
+    ROOT_DEVICES, ROOT_GROUPS, ROOT_MOODS, ROOT_SMART_TASKS,
+    PATH_GATEWAY_INFO, ATTR_NTP, ATTR_FIRMWARE_VERSION,
+    ATTR_CURRENT_TIME_UNIX, ATTR_CURRENT_TIME_ISO8601,
+    ATTR_FIRST_SETUP, ATTR_GATEWAY_ID)
 from .device import Device
 from .group import Group
 from .mood import Mood
+from .smart_task import SmartTask
 
 
 class Gateway(object):
-    """This class connects to the IKEA Tradfri Gateway"""
+    """This class connects to the IKEA Tradfri Gateway."""
 
     def __init__(self, api):
         self.api = api
@@ -22,7 +24,7 @@ class Gateway(object):
         return [line.split(';')[0][2:-1] for line in data.split(',')]
 
     def get_devices(self):
-        """Returns the devices linked to the gateway"""
+        """Return the devices linked to the gateway."""
         devices = self.api('get', [ROOT_DEVICES])
 
         return [self.get_device(dev) for dev in devices]
@@ -64,6 +66,21 @@ class Gateway(object):
     def _get_mood_parent(self):
         """Get the parent of all moods."""
         return self.api('get', [ROOT_MOODS])[0]
+
+    def get_device(self, device_id):
+        """Return specified device."""
+        return Device(self.api, self.api('get', [ROOT_DEVICES, device_id]))
+
+    def get_smart_tasks(self):
+        """Return the transitions linked to the gateway."""
+        tasks = self.api('get', [ROOT_SMART_TASKS])
+
+        return [self.get_task(task) for task in tasks]
+
+    def get_task(self, task_id):
+        """Return specified transition."""
+        return SmartTask(self.api, self.api(
+            'get', [ROOT_SMART_TASKS, task_id]))
 
 
 class GatewayInfo:
