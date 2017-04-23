@@ -1,6 +1,6 @@
 """Smart tasks set timers to turn on/off lights in various ways.
 
-v1: Added support to show states for wake up smart task.
+v1: Added support to show (not modify) states for wake up smart task.
 
 """
 
@@ -74,18 +74,7 @@ WEEKDAYS = BitChoices(
 )
 
 
-"""
-{'5850': 1, // Fungerar
- '9002': 1492349682, // Fungerar
- '9003': 317094, // Fungerar
- '9040': 4, // Fungerar
- '9041': 48, // Fungerar
- '9042': {'15013': [{'5712': 18000, '5851': 254, '9003': 65537}], '5850': 1},
- '9044': [{'9046': 8, '9047': 15}]} // Fungerar
-"""
-
-
-class SmartTask:
+class SmartTask(object):
     """Represent a group."""
 
     def __init__(self, api, raw):
