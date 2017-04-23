@@ -67,10 +67,6 @@ class Gateway(object):
         """Get the parent of all moods."""
         return self.api('get', [ROOT_MOODS])[0]
 
-    def get_device(self, device_id):
-        """Return specified device."""
-        return Device(self.api, self.api('get', [ROOT_DEVICES, device_id]))
-
     def get_smart_tasks(self):
         """Return the transitions linked to the gateway."""
         tasks = self.api('get', [ROOT_SMART_TASKS])
