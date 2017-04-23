@@ -28,6 +28,7 @@ def test_smart_task():
     assert task.repeat_days == 48
     assert task.task_start_time_seconds == 29700
 
+
 def test_smart_task_info():
-    task = SmartTask(None, TASK).TaskInfo
-    assert task.state == 1
+    task = SmartTask(None, TASK).task_control.tasks[0]
+    assert task.id == 65537
