@@ -32,3 +32,4 @@ def test_smart_task():
 def test_smart_task_info():
     task = SmartTask(None, TASK).task_control.tasks[0]
     assert task.id == 65537
+    assert task.dimmer == 254
