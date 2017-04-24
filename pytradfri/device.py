@@ -6,8 +6,6 @@ from .const import (
     ATTR_APPLICATION_TYPE,
     ATTR_DEVICE_INFO,
     ATTR_NAME,
-    ATTR_CREATED_AT,
-    ATTR_ID,
     ATTR_REACHABLE_STATE,
     ATTR_LAST_SEEN,
     ATTR_LIGHT_CONTROL,
@@ -17,26 +15,15 @@ from .const import (
     ATTR_LIGHT_COLOR_Y,
     ATTR_LIGHT_COLOR
 )
+from .resource import ApiResource
 
 
-class Device(object):
+class Device(ApiResource):
     """Base class for devices."""
-
-    def __init__(self, api, raw):
-        self.api = api
-        self.raw = raw
-
-    @property
-    def id(self):
-        return self.raw.get(ATTR_ID)
 
     @property
     def application_type(self):
         return self.raw.get(ATTR_APPLICATION_TYPE)
-
-    @property
-    def name(self):
-        return self.raw.get(ATTR_NAME)
 
     @property
     def path(self):
@@ -45,12 +32,6 @@ class Device(object):
     @property
     def device_info(self):
         return DeviceInfo(self)
-
-    @property
-    def created_at(self):
-        if ATTR_CREATED_AT not in self.raw:
-            return None
-        return datetime.utcfromtimestamp(self.raw[ATTR_CREATED_AT])
 
     @property
     def last_seen(self):
@@ -76,22 +57,6 @@ class Device(object):
         self.set_values({
             ATTR_NAME: name
         })
-
-    def observe(self, callback, time=100):
-        """Observe device and call callback when device updated."""
-        def observe_callback(value):
-            """Called when end point is updated."""
-            self.raw = value
-            callback(self)
-
-        self.api.observe(self.path, observe_callback, time)
-
-    def set_values(self, values):
-        """Helper to set values for device."""
-        self.api('put', self.path, values)
-
-    def update(self):
-        self.raw = self.api('get', self.path)
 
     def __repr__(self):
         return "<{} - {} ({})>".format(self.id, self.name,

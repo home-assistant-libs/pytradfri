@@ -1,39 +1,22 @@
-from datetime import datetime
-
 from .const import (
     ROOT_GROUPS,
     ATTR_LIGHT_STATE,
     ATTR_LIGHT_DIMMER,
     ATTR_NAME,
-    ATTR_CREATED_AT,
     ATTR_ID,
 )
+from .resource import ApiResource
 
 ROOT_DEVICES2 = "15002"  # ??
 ATTR_MEMBERS = "9018"
 ATTR_MOOD = "9039"
 
 
-class Group:
+class Group(ApiResource):
     """Represent a group."""
     def __init__(self, gateway, raw):
+        super().__init__(gateway.api, raw)
         self._gateway = gateway
-        self.api = gateway.api
-        self.raw = raw
-
-    @property
-    def id(self):
-        return self.raw.get(ATTR_ID)
-
-    @property
-    def name(self):
-        return self.raw.get(ATTR_NAME)
-
-    @property
-    def created_at(self):
-        if ATTR_CREATED_AT not in self.raw:
-            return None
-        return datetime.utcfromtimestamp(self.raw[ATTR_CREATED_AT])
 
     @property
     def path(self):
@@ -83,14 +66,6 @@ class Group:
         self.set_values({
             ATTR_NAME: name
         })
-
-    def set_values(self, values):
-        """Helper to set values for group."""
-        self.api('put', self.path, values)
-
-    def update(self):
-        """Update the group."""
-        self.raw = self.api('get', self.path)
 
     def __repr__(self):
         state = 'on' if self.state else 'off'
