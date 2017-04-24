@@ -71,9 +71,9 @@ class Gateway(object):
         """Return the transitions linked to the gateway."""
         tasks = self.api('get', [ROOT_SMART_TASKS])
 
-        return [self.get_task(task) for task in tasks]
+        return [self.get_smart_task(task) for task in tasks]
 
-    def get_task(self, task_id):
+    def get_smart_task(self, task_id):
         """Return specified transition."""
         return SmartTask(self.api, self.api(
             'get', [ROOT_SMART_TASKS, task_id]))
