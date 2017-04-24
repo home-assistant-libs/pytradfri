@@ -5,6 +5,7 @@ This is a Python class to communicate with the [IKEA Trådfri](http://www.ikea.c
 - List all devices connected to gateway
 - List all lights and get attributes of lights (name, state, color temp, dimmer level etc)
 - Change attribute values of lights (name, state, color temp, dimmer level etc)
+- List smart tasks (wake up, on/off and not home) and their attributes
 
 Table of contents:
 1. Installation
@@ -88,6 +89,9 @@ lights[1].light_control.set_dimmer(20)
 
 # Example 5: Change color of light 2
 lights[1].light_control.set_hex_color('f5faf6') # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
+
+# Example 6: Return the transition time (in minutes) for task#1
+tasks[0].task_control.tasks[0].transition_time
 ```
 
 ## 4. Docker support
