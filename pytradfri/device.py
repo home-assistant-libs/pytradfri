@@ -77,6 +77,15 @@ class Device(object):
             ATTR_NAME: name
         })
 
+    def observe(self, callback, time=100):
+        """Observe device and call callback when device updated."""
+        def observe_callback(value):
+            """Called when end point is updated."""
+            self.raw = value
+            callback(self)
+
+        self.api.observe(self.path, observe_callback, time)
+
     def set_values(self, values):
         """Helper to set values for device."""
         self.api('put', self.path, values)
