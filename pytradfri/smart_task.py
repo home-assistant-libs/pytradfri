@@ -2,6 +2,10 @@
 
 v1: Added support to show (not modify) states for wake up smart task.
 
+To-do:
+> Represent start_action as a class
+> Refactor start_action_state as a method
+
 """
 
 import datetime
