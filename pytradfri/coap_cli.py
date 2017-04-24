@@ -2,6 +2,7 @@
 import json
 import logging
 import subprocess
+from time import time
 
 from .error import RequestError, ClientError, ServerError, RequestTimeout
 
@@ -59,11 +60,11 @@ def api_factory(host, security_code):
             raise RequestError(
                 'Error executing request: %s'.format(err)) from None
 
-        return _process_output(return_value.strip(), parse_json)
+        return _process_output(return_value, parse_json)
 
-    def observe(path, callback, time):
+    def observe(path, callback, duration):
         """Observe an endpoint."""
-        command = base_command('get') + ['-s', str(time), url(path)]
+        command = base_command('get') + ['-s', str(duration), url(path)]
         kwargs = {
             'stdout': subprocess.PIPE,
             'stderr': subprocess.DEVNULL,
@@ -77,21 +78,24 @@ def api_factory(host, security_code):
 
         output = ''
         open_obj = 0
-        in_string = False
-        for data in iter(lambda: proc.stdout.read(1), ''):
-            output += data
+        start = time()
 
-            if data == '"':
-                in_string = not in_string
-            elif in_string:
-                pass
-            elif data == '{':
+        for data in iter(lambda: proc.stdout.read(1), ''):
+            if data == '\n':
+                _LOGGER.debug('Observing stopped for %s after %.1fs',
+                              path, time() - start)
+                break
+
+            if data == '{':
                 open_obj += 1
             elif data == '}':
                 open_obj -= 1
 
+            output += data
+
             if open_obj == 0:
-                callback(_process_output(output))
+                result = _process_output(output)
+                callback(result)
                 output = ''
 
     request.observe = observe
@@ -104,6 +108,7 @@ def api_factory(host, security_code):
 
 def _process_output(output, parse_json=True):
     """Process output."""
+    output = output.strip()
     _LOGGER.debug('Received: %s', output)
 
     if not output:

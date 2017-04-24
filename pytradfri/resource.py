@@ -34,14 +34,14 @@ class ApiResource:
         """Path to resource."""
         raise NotImplemented('Path property needs to be implemented')
 
-    def observe(self, callback, time=100):
+    def observe(self, callback, duration=60):
         """Observe resource and call callback when updated."""
         def observe_callback(value):
             """Called when end point is updated."""
             self.raw = value
             callback(self)
 
-        self.api.observe(self.path, observe_callback, time)
+        self.api.observe(self.path, observe_callback, duration)
 
     def set_name(self, name):
         """Set group name."""
