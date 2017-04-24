@@ -24,6 +24,7 @@ if __name__ == '__main__':
     group = groups[0]
     moods = gateway.get_moods()
     mood = moods[0]
+    tasks = gateway.get_smart_tasks()
 
     def dump_all():
         endpoints = gateway.get_endpoints()
@@ -49,7 +50,9 @@ if __name__ == '__main__':
     print("> light.light_control.set_dimmer(254)")
     print("> light.light_control.set_xy_color(254)")
     print("> lights[1].light_control.set_dimmer(20)")
+    print("> tasks[0].repeat_days_list")
     print("> groups")
     print("> moods")
+    print("> tasks")
     print("> dump_devices()")
     print("> dump_all()")
