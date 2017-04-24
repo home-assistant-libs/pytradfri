@@ -43,6 +43,12 @@ class ApiResource:
 
         self.api.observe(self.path, observe_callback, time)
 
+    def set_name(self, name):
+        """Set group name."""
+        self.set_values({
+            ATTR_NAME: name
+        })
+
     def set_values(self, values):
         """Helper to set values for group."""
         self.api('put', self.path, values)

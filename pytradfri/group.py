@@ -2,7 +2,6 @@ from .const import (
     ROOT_GROUPS,
     ATTR_LIGHT_STATE,
     ATTR_LIGHT_DIMMER,
-    ATTR_NAME,
     ATTR_ID,
 )
 from .resource import ApiResource
@@ -61,10 +60,19 @@ class Group(ApiResource):
             ATTR_MOOD: mood_id
         })
 
-    def set_name(self, name):
-        """Set group name."""
+    def set_state(self, state):
+        """Set state of a group."""
         self.set_values({
-            ATTR_NAME: name
+            ATTR_LIGHT_STATE: int(state)
+        })
+
+    def set_dimmer(self, dimmer):
+        """Set dimmer value of a group.
+
+        Integer between 0..255
+        """
+        self.set_values({
+            ATTR_LIGHT_DIMMER: dimmer,
         })
 
     def __repr__(self):

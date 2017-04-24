@@ -5,7 +5,6 @@ from .const import (
     ROOT_DEVICES,
     ATTR_APPLICATION_TYPE,
     ATTR_DEVICE_INFO,
-    ATTR_NAME,
     ATTR_REACHABLE_STATE,
     ATTR_LAST_SEEN,
     ATTR_LIGHT_CONTROL,
@@ -51,12 +50,6 @@ class Device(ApiResource):
     @property
     def light_control(self):
         return LightControl(self)
-
-    def set_name(self, name):
-        """Set group name."""
-        self.set_values({
-            ATTR_NAME: name
-        })
 
     def __repr__(self):
         return "<{} - {} ({})>".format(self.id, self.name,
