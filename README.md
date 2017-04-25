@@ -1,20 +1,23 @@
 # Pytradfri #
 
 This is a Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. The gateway can control IKEA lights and also Philips Hue bulbs. Some of the features include:
+
 - Get information on the gateway
 - List all devices connected to gateway
 - List all lights and get attributes of lights (name, state, color temp, dimmer level etc)
 - Change attribute values of lights (name, state, color temp, dimmer level etc)
 - List smart tasks (wake up, on/off and not home) and their attributes
+- Observe lights, groups and other resources and get notified when they change
 
 Table of contents:
-1. Installation
-2. Stand-alone use (command-line interface)
-3. Implement in your own Python platform
-4. Docker support
-5. Acknowledgements
 
-## 1. Installation ##
+1. [Installation](#1-installation)
+2. [Stand-alone use (command-line interface)](#2-stand-alone-use-command-line-interface)
+3. [Implement in your own Python platform](#3-implement-in-your-own-python-platform)
+4. [Docker support](#4-docker-support)
+5. [Acknowledgements](#5-acknowledgements)
+
+## 1. Installation
 In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap) as per the following instructions (you might have to use sudo for some commands to work):
 
 ```shell
@@ -28,7 +31,7 @@ $ make
 $ make install
 ```
 
-## 2. Stand-alone use (command-line interface) ##
+## 2. Stand-alone use (command-line interface)
 If you want to test this library stand-alone in a command-line interface:
 
 ```shell
@@ -38,17 +41,28 @@ Where the following variables are substituted:
 - **IP** is the IP-address to your gateway.
 - **KEY** is written on the back of your IKEA Tradfri Gateway.
 
-### Examples of commands in the stand-alone prompt: ###
+### Examples of commands in the stand-alone prompt:
 
-List all lights: 
-```shell
+List all lights:
+
+```python
 lights
 ```
-Set brightnes of item 1 to 50 in lights list: 
-```shell
-lights[1].set_light_brightness(50)
+
+Set brightnes of item 1 to 50 in lights list:
+
+```python
+lights[1].light_control.set_dimmer(50)
 ```
 
+Observe a light for changes:
+
+```python
+def change_listener(device):
+  print(device.name + " is now " + str(device.light_control.lights[0].state))
+
+lights[0].observe(change_listener)
+```
 
 ## 3. Implement in your own Python platform
 ```
@@ -56,7 +70,7 @@ lights[1].set_light_brightness(50)
 
 # put all of this in test_pytradfri.py
 # Run by executing the following command from shell, from the same folder you have stored test_pytradfri.py in.
-# python3 -m test_pytradfri IP KEY
+# python3 test_pytradfri.py IP KEY
 
 # Pre-requisites
 # pip3 install pytradfri
