@@ -1,16 +1,32 @@
 """Smart tasks set timers to turn on/off lights in various ways.
 
 v1: Added support to show (not modify) states for wake up smart task.
+v2: Refactor to use class ApiResource
+    Created StartAction class
 
-To-do:
-> Represent start_action as a class
-> Refactor start_action_state as a method
+SmartTask # return top level info
+    TaskControl # Change top level values
+    StartAction # Get top level info on start action
+        TaskInfo # Get info on specific device in task
+            TaskInfoController # change values for task
+
+{'5850': 0,
+ '9002': 1492349682,
+ '9003': 317094,
+ '9040': 4,
+ '9041': 48,
+ '9042': {'15013': [{'5712': 18000, '5851': 254, '9003': 65537},
+                    {'5712': 18000, '5851': 254, '9003': 65538}],
+          '5850': 1},
+ '9044': [{'9046': 19, '9047': 0}]}
+
+tasks[0].start_action.devices[0].dimmer
 
 """
 
+
 import datetime
 from .const import (
-    ATTR_CREATED_AT,
     ATTR_ID,
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_STATE,
@@ -27,6 +43,7 @@ from .const import (
     ROOT_START_ACTION,
     ROOT_SMART_TASKS
 )
+from .resource import ApiResource
 
 
 class BitChoices(object):
@@ -78,7 +95,7 @@ WEEKDAYS = BitChoices(
 )
 
 
-class SmartTask(object):
+class SmartTask(ApiResource):
     """Represent a group."""
 
     def __init__(self, api, raw):
@@ -88,25 +105,16 @@ class SmartTask(object):
 
     @property
     def path(self):
-        """Return gateway path."""
+        """Return gateway path.
+
+        Migrate to ApiResource when possible.
+        """
         return [ROOT_SMART_TASKS, self.id]
 
     @property
     def state(self):
         """Boolean representing the light state of the transition."""
         return self.raw.get(ATTR_LIGHT_STATE) == 1
-
-    @property
-    def created_at(self):
-        """Return when task was created."""
-        if ATTR_CREATED_AT not in self.raw:
-            return None
-        return datetime.utcfromtimestamp(self.raw[ATTR_CREATED_AT])
-
-    @property
-    def id(self):
-        """Return ID# of task."""
-        return self.raw.get(ATTR_ID)
 
     @property
     def task_type_id(self):
@@ -153,16 +161,6 @@ class SmartTask(object):
         return WEEKDAYS.get_selected_values(self.raw.get(ATTR_REPEAT_DAYS))
 
     @property
-    def start_action(self):
-        """Return state and all devices in smart action."""
-        return self.raw.get(ATTR_START_ACTION)
-
-    @property
-    def start_action_state(self):
-        """Return state of start action task."""
-        return self.start_action[ATTR_LIGHT_STATE]
-
-    @property
     def task_start_parameters(self):
         """Return hour and minute that task starts."""
         return self.raw.get(ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL)[0]
@@ -185,15 +183,16 @@ class SmartTask(object):
         """Method to control a task."""
         return TaskControl(self)
 
+    @property
+    def start_action(self):
+        """Return start action object."""
+        return StartAction(self)
+
     def __repr__(self):
         """Return a readable name for smart task."""
         state = 'on' if self.state else 'off'
         return '<Task {} - {} - {}>'.format(
             self.id, self.task_type_name, state)
-
-    def update(self):
-        """Update the group."""
-        self.raw = self.api('get', self.path)
 
 
 class TaskControl:
@@ -216,8 +215,8 @@ class TaskControl:
         To-do: get value from here:
         self.api.get_gateway_info().current_time_iso8601
         """
-        newtime = datetime.datetime(100,1,1,hour,minute,00) + \
-                  datetime.timedelta(minutes=-120) #  Todo: Remove hard coding
+        newtime = datetime.datetime(100, 1, 1, hour, minute, 00) + \
+            datetime.timedelta(minutes=-120)  # Todo: Remove hard coding
         command = {
             ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL:
                 [{
@@ -234,7 +233,31 @@ class TaskControl:
     @property
     def raw(self):
         """Return raw data that it represents."""
-        return self._task.raw[ATTR_START_ACTION][ROOT_START_ACTION]
+        return self._task.raw[ATTR_START_ACTION]
+
+
+class StartAction:
+    """Class to control the start action-node."""
+
+    def __init__(self, start_action):
+        """Initialize StartAction class."""
+        self.start_action = start_action
+
+    @property
+    def state(self):
+        """Return state of start action task."""
+        return self.raw.get(ATTR_LIGHT_STATE)
+
+    @property
+    def devices(self):
+        """Return state of start action task."""
+        return [TaskInfo(self.start_action, i) for i in range(
+            len(self.raw[ROOT_START_ACTION]))]
+
+    @property
+    def raw(self):
+        """Return raw data that it represents."""
+        return self.start_action.raw[ATTR_START_ACTION]
 
 
 class TaskInfo:
