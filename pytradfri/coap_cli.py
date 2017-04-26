@@ -58,7 +58,7 @@ def api_factory(host, security_code):
             raise RequestTimeout() from None
         except subprocess.CalledProcessError as err:
             raise RequestError(
-                'Error executing request: %s'.format(err)) from None
+                'Error executing request: {}'.format(err)) from None
 
         return _process_output(return_value, parse_json)
 
