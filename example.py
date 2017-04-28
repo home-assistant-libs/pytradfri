@@ -7,17 +7,20 @@ $ pip3 install pytradfri
 $ Download this file (example.py)
 $ python3 test_pytradfri.py <IP> <KEY>
 
-Where <IP> is the address to your IKEA gateway and <KEY> is found on the back of your IKEA gateway.
+Where <IP> is the address to your IKEA gateway and
+<KEY> is found on the back of your IKEA gateway.
 """
 
 import sys
 import pytradfri
 
-# Assign configuration variables. The configuration check takes care they are present.
+# Assign configuration variables.
+# The configuration check takes care they are present.
 api = pytradfri.coap_cli.api_factory(sys.argv[1], sys.argv[2])
 gateway = pytradfri.gateway.Gateway(api)
 devices = gateway.get_devices()
 lights = [dev for dev in devices if dev.has_light_control]
+tasks = gateway.get_smart_tasks()
 
 # Print all lights
 print(lights)
@@ -37,7 +40,8 @@ print(lights[1].name)
 lights[1].light_control.set_dimmer(20)
 
 # Example 5: Change color of light 2
-lights[1].light_control.set_hex_color('f5faf6') # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
+# f5faf6 = cold | f1e0b5 = normal | efd275 = warm
+lights[1].light_control.set_hex_color('f5faf6')
 
 # Example 6: Return the transition time (in minutes) for task#1
 tasks[0].task_control.tasks[0].transition_time
