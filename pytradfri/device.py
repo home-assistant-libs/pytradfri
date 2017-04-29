@@ -12,7 +12,8 @@ from .const import (
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_COLOR_X,
     ATTR_LIGHT_COLOR_Y,
-    ATTR_LIGHT_COLOR
+    ATTR_LIGHT_COLOR,
+    ATTR_TRANSITION_TIME
 )
 from .resource import ApiResource
 
@@ -128,6 +129,7 @@ class LightControl:
 
     def __init__(self, device):
         self._device = device
+        self._transition_time = 0
 
     @property
     def lights(self):
@@ -152,6 +154,7 @@ class LightControl:
         """
         self.set_values({
             ATTR_LIGHT_DIMMER: dimmer,
+            ATTR_TRANSITION_TIME: self._transition_time
         }, index=index)
 
     def set_hex_color(self, color, *, index=0):
@@ -166,6 +169,13 @@ class LightControl:
             ATTR_LIGHT_COLOR_X: color_x,
             ATTR_LIGHT_COLOR_Y: color_y
         }, index=index)
+
+    def set_transition_time(self, transition_time):
+        """Set transition time of the light
+ 
+        Transition time value of 10 is 1 second
+        """
+        self._transition_time = transition_time
 
     def set_values(self, values, *, index=0):
         """Set values on light control."""

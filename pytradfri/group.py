@@ -3,6 +3,7 @@ from .const import (
     ATTR_LIGHT_STATE,
     ATTR_LIGHT_DIMMER,
     ATTR_ID,
+    ATTR_TRANSITION_TIME
 )
 from .resource import ApiResource
 
@@ -16,6 +17,7 @@ class Group(ApiResource):
     def __init__(self, gateway, raw):
         super().__init__(gateway.api, raw)
         self._gateway = gateway
+        self._transition_time = 0
 
     @property
     def path(self):
@@ -73,7 +75,15 @@ class Group(ApiResource):
         """
         self.set_values({
             ATTR_LIGHT_DIMMER: dimmer,
+            ATTR_TRANSITION_TIME: self._transition_time
         })
+
+    def set_transition_time(self, transition_time):
+        """Set transition time of the light
+
+        Transition time value of 10 is 1 second
+        """
+        self._transition_time = transition_time
 
     def __repr__(self):
         state = 'on' if self.state else 'off'
