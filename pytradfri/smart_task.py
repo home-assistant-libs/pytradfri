@@ -7,8 +7,16 @@ v2: Refactor to use class ApiResource
 SmartTask # return top level info
     TaskControl # Change top level values
     StartAction # Get top level info on start action
-        TaskInfo # Get info on specific device in task
-            TaskInfoController # change values for task
+        StartActionItem # Get info on specific device in task
+            StartActionItemController # change values for task
+
+
+Strategy:
+    For light x
+        - Extract unaffected objects
+        - Set new info on object (initially: no defaults)
+        - Put together into array
+        - Save array
 
 {'5850': 0,
  '9002': 1492349682,
@@ -62,12 +70,15 @@ class BitChoices(object):
             self._lookup[key] = index
 
     def __iter__(self):
+        """Iter."""
         return iter(self._choices)
 
     def __len__(self):
+        """Len."""
         return len(self._choices)
 
     def __getattr__(self, attr):
+        """Getattr."""
         try:
             return self._lookup[attr]
         except KeyError:
@@ -186,7 +197,7 @@ class SmartTask(ApiResource):
     @property
     def start_action(self):
         """Return start action object."""
-        return StartAction(self)
+        return StartAction(self, self.api, self.path)
 
     def __repr__(self):
         """Return a readable name for smart task."""
@@ -205,7 +216,7 @@ class TaskControl:
     @property
     def tasks(self):
         """Return task objects of the task control."""
-        return [TaskInfo(self._task, i) for i in range(len(self.raw))]
+        return [StartActionItem(self._task, i) for i in range(len(self.raw))]
 
     def set_dimmer_start_time(self, hour, minute):
         """Set start time for task (hh:mm) in iso8601.
@@ -239,9 +250,11 @@ class TaskControl:
 class StartAction:
     """Class to control the start action-node."""
 
-    def __init__(self, start_action):
+    def __init__(self, start_action, api, path):
         """Initialize StartAction class."""
         self.start_action = start_action
+        self.api = api
+        self.path = path
 
     @property
     def state(self):
@@ -251,8 +264,13 @@ class StartAction:
     @property
     def devices(self):
         """Return state of start action task."""
-        return [TaskInfo(self.start_action, i) for i in range(
-            len(self.raw[ROOT_START_ACTION]))]
+        return [StartActionItem(
+            self.start_action,
+            i,
+            self.state,
+            self.api,
+            self.path) for i in range(
+                len(self.raw[ROOT_START_ACTION]))]
 
     @property
     def raw(self):
@@ -260,18 +278,27 @@ class StartAction:
         return self.start_action.raw[ATTR_START_ACTION]
 
 
-class TaskInfo:
+class StartActionItem:
     """Class to show settings for a task."""
 
-    def __init__(self, task, index):
+    def __init__(self, task, index, state, api, path):
         """Initialize TaskInfo."""
         self.task = task
         self.index = index
+        self.state = state
+        self.api = api
+        self.path = path
 
     @property
     def id(self):
         """Return ID (device id) of task."""
         return self.raw.get(ATTR_ID)
+
+    @property
+    def item_controller(self):
+        """Method to control a task."""
+        return StartActionItemController(
+            self, self.raw, self.state, self.api, self.path)
 
     @property
     def transition_time(self):
@@ -290,3 +317,68 @@ class TaskInfo:
     def raw(self):
         """Return raw data that it represents."""
         return self.task.raw[ATTR_START_ACTION][ROOT_START_ACTION][self.index]
+
+    def __repr__(self):
+        """Return a readable name for this class."""
+        return '<StartActionItem {} - {} - {}>'.format(
+            self.id, self.dimmer, self.transition_time)
+
+
+class StartActionItemController:
+    """Class to edit settings for a task.
+
+    '9042': {'15013': [{'5712': 18000, '5851': 254, '9003': 65537},
+                       {'5712': 18000, '5851': 254, '9003': 65538}],
+             '5850': 1}
+    '9042': {'15013': [{'5712': 18000, '5851': 12, '9003': 65537}]
+           , '5850': 1}
+
+
+    """
+
+    def __init__(self, item, raw, state, api, path):
+        """Initialize TaskControl."""
+        self._item = item
+        self.raw = raw
+        self.state = state
+        self.api = api
+        self.api = path
+
+    def set_dimmer(self, dimmer):
+        """Set final dimmer value for task."""
+        deviceID = self.raw[ATTR_ID]
+        currentTransitionTime = self.raw[ATTR_TRANSITION_TIME]
+
+        command = {
+            ATTR_START_ACTION: {
+                ATTR_LIGHT_STATE: self.state,
+                ROOT_START_ACTION:
+                    [{
+                        ATTR_ID: deviceID,
+                        ATTR_LIGHT_DIMMER: dimmer,
+                        ATTR_TRANSITION_TIME: currentTransitionTime
+                    }]
+                }
+            }
+        self.set_values(command)
+
+    def set_transition_time(self, transition_time):
+        """Set time (mins) for light transition."""
+        deviceID = self.raw[ATTR_ID]
+        currentDimmer = self.raw[ATTR_LIGHT_DIMMER]
+
+        command = {
+            ATTR_START_ACTION: {
+                ATTR_LIGHT_STATE: self.state,
+                ROOT_START_ACTION:
+                    [{
+                        ATTR_ID: deviceID,
+                        ATTR_LIGHT_DIMMER: currentDimmer,
+                        ATTR_TRANSITION_TIME: transition_time * 10 * 60
+                        }]}
+                    }
+        self.set_values(command)
+
+    def set_values(self, command):
+        """Set values on task control."""
+        self._item.api('put', self._item.path, command)
