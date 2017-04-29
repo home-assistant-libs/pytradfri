@@ -172,7 +172,7 @@ class LightControl:
 
     def set_transition_time(self, transition_time):
         """Set transition time of the light
- 
+
         Transition time value of 10 is 1 second
         """
         self._transition_time = transition_time
