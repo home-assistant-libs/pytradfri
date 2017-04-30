@@ -150,7 +150,7 @@ class LightControl:
         """Set dimmer value of a light.
 
         dimmer: Integer between 0..255
-        transition_time: Integer representing a tenth of a second (default None)
+        transition_time: Integer representing tenth of a second (default None)
         """
         values = {
             ATTR_LIGHT_DIMMER: dimmer
