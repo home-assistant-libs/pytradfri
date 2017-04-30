@@ -17,7 +17,6 @@ class Group(ApiResource):
     def __init__(self, gateway, raw):
         super().__init__(gateway.api, raw)
         self._gateway = gateway
-        self._transition_time = 0
 
     @property
     def path(self):
@@ -68,22 +67,18 @@ class Group(ApiResource):
             ATTR_LIGHT_STATE: int(state)
         })
 
-    def set_dimmer(self, dimmer):
+    def set_dimmer(self, dimmer, transition_time=None):
         """Set dimmer value of a group.
 
-        Integer between 0..255
+        dimmer: Integer between 0..255
+        transition_time: Integer representing a tenth of a second (default None)
         """
-        self.set_values({
+        values = {
             ATTR_LIGHT_DIMMER: dimmer,
-            ATTR_TRANSITION_TIME: self._transition_time
-        })
-
-    def set_transition_time(self, transition_time):
-        """Set transition time of the light
-
-        Transition time value of 10 is 1 second
-        """
-        self._transition_time = transition_time
+        }
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+        self.set_values(values)
 
     def __repr__(self):
         state = 'on' if self.state else 'off'

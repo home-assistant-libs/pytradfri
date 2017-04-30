@@ -129,7 +129,6 @@ class LightControl:
 
     def __init__(self, device):
         self._device = device
-        self._transition_time = 0
 
     @property
     def lights(self):
@@ -147,15 +146,19 @@ class LightControl:
             ATTR_LIGHT_STATE: int(state)
         }, index=index)
 
-    def set_dimmer(self, dimmer, *, index=0):
+    def set_dimmer(self, dimmer, *, index=0, transition_time=None):
         """Set dimmer value of a light.
 
-        Integer between 0..255
+        dimmer: Integer between 0..255
+        transition_time: Integer representing a tenth of a second (default None)
         """
-        self.set_values({
-            ATTR_LIGHT_DIMMER: dimmer,
-            ATTR_TRANSITION_TIME: self._transition_time
-        }, index=index)
+        values = {
+            ATTR_LIGHT_DIMMER: dimmer
+        }
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+
+        self.set_values(values, index=index)
 
     def set_hex_color(self, color, *, index=0):
         """Set xy color of the light."""
@@ -169,13 +172,6 @@ class LightControl:
             ATTR_LIGHT_COLOR_X: color_x,
             ATTR_LIGHT_COLOR_Y: color_y
         }, index=index)
-
-    def set_transition_time(self, transition_time):
-        """Set transition time of the light
-
-        Transition time value of 10 is 1 second
-        """
-        self._transition_time = transition_time
 
     def set_values(self, values, *, index=0):
         """Set values on light control."""
