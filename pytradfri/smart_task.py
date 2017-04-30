@@ -192,7 +192,7 @@ class SmartTask(ApiResource):
     @property
     def task_control(self):
         """Method to control a task."""
-        return TaskControl(self)
+        return TaskControl(self, self.state, self.api, self.path)
 
     @property
     def start_action(self):
@@ -209,14 +209,17 @@ class SmartTask(ApiResource):
 class TaskControl:
     """Class to control the tasks."""
 
-    def __init__(self, task):
+    def __init__(self, task, state, api, path):
         """Initialize TaskControl."""
         self._task = task
+        self.state = state
+        self.api = api
+        self.path = path
 
     @property
     def tasks(self):
         """Return task objects of the task control."""
-        return [StartActionItem(self._task, i) for i in range(len(self.raw))]
+        return [StartActionItem(self._task, i, self.state, self.api, self.path) for i in range(len(self.raw))]
 
     def set_dimmer_start_time(self, hour, minute):
         """Set start time for task (hh:mm) in iso8601.
