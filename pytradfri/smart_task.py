@@ -219,7 +219,12 @@ class TaskControl:
     @property
     def tasks(self):
         """Return task objects of the task control."""
-        return [StartActionItem(self._task, i, self.state, self.api, self.path) for i in range(len(self.raw))]
+        return [StartActionItem(
+            self._task,
+            i,
+            self.state,
+            self.api,
+            self.path) for i in range(len(self.raw))]
 
     def set_dimmer_start_time(self, hour, minute):
         """Set start time for task (hh:mm) in iso8601.
