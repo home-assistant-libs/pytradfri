@@ -211,11 +211,9 @@ class TaskControl:
         """Set start time for task (hh:mm) in iso8601.
 
         NB: dimmer starts 30 mins before time in app
-
-        To-do: get value from here:
-        self.api.get_gateway_info().current_time_iso8601
         """
-
+        #  To-do: get value from here:
+        #  self.api.get_gateway_info().current_time_iso8601
         newtime = datetime.datetime(100, 1, 1, hour, minute, 00) + \
             datetime.timedelta(minutes=-120)  # Todo: Remove hard coding
         command = {
