@@ -7,14 +7,12 @@ SmartTask # return top level info
     StartAction # Get top level info on start action
         StartActionItem # Get info on specific device in task
             StartActionItemController # change values for task
-
-
-To-do:
-- Remove hard coding in set_dimmer_start_time
 """
 
 
-import datetime
+#  import datetime
+from datetime import (datetime as dt, timedelta as td)
+import time
 from .const import (
     ATTR_ID,
     ATTR_LIGHT_DIMMER,
@@ -90,10 +88,10 @@ WEEKDAYS = BitChoices(
 class SmartTask(ApiResource):
     """Represent a smart task."""
 
-    def __init__(self, api, raw):
-        """Initialize smart task class."""
-        self.api = api
-        self.raw = raw
+    def __init__(self, gateway, raw):
+        """Initialize the class."""
+        super().__init__(gateway.api, raw)
+        self._gateway = gateway
 
     @property
     def path(self):
@@ -173,12 +171,17 @@ class SmartTask(ApiResource):
     @property
     def task_control(self):
         """Method to control a task."""
-        return TaskControl(self, self.state, self.api, self.path)
+        return TaskControl(
+                        self,
+                        self.state,
+                        self.api,
+                        self.path,
+                        self._gateway)
 
     @property
     def start_action(self):
         """Return start action object."""
-        return StartAction(self, self.api, self.path)
+        return StartAction(self, self.api, self.path, self._gateway)
 
     def __repr__(self):
         """Return a readable name for smart task."""
@@ -190,12 +193,13 @@ class SmartTask(ApiResource):
 class TaskControl:
     """Class to control the tasks."""
 
-    def __init__(self, task, state, api, path):
+    def __init__(self, task, state, api, path, gateway):
         """Initialize TaskControl."""
         self._task = task
         self.state = state
         self.api = api
         self.path = path
+        self._gateway = gateway
 
     @property
     def tasks(self):
@@ -212,10 +216,21 @@ class TaskControl:
 
         NB: dimmer starts 30 mins before time in app
         """
-        #  To-do: get value from here:
-        #  self.api.get_gateway_info().current_time_iso8601
-        newtime = datetime.datetime(100, 1, 1, hour, minute, 00) + \
-            datetime.timedelta(minutes=-120)  # Todo: Remove hard coding
+        #  This is to calculate the difference between local time
+        #  and the time in the gateway
+        d1 = dt.strptime(
+                self._gateway.get_gateway_info().current_time_iso8601,
+                '%Y-%m-%dT%H:%M:%S.%fZ')
+        d2 = dt.strptime(
+                dt.now().isoformat(),
+                '%Y-%m-%dT%H:%M:%S.%f')
+
+        diffMinutes = round(int(
+            time.mktime(d2.timetuple()) -
+            time.mktime(d1.timetuple())) / 60, 0)
+
+        newtime = dt(100, 1, 1, hour, minute, 00) + \
+            td(minutes=-diffMinutes)
         command = {
             ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL:
                 [{
