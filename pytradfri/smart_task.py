@@ -1,17 +1,16 @@
 """Smart tasks set timers to turn on/off lights in various ways.
 
+> Currently supporting wake up
+
 SmartTask # return top level info
     TaskControl # Change top level values
     StartAction # Get top level info on start action
         StartActionItem # Get info on specific device in task
             StartActionItemController # change values for task
 
-Strategy:
-    For light x
-        - Extract unaffected objects
-        - Set new info on object (initially: no defaults)
-        - Put together into array
-        - Save array
+
+To-do:
+- Remove hard coding in set_dimmer_start_time
 """
 
 
@@ -89,7 +88,7 @@ WEEKDAYS = BitChoices(
 
 
 class SmartTask(ApiResource):
-    """Represent a group."""
+    """Represent a smart task."""
 
     def __init__(self, api, raw):
         """Initialize smart task class."""
@@ -216,6 +215,7 @@ class TaskControl:
         To-do: get value from here:
         self.api.get_gateway_info().current_time_iso8601
         """
+
         newtime = datetime.datetime(100, 1, 1, hour, minute, 00) + \
             datetime.timedelta(minutes=-120)  # Todo: Remove hard coding
         command = {
@@ -252,18 +252,6 @@ class StartAction:
         return self.raw.get(ATTR_LIGHT_STATE)
 
     @property
-    def devices_json_list(self):
-        """Return state of start action task."""
-        json_list = []
-        index = 1
-        z = 0
-        for x in self.raw[ROOT_START_ACTION]:
-            if z != index:
-                json_list.append(x)
-            z = z + 1
-        return json_list
-
-    @property
     def devices(self):
         """Return state of start action task."""
         return [StartActionItem(
@@ -271,7 +259,8 @@ class StartAction:
             i,
             self.state,
             self.api,
-            self.path) for i in range(
+            self.path,
+            self.raw) for i in range(
                 len(self.raw[ROOT_START_ACTION]))]
 
     @property
@@ -283,13 +272,25 @@ class StartAction:
 class StartActionItem:
     """Class to show settings for a task."""
 
-    def __init__(self, task, index, state, api, path):
+    def __init__(self, task, index, state, api, path, raw):
         """Initialize TaskInfo."""
         self.task = task
         self.index = index
         self.state = state
         self.api = api
         self.path = path
+        self._raw = raw
+
+    @property
+    def devices_json_list(self):
+        """Return state of start action task."""
+        json_list = {}
+        z = 0
+        for x in self._raw[ROOT_START_ACTION]:
+            if z != self.index:
+                json_list.update(x)
+            z = z + 1
+        return json_list
 
     @property
     def id(self):
@@ -300,7 +301,12 @@ class StartActionItem:
     def item_controller(self):
         """Method to control a task."""
         return StartActionItemController(
-            self, self.raw, self.state, self.api, self.path)
+            self,
+            self.raw,
+            self.state,
+            self.api,
+            self.path,
+            self.devices_json_list)
 
     @property
     def transition_time(self):
@@ -329,25 +335,25 @@ class StartActionItem:
 class StartActionItemController:
     """Class to edit settings for a task."""
 
-    def __init__(self, item, raw, state, api, path):
+    def __init__(self, item, raw, state, api, path,  devices_json_list):
         """Initialize TaskControl."""
         self._item = item
         self.raw = raw
         self.state = state
         self.api = api
         self.path = path
+        self.devices_json_list = devices_json_list
 
     def set_dimmer(self, dimmer):
         """Set final dimmer value for task."""
         command = {
             ATTR_START_ACTION: {
-                ATTR_LIGHT_STATE: self.state,
-                ROOT_START_ACTION:
-                    [{
+                    ATTR_LIGHT_STATE: self.state,
+                    ROOT_START_ACTION: [{
                         ATTR_ID: self.raw[ATTR_ID],
                         ATTR_LIGHT_DIMMER: dimmer,
                         ATTR_TRANSITION_TIME: self.raw[ATTR_TRANSITION_TIME]
-                    }]
+                    }, self.devices_json_list]
                 }
             }
         self.set_values(command)
@@ -356,14 +362,14 @@ class StartActionItemController:
         """Set time (mins) for light transition."""
         command = {
             ATTR_START_ACTION: {
-                ATTR_LIGHT_STATE: self.state,
-                ROOT_START_ACTION:
-                    [{
+                    ATTR_LIGHT_STATE: self.state,
+                    ROOT_START_ACTION: [{
                         ATTR_ID: self.raw[ATTR_ID],
                         ATTR_LIGHT_DIMMER: self.raw[ATTR_LIGHT_DIMMER],
                         ATTR_TRANSITION_TIME: transition_time * 10 * 60
-                        }]}
-                    }
+                    }, self.devices_json_list]
+                }
+            }
         self.set_values(command)
 
     def set_values(self, command):
