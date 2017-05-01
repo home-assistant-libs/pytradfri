@@ -3,6 +3,7 @@ from .const import (
     ATTR_LIGHT_STATE,
     ATTR_LIGHT_DIMMER,
     ATTR_ID,
+    ATTR_TRANSITION_TIME
 )
 from .resource import ApiResource
 
@@ -66,14 +67,18 @@ class Group(ApiResource):
             ATTR_LIGHT_STATE: int(state)
         })
 
-    def set_dimmer(self, dimmer):
+    def set_dimmer(self, dimmer, transition_time=None):
         """Set dimmer value of a group.
 
-        Integer between 0..255
+        dimmer: Integer between 0..255
+        transition_time: Integer representing tenth of a second (default None)
         """
-        self.set_values({
+        values = {
             ATTR_LIGHT_DIMMER: dimmer,
-        })
+        }
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+        self.set_values(values)
 
     def __repr__(self):
         state = 'on' if self.state else 'off'
