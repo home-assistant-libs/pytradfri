@@ -33,3 +33,14 @@ def test_smart_task_info():
     task = SmartTask(None, TASK).task_control.tasks[0]
     assert task.id == 65537
     assert task.dimmer == 254
+
+"""
+def test_dimmer_level(mock_api):
+    task = SmartTask(mock_api, TASK)
+    task.set_name('New name')
+    assert len(mock_api.calls) == 1
+    req = mock_api.calls[0]
+    assert req['method'] == 'put'
+    assert req['path'] == dev.path
+    assert req['data'] == {ATTR_NAME: 'New name'}
+"""
