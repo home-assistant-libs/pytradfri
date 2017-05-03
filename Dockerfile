@@ -6,10 +6,14 @@ RUN apt-get update -y && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* build/
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /usr/src/app /usr/src/build
+WORKDIR /usr/src/build
 
 COPY ./script/install-coap-client.sh install-coap-client.sh
 RUN ./install-coap-client.sh
 
+COPY ./script/install-aiocoap.sh install-aiocoap.sh
+RUN ./install-aiocoap.sh
+
+WORKDIR /usr/src/app
 CMD /bin/bash
