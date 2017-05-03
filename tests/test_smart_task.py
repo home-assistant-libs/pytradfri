@@ -26,7 +26,7 @@ def test_smart_task(mock_api):
         ATTR_NAME: 'Test name'
     })
     gateway = Gateway(mock_api)
-    task = SmartTask(None, TASK)
+    task = SmartTask(gateway, TASK)
 
     assert task.state == 1
     assert task.id == 317094
@@ -34,14 +34,11 @@ def test_smart_task(mock_api):
     assert task.repeat_days == 48
     assert task.task_start_time_seconds == 29700
 
-"""
 def test_smart_task_info(mock_api):
     mock_api.mock_request('get', [ROOT_DEVICES, 123], {
         ATTR_NAME: 'Test name'
     })
     gateway = Gateway(mock_api)
-
-    task = SmartTask(mock_api, TASK).task_control.tasks[0]
+    task = SmartTask(gateway, TASK).task_control.tasks[0]
     assert task.id == 65537
     assert task.dimmer == 254
-"""
