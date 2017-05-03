@@ -1,4 +1,6 @@
+from pytradfri.const import ROOT_DEVICES, ATTR_NAME
 from pytradfri.smart_task import SmartTask
+from pytradfri.gateway import Gateway
 
 TASK = {
     '5850': 1,
@@ -19,7 +21,11 @@ TASK = {
         }
 
 
-def test_smart_task():
+def test_smart_task(mock_api):
+    mock_api.mock_request('get', [ROOT_DEVICES, 123], {
+        ATTR_NAME: 'Test name'
+    })
+    gateway = Gateway(mock_api)
     task = SmartTask(None, TASK)
 
     assert task.state == 1
@@ -28,19 +34,14 @@ def test_smart_task():
     assert task.repeat_days == 48
     assert task.task_start_time_seconds == 29700
 
+"""
+def test_smart_task_info(mock_api):
+    mock_api.mock_request('get', [ROOT_DEVICES, 123], {
+        ATTR_NAME: 'Test name'
+    })
+    gateway = Gateway(mock_api)
 
-def test_smart_task_info():
-    task = SmartTask(None, TASK).task_control.tasks[0]
+    task = SmartTask(mock_api, TASK).task_control.tasks[0]
     assert task.id == 65537
     assert task.dimmer == 254
-
-"""
-def test_dimmer_level(mock_api):
-    task = SmartTask(mock_api, TASK)
-    task.set_name('New name')
-    assert len(mock_api.calls) == 1
-    req = mock_api.calls[0]
-    assert req['method'] == 'put'
-    assert req['path'] == dev.path
-    assert req['data'] == {ATTR_NAME: 'New name'}
 """
