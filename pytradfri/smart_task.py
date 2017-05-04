@@ -9,9 +9,8 @@ SmartTask # return top level info
             StartActionItemController # change values for task
 """
 
-from datetime import (datetime as dt, timedelta as td)
+from datetime import (datetime as dt)
 import datetime
-import time
 from .const import (
     ATTR_ID,
     ATTR_LIGHT_DIMMER,
@@ -218,7 +217,7 @@ class TaskControl:
 
         diff = d1 - d2
 
-        newtime = dt(100, 1, 1, hour, minute, 00) + diff
+        newtime = dt(100, 1, 1, hour, minute, 00) - diff
         command = {
             ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL:
                 [{
@@ -226,11 +225,7 @@ class TaskControl:
                     ATTR_SMART_TASK_TRIGGER_TIME_START_MIN: newtime.minute
                 }]
             }
-        self.set_values(command)
-
-    def set_values(self, command):
-        """Set values on task control."""
-        self._task.api('put', self._task.path, command)
+        self._task.set_values(command)
 
     @property
     def raw(self):
