@@ -278,7 +278,7 @@ class StartActionItem:
         self._raw = raw
 
     @property
-    def devices_json_list(self):
+    def devices_dict(self):
         """Return state of start action task."""
         json_list = {}
         z = 0
@@ -302,7 +302,7 @@ class StartActionItem:
             self.state,
             self.api,
             self.path,
-            self.devices_json_list)
+            self.devices_dict)
 
     @property
     def transition_time(self):
