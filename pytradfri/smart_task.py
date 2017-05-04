@@ -214,10 +214,9 @@ class TaskControl:
         #  and the time in the gateway
         d1 = self._gateway.get_gateway_info().current_time
         d2 = dt.utcnow()
-
         diff = d1 - d2
-
         newtime = dt(100, 1, 1, hour, minute, 00) - diff
+
         command = {
             ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL:
                 [{
