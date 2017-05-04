@@ -10,7 +10,6 @@ SmartTask # return top level info
 """
 
 
-#  import datetime
 from datetime import (datetime as dt, timedelta as td)
 import time
 from .const import (
