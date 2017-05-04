@@ -213,12 +213,8 @@ class TaskControl:
         """
         #  This is to calculate the difference between local time
         #  and the time in the gateway
-        d1 = dt.strptime(
-                self._gateway.get_gateway_info().current_time_iso8601,
-                '%Y-%m-%dT%H:%M:%S.%fZ')
-        d2 = dt.strptime(
-                dt.now().isoformat(),
-                '%Y-%m-%dT%H:%M:%S.%f')
+        d1 = self._gateway.get_gateway_info().current_time
+        d2 = dt.utcnow()
 
         diffMinutes = round(int(
             time.mktime(d2.timetuple()) -
