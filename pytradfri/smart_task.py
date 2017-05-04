@@ -94,10 +94,7 @@ class SmartTask(ApiResource):
 
     @property
     def path(self):
-        """Return gateway path.
-
-        Migrate to ApiResource when possible.
-        """
+        """Return gateway path."""
         return [ROOT_SMART_TASKS, self.id]
 
     @property
