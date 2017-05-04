@@ -9,8 +9,8 @@ SmartTask # return top level info
             StartActionItemController # change values for task
 """
 
-
 from datetime import (datetime as dt, timedelta as td)
+import datetime
 import time
 from .const import (
     ATTR_ID,
@@ -152,17 +152,16 @@ class SmartTask(ApiResource):
         return self.raw.get(ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL)[0]
 
     @property
-    def task_start_time_seconds(self):
-        """Return the hour and minute (represented in seconds) the task starts.
+    def task_start_time(self):
+        """Return the time the task starts.
 
         Time is set according to iso8601.
         """
-        hour = self.task_start_parameters[
-            ATTR_SMART_TASK_TRIGGER_TIME_START_HOUR] * 60 * 60
-        min = self.task_start_parameters[
-            ATTR_SMART_TASK_TRIGGER_TIME_START_MIN] * 60
-
-        return hour + min
+        return datetime.time(
+            self.task_start_parameters[
+                ATTR_SMART_TASK_TRIGGER_TIME_START_HOUR],
+            self.task_start_parameters[
+                ATTR_SMART_TASK_TRIGGER_TIME_START_MIN])
 
     @property
     def task_control(self):
