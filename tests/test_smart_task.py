@@ -1,6 +1,11 @@
-from pytradfri.const import ROOT_DEVICES, ATTR_NAME
+from pytradfri.const import (
+        ATTR_NAME,
+        ROOT_SMART_TASKS
+    )
 from pytradfri.smart_task import SmartTask
 from pytradfri.gateway import Gateway
+#  from datetime import (datetime as dt)
+import datetime
 
 TASK = {
     '5850': 1,
@@ -22,9 +27,7 @@ TASK = {
 
 
 def test_smart_task(mock_api):
-    mock_api.mock_request('get', [ROOT_DEVICES, 123], {
-        ATTR_NAME: 'Test name'
-    })
+    mock_api.mock_request('get', [ROOT_SMART_TASKS, 271141], TASK)
     gateway = Gateway(mock_api)
     task = SmartTask(gateway, TASK)
 
@@ -32,13 +35,14 @@ def test_smart_task(mock_api):
     assert task.id == 317094
     assert task.task_type_id == 4
     assert task.repeat_days == 48
-    assert task.task_start_time_seconds == 29700
+    assert task.task_start_time == datetime.time(8, 15)
 
 def test_smart_task_info(mock_api):
-    mock_api.mock_request('get', [ROOT_DEVICES, 123], {
-        ATTR_NAME: 'Test name'
-    })
+    mock_api.mock_request('get', [ROOT_SMART_TASKS, 271141], TASK)
+
     gateway = Gateway(mock_api)
-    task = SmartTask(gateway, TASK).task_control.tasks[0]
-    assert task.id == 65537
-    assert task.dimmer == 254
+    st = SmartTask(gateway, TASK).task_control.tasks[0]
+#    task = st.task_control.tasks[0]
+    #task = st.task_control.tasks[0]
+    #assert task.id == 65537
+    #assert task.dimmer == 254
