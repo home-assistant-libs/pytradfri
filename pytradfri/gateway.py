@@ -78,6 +78,7 @@ class Gateway(object):
         return SmartTask(self, self.api(
             'get', [ROOT_SMART_TASKS, task_id]))
 
+
 class GatewayInfo:
     def __init__(self, api, raw):
         self.api = api
