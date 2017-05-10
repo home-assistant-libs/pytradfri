@@ -75,7 +75,7 @@ class Gateway(object):
 
     def get_smart_task(self, task_id):
         """Return specified transition."""
-        return SmartTask(self.api, self.api(
+        return SmartTask(self, self.api(
             'get', [ROOT_SMART_TASKS, task_id]))
 
 

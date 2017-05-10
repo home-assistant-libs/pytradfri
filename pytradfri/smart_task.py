@@ -1,16 +1,17 @@
 """Smart tasks set timers to turn on/off lights in various ways.
 
-v1: Added support to show (not modify) states for wake up smart task.
+> Currently supporting wake up
 
-To-do:
-> Represent start_action as a class
-> Refactor start_action_state as a method
-
+SmartTask # return top level info
+    TaskControl # Change top level values
+    StartAction # Get top level info on start action
+        StartActionItem # Get info on specific device in task
+            StartActionItemController # change values for task
 """
 
-from datetime import datetime
+from datetime import (datetime as dt)
+import datetime
 from .const import (
-    ATTR_CREATED_AT,
     ATTR_ID,
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_STATE,
@@ -27,6 +28,7 @@ from .const import (
     ROOT_START_ACTION,
     ROOT_SMART_TASKS
 )
+from .resource import ApiResource
 
 
 class BitChoices(object):
@@ -45,12 +47,15 @@ class BitChoices(object):
             self._lookup[key] = index
 
     def __iter__(self):
+        """Iter."""
         return iter(self._choices)
 
     def __len__(self):
+        """Len."""
         return len(self._choices)
 
     def __getattr__(self, attr):
+        """Getattr."""
         try:
             return self._lookup[attr]
         except KeyError:
@@ -78,13 +83,13 @@ WEEKDAYS = BitChoices(
 )
 
 
-class SmartTask(object):
-    """Represent a group."""
+class SmartTask(ApiResource):
+    """Represent a smart task."""
 
-    def __init__(self, api, raw):
-        """Initialize smart task class."""
-        self.api = api
-        self.raw = raw
+    def __init__(self, gateway, raw):
+        """Initialize the class."""
+        super().__init__(gateway.api, raw)
+        self._gateway = gateway
 
     @property
     def path(self):
@@ -95,18 +100,6 @@ class SmartTask(object):
     def state(self):
         """Boolean representing the light state of the transition."""
         return self.raw.get(ATTR_LIGHT_STATE) == 1
-
-    @property
-    def created_at(self):
-        """Return when task was created."""
-        if ATTR_CREATED_AT not in self.raw:
-            return None
-        return datetime.utcfromtimestamp(self.raw[ATTR_CREATED_AT])
-
-    @property
-    def id(self):
-        """Return ID# of task."""
-        return self.raw.get(ATTR_ID)
 
     @property
     def task_type_id(self):
@@ -153,37 +146,36 @@ class SmartTask(object):
         return WEEKDAYS.get_selected_values(self.raw.get(ATTR_REPEAT_DAYS))
 
     @property
-    def start_action(self):
-        """Return state and all devices in smart action."""
-        return self.raw.get(ATTR_START_ACTION)
-
-    @property
-    def start_action_state(self):
-        """Return state of start action task."""
-        return self.start_action[ATTR_LIGHT_STATE]
-
-    @property
     def task_start_parameters(self):
         """Return hour and minute that task starts."""
         return self.raw.get(ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL)[0]
 
     @property
-    def task_start_time_seconds(self):
-        """Return the hour and minute (represented in seconds) the task starts.
+    def task_start_time(self):
+        """Return the time the task starts.
 
         Time is set according to iso8601.
         """
-        hour = self.task_start_parameters[
-            ATTR_SMART_TASK_TRIGGER_TIME_START_HOUR] * 60 * 60
-        min = self.task_start_parameters[
-            ATTR_SMART_TASK_TRIGGER_TIME_START_MIN] * 60
-
-        return hour + min
+        return datetime.time(
+            self.task_start_parameters[
+                ATTR_SMART_TASK_TRIGGER_TIME_START_HOUR],
+            self.task_start_parameters[
+                ATTR_SMART_TASK_TRIGGER_TIME_START_MIN])
 
     @property
     def task_control(self):
         """Method to control a task."""
-        return TaskControl(self)
+        return TaskControl(
+                        self,
+                        self.state,
+                        self.api,
+                        self.path,
+                        self._gateway)
+
+    @property
+    def start_action(self):
+        """Return start action object."""
+        return StartAction(self, self.api, self.path)
 
     def __repr__(self):
         """Return a readable name for smart task."""
@@ -191,41 +183,126 @@ class SmartTask(object):
         return '<Task {} - {} - {}>'.format(
             self.id, self.task_type_name, state)
 
-    def update(self):
-        """Update the group."""
-        self.raw = self.api('get', self.path)
-
 
 class TaskControl:
     """Class to control the tasks."""
 
-    def __init__(self, task):
+    def __init__(self, task, state, api, path, gateway):
         """Initialize TaskControl."""
         self._task = task
+        self.state = state
+        self.api = api
+        self.path = path
+        self._gateway = gateway
 
     @property
     def tasks(self):
         """Return task objects of the task control."""
-        return [TaskInfo(self._task, i) for i in range(len(self.raw))]
+        return [StartActionItem(
+            self._task,
+            i,
+            self.state,
+            self.api,
+            self.path,
+            self.raw) for i in range(len(self.raw))]
+
+    def set_dimmer_start_time(self, hour, minute):
+        """Set start time for task (hh:mm) in iso8601.
+
+        NB: dimmer starts 30 mins before time in app
+        """
+        #  This is to calculate the difference between local time
+        #  and the time in the gateway
+        d1 = self._gateway.get_gateway_info().current_time
+        d2 = dt.utcnow()
+        diff = d1 - d2
+        newtime = dt(100, 1, 1, hour, minute, 00) - diff
+
+        command = {
+            ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL:
+                [{
+                    ATTR_SMART_TASK_TRIGGER_TIME_START_HOUR: newtime.hour,
+                    ATTR_SMART_TASK_TRIGGER_TIME_START_MIN: newtime.minute
+                }]
+            }
+        self._task.set_values(command)
 
     @property
     def raw(self):
         """Return raw data that it represents."""
-        return self._task.raw[ATTR_START_ACTION][ROOT_START_ACTION]
+        return self._task.raw[ATTR_START_ACTION]
 
 
-class TaskInfo:
+class StartAction:
+    """Class to control the start action-node."""
+
+    def __init__(self, start_action, api, path):
+        """Initialize StartAction class."""
+        self.start_action = start_action
+        self.api = api
+        self.path = path
+
+    @property
+    def state(self):
+        """Return state of start action task."""
+        return self.raw.get(ATTR_LIGHT_STATE)
+
+    @property
+    def devices(self):
+        """Return state of start action task."""
+        return [StartActionItem(
+            self.start_action,
+            i,
+            self.state,
+            self.api,
+            self.path,
+            self.raw) for i in range(
+                len(self.raw[ROOT_START_ACTION]))]
+
+    @property
+    def raw(self):
+        """Return raw data that it represents."""
+        return self.start_action.raw[ATTR_START_ACTION]
+
+
+class StartActionItem:
     """Class to show settings for a task."""
 
-    def __init__(self, task, index):
+    def __init__(self, task, index, state, api, path, raw):
         """Initialize TaskInfo."""
         self.task = task
         self.index = index
+        self.state = state
+        self.api = api
+        self.path = path
+        self._raw = raw
+
+    @property
+    def devices_dict(self):
+        """Return state of start action task."""
+        json_list = {}
+        z = 0
+        for x in self._raw[ROOT_START_ACTION]:
+            if z != self.index:
+                json_list.update(x)
+            z = z + 1
+        return json_list
 
     @property
     def id(self):
         """Return ID (device id) of task."""
         return self.raw.get(ATTR_ID)
+
+    @property
+    def item_controller(self):
+        """Method to control a task."""
+        return StartActionItemController(
+            self,
+            self.raw,
+            self.state,
+            self.api,
+            self.path,
+            self.devices_dict)
 
     @property
     def transition_time(self):
@@ -244,3 +321,53 @@ class TaskInfo:
     def raw(self):
         """Return raw data that it represents."""
         return self.task.raw[ATTR_START_ACTION][ROOT_START_ACTION][self.index]
+
+    def __repr__(self):
+        """Return a readable name for this class."""
+        return '<StartActionItem (Device: {} - Dimmer: {} - Time: {})>'\
+            .format(self.id, self.dimmer, self.transition_time)
+
+
+class StartActionItemController:
+    """Class to edit settings for a task."""
+
+    def __init__(self, item, raw, state, api, path,  devices_dict):
+        """Initialize TaskControl."""
+        self._item = item
+        self.raw = raw
+        self.state = state
+        self.api = api
+        self.path = path
+        self.devices_dict = devices_dict
+
+    def set_dimmer(self, dimmer):
+        """Set final dimmer value for task."""
+        command = {
+            ATTR_START_ACTION: {
+                    ATTR_LIGHT_STATE: self.state,
+                    ROOT_START_ACTION: [{
+                        ATTR_ID: self.raw[ATTR_ID],
+                        ATTR_LIGHT_DIMMER: dimmer,
+                        ATTR_TRANSITION_TIME: self.raw[ATTR_TRANSITION_TIME]
+                    }, self.devices_dict]
+                }
+            }
+        self.set_values(command)
+
+    def set_transition_time(self, transition_time):
+        """Set time (mins) for light transition."""
+        command = {
+            ATTR_START_ACTION: {
+                    ATTR_LIGHT_STATE: self.state,
+                    ROOT_START_ACTION: [{
+                        ATTR_ID: self.raw[ATTR_ID],
+                        ATTR_LIGHT_DIMMER: self.raw[ATTR_LIGHT_DIMMER],
+                        ATTR_TRANSITION_TIME: transition_time * 10 * 60
+                    }, self.devices_dict]
+                }
+            }
+        self.set_values(command)
+
+    def set_values(self, command):
+        """Set values on task control."""
+        self._item.api('put', self._item.path, command)
