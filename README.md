@@ -8,6 +8,7 @@ This is a Python class to communicate with the [IKEA Trådfri](http://www.ikea.c
 - Change attribute values of lights (name, state, color temp, dimmer level etc)
 - List smart tasks (wake up, on/off and not home) and their attributes
 - Observe lights, groups and other resources and get notified when they change
+- Alter values in smart tasks (some of these features not available in app yet)
 
 Table of contents:
 
