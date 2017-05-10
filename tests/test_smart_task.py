@@ -54,4 +54,3 @@ def test_smart_task_info(mock_api):
     assert len(mock_api.calls) == 1
     req = mock_api.calls[0]
     assert req['method'] == 'put'
-    assert req['path'] == task.path
