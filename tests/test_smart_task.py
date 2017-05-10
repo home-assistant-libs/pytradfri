@@ -39,10 +39,19 @@ def test_smart_task(mock_api):
 
 def test_smart_task_info(mock_api):
     mock_api.mock_request('get', [ROOT_SMART_TASKS, 271141], TASK)
-
     gateway = Gateway(mock_api)
-    st = SmartTask(gateway, TASK).task_control.tasks[0]
-#    task = st.task_control.tasks[0]
-    #task = st.task_control.tasks[0]
-    #assert task.id == 65537
-    #assert task.dimmer == 254
+
+    task = SmartTask(gateway, TASK).task_control.tasks[0]
+    assert task.id == 65537
+    assert task.dimmer == 254
+
+def test_smart_task_info(mock_api):
+    mock_api.mock_request('get', [ROOT_SMART_TASKS, 271141], TASK)
+    gateway = Gateway(mock_api)
+
+    task = SmartTask(gateway, TASK).start_action.devices[0].\
+        item_controller.set_dimmer(30)
+    assert len(mock_api.calls) == 1
+    req = mock_api.calls[0]
+    assert req['method'] == 'put'
+    assert req['path'] == task.path

@@ -175,7 +175,7 @@ class SmartTask(ApiResource):
     @property
     def start_action(self):
         """Return start action object."""
-        return StartAction(self, self.api, self.path, self._gateway)
+        return StartAction(self, self.api, self.path)
 
     def __repr__(self):
         """Return a readable name for smart task."""
@@ -203,7 +203,8 @@ class TaskControl:
             i,
             self.state,
             self.api,
-            self.path) for i in range(len(self.raw))]
+            self.path,
+            self.raw) for i in range(len(self.raw))]
 
     def set_dimmer_start_time(self, hour, minute):
         """Set start time for task (hh:mm) in iso8601.
@@ -330,14 +331,14 @@ class StartActionItem:
 class StartActionItemController:
     """Class to edit settings for a task."""
 
-    def __init__(self, item, raw, state, api, path,  devices_json_list):
+    def __init__(self, item, raw, state, api, path,  devices_dict):
         """Initialize TaskControl."""
         self._item = item
         self.raw = raw
         self.state = state
         self.api = api
         self.path = path
-        self.devices_json_list = devices_json_list
+        self.devices_dict = devices_dict
 
     def set_dimmer(self, dimmer):
         """Set final dimmer value for task."""
@@ -348,7 +349,7 @@ class StartActionItemController:
                         ATTR_ID: self.raw[ATTR_ID],
                         ATTR_LIGHT_DIMMER: dimmer,
                         ATTR_TRANSITION_TIME: self.raw[ATTR_TRANSITION_TIME]
-                    }, self.devices_json_list]
+                    }, self.devices_dict]
                 }
             }
         self.set_values(command)
@@ -362,7 +363,7 @@ class StartActionItemController:
                         ATTR_ID: self.raw[ATTR_ID],
                         ATTR_LIGHT_DIMMER: self.raw[ATTR_LIGHT_DIMMER],
                         ATTR_TRANSITION_TIME: transition_time * 10 * 60
-                    }, self.devices_json_list]
+                    }, self.devices_dict]
                 }
             }
         self.set_values(command)
