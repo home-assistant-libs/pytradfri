@@ -45,3 +45,6 @@ lights[1].light_control.set_hex_color('f5faf6')
 
 # Example 6: Return the transition time (in minutes) for task#1
 tasks[0].task_control.tasks[0].transition_time
+
+# Example 7: Set the dimmer stop value to 30 for light#1 in task#1
+tasks[0].start_action.devices[0].item_controller.set_dimmer(30)
