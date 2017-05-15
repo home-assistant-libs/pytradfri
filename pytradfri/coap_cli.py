@@ -128,5 +128,7 @@ def _process_output(output, parse_json=True):
 
     elif not parse_json:
         return output
-
+    if len(output.split('\n')) == 2:
+        output = output.split('\n')[1]
+        _LOGGER.debug('Output after splitting: %s', output)
     return json.loads(output)
