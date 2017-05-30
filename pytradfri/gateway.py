@@ -1,6 +1,7 @@
 """Represent the gateway."""
 from datetime import datetime
 
+from pytradfri.command import Command
 from .const import (
     ROOT_DEVICES, ROOT_GROUPS, ROOT_MOODS, ROOT_SMART_TASKS,
     PATH_GATEWAY_INFO, ATTR_NTP, ATTR_FIRMWARE_VERSION,
@@ -12,76 +13,90 @@ from .mood import Mood
 from .smart_task import SmartTask
 
 
-class Gateway(object):
+class Gateway:
     """This class connects to the IKEA Tradfri Gateway."""
-
-    def __init__(self, api):
-        self.api = api
 
     def get_endpoints(self):
         """Return all available endpoints on the gateway."""
-        data = self.api('get', ['.well-known', 'core'], parse_json=False)
-        return [line.split(';')[0][2:-1] for line in data.split(',')]
+        def callback(result):
+            return [line.split(';')[0][2:-1] for line in result.split(',')]
+        return Command('get', ['.well-known', 'core'], parse_json=False,
+                       callback=callback)
 
     def get_devices(self):
         """Return the devices linked to the gateway."""
-        devices = self.api('get', [ROOT_DEVICES])
-
-        return [self.get_device(dev) for dev in devices]
+        def callback(result):
+            return [self.get_device(dev) for dev in result]
+        return Command('get', [ROOT_DEVICES], callback=callback)
 
     def get_device(self, device_id):
         """Return specified device."""
-        return Device(self.api, self.api('get', [ROOT_DEVICES, device_id]))
+        def callback(result):
+            return Device(result)
+        return Command('get', [ROOT_DEVICES, device_id], callback=callback)
 
     def get_groups(self):
         """Return the groups linked to the gateway."""
-        groups = self.api('get', [ROOT_GROUPS])
-
-        return [self.get_group(group) for group in groups]
+        def callback(result):
+            return [self.get_group(group) for group in result]
+        return Command('get', [ROOT_GROUPS], callback=callback)
 
     def get_group(self, group_id):
         """Return specified group."""
-        return Group(self, self.api('get', [ROOT_GROUPS, group_id]))
+        def callback(result):
+            return Group(self, result)
+        return Command('get', [ROOT_GROUPS, group_id], callback=callback)
 
     def get_gateway_info(self):
         """Return the gateway info."""
-        return GatewayInfo(self.api, self.api('get', PATH_GATEWAY_INFO))
+        def callback(result):
+            return GatewayInfo(result)
+        return Command('get', PATH_GATEWAY_INFO, callback=callback)
 
     def get_moods(self):
         """Return moods defined on the gateway."""
         mood_parent = self._get_mood_parent()
 
-        return [self.get_mood(mood, mood_parent=mood_parent) for mood in
-                self.api('get', [ROOT_MOODS, mood_parent])]
+        def callback(result):
+            return [self.get_mood(mood, mood_parent=mood_parent) for mood in
+                    result]
+
+        return Command('get', [ROOT_MOODS, mood_parent], callback=callback)
 
     def get_mood(self, mood_id, *, mood_parent=None):
         """Return a mood."""
         if mood_parent is None:
             mood_parent = self._get_mood_parent()
 
-        return Mood(
-            self.api, self.api('get', [ROOT_MOODS, mood_parent, mood_id]),
-            mood_parent)
+        def callback(result):
+            return Mood(result, mood_parent)
+
+        return Command('get', [ROOT_MOODS, mood_parent, mood_id],
+                       mood_parent, callback=callback)
 
     def _get_mood_parent(self):
         """Get the parent of all moods."""
-        return self.api('get', [ROOT_MOODS])[0]
+        def callback(result):
+            return result[0]
+        return Command('get', [ROOT_MOODS], callback=callback)
 
     def get_smart_tasks(self):
         """Return the transitions linked to the gateway."""
-        tasks = self.api('get', [ROOT_SMART_TASKS])
-
-        return [self.get_smart_task(task) for task in tasks]
+        def callback(result):
+            return [self.get_smart_task(task) for task in result]
+        return Command('get', [ROOT_SMART_TASKS], callback=callback)
 
     def get_smart_task(self, task_id):
         """Return specified transition."""
-        return SmartTask(self, self.api(
-            'get', [ROOT_SMART_TASKS, task_id]))
+        def callback(result):
+            return SmartTask(self, result)
+        return Command('get', [ROOT_SMART_TASKS, task_id], callback=callback)
 
 
 class GatewayInfo:
-    def __init__(self, api, raw):
-        self.api = api
+    """This class contains Gateway information."""
+
+    def __init__(self, raw):
         self.raw = raw
 
     @property
@@ -122,10 +137,12 @@ class GatewayInfo:
 
     def set_values(self, values):
         """Helper to set values for mood."""
-        self.api('put', self.path, values)
+        return Command('put', self.path, values)
 
     def update(self):
-        self.raw = self.api('get', self.path)
+        def callback(result):
+            self.raw = result
+        return Command('get', self.path, callback=callback)
 
     def __repr__(self):
         return '<GatewayInfo>'

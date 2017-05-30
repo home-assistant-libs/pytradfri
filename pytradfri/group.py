@@ -15,7 +15,7 @@ ATTR_MOOD = "9039"
 class Group(ApiResource):
     """Represent a group."""
     def __init__(self, gateway, raw):
-        super().__init__(gateway.api, raw)
+        super().__init__(raw)
         self._gateway = gateway
 
     @property
@@ -57,13 +57,13 @@ class Group(ApiResource):
 
     def activate_mood(self, mood_id):
         """Activate a mood."""
-        self.set_values({
+        return self.set_values({
             ATTR_MOOD: mood_id
         })
 
     def set_state(self, state):
         """Set state of a group."""
-        self.set_values({
+        return self.set_values({
             ATTR_LIGHT_STATE: int(state)
         })
 
@@ -78,7 +78,7 @@ class Group(ApiResource):
         }
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
-        self.set_values(values)
+        return self.set_values(values)
 
     def __repr__(self):
         state = 'on' if self.state else 'off'

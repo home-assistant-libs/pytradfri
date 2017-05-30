@@ -4,19 +4,18 @@ import logging
 import subprocess
 from time import time
 
-from .error import RequestError, ClientError, ServerError, RequestTimeout
+from pytradfri.command import Command
+from .parser import process_output
+from .error import RequestError, RequestTimeout
 
 _LOGGER = logging.getLogger(__name__)
-
-
-CLIENT_ERROR_PREFIX = '4.'
-SERVER_ERROR_PREFIX = '5.'
 
 
 def api_factory(host, security_code):
     """Generate a request method."""
     def base_command(method):
-        """Return base commmand."""
+
+        """Return base command."""
         return [
             'coap-client',
             '-k',
@@ -27,13 +26,20 @@ def api_factory(host, security_code):
             method
         ]
 
-    def url(path):
-        """Generate url for coap client."""
-        path = '/'.join(str(v) for v in path)
-        return 'coaps://{}:5684/{}'.format(host, path)
-
-    def request(method, path, data=None, *, parse_json=True, timeout=10):
+    def request(api_command):
         """Make a request."""
+        method = api_command.method
+        path = api_command.path
+        data = api_command.data
+        parse_json = api_command.parse_json
+        timeout = api_command.timeout
+        url = api_command.url(host)
+        callback = api_command.callback
+
+        if api_command.observe:
+            _observe(path, url, callback, api_command.observe_duration)
+            return
+
         command = base_command(method)
 
         kwargs = {
@@ -50,7 +56,7 @@ def api_factory(host, security_code):
         else:
             _LOGGER.debug('Executing %s %s %s', host, method, path)
 
-        command.append(url(path))
+        command.append(url)
 
         try:
             return_value = subprocess.check_output(command, **kwargs)
@@ -60,11 +66,12 @@ def api_factory(host, security_code):
             raise RequestError(
                 'Error executing request: {}'.format(err)) from None
 
-        return _process_output(return_value, parse_json)
+        api_command.result = process_output(return_value, parse_json)
+        return api_command.result
 
-    def observe(path, callback, duration):
+    def _observe(path, url, callback, duration):
         """Observe an endpoint."""
-        command = base_command('get') + ['-s', str(duration), url(path)]
+        command = base_command('get') + ['-s', str(duration), url]
         kwargs = {
             'stdout': subprocess.PIPE,
             'stderr': subprocess.DEVNULL,
@@ -94,39 +101,11 @@ def api_factory(host, security_code):
             output += data
 
             if open_obj == 0:
-                result = _process_output(output)
+                result = process_output(output)
                 callback(result)
                 output = ''
 
-    request.observe = observe
-
     # This will cause a RequestError to be raised if credentials invalid
-    request('get', ['status'])
+    request(Command('get', ['status']))
 
     return request
-
-
-def _process_output(output, parse_json=True):
-    """Process output."""
-    output = output.strip()
-    _LOGGER.debug('Received: %s', output)
-
-    if not output:
-        return None
-
-    elif 'decrypt_verify' in output:
-        raise RequestError(
-            'Please compile coap-client without debug output. See '
-            'instructions at '
-            'https://github.com/ggravlingen/pytradfri#installation')
-
-    elif output.startswith(CLIENT_ERROR_PREFIX):
-        raise ClientError(output)
-
-    elif output.startswith(SERVER_ERROR_PREFIX):
-        raise ServerError(output)
-
-    elif not parse_json:
-        return output
-
-    return json.loads(output)

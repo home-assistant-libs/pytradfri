@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from pytradfri.command import Command
 from .const import (
     ATTR_NAME,
     ATTR_CREATED_AT,
@@ -10,9 +11,8 @@ from .const import (
 class ApiResource:
     """Base object for resources returned from the gateway."""
 
-    def __init__(self, api, raw):
+    def __init__(self, raw):
         """Initialize base object."""
-        self.api = api
         self.raw = raw
 
     @property
@@ -41,18 +41,21 @@ class ApiResource:
             self.raw = value
             callback(self)
 
-        self.api.observe(self.path, observe_callback, duration)
+        return Command('get', self.path, callback=observe_callback,
+                       observe_duration=duration)
 
     def set_name(self, name):
         """Set group name."""
-        self.set_values({
+        return self.set_values({
             ATTR_NAME: name
         })
 
     def set_values(self, values):
         """Helper to set values for group."""
-        self.api('put', self.path, values)
+        return Command('put', self.path, values)
 
     def update(self):
         """Update the group."""
-        self.raw = self.api('get', self.path)
+        def callback(result):
+            self.raw = result
+        Command('get', self.path, callback=callback)
