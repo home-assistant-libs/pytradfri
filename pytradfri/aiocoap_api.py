@@ -1,12 +1,16 @@
 """Coap implementation using aiocoap."""
+import asyncio
 import json
 import logging
+import sys
 
-import asyncio
+sys.path.insert(0, '/usr/src/build/tinydtls/cython')
+
 import aiocoap
 from aiocoap import Message, Context
 from aiocoap.numbers.codes import Code
 from aiocoap.transports.tinydtls import TransportEndpointTinyDTLS
+from async_timeout import timeout
 
 from .error import ClientError, ServerError
 from .command import Command
@@ -35,6 +39,7 @@ def api_factory(host, security_code):
 
     @asyncio.coroutine
     def _get_protocol():
+        # TODO: Should/can this be reused?
         protocol = yield from Context.create_client_context()
         for endpoint in protocol.transport_endpoints:
             if type(endpoint) == TransportEndpointTinyDTLS:
@@ -48,7 +53,7 @@ def api_factory(host, security_code):
         path = api_command.path
         data = api_command.data
         parse_json = api_command.parse_json
-        timeout = api_command.timeout
+        request_timeout = api_command.timeout
         url = api_command.url(host)
         callback = api_command.callback
 
@@ -72,9 +77,10 @@ def api_factory(host, security_code):
             api_method = Code.PUT
 
         msg = Message(code=api_method, uri=url, **kwargs)
-        res = yield from protocol.request(msg).response
+        with timeout(request_timeout):
+            res = yield from protocol.request(msg).response
+            api_command.result = _process_output(res, parse_json)
 
-        api_command.result = _process_output(res, parse_json)
         return api_command.result
 
     @asyncio.coroutine
@@ -84,9 +90,11 @@ def api_factory(host, security_code):
 
         pr = protocol.request(msg)
 
-        # Note that it is necessary to start sending
+        # Note that this is necessary to start observing
         r = yield from pr.response
-        _LOGGER.debug("First response: %s\n%r" % (r, r.payload))
+
+        result = _process_output(r)
+        callback(result)
 
         it = pr.observation
         it = type(it).__aiter__(it)
@@ -94,7 +102,7 @@ def api_factory(host, security_code):
         while running:
             try:
                 res = yield from type(it).__anext__(it)
-            except StopAsyncIteration:
+            except StopAsyncIteration:  # TODO: This was added in 3.5 :(
                 running = False
             else:
                 result = _process_output(res)
@@ -116,7 +124,7 @@ def _process_output(res, parse_json=True):
     if not output:
         return None
 
-    if not res.is_successful:
+    if not res.code.is_successful:
         if res.code >= 128 and res.code < 160:
             raise ClientError(output)
         elif res.code >= 160 and res.code < 192:

@@ -17,44 +17,72 @@ class Gateway:
     """This class connects to the IKEA Tradfri Gateway."""
 
     def get_endpoints(self):
-        """Return all available endpoints on the gateway."""
+        """
+        Return all available endpoints on the gateway.
+
+        Returns a Command.
+        """
         def callback(result):
             return [line.split(';')[0][2:-1] for line in result.split(',')]
         return Command('get', ['.well-known', 'core'], parse_json=False,
                        callback=callback)
 
     def get_devices(self):
-        """Return the devices linked to the gateway."""
+        """
+        Return the devices linked to the gateway.
+
+        Returns a Command.
+        """
         def callback(result):
             return [self.get_device(dev) for dev in result]
         return Command('get', [ROOT_DEVICES], callback=callback)
 
     def get_device(self, device_id):
-        """Return specified device."""
+        """
+        Return specified device.
+
+        Returns a Command.
+        """
         def callback(result):
             return Device(result)
         return Command('get', [ROOT_DEVICES, device_id], callback=callback)
 
     def get_groups(self):
-        """Return the groups linked to the gateway."""
+        """
+        Return the groups linked to the gateway.
+
+        Returns a Command.
+        """
         def callback(result):
             return [self.get_group(group) for group in result]
         return Command('get', [ROOT_GROUPS], callback=callback)
 
     def get_group(self, group_id):
-        """Return specified group."""
+        """
+        Return specified group.
+
+        Returns a Command.
+        """
         def callback(result):
             return Group(self, result)
         return Command('get', [ROOT_GROUPS, group_id], callback=callback)
 
     def get_gateway_info(self):
-        """Return the gateway info."""
+        """
+        Return the gateway info.
+
+        Returns a Command.
+        """
         def callback(result):
             return GatewayInfo(result)
         return Command('get', PATH_GATEWAY_INFO, callback=callback)
 
     def get_moods(self):
-        """Return moods defined on the gateway."""
+        """
+        Return moods defined on the gateway.
+
+        Returns a Command.
+        """
         mood_parent = self._get_mood_parent()
 
         def callback(result):
@@ -64,7 +92,11 @@ class Gateway:
         return Command('get', [ROOT_MOODS, mood_parent], callback=callback)
 
     def get_mood(self, mood_id, *, mood_parent=None):
-        """Return a mood."""
+        """
+        Return a mood.
+
+        Returns a Command.
+        """
         if mood_parent is None:
             mood_parent = self._get_mood_parent()
 
@@ -75,19 +107,31 @@ class Gateway:
                        mood_parent, callback=callback)
 
     def _get_mood_parent(self):
-        """Get the parent of all moods."""
+        """
+        Get the parent of all moods.
+
+        Returns a Command.
+        """
         def callback(result):
             return result[0]
         return Command('get', [ROOT_MOODS], callback=callback)
 
     def get_smart_tasks(self):
-        """Return the transitions linked to the gateway."""
+        """
+        Return the transitions linked to the gateway.
+
+        Returns a Command.
+        """
         def callback(result):
             return [self.get_smart_task(task) for task in result]
         return Command('get', [ROOT_SMART_TASKS], callback=callback)
 
     def get_smart_task(self, task_id):
-        """Return specified transition."""
+        """
+        Return specified transition.
+
+        Returns a Command.
+        """
         def callback(result):
             return SmartTask(self, result)
         return Command('get', [ROOT_SMART_TASKS, task_id], callback=callback)
@@ -136,10 +180,19 @@ class GatewayInfo:
         return PATH_GATEWAY_INFO
 
     def set_values(self, values):
-        """Helper to set values for mood."""
+        """
+        Helper to set values for mood.
+
+        Returns a Command.
+        """
         return Command('put', self.path, values)
 
     def update(self):
+        """
+        Update the info.
+
+        Returns a Command.
+        """
         def callback(result):
             self.raw = result
         return Command('get', self.path, callback=callback)

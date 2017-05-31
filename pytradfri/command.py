@@ -3,6 +3,7 @@
 
 class Command(object):
     """The object for coap commands."""
+
     def __init__(self, method, path, data=None, *, parse_json=True, timeout=10,
                  observe=False, observe_duration=0, callback=None):
         self._method = method

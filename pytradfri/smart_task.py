@@ -363,5 +363,9 @@ class StartActionItemController:
         return self.set_values(command)
 
     def set_values(self, command):
-        """Set values on task control."""
+        """
+        Set values on task control.
+
+        Returns a Command.
+        """
         return Command('put', self._item.path, command)

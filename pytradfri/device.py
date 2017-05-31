@@ -175,7 +175,11 @@ class LightControl:
         }, index=index)
 
     def set_values(self, values, *, index=0):
-        """Set values on light control."""
+        """
+        Set values on light control.
+
+        Returns a Command.
+        """
         assert len(self.raw) == 1, \
             'Only devices with 1 light supported'
 
@@ -224,4 +228,10 @@ class Light:
 
     def __repr__(self):
         state = "on" if self.state else "off"
-        return "<Light #{} - {}>".format(self.index, state)
+        return "<Light #{} - " \
+               "state: {}, " \
+               "dimmer: {}, "\
+               "hex_color: {}, " \
+               "xy_color: {}" \
+               ">".format(self.index, state, self.dimmer, self.hex_color,
+                          self.xy_color)

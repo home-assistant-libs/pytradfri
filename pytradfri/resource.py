@@ -37,11 +37,16 @@ class ApiResource:
     def observe(self, callback, duration=60):
         """Observe resource and call callback when updated."""
         def observe_callback(value):
-            """Called when end point is updated."""
+            """
+            Called when end point is updated.
+
+            Returns a Command.
+            """
             self.raw = value
             callback(self)
 
         return Command('get', self.path, callback=observe_callback,
+                       observe=True,
                        observe_duration=duration)
 
     def set_name(self, name):
@@ -51,11 +56,19 @@ class ApiResource:
         })
 
     def set_values(self, values):
-        """Helper to set values for group."""
+        """
+        Helper to set values for group.
+
+        Returns a Command.
+        """
         return Command('put', self.path, values)
 
     def update(self):
-        """Update the group."""
+        """
+        Update the group.
+
+        Returns a Command.
+        """
         def callback(result):
             self.raw = result
-        Command('get', self.path, callback=callback)
+        return Command('get', self.path, callback=callback)
