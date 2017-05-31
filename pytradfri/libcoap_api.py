@@ -4,11 +4,13 @@ import logging
 import subprocess
 from time import time
 
-from pytradfri.command import Command
-from .parser import process_output
-from .error import RequestError, RequestTimeout
+from .command import Command
+from .error import RequestError, RequestTimeout, ClientError, ServerError
 
 _LOGGER = logging.getLogger(__name__)
+
+CLIENT_ERROR_PREFIX = '4.'
+SERVER_ERROR_PREFIX = '5.'
 
 
 def api_factory(host, security_code):
@@ -66,7 +68,7 @@ def api_factory(host, security_code):
             raise RequestError(
                 'Error executing request: {}'.format(err)) from None
 
-        api_command.result = process_output(return_value, parse_json)
+        api_command.result = _process_output(return_value, parse_json)
         return api_command.result
 
     def _observe(path, url, callback, duration):
@@ -101,7 +103,7 @@ def api_factory(host, security_code):
             output += data
 
             if open_obj == 0:
-                result = process_output(output)
+                result = _process_output(output)
                 callback(result)
                 output = ''
 
@@ -109,3 +111,29 @@ def api_factory(host, security_code):
     request(Command('get', ['status']))
 
     return request
+
+
+def _process_output(output, parse_json=True):
+    """Process output."""
+    output = output.strip()
+    _LOGGER.debug('Received: %s', output)
+
+    if not output:
+        return None
+
+    elif 'decrypt_verify' in output:
+        raise RequestError(
+            'Please compile coap-client without debug output. See '
+            'instructions at '
+            'https://github.com/ggravlingen/pytradfri#installation')
+
+    elif output.startswith(CLIENT_ERROR_PREFIX):
+        raise ClientError(output)
+
+    elif output.startswith(SERVER_ERROR_PREFIX):
+        raise ServerError(output)
+
+    elif not parse_json:
+        return output
+
+    return json.loads(output)

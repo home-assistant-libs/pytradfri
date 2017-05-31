@@ -3,18 +3,43 @@ import json
 import logging
 
 import asyncio
-from aiocoap import Message, Context, GET, PUT
-from aiocoap.transports.tinydtls import PSK_STORE
-from pytradfri.command import Command
-from .parser import process_output
+import aiocoap
+from aiocoap import Message, Context
+from aiocoap.numbers.codes import Code
+from aiocoap.transports.tinydtls import TransportEndpointTinyDTLS
+
+from .error import ClientError, ServerError
+from .command import Command
 
 _LOGGER = logging.getLogger(__name__)
+
+
+class PatchedDTLSSecurityStore:
+    """Patched DTLS store in lieu of impl."""
+
+    SECRET_PSK = None
+
+    def _get_psk(self, host, port):
+        return b"Client_identity", PatchedDTLSSecurityStore.SECRET_PSK
+
+
+aiocoap.transports.tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 
 
 def api_factory(host, security_code):
     """Generate a request method."""
 
-    PSK_STORE[b'Client_identity'] = security_code.encode('utf-8')
+    security_code = security_code.encode('utf-8')
+
+    PatchedDTLSSecurityStore.SECRET_PSK = security_code
+
+    @asyncio.coroutine
+    def _get_protocol():
+        protocol = yield from Context.create_client_context()
+        for endpoint in protocol.transport_endpoints:
+            if type(endpoint) == TransportEndpointTinyDTLS:
+                pass
+        return protocol
 
     @asyncio.coroutine
     def request(api_command):
@@ -27,8 +52,11 @@ def api_factory(host, security_code):
         url = api_command.url(host)
         callback = api_command.callback
 
+        protocol = yield from _get_protocol()
+
         if api_command.observe:
-            yield from _observe(url, callback, api_command.observe_duration)
+            yield from _observe(protocol, url, callback,
+                                api_command.observe_duration)
             return
 
         kwargs = {}
@@ -39,27 +67,20 @@ def api_factory(host, security_code):
         else:
             _LOGGER.debug('Executing %s %s %s', host, method, path)
 
-        api_method = GET
+        api_method = Code.GET
         if method == 'put':
-            api_method = PUT
+            api_method = Code.PUT
 
-        protocol = yield from Context.create_client_context()
         msg = Message(code=api_method, uri=url, **kwargs)
         res = yield from protocol.request(msg).response
-        _LOGGER.debug("RECEIVED STATUS", res.code)
-        _LOGGER.debug("RECEIVED PAYLOAD", res.payload.decode('utf-8'))
 
-        api_command.result = process_output(res, parse_json)
+        api_command.result = _process_output(res, parse_json)
         return api_command.result
 
     @asyncio.coroutine
-    def _observe(url, callback, duration):
+    def _observe(protocol, url, callback, duration):
         """Observe an endpoint."""
-        protocol = yield from Context.create_client_context()
-
-        msg = Message(code=GET,
-                      uri=url,
-                      observe=duration)
+        msg = Message(code=Code.GET, uri=url, observe=duration)
 
         pr = protocol.request(msg)
 
@@ -76,13 +97,32 @@ def api_factory(host, security_code):
             except StopAsyncIteration:
                 running = False
             else:
-                output = res.payload.decode('utf-8')
-                _LOGGER.debug("RECEIVED STATUS", res.code)
-                _LOGGER.debug("RECEIVED PAYLOAD", output)
-                result = process_output(output)
+                result = _process_output(res)
                 callback(result)
 
     # This will cause a RequestError to be raised if credentials invalid
     request(Command('get', ['status']))
 
     return request
+
+
+def _process_output(res, parse_json=True):
+    """Process output."""
+    res_payload = res.payload.decode('utf-8')
+    output = res_payload.strip()
+
+    _LOGGER.debug('Status: %s, Received: %s', res.code, output)
+
+    if not output:
+        return None
+
+    if not res.is_successful:
+        if res.code >= 128 and res.code < 160:
+            raise ClientError(output)
+        elif res.code >= 160 and res.code < 192:
+            raise ServerError(output)
+
+    if not parse_json:
+        return output
+
+    return json.loads(output)

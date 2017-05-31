@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pytradfri.command import Command
+from .command import Command
 from .const import (
     ATTR_NAME,
     ATTR_CREATED_AT,

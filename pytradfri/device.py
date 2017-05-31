@@ -1,7 +1,7 @@
 """Classes to interact with devices."""
 from datetime import datetime
 
-from pytradfri.command import Command
+from .command import Command
 from .const import (
     ROOT_DEVICES,
     ATTR_APPLICATION_TYPE,

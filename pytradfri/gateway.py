@@ -1,7 +1,7 @@
 """Represent the gateway."""
 from datetime import datetime
 
-from pytradfri.command import Command
+from .command import Command
 from .const import (
     ROOT_DEVICES, ROOT_GROUPS, ROOT_MOODS, ROOT_SMART_TASKS,
     PATH_GATEWAY_INFO, ATTR_NTP, ATTR_FIRMWARE_VERSION,

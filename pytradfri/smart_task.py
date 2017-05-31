@@ -12,7 +12,7 @@ SmartTask # return top level info
 from datetime import (datetime as dt)
 import datetime
 
-from pytradfri.command import Command
+from .command import Command
 from .const import (
     ATTR_ID,
     ATTR_LIGHT_DIMMER,
