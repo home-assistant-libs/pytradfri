@@ -12,8 +12,8 @@ from aiocoap.numbers.codes import Code
 from aiocoap.transports.tinydtls import TransportEndpointTinyDTLS
 from async_timeout import timeout
 
-from pytradfri.error import ClientError, ServerError
-from pytradfri.command import Command
+from ..error import ClientError, ServerError
+from ..command import Command
 
 _LOGGER = logging.getLogger(__name__)
 
