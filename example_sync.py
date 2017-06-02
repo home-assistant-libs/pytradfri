@@ -16,7 +16,8 @@ import threading
 
 import time
 
-import pytradfri
+from pytradfri.gateway import Gateway
+from pytradfri.api.aiocoap_api import api_factory
 
 
 def observe(api, device):
@@ -35,9 +36,9 @@ def observe(api, device):
 def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
-    api = pytradfri.cli_api_factory(sys.argv[1], sys.argv[2])
+    api = api_factory(sys.argv[1], sys.argv[2])
 
-    gateway = pytradfri.gateway.Gateway()
+    gateway = Gateway()
 
     devices_command = gateway.get_devices()
     api(devices_command)

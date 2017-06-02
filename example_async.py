@@ -15,7 +15,8 @@ import asyncio
 import logging
 import sys
 
-import pytradfri
+from pytradfri.gateway import Gateway
+from pytradfri.api.aiocoap_api import api_factory
 
 root = logging.getLogger()
 root.setLevel(logging.INFO)
@@ -47,13 +48,12 @@ def observe(api, device):
 def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
-    api = pytradfri.aio_api_factory(sys.argv[1], sys.argv[2])
+    api = yield from api_factory(sys.argv[1], sys.argv[2])
 
-    gateway = pytradfri.gateway.Gateway()
+    gateway = Gateway()
 
     devices_command = gateway.get_devices()
-    yield from api(devices_command)
-    devices_commands = devices_command.result
+    devices_commands = yield from api(devices_command)
     devices = []
     for device_command in devices_commands:
         yield from api(device_command)
@@ -62,8 +62,7 @@ def run():
     lights = [dev for dev in devices if dev.has_light_control]
 
     tasks_command = gateway.get_smart_tasks()
-    yield from api(tasks_command)
-    tasks = tasks_command.result
+    tasks = yield from api(tasks_command)
 
     # Print all lights
     print(lights)

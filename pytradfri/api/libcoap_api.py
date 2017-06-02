@@ -4,8 +4,8 @@ import logging
 import subprocess
 from time import time
 
-from .command import Command
-from .error import RequestError, RequestTimeout, ClientError, ServerError
+from pytradfri.command import Command
+from pytradfri.error import RequestError, RequestTimeout, ClientError, ServerError
 
 _LOGGER = logging.getLogger(__name__)
 

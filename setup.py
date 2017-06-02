@@ -4,9 +4,9 @@ VERSION = 2.0
 DOWNLOAD_URL = \
     'https://github.com/ggravlingen/pytradfri/archive/{}.zip'.format(VERSION)
 
-REQUIRES = [
+AIO_REQUIRES = [
     'async_timeout',
-    'aiocoap'
+    "https://github.com/chrysn/aiocoap/archive/2d2142043d6c8c8b81b22ca0cdf5e1695361a02c.zip#aiocoap==0.3"  # tinydtls branch.
 ]
 
 setup(
@@ -18,5 +18,5 @@ setup(
   author_email='no@email.com',
   url='https://github.com/ggravlingen/pytradfri',
   download_url=DOWNLOAD_URL,
-  install_requires=REQUIRES,
+  extras_require={'asyncio': AIO_REQUIRES},
 )

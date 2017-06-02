@@ -1,6 +1,6 @@
 """API utilities."""
 
-from .error import RequestTimeout
+from pytradfri.error import RequestTimeout
 
 
 def retry_timeout(api, retries=3):

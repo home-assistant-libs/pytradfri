@@ -5,13 +5,13 @@ class Command(object):
     """The object for coap commands."""
 
     def __init__(self, method, path, data=None, *, parse_json=True, timeout=10,
-                 observe=False, observe_duration=0, callback=None):
+                 observe=False, observe_duration=0, process_result=None):
         self._method = method
         self._path = path
         self._data = data
         self._parse_json = parse_json
         self._timeout = timeout
-        self._callback = callback
+        self._process_result = process_result
         self._observe = observe
         self._observe_duration = observe_duration
         self._raw_result = None
@@ -38,8 +38,8 @@ class Command(object):
         return self._timeout
 
     @property
-    def callback(self):
-        return self._callback
+    def process_result(self):
+        return self._process_result
 
     @property
     def observe(self):
@@ -59,8 +59,8 @@ class Command(object):
 
     @result.setter
     def result(self, value):
-        if self._callback:
-            self._result = self._callback(value)
+        if self._process_result:
+            self._result = self._process_result(value)
 
         self._raw_result = value
 

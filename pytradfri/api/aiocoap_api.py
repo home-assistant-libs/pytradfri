@@ -12,8 +12,8 @@ from aiocoap.numbers.codes import Code
 from aiocoap.transports.tinydtls import TransportEndpointTinyDTLS
 from async_timeout import timeout
 
-from .error import ClientError, ServerError
-from .command import Command
+from pytradfri.error import ClientError, ServerError
+from pytradfri.command import Command
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,6 +30,13 @@ class PatchedDTLSSecurityStore:
 aiocoap.transports.tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 
 
+def _patched_datagram_received(self, data, addr):
+    self._dtls_socket.handleMessage(self._connection, data, 0)
+
+aiocoap.transports.tinydtls.DTLSClientConnection.datagram_received = _patched_datagram_received
+
+
+@asyncio.coroutine
 def api_factory(host, security_code):
     """Generate a request method."""
 
@@ -109,7 +116,7 @@ def api_factory(host, security_code):
                 callback(result)
 
     # This will cause a RequestError to be raised if credentials invalid
-    request(Command('get', ['status']))
+    yield from request(Command('get', ['status']))
 
     return request
 
