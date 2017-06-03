@@ -33,7 +33,7 @@ LIGHT = {
 
 
 def test_device_properties():
-    dev = Device(None, LIGHT)
+    dev = Device(LIGHT)
 
     assert dev.application_type == 2
     assert dev.name == 'Light name'
@@ -43,7 +43,7 @@ def test_device_properties():
 
 
 def test_device_info_properties():
-    info = Device(None, LIGHT).device_info
+    info = Device(LIGHT).device_info
 
     assert info.manufacturer == 'IKEA of Sweden'
     assert info.model_number == 'TRADFRI bulb E26 WS opal 980lm'
@@ -52,11 +52,10 @@ def test_device_info_properties():
     assert info.power_source_str == 'Internal Battery'
 
 
-def test_set_name(mock_api):
-    dev = Device(mock_api, LIGHT)
-    dev.set_name('New name')
-    assert len(mock_api.calls) == 1
-    req = mock_api.calls[0]
-    assert req['method'] == 'put'
-    assert req['path'] == dev.path
-    assert req['data'] == {ATTR_NAME: 'New name'}
+def test_set_name():
+    dev = Device(LIGHT)
+    command = dev.set_name('New name')
+
+    assert command.method == 'put'
+    assert command.path == dev.path
+    assert command.data == {ATTR_NAME: 'New name'}
