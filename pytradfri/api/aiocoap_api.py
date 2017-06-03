@@ -4,7 +4,7 @@ import json
 import logging
 import sys
 
-sys.path.insert(0, '/usr/src/build/tinydtls/cython')
+sys.path.insert(0, '/usr/src/build/tinydtls/cython')  # noqa
 
 import aiocoap
 from aiocoap import Message, Context
@@ -33,7 +33,9 @@ aiocoap.transports.tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 def _patched_datagram_received(self, data, addr):
     self._dtls_socket.handleMessage(self._connection, data, 0)
 
-aiocoap.transports.tinydtls.DTLSClientConnection.datagram_received = _patched_datagram_received
+
+aiocoap.transports.tinydtls.DTLSClientConnection.datagram_received = \
+    _patched_datagram_received
 
 
 @asyncio.coroutine

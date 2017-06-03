@@ -95,7 +95,8 @@ def run():
         print(tasks[0].task_control.tasks[0].transition_time)
 
         # Example 7: Set the dimmer stop value to 30 for light#1 in task#1
-        dim_command_2 = tasks[0].start_action.devices[0].item_controller.set_dimmer(30)
+        dim_command_2 = tasks[0].start_action.devices[0].item_controller\
+            .set_dimmer(30)
         yield from api(dim_command_2)
 
     print("Sleeping for 2 min to receive the rest of the observation events")

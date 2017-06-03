@@ -127,7 +127,8 @@ class Gateway:
         """
         def process_result(result):
             return [self.get_smart_task(task) for task in result]
-        return Command('get', [ROOT_SMART_TASKS], process_result=process_result)
+        return Command('get', [ROOT_SMART_TASKS],
+                       process_result=process_result)
 
     def get_smart_task(self, task_id):
         """

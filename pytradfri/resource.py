@@ -45,7 +45,7 @@ class ApiResource:
             self.raw = value
             callback(self)
 
-        return Command('get', self.path, callback=observe_callback,
+        return Command('get', self.path, process_result=observe_callback,
                        observe=True,
                        observe_duration=duration)
 
@@ -69,6 +69,6 @@ class ApiResource:
 
         Returns a Command.
         """
-        def callback(result):
+        def process_result(result):
             self.raw = result
-        return Command('get', self.path, callback=callback)
+        return Command('get', self.path, process_result=process_result)
