@@ -34,7 +34,7 @@ class ApiResource:
         """Path to resource."""
         raise NotImplemented('Path property needs to be implemented')
 
-    def observe(self, callback, duration=60):
+    def observe(self, callback, err_callback, duration=60):
         """Observe resource and call callback when updated."""
         def observe_callback(value):
             """
@@ -46,6 +46,7 @@ class ApiResource:
             callback(self)
 
         return Command('get', self.path, process_result=observe_callback,
+                       err_callback=err_callback,
                        observe=True,
                        observe_duration=duration)
 

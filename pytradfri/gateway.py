@@ -24,6 +24,7 @@ class Gateway:
         """
         def process_result(result):
             return [line.split(';')[0][2:-1] for line in result.split(',')]
+
         return Command('get', ['.well-known', 'core'], parse_json=False,
                        process_result=process_result)
 
@@ -35,6 +36,7 @@ class Gateway:
         """
         def process_result(result):
             return [self.get_device(dev) for dev in result]
+
         return Command('get', [ROOT_DEVICES], process_result=process_result)
 
     def get_device(self, device_id):
@@ -45,6 +47,7 @@ class Gateway:
         """
         def process_result(result):
             return Device(result)
+
         return Command('get', [ROOT_DEVICES, device_id],
                        process_result=process_result)
 
@@ -56,6 +59,7 @@ class Gateway:
         """
         def process_result(result):
             return [self.get_group(group) for group in result]
+
         return Command('get', [ROOT_GROUPS], process_result=process_result)
 
     def get_group(self, group_id):
@@ -66,6 +70,7 @@ class Gateway:
         """
         def process_result(result):
             return Group(self, result)
+
         return Command('get', [ROOT_GROUPS, group_id],
                        process_result=process_result)
 
@@ -77,6 +82,7 @@ class Gateway:
         """
         def process_result(result):
             return GatewayInfo(result)
+
         return Command('get', PATH_GATEWAY_INFO, process_result=process_result)
 
     def get_moods(self):
@@ -117,6 +123,7 @@ class Gateway:
         """
         def process_result(result):
             return result[0]
+
         return Command('get', [ROOT_MOODS], process_result=process_result)
 
     def get_smart_tasks(self):
@@ -127,6 +134,7 @@ class Gateway:
         """
         def process_result(result):
             return [self.get_smart_task(task) for task in result]
+
         return Command('get', [ROOT_SMART_TASKS],
                        process_result=process_result)
 
@@ -138,6 +146,7 @@ class Gateway:
         """
         def process_result(result):
             return SmartTask(self, result)
+
         return Command('get', [ROOT_SMART_TASKS, task_id],
                        process_result=process_result)
 
@@ -200,6 +209,7 @@ class GatewayInfo:
         """
         def process_result(result):
             self.raw = result
+
         return Command('get', self.path, process_result=process_result)
 
     def __repr__(self):

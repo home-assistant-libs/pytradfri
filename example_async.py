@@ -37,7 +37,10 @@ def observe(api, device):
         light = updated_device.light_control.lights[0]
         print("Received message for: %s" % light)
 
-    observe_command = device.observe(callback, duration=120)
+    def err_callback(err):
+        print(err)
+
+    observe_command = device.observe(callback, err_callback, duration=120)
     task = api(observe_command)
     ensure_future(task)
     print('Sleeping to start observation task')

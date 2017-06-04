@@ -58,20 +58,18 @@ def api_factory(host, security_code):
     @asyncio.coroutine
     def request(api_command):
         """Make a request."""
+        protocol = yield from _get_protocol()
+
+        if api_command.observe:
+            yield from _observe(protocol, api_command)
+            return
+
         method = api_command.method
         path = api_command.path
         data = api_command.data
         parse_json = api_command.parse_json
         request_timeout = api_command.timeout
         url = api_command.url(host)
-        callback = api_command.callback
-
-        protocol = yield from _get_protocol()
-
-        if api_command.observe:
-            yield from _observe(protocol, url, callback,
-                                api_command.observe_duration)
-            return
 
         kwargs = {}
 
@@ -93,29 +91,29 @@ def api_factory(host, security_code):
         return api_command.result
 
     @asyncio.coroutine
-    def _observe(protocol, url, callback, duration):
+    def _observe(protocol, api_command):
         """Observe an endpoint."""
+        duration = api_command.observe_duration
+        url = api_command.url(host)
+        err_callback = api_command.err_callback
+
         msg = Message(code=Code.GET, uri=url, observe=duration)
 
         pr = protocol.request(msg)
 
         # Note that this is necessary to start observing
         r = yield from pr.response
+        api_command.result = _process_output(r)
 
-        result = _process_output(r)
-        callback(result)
+        def success_callback(res):
+            api_command.result = _process_output(res)
 
-        it = pr.observation
-        it = type(it).__aiter__(it)
-        running = True
-        while running:
-            try:
-                res = yield from type(it).__anext__(it)
-            except StopAsyncIteration:  # TODO: This was added in 3.5 :(
-                running = False
-            else:
-                result = _process_output(res)
-                callback(result)
+        def error_callback(ex):
+            err_callback(ex)
+
+        ob = pr.observation
+        ob.register_callback(success_callback)
+        ob.register_errback(error_callback)
 
     # This will cause a RequestError to be raised if credentials invalid
     yield from request(Command('get', ['status']))

@@ -30,17 +30,17 @@ def api_factory(host, security_code):
 
     def request(api_command):
         """Make a request."""
+
+        if api_command.observe:
+            _observe(api_command)
+            return
+
         method = api_command.method
         path = api_command.path
         data = api_command.data
         parse_json = api_command.parse_json
         timeout = api_command.timeout
         url = api_command.url(host)
-        callback = api_command.callback
-
-        if api_command.observe:
-            _observe(path, url, callback, api_command.observe_duration)
-            return
 
         command = base_command(method)
 
@@ -71,9 +71,15 @@ def api_factory(host, security_code):
         api_command.result = _process_output(return_value, parse_json)
         return api_command.result
 
-    def _observe(path, url, callback, duration):
+    def _observe(api_command):
         """Observe an endpoint."""
+        path = api_command.path
+        duration = api_command.observe_duration
+        url = api_command.url(host)
+        err_callback = api_command.err_callback
+
         command = base_command('get') + ['-s', str(duration), url]
+
         kwargs = {
             'stdout': subprocess.PIPE,
             'stderr': subprocess.DEVNULL,
@@ -93,6 +99,7 @@ def api_factory(host, security_code):
             if data == '\n':
                 _LOGGER.debug('Observing stopped for %s after %.1fs',
                               path, time() - start)
+                err_callback(RequestError("Observing stopped."))
                 break
 
             if data == '{':
@@ -103,8 +110,7 @@ def api_factory(host, security_code):
             output += data
 
             if open_obj == 0:
-                result = _process_output(output)
-                callback(result)
+                api_command.result = _process_output(output)
                 output = ''
 
     # This will cause a RequestError to be raised if credentials invalid

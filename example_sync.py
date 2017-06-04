@@ -17,7 +17,7 @@ import threading
 import time
 
 from pytradfri.gateway import Gateway
-from pytradfri.api.aiocoap_api import api_factory
+from pytradfri.api.libcoap_api import api_factory
 
 
 def observe(api, device):
@@ -25,8 +25,11 @@ def observe(api, device):
         light = updated_device.light_control.lights[0]
         print("Received message for: %s" % light)
 
+    def err_callback(err):
+        print(err)
+
     def worker():
-        api(device.observe(callback, duration=120))
+        api(device.observe(callback, err_callback, duration=120))
 
     threading.Thread(target=worker, daemon=True).start()
     print('Sleeping to start observation task')
