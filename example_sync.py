@@ -16,7 +16,7 @@ import threading
 
 import time
 
-from pytradfri.gateway import Gateway
+from pytradfri import Gateway
 from pytradfri.api.libcoap_api import api_factory
 
 

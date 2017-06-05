@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 VERSION = 2.0
 DOWNLOAD_URL = \
@@ -12,9 +12,11 @@ DEP_LINKS = [
     "http://github.com/mtai/python-gearman/tarball/tinydtls#egg=aiocoap-0.3"
 ]
 
+PACKAGES = find_packages(exclude=['tests', 'tests.*'])
+
 setup(
   name='pytradfri',
-  packages=['pytradfri'],
+  packages=PACKAGES,
   python_requires='>=3.4',
   version=VERSION,
   description='A python library for communicating with the Tradfri Gateway',

@@ -15,7 +15,7 @@ import asyncio
 import logging
 import sys
 
-from pytradfri.gateway import Gateway
+from pytradfri import Gateway
 from pytradfri.api.aiocoap_api import api_factory
 
 root = logging.getLogger()
