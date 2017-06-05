@@ -94,7 +94,8 @@ def api_factory(host, security_code):
         protocol = yield from _get_protocol()
 
         if len(api_commands) == 1:
-            return _execute(protocol, api_commands[0])
+            result = yield from _execute(protocol, api_commands[0])
+            return result
 
         command_results = []
 
