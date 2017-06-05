@@ -28,8 +28,8 @@ def api_factory(host, security_code):
             method
         ]
 
-    def request(api_command):
-        """Make a request."""
+    def _execute(api_command):
+        """Execute the command."""
 
         if api_command.observe:
             _observe(api_command)
@@ -70,6 +70,19 @@ def api_factory(host, security_code):
 
         api_command.result = _process_output(return_value, parse_json)
         return api_command.result
+
+    def request(*api_commands):
+        """Make a request."""
+        if len(api_commands) == 1:
+            return _execute(api_commands[0])
+
+        command_results = []
+
+        for api_command in api_commands:
+            result = _execute(api_command)
+            command_results.append(result)
+
+        return command_results
 
     def _observe(api_command):
         """Observe an endpoint."""

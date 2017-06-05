@@ -44,18 +44,13 @@ def run():
     gateway = Gateway()
 
     devices_command = gateway.get_devices()
-    api(devices_command)
-    devices_commands = devices_command.result
-    devices = []
-    for device_command in devices_commands:
-        api(device_command)
-        devices.append(device_command.result)
+    devices_commands = api(devices_command)
+    devices = api(devices_commands)
 
     lights = [dev for dev in devices if dev.has_light_control]
 
     tasks_command = gateway.get_smart_tasks()
-    api(tasks_command)
-    tasks = tasks_command.result
+    tasks = api(tasks_command)
 
     # Print all lights
     print(lights)

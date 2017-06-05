@@ -56,10 +56,8 @@ def api_factory(host, security_code):
         return protocol
 
     @asyncio.coroutine
-    def request(api_command):
-        """Make a request."""
-        protocol = yield from _get_protocol()
-
+    def _execute(protocol, api_command):
+        """Execute the command."""
         if api_command.observe:
             yield from _observe(protocol, api_command)
             return
@@ -89,6 +87,22 @@ def api_factory(host, security_code):
             api_command.result = _process_output(res, parse_json)
 
         return api_command.result
+
+    @asyncio.coroutine
+    def request(*api_commands):
+        """Make a request."""
+        protocol = yield from _get_protocol()
+
+        if len(api_commands) == 1:
+            return _execute(protocol, api_commands[0])
+
+        command_results = []
+
+        for api_command in api_commands:
+            result = yield from _execute(protocol, api_command)
+            command_results.append(result)
+
+        return command_results
 
     @asyncio.coroutine
     def _observe(protocol, api_command):
