@@ -64,7 +64,6 @@ def api_factory(host, security_code):
         path = api_command.path
         data = api_command.data
         parse_json = api_command.parse_json
-        request_timeout = api_command.timeout
         url = api_command.url(host)
 
         kwargs = {}
