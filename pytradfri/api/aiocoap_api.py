@@ -57,7 +57,7 @@ def api_factory(host, security_code):
     def _execute(api_command):
         """Execute the command."""
         if api_command.observe:
-            yield from _observe(protocol, api_command)
+            yield from _observe(api_command)
             return
 
         method = api_command.method
@@ -94,13 +94,13 @@ def api_factory(host, security_code):
     def request(*api_commands):
         """Make a request."""
         if len(api_commands) == 1:
-            result = yield from _execute(protocol, api_commands[0])
+            result = yield from _execute(api_commands[0])
             return result
 
         command_results = []
 
         for api_command in api_commands:
-            result = yield from _execute(protocol, api_command)
+            result = yield from _execute(api_command)
             command_results.append(result)
 
         return command_results
