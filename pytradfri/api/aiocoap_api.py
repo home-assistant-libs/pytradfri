@@ -8,14 +8,16 @@ sys.path.insert(0, '/usr/src/build/tinydtls/cython')  # noqa
 
 import aiocoap
 from aiocoap import Message, Context
+from aiocoap.error import RequestTimedOut
 from aiocoap.numbers.codes import Code
 from aiocoap.transports.tinydtls import TransportEndpointTinyDTLS
-from async_timeout import timeout
 
-from ..error import ClientError, ServerError
+from ..error import ClientError, ServerError, RequestTimeout
 from ..command import Command
 
 _LOGGER = logging.getLogger(__name__)
+
+aiocoap.numbers.constants.MAX_RETRANSMIT = 10
 
 
 class PatchedDTLSSecurityStore:
@@ -46,17 +48,13 @@ def api_factory(host, security_code):
 
     PatchedDTLSSecurityStore.SECRET_PSK = security_code
 
-    @asyncio.coroutine
-    def _get_protocol():
-        # TODO: Should/can this be reused?
-        protocol = yield from Context.create_client_context()
-        for endpoint in protocol.transport_endpoints:
-            if type(endpoint) == TransportEndpointTinyDTLS:
-                pass
-        return protocol
+    protocol = yield from Context.create_client_context()
+    for endpoint in protocol.transport_endpoints:
+        if type(endpoint) == TransportEndpointTinyDTLS:
+            pass
 
     @asyncio.coroutine
-    def _execute(protocol, api_command):
+    def _execute(api_command):
         """Execute the command."""
         if api_command.observe:
             yield from _observe(protocol, api_command)
@@ -82,17 +80,19 @@ def api_factory(host, security_code):
             api_method = Code.PUT
 
         msg = Message(code=api_method, uri=url, **kwargs)
-        with timeout(request_timeout):
+
+        try:
             res = yield from protocol.request(msg).response
-            api_command.result = _process_output(res, parse_json)
+        except RequestTimedOut:
+            raise RequestTimeout('Request timed out.')
+
+        api_command.result = _process_output(res, parse_json)
 
         return api_command.result
 
     @asyncio.coroutine
     def request(*api_commands):
         """Make a request."""
-        protocol = yield from _get_protocol()
-
         if len(api_commands) == 1:
             result = yield from _execute(protocol, api_commands[0])
             return result
@@ -106,7 +106,7 @@ def api_factory(host, security_code):
         return command_results
 
     @asyncio.coroutine
-    def _observe(protocol, api_command):
+    def _observe(api_command):
         """Observe an endpoint."""
         duration = api_command.observe_duration
         url = api_command.url(host)

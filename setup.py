@@ -5,11 +5,11 @@ DOWNLOAD_URL = \
     'https://github.com/ggravlingen/pytradfri/archive/{}.zip'.format(VERSION)
 
 EXTRAS_REQUIRE = {
-    'async': ['async_timeout', 'aiocoap >= 0.3']
+    'async': ['aiocoap >= 0.3']
 }
 
 DEP_LINKS = [
-    "http://github.com/mtai/python-gearman/tarball/tinydtls#egg=aiocoap-0.3"
+    "http://github.com/chrysn/aiocoap/tarball/tinydtls#egg=aiocoap-0.3"
 ]
 
 PACKAGES = find_packages(exclude=['tests', 'tests.*'])
