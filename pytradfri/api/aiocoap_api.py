@@ -48,10 +48,13 @@ def api_factory(host, security_code):
 
     PatchedDTLSSecurityStore.SECRET_PSK = security_code
 
-    protocol = yield from Context.create_client_context()
-    for endpoint in protocol.transport_endpoints:
-        if type(endpoint) == TransportEndpointTinyDTLS:
-            pass
+    @asyncio.coroutine
+    def _get_protocol():
+        protocol = yield from Context.create_client_context()
+        for endpoint in protocol.transport_endpoints:
+            if type(endpoint) == TransportEndpointTinyDTLS:
+                pass
+        return protocol
 
     @asyncio.coroutine
     def _execute(api_command):
@@ -81,6 +84,7 @@ def api_factory(host, security_code):
         msg = Message(code=api_method, uri=url, **kwargs)
 
         try:
+            protocol = yield from _get_protocol()
             res = yield from protocol.request(msg).response
         except RequestTimedOut:
             raise RequestTimeout('Request timed out.')
@@ -113,6 +117,7 @@ def api_factory(host, security_code):
 
         msg = Message(code=Code.GET, uri=url, observe=duration)
 
+        protocol = yield from _get_protocol()
         pr = protocol.request(msg)
 
         # Note that this is necessary to start observing

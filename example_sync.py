@@ -56,7 +56,7 @@ def run():
     print(lights)
 
     # Lights can be accessed by its index, so lights[1] is the second light
-    light = lights[3]
+    light = lights[0]
 
     observe(api, light)
 
