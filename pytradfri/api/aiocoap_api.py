@@ -2,7 +2,6 @@
 import asyncio
 import json
 import logging
-import sys
 
 import aiocoap
 from aiocoap import Message, Context
