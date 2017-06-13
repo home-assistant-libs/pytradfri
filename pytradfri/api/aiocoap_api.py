@@ -38,8 +38,10 @@ aiocoap.transports.tinydtls.DTLSClientConnection.datagram_received = \
 
 
 @asyncio.coroutine
-def api_factory(host, security_code, loop=asyncio.get_event_loop()):
+def api_factory(host, security_code, loop=None):
     """Generate a request method."""
+    if loop is None:
+        loop = asyncio.get_event_loop()
 
     security_code = security_code.encode('utf-8')
 
