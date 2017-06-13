@@ -15,6 +15,8 @@ import asyncio
 import logging
 import sys
 
+sys.path.insert(0, '/usr/src/build/tinydtls/cython')  # noqa
+
 from pytradfri import Gateway
 from pytradfri.api.aiocoap_api import api_factory
 

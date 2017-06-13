@@ -4,13 +4,10 @@ import json
 import logging
 import sys
 
-sys.path.insert(0, '/usr/src/build/tinydtls/cython')  # noqa
-
 import aiocoap
 from aiocoap import Message, Context
 from aiocoap.error import RequestTimedOut
 from aiocoap.numbers.codes import Code
-from aiocoap.transports.tinydtls import TransportEndpointTinyDTLS
 
 from ..error import ClientError, ServerError, RequestTimeout
 from ..command import Command
@@ -41,7 +38,7 @@ aiocoap.transports.tinydtls.DTLSClientConnection.datagram_received = \
 
 
 @asyncio.coroutine
-def api_factory(host, security_code):
+def api_factory(host, security_code, loop=asyncio.get_event_loop()):
     """Generate a request method."""
 
     security_code = security_code.encode('utf-8')
@@ -50,10 +47,8 @@ def api_factory(host, security_code):
 
     @asyncio.coroutine
     def _get_protocol():
-        protocol = yield from Context.create_client_context()
-        for endpoint in protocol.transport_endpoints:
-            if type(endpoint) == TransportEndpointTinyDTLS:
-                pass
+        """Get the protocol for the request."""
+        protocol = yield from Context.create_client_context(loop=loop)
         return protocol
 
     @asyncio.coroutine
@@ -100,11 +95,8 @@ def api_factory(host, security_code):
             result = yield from _execute(api_commands[0])
             return result
 
-        command_results = []
-
-        for api_command in api_commands:
-            result = yield from _execute(api_command)
-            command_results.append(result)
+        commands = (_execute(api_command) for api_command in api_commands)
+        command_results = yield from asyncio.gather(*commands, loop=loop)
 
         return command_results
 

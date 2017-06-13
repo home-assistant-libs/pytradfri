@@ -3,6 +3,7 @@ import json
 import logging
 import subprocess
 from time import time
+from functools import wraps
 
 from ..command import Command
 from ..error import RequestError, RequestTimeout, ClientError, ServerError
@@ -156,3 +157,18 @@ def _process_output(output, parse_json=True):
         return output
 
     return json.loads(output)
+
+
+def retry_timeout(api, retries=3):
+    """Retry API call when a timeout occurs."""
+    @wraps(api)
+    def retry_api(*args, **kwargs):
+        """Retrying API."""
+        for i in range(1, retries + 1):
+            try:
+                return api(*args, **kwargs)
+            except RequestTimeout:
+                if i == retries:
+                    raise
+
+    return retry_api
