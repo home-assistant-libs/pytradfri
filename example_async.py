@@ -34,22 +34,6 @@ except ImportError:
 
 
 @asyncio.coroutine
-def observe(api, device):
-    def callback(updated_device):
-        light = updated_device.light_control.lights[0]
-        print("Received message for: %s" % light)
-
-    def err_callback(err):
-        print(err)
-
-    observe_command = device.observe(callback, err_callback, duration=120)
-    task = api(observe_command)
-    ensure_future(task)
-    print('Sleeping to start observation task')
-    yield from asyncio.sleep(1)
-
-
-@asyncio.coroutine
 def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
@@ -72,16 +56,28 @@ def run():
     # Lights can be accessed by its index, so lights[1] is the second light
     light = lights[0]
 
-    yield from observe(api, light)
+    def observe_callback(updated_device):
+        light = updated_device.light_control.lights[0]
+        print("Received message for: %s" % light)
+
+    def observe_err_callback(err):
+        print('observe error:', err)
+
+    observe_command = light.observe(observe_callback, observe_err_callback,
+                                    duration=120)
+    # Start observation as a second task on the loop.
+    observe_future = ensure_future(api(observe_command))
+    # Yield to allow observing to start.
+    yield from asyncio.sleep(0)
 
     # Example 1: checks state of the light 2 (true=on)
-    print(light.light_control.lights[0].state)
+    print("Is on:", light.light_control.lights[0].state)
 
     # Example 2: get dimmer level of light 2
-    print(light.light_control.lights[0].dimmer)
+    print("Dimmer:", light.light_control.lights[0].dimmer)
 
     # Example 3: What is the name of light 2
-    print(light.name)
+    print("Name:", light.name)
 
     # Example 4: Set the light level of light 2
     dim_command = light.light_control.set_dimmer(255)
@@ -101,10 +97,10 @@ def run():
             .set_dimmer(30)
         yield from api(dim_command_2)
 
-    print("Sleeping for 2 min to receive the rest of the observation events")
+    print("Waiting for observation to end (2 mins)")
     print("Try altering the light (%s) in the app, and watch the events!" %
           light.name)
-    yield from asyncio.sleep(120)
+    yield from observe_future
 
 
 asyncio.get_event_loop().run_until_complete(run())
