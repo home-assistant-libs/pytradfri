@@ -6,6 +6,7 @@ import sys
 from .const import *  # noqa
 from .coap_cli import api_factory
 from .gateway import Gateway
+from .command import Command
 
 
 if __name__ == '__main__':
@@ -16,18 +17,18 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     api = api_factory(sys.argv[1], sys.argv[2])
-    gateway = Gateway(api)
-    devices = gateway.get_devices()
+    gateway = Gateway()
+    devices = api(gateway.get_devices())
     lights = [dev for dev in devices if dev.has_light_control]
     light = lights[0]
-    groups = gateway.get_groups()
+    groups = api(gateway.get_groups())
     group = groups[0]
-    moods = gateway.get_moods()
+    moods = api(gateway.get_moods())
     mood = moods[0]
-    tasks = gateway.get_smart_tasks()
+    tasks = api(gateway.get_smart_tasks())
 
     def dump_all():
-        endpoints = gateway.get_endpoints()
+        endpoints = api(gateway.get_endpoints())
 
         for endpoint in endpoints:
             parts = endpoint[1:].split('/')
@@ -35,12 +36,12 @@ if __name__ == '__main__':
             if not all(part.isdigit() for part in parts):
                 continue
 
-            pprint(api('get', parts))
+            pprint(api(Command('get', parts)))
             print()
             print()
 
     def dump_devices():
-        pprint([d.raw for d in gateway.get_devices()])
+        pprint([d.raw for d in api(gateway.get_devices())])
 
     print()
     print("Example commands:")

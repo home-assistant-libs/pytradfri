@@ -19,18 +19,12 @@ Table of contents:
 5. [Acknowledgements](#5-acknowledgements)
 
 ## 1. Installation
-In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap) as per the following instructions (you might have to use sudo for some commands to work):
+In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap)(sync), or [tinydtls](https://git.fslab.de/jkonra2m/tinydtls) and [aiocoap](https://github.com/chrysn/aiocoap) depending on which functionality you're interested in, as per the following instructions (you might have to use sudo for some commands to work).
 
-```shell
-$ apt-get install libtool
+For synchronous functionality please install libcoap using [this script.](script/install-coap-client.sh).
 
-$ git clone --depth 1 --recursive -b dtls https://github.com/home-assistant/libcoap.git
-$ cd libcoap
-$ ./autogen.sh
-$ ./configure --disable-documentation --disable-shared --without-debug CFLAGS="-D COAP_DEBUG_FD=stderr"
-$ make
-$ make install
-```
+For asynchronous functionality please install tinydtls and the tinydtls branch for aiocoap using [this script.](script/install-aiocoap.sh).
+
 
 ## 2. Stand-alone use (command-line interface)
 If you want to test this library stand-alone in a command-line interface:
@@ -53,7 +47,7 @@ lights
 Set brightnes of item 1 to 50 in lights list:
 
 ```python
-lights[1].light_control.set_dimmer(50)
+api(lights[1].light_control.set_dimmer(50))
 ```
 
 Observe a light for changes:
@@ -62,17 +56,17 @@ Observe a light for changes:
 def change_listener(device):
   print(device.name + " is now " + str(device.light_control.lights[0].state))
 
-lights[0].observe(change_listener)
+api(lights[0].observe(change_listener))
 ```
 
 ## 3. Implement in your own Python platform
-Please see the file, example.py.
+Please see the files, example_sync.py, or example_async.py.
 
 ## 4. Docker support
 
-There is a Docker script available to bootstrap a dev environment. Run `./script/dev_docker` and you will build and launch a container that is ready to go. After launching, follow the above instructions to test the library stand-alone.
+There is a Docker script available to bootstrap a dev environment. Run `./script/dev_docker` and you will build and launch a container that is ready to go for both sync and async. After launching, follow the above instructions to test the library stand-alone.
 
 ## 5. Acknowledgements
 This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/).
 
-A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this library.
+A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this library, further work was done by Lewis Juggins ([@lwis](https://github.com/lwis)) to take the library to 2.0 with support for asyncio.

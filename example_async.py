@@ -15,6 +15,8 @@ import asyncio
 import logging
 import sys
 
+# It is necessary to add tinydtls to the path for aiocoap to resolve the
+# required resources.
 sys.path.insert(0, '/usr/src/build/tinydtls/cython')  # noqa
 
 from pytradfri import Gateway

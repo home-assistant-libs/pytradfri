@@ -2,7 +2,7 @@
 git clone --depth 1 https://git.fslab.de/jkonra2m/tinydtls
 cd tinydtls
 autoreconf
-./configure --with-ecc
+./configure --with-ecc --disable-documentation --disable-shared --without-debug
 make
 cd cython
 pip3 install cython
