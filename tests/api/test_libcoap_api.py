@@ -1,7 +1,8 @@
 """Test API utilities."""
 import pytest
 
-from pytradfri import retry_timeout, RequestTimeout
+from pytradfri import RequestTimeout
+from pytradfri.api.libcoap_api import retry_timeout
 
 
 def test_retry_timeout_passes_args():

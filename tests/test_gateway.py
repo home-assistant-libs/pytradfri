@@ -1,12 +1,10 @@
-from pytradfri.const import ROOT_DEVICES, ATTR_NAME
+from pytradfri.const import ROOT_DEVICES
 from pytradfri.gateway import Gateway
 
 
-def test_get_device(mock_api):
-    mock_api.mock_request('get', [ROOT_DEVICES, 123], {
-        ATTR_NAME: 'Test name'
-    })
-    gateway = Gateway(mock_api)
-    dev = gateway.get_device(123)
+def test_get_device():
+    gateway = Gateway()
+    command = gateway.get_device(123)
 
-    assert dev.name == 'Test name'
+    assert command.method == 'get'
+    assert command.path == [ROOT_DEVICES, 123]

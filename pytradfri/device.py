@@ -1,6 +1,7 @@
 """Classes to interact with devices."""
 from datetime import datetime
 
+from .command import Command
 from .const import (
     ROOT_DEVICES,
     ATTR_APPLICATION_TYPE,
@@ -142,7 +143,7 @@ class LightControl:
 
     def set_state(self, state, *, index=0):
         """Set state of a light."""
-        self.set_values({
+        return self.set_values({
             ATTR_LIGHT_STATE: int(state)
         }, index=index)
 
@@ -158,27 +159,31 @@ class LightControl:
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
 
-        self.set_values(values, index=index)
+        return self.set_values(values, index=index)
 
     def set_hex_color(self, color, *, index=0):
         """Set xy color of the light."""
-        self.set_values({
+        return self.set_values({
             ATTR_LIGHT_COLOR: color,
         }, index=index)
 
     def set_xy_color(self, color_x, color_y, *, index=0):
         """Set xy color of the light."""
-        self.set_values({
+        return self.set_values({
             ATTR_LIGHT_COLOR_X: color_x,
             ATTR_LIGHT_COLOR_Y: color_y
         }, index=index)
 
     def set_values(self, values, *, index=0):
-        """Set values on light control."""
+        """
+        Set values on light control.
+
+        Returns a Command.
+        """
         assert len(self.raw) == 1, \
             'Only devices with 1 light supported'
 
-        self._device.api('put', self._device.path, {
+        return Command('put', self._device.path, {
             ATTR_LIGHT_CONTROL: [
                 values
             ]
@@ -223,4 +228,10 @@ class Light:
 
     def __repr__(self):
         state = "on" if self.state else "off"
-        return "<Light #{} - {}>".format(self.index, state)
+        return "<Light #{} - " \
+               "state: {}, " \
+               "dimmer: {}, "\
+               "hex_color: {}, " \
+               "xy_color: {}" \
+               ">".format(self.index, state, self.dimmer, self.hex_color,
+                          self.xy_color)

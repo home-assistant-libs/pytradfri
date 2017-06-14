@@ -11,6 +11,8 @@ SmartTask # return top level info
 
 from datetime import (datetime as dt)
 import datetime
+
+from .command import Command
 from .const import (
     ATTR_ID,
     ATTR_LIGHT_DIMMER,
@@ -88,7 +90,7 @@ class SmartTask(ApiResource):
 
     def __init__(self, gateway, raw):
         """Initialize the class."""
-        super().__init__(gateway.api, raw)
+        super().__init__(raw)
         self._gateway = gateway
 
     @property
@@ -168,14 +170,13 @@ class SmartTask(ApiResource):
         return TaskControl(
                         self,
                         self.state,
-                        self.api,
                         self.path,
                         self._gateway)
 
     @property
     def start_action(self):
         """Return start action object."""
-        return StartAction(self, self.api, self.path)
+        return StartAction(self, self.path)
 
     def __repr__(self):
         """Return a readable name for smart task."""
@@ -187,11 +188,10 @@ class SmartTask(ApiResource):
 class TaskControl:
     """Class to control the tasks."""
 
-    def __init__(self, task, state, api, path, gateway):
+    def __init__(self, task, state, path, gateway):
         """Initialize TaskControl."""
         self._task = task
         self.state = state
-        self.api = api
         self.path = path
         self._gateway = gateway
 
@@ -202,7 +202,6 @@ class TaskControl:
             self._task,
             i,
             self.state,
-            self.api,
             self.path,
             self.raw) for i in range(len(self.raw))]
 
@@ -225,7 +224,7 @@ class TaskControl:
                     ATTR_SMART_TASK_TRIGGER_TIME_START_MIN: newtime.minute
                 }]
             }
-        self._task.set_values(command)
+        return self._task.set_values(command)
 
     @property
     def raw(self):
@@ -236,10 +235,9 @@ class TaskControl:
 class StartAction:
     """Class to control the start action-node."""
 
-    def __init__(self, start_action, api, path):
+    def __init__(self, start_action, path):
         """Initialize StartAction class."""
         self.start_action = start_action
-        self.api = api
         self.path = path
 
     @property
@@ -254,7 +252,6 @@ class StartAction:
             self.start_action,
             i,
             self.state,
-            self.api,
             self.path,
             self.raw) for i in range(
                 len(self.raw[ROOT_START_ACTION]))]
@@ -268,12 +265,11 @@ class StartAction:
 class StartActionItem:
     """Class to show settings for a task."""
 
-    def __init__(self, task, index, state, api, path, raw):
+    def __init__(self, task, index, state, path, raw):
         """Initialize TaskInfo."""
         self.task = task
         self.index = index
         self.state = state
-        self.api = api
         self.path = path
         self._raw = raw
 
@@ -300,7 +296,6 @@ class StartActionItem:
             self,
             self.raw,
             self.state,
-            self.api,
             self.path,
             self.devices_dict)
 
@@ -331,12 +326,11 @@ class StartActionItem:
 class StartActionItemController:
     """Class to edit settings for a task."""
 
-    def __init__(self, item, raw, state, api, path,  devices_dict):
+    def __init__(self, item, raw, state, path, devices_dict):
         """Initialize TaskControl."""
         self._item = item
         self.raw = raw
         self.state = state
-        self.api = api
         self.path = path
         self.devices_dict = devices_dict
 
@@ -352,7 +346,7 @@ class StartActionItemController:
                     }, self.devices_dict]
                 }
             }
-        self.set_values(command)
+        return self.set_values(command)
 
     def set_transition_time(self, transition_time):
         """Set time (mins) for light transition."""
@@ -366,8 +360,12 @@ class StartActionItemController:
                     }, self.devices_dict]
                 }
             }
-        self.set_values(command)
+        return self.set_values(command)
 
     def set_values(self, command):
-        """Set values on task control."""
-        self._item.api('put', self._item.path, command)
+        """
+        Set values on task control.
+
+        Returns a Command.
+        """
+        return Command('put', self._item.path, command)

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from .command import Command
 from .const import (
     ATTR_NAME,
     ATTR_CREATED_AT,
@@ -10,9 +11,8 @@ from .const import (
 class ApiResource:
     """Base object for resources returned from the gateway."""
 
-    def __init__(self, api, raw):
+    def __init__(self, raw):
         """Initialize base object."""
-        self.api = api
         self.raw = raw
 
     @property
@@ -34,25 +34,42 @@ class ApiResource:
         """Path to resource."""
         raise NotImplemented('Path property needs to be implemented')
 
-    def observe(self, callback, duration=60):
+    def observe(self, callback, err_callback, duration=60):
         """Observe resource and call callback when updated."""
         def observe_callback(value):
-            """Called when end point is updated."""
+            """
+            Called when end point is updated.
+
+            Returns a Command.
+            """
             self.raw = value
             callback(self)
 
-        self.api.observe(self.path, observe_callback, duration)
+        return Command('get', self.path, process_result=observe_callback,
+                       err_callback=err_callback,
+                       observe=True,
+                       observe_duration=duration)
 
     def set_name(self, name):
         """Set group name."""
-        self.set_values({
+        return self.set_values({
             ATTR_NAME: name
         })
 
     def set_values(self, values):
-        """Helper to set values for group."""
-        self.api('put', self.path, values)
+        """
+        Helper to set values for group.
+
+        Returns a Command.
+        """
+        return Command('put', self.path, values)
 
     def update(self):
-        """Update the group."""
-        self.raw = self.api('get', self.path)
+        """
+        Update the group.
+
+        Returns a Command.
+        """
+        def process_result(result):
+            self.raw = result
+        return Command('get', self.path, process_result=process_result)

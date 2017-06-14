@@ -3,11 +3,12 @@ import json
 import logging
 import subprocess
 from time import time
+from functools import wraps
 
-from .error import RequestError, ClientError, ServerError, RequestTimeout
+from ..command import Command
+from ..error import RequestError, RequestTimeout, ClientError, ServerError
 
 _LOGGER = logging.getLogger(__name__)
-
 
 CLIENT_ERROR_PREFIX = '4.'
 SERVER_ERROR_PREFIX = '5.'
@@ -16,7 +17,8 @@ SERVER_ERROR_PREFIX = '5.'
 def api_factory(host, security_code):
     """Generate a request method."""
     def base_command(method):
-        """Return base commmand."""
+
+        """Return base command."""
         return [
             'coap-client',
             '-k',
@@ -27,13 +29,20 @@ def api_factory(host, security_code):
             method
         ]
 
-    def url(path):
-        """Generate url for coap client."""
-        path = '/'.join(str(v) for v in path)
-        return 'coaps://{}:5684/{}'.format(host, path)
+    def _execute(api_command):
+        """Execute the command."""
 
-    def request(method, path, data=None, *, parse_json=True, timeout=10):
-        """Make a request."""
+        if api_command.observe:
+            _observe(api_command)
+            return
+
+        method = api_command.method
+        path = api_command.path
+        data = api_command.data
+        parse_json = api_command.parse_json
+        timeout = api_command.timeout
+        url = api_command.url(host)
+
         command = base_command(method)
 
         kwargs = {
@@ -50,7 +59,7 @@ def api_factory(host, security_code):
         else:
             _LOGGER.debug('Executing %s %s %s', host, method, path)
 
-        command.append(url(path))
+        command.append(url)
 
         try:
             return_value = subprocess.check_output(command, **kwargs)
@@ -60,11 +69,31 @@ def api_factory(host, security_code):
             raise RequestError(
                 'Error executing request: {}'.format(err)) from None
 
-        return _process_output(return_value, parse_json)
+        api_command.result = _process_output(return_value, parse_json)
+        return api_command.result
 
-    def observe(path, callback, duration):
+    def request(*api_commands):
+        """Make a request."""
+        if len(api_commands) == 1:
+            return _execute(api_commands[0])
+
+        command_results = []
+
+        for api_command in api_commands:
+            result = _execute(api_command)
+            command_results.append(result)
+
+        return command_results
+
+    def _observe(api_command):
         """Observe an endpoint."""
-        command = base_command('get') + ['-s', str(duration), url(path)]
+        path = api_command.path
+        duration = api_command.observe_duration
+        url = api_command.url(host)
+        err_callback = api_command.err_callback
+
+        command = base_command('get') + ['-s', str(duration), url]
+
         kwargs = {
             'stdout': subprocess.PIPE,
             'stderr': subprocess.DEVNULL,
@@ -84,6 +113,7 @@ def api_factory(host, security_code):
             if data == '\n':
                 _LOGGER.debug('Observing stopped for %s after %.1fs',
                               path, time() - start)
+                err_callback(RequestError("Observing stopped."))
                 break
 
             if data == '{':
@@ -94,14 +124,11 @@ def api_factory(host, security_code):
             output += data
 
             if open_obj == 0:
-                result = _process_output(output)
-                callback(result)
+                api_command.result = _process_output(output)
                 output = ''
 
-    request.observe = observe
-
     # This will cause a RequestError to be raised if credentials invalid
-    request('get', ['status'])
+    request(Command('get', ['status']))
 
     return request
 
@@ -130,3 +157,18 @@ def _process_output(output, parse_json=True):
         return output
 
     return json.loads(output)
+
+
+def retry_timeout(api, retries=3):
+    """Retry API call when a timeout occurs."""
+    @wraps(api)
+    def retry_api(*args, **kwargs):
+        """Retrying API."""
+        for i in range(1, retries + 1):
+            try:
+                return api(*args, **kwargs)
+            except RequestTimeout:
+                if i == retries:
+                    raise
+
+    return retry_api
