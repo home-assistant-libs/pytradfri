@@ -7,6 +7,7 @@ import aiocoap
 from aiocoap import Message, Context
 from aiocoap.error import RequestTimedOut
 from aiocoap.numbers.codes import Code
+from aiocoap.transports import tinydtls
 
 from ..error import ClientError, ServerError, RequestTimeout
 from ..command import Command
@@ -25,14 +26,14 @@ class PatchedDTLSSecurityStore:
         return b"Client_identity", PatchedDTLSSecurityStore.SECRET_PSK
 
 
-aiocoap.transports.tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
+tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 
 
 def _patched_datagram_received(self, data, addr):
     self._dtls_socket.handleMessage(self._connection, data, 0)
 
 
-aiocoap.transports.tinydtls.DTLSClientConnection.datagram_received = \
+tinydtls.DTLSClientConnection.datagram_received = \
     _patched_datagram_received
 
 
