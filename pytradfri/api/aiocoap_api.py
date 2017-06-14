@@ -98,7 +98,10 @@ def api_factory(host, security_code, loop=None):
             return result
 
         commands = (_execute(api_command) for api_command in api_commands)
-        command_results = yield from asyncio.gather(*commands, loop=loop)
+
+        command_results = []
+        for command in commands:
+            command_results.append((yield from command))
 
         return command_results
 
