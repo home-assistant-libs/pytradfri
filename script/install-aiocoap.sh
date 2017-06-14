@@ -2,13 +2,11 @@
 git clone --depth 1 https://git.fslab.de/jkonra2m/tinydtls
 cd tinydtls
 autoreconf
-./configure --with-ecc --disable-documentation --disable-shared --without-debug
-make
+./configure --with-ecc --without-debug
 cd cython
-pip3 install cython
-python3 setup.py build_ext --inplace
+python3 setup.py install
 
 cd ../..
 git clone --depth 1 -b tinydtls https://github.com/chrysn/aiocoap/
 cd aiocoap
-python3 setup.py develop
+python3 -m pip install .
