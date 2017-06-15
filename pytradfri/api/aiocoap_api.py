@@ -61,7 +61,7 @@ def api_factory(host, security_code, loop=None):
         nonlocal _protocol
         protocol = yield from _get_protocol()
         # Let any observers know the protocol has been shutdown.
-        yield from _get_protocol().shutdown()
+        yield from protocol.shutdown()
         _protocol = None
 
     @asyncio.coroutine
