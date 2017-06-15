@@ -61,12 +61,13 @@ def run():
     def observe_err_callback(err):
         print('observe error:', err)
 
-    observe_command = light.observe(observe_callback, observe_err_callback,
-                                    duration=120)
-    # Start observation as a second task on the loop.
-    observe_future = ensure_future(api(observe_command))
-    # Yield to allow observing to start.
-    yield from asyncio.sleep(0)
+    for light in lights:
+        observe_command = light.observe(observe_callback, observe_err_callback,
+                                        duration=120)
+        # Start observation as a second task on the loop.
+        ensure_future(api(observe_command))
+        # Yield to allow observing to start.
+        yield from asyncio.sleep(0)
 
     # Example 1: checks state of the light 2 (true=on)
     print("Is on:", light.light_control.lights[0].state)
@@ -96,9 +97,8 @@ def run():
         yield from api(dim_command_2)
 
     print("Waiting for observation to end (2 mins)")
-    print("Try altering the light (%s) in the app, and watch the events!" %
-          light.name)
-    yield from observe_future
+    print("Try altering any light in the app, and watch the events!")
+    yield from asyncio.sleep(120)
 
 
 asyncio.get_event_loop().run_until_complete(run())
