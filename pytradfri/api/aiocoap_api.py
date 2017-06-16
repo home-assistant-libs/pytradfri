@@ -14,8 +14,6 @@ from ..command import Command
 
 _LOGGER = logging.getLogger(__name__)
 
-aiocoap.numbers.constants.MAX_RETRANSMIT = 10
-
 
 class PatchedDTLSSecurityStore:
     """Patched DTLS store in lieu of impl."""
@@ -45,7 +43,8 @@ def api_factory(host, security_code, loop=None):
 
     PatchedDTLSSecurityStore.SECRET_PSK = security_code.encode('utf-8')
 
-    _protocol = None
+    _observations_err_callbacks = []
+    _protocol = yield from Context.create_client_context(loop=loop)
 
     @asyncio.coroutine
     def _get_protocol():
@@ -56,13 +55,18 @@ def api_factory(host, security_code, loop=None):
         return _protocol
 
     @asyncio.coroutine
-    def _reset_protocol():
+    def _reset_protocol(exc):
         """Reset the protocol if an error occurs."""
-        nonlocal _protocol
         protocol = yield from _get_protocol()
-        # Let any observers know the protocol has been shutdown.
+        # Be responsible and clean up.
         yield from protocol.shutdown()
+        nonlocal _protocol
         _protocol = None
+        # Let any observers know the protocol has been shutdown.
+        nonlocal _observations_err_callbacks
+        for ob_error in _observations_err_callbacks:
+            ob_error(exc)
+        _observations.clear()
 
     @asyncio.coroutine
     def _get_response(msg):
@@ -75,10 +79,10 @@ def api_factory(host, security_code, loop=None):
         except ConstructionRenderableError as e:
             raise ClientError("There was an error with the request.", e)
         except RequestTimedOut as e:
-            yield from _reset_protocol()
+            yield from _reset_protocol(e)
             raise RequestTimeout('Request timed out.', e)
         except Error as e:
-            yield from _reset_protocol()
+            yield from _reset_protocol(e)
             raise ServerError("There was an error with the request.", e)
 
     @asyncio.coroutine
@@ -149,6 +153,8 @@ def api_factory(host, security_code, loop=None):
         ob = pr.observation
         ob.register_callback(success_callback)
         ob.register_errback(error_callback)
+        nonlocal _observations_err_callbacks
+        _observations_err_callbacks.append(ob.error)
 
     # This will cause a RequestError to be raised if credentials invalid
     yield from request(Command('get', ['status']))

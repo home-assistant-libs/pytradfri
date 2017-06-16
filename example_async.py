@@ -69,20 +69,20 @@ def run():
         # Yield to allow observing to start.
         yield from asyncio.sleep(0)
 
-    # Example 1: checks state of the light 2 (true=on)
+    # Example 1: checks state of the light 0 (true=on)
     print("Is on:", light.light_control.lights[0].state)
 
-    # Example 2: get dimmer level of light 2
+    # Example 2: get dimmer level of light 0
     print("Dimmer:", light.light_control.lights[0].dimmer)
 
-    # Example 3: What is the name of light 2
+    # Example 3: What is the name of light 0
     print("Name:", light.name)
 
-    # Example 4: Set the light level of light 2
+    # Example 4: Set the light level of light 0
     dim_command = light.light_control.set_dimmer(255)
     yield from api(dim_command)
 
-    # Example 5: Change color of light 2
+    # Example 5: Change color of light 0
     # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
     color_command = light.light_control.set_hex_color('efd275')
     yield from api(color_command)
