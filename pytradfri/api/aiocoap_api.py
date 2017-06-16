@@ -3,7 +3,6 @@ import asyncio
 import json
 import logging
 
-import aiocoap
 from aiocoap import Message, Context
 from aiocoap.error import RequestTimedOut, Error, ConstructionRenderableError
 from aiocoap.numbers.codes import Code
@@ -66,7 +65,7 @@ def api_factory(host, security_code, loop=None):
         nonlocal _observations_err_callbacks
         for ob_error in _observations_err_callbacks:
             ob_error(exc)
-        _observations.clear()
+        _observations_err_callbacks.clear()
 
     @asyncio.coroutine
     def _get_response(msg):
