@@ -62,6 +62,7 @@ def api_factory(host, security_code, loop=None):
         nonlocal _protocol
         _protocol = None
         # Let any observers know the protocol has been shutdown.
+        nonlocal _observations_err_callbacks
         for ob_error in _observations_err_callbacks:
             ob_error(exc)
         _observations_err_callbacks.clear()
