@@ -58,6 +58,7 @@ def api_factory(host, security_code, loop=None):
         """Reset the protocol if an error occurs.
            This can be removed when chrysn/aiocoap#79 is closed."""
         # Be responsible and clean up.
+        protocol = yield from _get_protocol()
         yield from protocol.shutdown()
         nonlocal _protocol
         _protocol = None
