@@ -55,14 +55,13 @@ def api_factory(host, security_code, loop=None):
 
     @asyncio.coroutine
     def _reset_protocol(exc):
-        """Reset the protocol if an error occurs."""
-        protocol = yield from _get_protocol()
+        """Reset the protocol if an error occurs.
+           This can be removed when chrysn/aiocoap#79 is closed."""
         # Be responsible and clean up.
         yield from protocol.shutdown()
         nonlocal _protocol
         _protocol = None
         # Let any observers know the protocol has been shutdown.
-        nonlocal _observations_err_callbacks
         for ob_error in _observations_err_callbacks:
             ob_error(exc)
         _observations_err_callbacks.clear()
