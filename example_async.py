@@ -61,27 +61,28 @@ def run():
     def observe_err_callback(err):
         print('observe error:', err)
 
-    observe_command = light.observe(observe_callback, observe_err_callback,
-                                    duration=120)
-    # Start observation as a second task on the loop.
-    observe_future = ensure_future(api(observe_command))
-    # Yield to allow observing to start.
-    yield from asyncio.sleep(0)
+    for light in lights:
+        observe_command = light.observe(observe_callback, observe_err_callback,
+                                        duration=120)
+        # Start observation as a second task on the loop.
+        ensure_future(api(observe_command))
+        # Yield to allow observing to start.
+        yield from asyncio.sleep(0)
 
-    # Example 1: checks state of the light 2 (true=on)
+    # Example 1: checks state of the light 0 (true=on)
     print("Is on:", light.light_control.lights[0].state)
 
-    # Example 2: get dimmer level of light 2
+    # Example 2: get dimmer level of light 0
     print("Dimmer:", light.light_control.lights[0].dimmer)
 
-    # Example 3: What is the name of light 2
+    # Example 3: What is the name of light 0
     print("Name:", light.name)
 
-    # Example 4: Set the light level of light 2
+    # Example 4: Set the light level of light 0
     dim_command = light.light_control.set_dimmer(255)
     yield from api(dim_command)
 
-    # Example 5: Change color of light 2
+    # Example 5: Change color of light 0
     # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
     color_command = light.light_control.set_hex_color('efd275')
     yield from api(color_command)
@@ -96,9 +97,8 @@ def run():
         yield from api(dim_command_2)
 
     print("Waiting for observation to end (2 mins)")
-    print("Try altering the light (%s) in the app, and watch the events!" %
-          light.name)
-    yield from observe_future
+    print("Try altering any light in the app, and watch the events!")
+    yield from asyncio.sleep(120)
 
 
 asyncio.get_event_loop().run_until_complete(run())

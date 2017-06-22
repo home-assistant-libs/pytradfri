@@ -229,9 +229,10 @@ class Light:
     def __repr__(self):
         state = "on" if self.state else "off"
         return "<Light #{} - " \
+               "name: {}, " \
                "state: {}, " \
                "dimmer: {}, "\
                "hex_color: {}, " \
                "xy_color: {}" \
-               ">".format(self.index, state, self.dimmer, self.hex_color,
-                          self.xy_color)
+               ">".format(self.index, self.device.name, state, self.dimmer,
+                          self.hex_color, self.xy_color)
