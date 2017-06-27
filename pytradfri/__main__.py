@@ -4,7 +4,7 @@ from pprint import pprint
 import sys
 
 from .const import *  # noqa
-from .coap_cli import api_factory
+from .api.libcoap_api import api_factory
 from .gateway import Gateway
 from .command import Command
 
@@ -18,7 +18,8 @@ if __name__ == '__main__':
 
     api = api_factory(sys.argv[1], sys.argv[2])
     gateway = Gateway()
-    devices = api(gateway.get_devices())
+    devices_commands = api(gateway.get_devices())
+    devices = api(*devices_commands)
     lights = [dev for dev in devices if dev.has_light_control]
     light = lights[0]
     groups = api(gateway.get_groups())
@@ -41,7 +42,7 @@ if __name__ == '__main__':
             print()
 
     def dump_devices():
-        pprint([d.raw for d in api(gateway.get_devices())])
+        pprint([d.raw for d in devices])
 
     print()
     print("Example commands:")
