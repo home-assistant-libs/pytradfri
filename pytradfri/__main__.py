@@ -58,5 +58,3 @@ if __name__ == '__main__':
     print("> tasks")
     print("> dump_devices()")
     print("> dump_all()")
-    print("""NB: Some commands (marked with *) return a command object
-          these objects must be passed to 'api' to execute.""")
