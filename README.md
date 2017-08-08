@@ -19,7 +19,7 @@ Table of contents:
 5. [Acknowledgements](#5-acknowledgements)
 
 ## 1. Installation
-In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap)(sync), or [tinydtls](https://git.fslab.de/jkonra2m/tinydtls) and [aiocoap](https://github.com/chrysn/aiocoap) depending on which functionality you're interested in, as per the following instructions (you might have to use sudo for some commands to work).
+In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap)(sync), or cython3, [tinydtls](https://git.fslab.de/jkonra2m/tinydtls) and [aiocoap](https://github.com/chrysn/aiocoap) depending on which functionality you're interested in, as per the following instructions (you might have to use sudo for some commands to work).
 
 For synchronous functionality please install libcoap using [this script.](script/install-coap-client.sh).
 
