@@ -48,7 +48,6 @@ def api_factory(host, security_code):
         kwargs = {
             'stderr': subprocess.DEVNULL,
             'timeout': timeout,
-            'universal_newlines': True,
         }
 
         if data is not None:
@@ -62,7 +61,7 @@ def api_factory(host, security_code):
         command.append(url)
 
         try:
-            return_value = subprocess.check_output(command, **kwargs)
+            return_value = subprocess.check_output(command, **kwargs).decode('utf-8')
         except subprocess.TimeoutExpired:
             raise RequestTimeout() from None
         except subprocess.CalledProcessError as err:
