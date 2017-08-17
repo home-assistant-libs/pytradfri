@@ -16,6 +16,7 @@ from .const import (
     ATTR_LIGHT_COLOR,
     ATTR_TRANSITION_TIME
 )
+from .kelvin import dekelvinize
 from .resource import ApiResource
 
 
@@ -173,6 +174,9 @@ class LightControl:
             ATTR_LIGHT_COLOR_X: color_x,
             ATTR_LIGHT_COLOR_Y: color_y
         }, index=index)
+
+    def set_kelvin_color(self, kelvins, *, index=0):
+        return self.set_values(dekelvinize(kelvins))
 
     def set_values(self, values, *, index=0):
         """
