@@ -18,4 +18,5 @@ COPY ./script/install-aiocoap.sh install-aiocoap.sh
 RUN ./install-aiocoap.sh
 
 WORKDIR /usr/src/app
+ENV LANG=C.UTF-8
 CMD /bin/bash
