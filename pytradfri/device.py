@@ -16,7 +16,7 @@ from .const import (
     ATTR_LIGHT_COLOR,
     ATTR_TRANSITION_TIME
 )
-from .color import kelvin_to_xy, x_to_kelvin
+from .color import kelvin_to_xy, x_to_kelvin, can_x_to_kelvin
 from .resource import ApiResource
 
 
@@ -227,7 +227,8 @@ class Light:
 
     @property
     def kelvin_color(self):
-        return x_to_kelvin(self.raw.get(ATTR_LIGHT_COLOR_X))
+        if can_x_to_kelvin(self.raw.get(ATTR_LIGHT_COLOR_X)):
+            return x_to_kelvin(self.raw.get(ATTR_LIGHT_COLOR_X))
 
     @property
     def raw(self):
