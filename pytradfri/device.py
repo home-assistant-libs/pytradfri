@@ -176,7 +176,7 @@ class LightControl:
         }, index=index)
 
     def set_kelvin_color(self, kelvins, *, index=0):
-        return self.set_values(kelvin_to_xy(kelvins))
+        return self.set_values(kelvin_to_xy(kelvins), index=index)
 
     def set_values(self, values, *, index=0):
         """
