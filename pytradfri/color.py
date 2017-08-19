@@ -13,11 +13,11 @@ KNOWN_X = [v[X] for v in KNOWN_XY.values()]
 
 
 def can_kelvin_to_xy(kelvins):
-    return min(KNOWN_KELVIN) <= kelvins <= max(KNOWN_KELVIN)
+    return kelvins is not None and min(KNOWN_KELVIN) <= kelvins <= max(KNOWN_KELVIN)
 
 
 def can_x_to_kelvin(x):
-    return min(KNOWN_X) <= x <= max(KNOWN_X)
+    return x is not None and min(KNOWN_X) <= x <= max(KNOWN_X)
 
 
 def kelvin_to_xy(kelvins):
