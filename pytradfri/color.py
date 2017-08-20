@@ -12,21 +12,21 @@ KNOWN_KELVIN = KNOWN_XY.keys()
 KNOWN_X = [v[X] for v in KNOWN_XY.values()]
 
 
-def can_kelvin_to_xy(kelvins):
-    return kelvins is not None and min(KNOWN_KELVIN) <= kelvins <= max(KNOWN_KELVIN)
+def can_kelvin_to_xy(k):
+    return k is not None and min(KNOWN_KELVIN) <= k <= max(KNOWN_KELVIN)
 
 
 def can_x_to_kelvin(x):
     return x is not None and min(KNOWN_X) <= x <= max(KNOWN_X)
 
 
-def kelvin_to_xy(kelvins):
-    if kelvins in KNOWN_XY:
-        return KNOWN_XY[kelvins]
+def kelvin_to_xy(k):
+    if k in KNOWN_XY:
+        return KNOWN_XY[k]
     else:
-        lower_k = max([k for k in KNOWN_KELVIN if k < kelvins])
-        higher_k = min([k for k in KNOWN_KELVIN if k > kelvins])
-        offset = (kelvins - lower_k) / (higher_k - lower_k)
+        lower_k = max([kk for kk in KNOWN_KELVIN if kk < k])
+        higher_k = min([kk for kk in KNOWN_KELVIN if kk > k])
+        offset = (k - lower_k) / (higher_k - lower_k)
         lower = KNOWN_XY[lower_k]
         higher = KNOWN_XY[higher_k]
         return {
