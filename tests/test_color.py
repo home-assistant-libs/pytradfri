@@ -34,7 +34,6 @@ def test_unknown_coldish():
 
 
 def test_can_dekelvinize():
-    assert can_kelvin_to_xy(None) is False
     assert can_kelvin_to_xy(2000) is False
     assert can_kelvin_to_xy(2200) is True
     assert can_kelvin_to_xy(2400) is True
@@ -42,7 +41,6 @@ def test_can_dekelvinize():
     assert can_kelvin_to_xy(3000) is True
     assert can_kelvin_to_xy(4000) is True
     assert can_kelvin_to_xy(5000) is False
-    assert can_x_to_kelvin(None) is False
     assert can_x_to_kelvin(24000) is False
     assert can_x_to_kelvin(24930) is True
     assert can_x_to_kelvin(26000) is True
