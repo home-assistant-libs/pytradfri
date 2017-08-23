@@ -49,6 +49,11 @@ def x_to_kelvin(x):
     return int(offset * higher + (1 - offset) * lower)
 
 
+# Scaling to 65535 range and rounding
+def xy2tradfri(x, y):
+    return (int(x*65535+0.5), int(y*65535+0.5))
+
+
 def kelvin_to_xyY(T):
     # Sources: "Design of Advanced Color - Temperature Control System for HDTV Applications" [Lee, Cho, Kim]
     # and https://en.wikipedia.org/wiki/Planckian_locus#Approximation
@@ -69,7 +74,8 @@ def kelvin_to_xyY(T):
     elif T <= 25000:
         y = 3.081758*x**3 - 5.8733867*x**2 + 3.75112997*x - 0.37001483
 
-    return int(x*65535+0.5), int(y*65535+0.5)
+    x, y = xy2tradfri(x, y)
+    return { X: x, Y: y }
 
 
 def rgb_to_xyY(r, g, b):
@@ -85,6 +91,5 @@ def rgb_to_xyY(r, g, b):
     CIE_Z = 0.0193339*r + 0.1191920*g + 0.9503041*b
     CIE_sum = CIE_X + CIE_Y + CIE_Z
 
-    (x, y) = (0, 0) if CIE_sum == 0 else (CIE_X / CIE_sum * 65535, CIE_Y / CIE_sum * 65535)
-
+    (x, y) = (0, 0) if CIE_sum == 0 else xy2tradfri(CIE_X / CIE_sum, CIE_Y / CIE_sum)
     return { X: x, Y: y }
