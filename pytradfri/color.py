@@ -1,3 +1,4 @@
+import math
 from .const import (ATTR_LIGHT_COLOR_X as X, ATTR_LIGHT_COLOR_Y as Y)
 
 
@@ -46,3 +47,21 @@ def x_to_kelvin(x):
     higher = x_to_kelvin(higher_x)
     offset = (x - lower_x) / (higher_x - lower_x)
     return int(offset * higher + (1 - offset) * lower)
+
+
+def rgb_to_xyY(r, g, b):
+    # According to http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html
+    # and http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_xyY.html
+    companding = lambda x: x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4
+    prepare = lambda x: companding(max(min(x,255),0) / 255.0)
+    r, g, b = map(prepare, (r, g, b))
+
+    # sRGB D65 matrix from http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+    CIE_X = 0.4124564*r + 0.3575761*g + 0.1804375*b
+    CIE_Y = 0.2126729*r + 0.7151522*g + 0.0721750*b
+    CIE_Z = 0.0193339*r + 0.1191920*g + 0.9503041*b
+    CIE_sum = CIE_X + CIE_Y + CIE_Z
+
+    (x, y) = (0, 0) if CIE_sum == 0 else (CIE_X / CIE_sum * 65535, CIE_Y / CIE_sum * 65535)
+
+    return { X: x, Y: y }
