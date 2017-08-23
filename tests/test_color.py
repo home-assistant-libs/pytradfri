@@ -51,6 +51,7 @@ def test_can_dekelvinize():
     assert can_x_to_kelvin(33135) is True
     assert can_x_to_kelvin(34000) is False
 
+
 def test_kelvin_to_xyY():
     # kelvin_to_xyY approximates, so +-50 is sufficiently precise.
     # Values taken from Tradfri App, these only differ slightly from online

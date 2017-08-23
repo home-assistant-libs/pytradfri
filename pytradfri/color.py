@@ -1,4 +1,3 @@
-import math
 from .const import (ATTR_LIGHT_COLOR_X as X, ATTR_LIGHT_COLOR_Y as Y)
 
 
@@ -55,17 +54,21 @@ def xy2tradfri(x, y):
 
 
 def kelvin_to_xyY(T):
-    # Sources: "Design of Advanced Color - Temperature Control System for HDTV Applications" [Lee, Cho, Kim]
+    # Sources: "Design of Advanced Color - Temperature Control System
+    #           for HDTV Applications" [Lee, Cho, Kim]
     # and https://en.wikipedia.org/wiki/Planckian_locus#Approximation
     # and http://fcam.garage.maemo.org/apiDocs/_color_8cpp_source.html
     if not (1667 <= T <= 25000):
         return None, None
 
     if T <= 4000:
-        # One number differs on Wikipedia and the paper: 0.2343589 is 0.2343580 on Wikipedia... don't know why
-        x = -0.2661239*(10**9)/T**3 - 0.2343589*(10**6)/T**2 + 0.8776956*(10**3)/T + 0.17991
+        # One number differs on Wikipedia and the paper:
+        #     0.2343589 is 0.2343580 on Wikipedia... don't know why
+        x = -0.2661239*(10**9)/T**3 - 0.2343589*(10**6)/T**2 \
+            + 0.8776956*(10**3)/T + 0.17991
     elif T <= 25000:
-        x = -3.0258469*(10**9)/T**3 + 2.1070379*(10**6)/T**2 + 0.2226347*(10**3)/T + 0.24039
+        x = -3.0258469*(10**9)/T**3 + 2.1070379*(10**6)/T**2 \
+            + 0.2226347*(10**3)/T + 0.24039
 
     if T <= 2222:
         y = -1.1063814*x**3 - 1.3481102*x**2 + 2.18555832*x - 0.20219683
@@ -75,21 +78,26 @@ def kelvin_to_xyY(T):
         y = 3.081758*x**3 - 5.8733867*x**2 + 3.75112997*x - 0.37001483
 
     x, y = xy2tradfri(x, y)
-    return { X: x, Y: y }
+    return {X: x, Y: y}
 
 
 def rgb_to_xyY(r, g, b):
     # According to http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html
     # and http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_xyY.html
-    companding = lambda x: x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4
-    prepare = lambda x: companding(max(min(x,255),0) / 255.0)
+    def prepare(val):
+        val = max(min(val, 255), 0) / 255.0
+        if val <= 0.04045:
+            return val / 12.92
+        else:
+            return ((val + 0.055) / 1.055) ** 2.4
     r, g, b = map(prepare, (r, g, b))
 
-    # sRGB D65 matrix from http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+    # source: http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
     CIE_X = 0.4124564*r + 0.3575761*g + 0.1804375*b
     CIE_Y = 0.2126729*r + 0.7151522*g + 0.0721750*b
     CIE_Z = 0.0193339*r + 0.1191920*g + 0.9503041*b
     CIE_sum = CIE_X + CIE_Y + CIE_Z
 
-    (x, y) = (0, 0) if CIE_sum == 0 else xy2tradfri(CIE_X / CIE_sum, CIE_Y / CIE_sum)
-    return { X: x, Y: y }
+    (x, y) = (0, 0) if CIE_sum == 0 else \
+        xy2tradfri(CIE_X / CIE_sum, CIE_Y / CIE_sum)
+    return {X: x, Y: y}
