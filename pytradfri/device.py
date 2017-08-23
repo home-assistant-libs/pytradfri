@@ -227,8 +227,9 @@ class Light:
 
     @property
     def kelvin_color(self):
-        if can_x_to_kelvin(self.raw.get(ATTR_LIGHT_COLOR_X)):
-            return x_to_kelvin(self.raw.get(ATTR_LIGHT_COLOR_X))
+        current_x = self.raw.get(ATTR_LIGHT_COLOR_X)
+        if current_x is not None and can_x_to_kelvin(current_x):
+            return x_to_kelvin(current_x)
 
     @property
     def raw(self):
