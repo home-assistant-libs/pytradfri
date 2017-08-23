@@ -8,14 +8,14 @@ KNOWN_XY = {
 }
 KNOWN_KELVIN = KNOWN_XY.keys()
 KNOWN_X = [v[X] for v in KNOWN_XY.values()]
-MIN_KELWIN = min(KNOWN_KELVIN)
-MAX_KELWIN = max(KNOWN_KELVIN)
+MIN_KELVIN = min(KNOWN_KELVIN)
+MAX_KELVIN = max(KNOWN_KELVIN)
 MIN_X = min(KNOWN_X)
 MAX_X = max(KNOWN_X)
 
 
 def can_kelvin_to_xy(k):
-    return MIN_KELWIN <= k <= MAX_KELWIN
+    return MIN_KELVIN <= k <= MAX_KELVIN
 
 
 def can_x_to_kelvin(x):
