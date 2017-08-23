@@ -16,6 +16,7 @@ from .const import (
     ATTR_LIGHT_COLOR,
     ATTR_TRANSITION_TIME
 )
+from .color import kelvin_to_xy, x_to_kelvin, can_x_to_kelvin
 from .resource import ApiResource
 
 
@@ -174,6 +175,9 @@ class LightControl:
             ATTR_LIGHT_COLOR_Y: color_y
         }, index=index)
 
+    def set_kelvin_color(self, kelvins, *, index=0):
+        return self.set_values(kelvin_to_xy(kelvins), index=index)
+
     def set_values(self, values, *, index=0):
         """
         Set values on light control.
@@ -220,6 +224,12 @@ class Light:
     def xy_color(self):
         return (self.raw.get(ATTR_LIGHT_COLOR_X),
                 self.raw.get(ATTR_LIGHT_COLOR_Y))
+
+    @property
+    def kelvin_color(self):
+        current_x = self.raw.get(ATTR_LIGHT_COLOR_X)
+        if current_x is not None and can_x_to_kelvin(current_x):
+            return x_to_kelvin(current_x)
 
     @property
     def raw(self):
