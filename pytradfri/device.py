@@ -16,7 +16,7 @@ from .const import (
     ATTR_LIGHT_COLOR,
     ATTR_TRANSITION_TIME
 )
-from .color import kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY
+from .color import kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY, COLORS
 from .resource import ApiResource
 
 
@@ -177,6 +177,14 @@ class LightControl:
 
     def set_kelvin_color(self, kelvins, *, index=0):
         return self.set_values(kelvin_to_xyY(kelvins), index=index)
+
+    def set_predefined_color(self, colorname, *, index=0):
+        try:
+            color = COLORS[colorname.lower().replace(" ", "_")]
+        except:
+            pass
+        else:
+            return self.set_hex_color(color, index=index)
 
     def set_rgb_color(self, r, g, b, *, index=0):
         return self.set_values(rgb_to_xyY(r, g, b), index=index)
