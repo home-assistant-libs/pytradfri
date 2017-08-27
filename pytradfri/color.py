@@ -43,8 +43,9 @@ def can_kelvin_to_xy(k):
     return MIN_KELVIN <= k <= MAX_KELVIN
 
 
+# Only used locally to perform normalization of x, y values
 # Scaling to 65535 range and rounding
-def xy2tradfri(x, y):
+def normalize_xy(x, y):
     return (int(x*65535+0.5), int(y*65535+0.5))
 
 
@@ -81,7 +82,7 @@ def kelvin_to_xyY(T, white_spectrum_bulb=False):
     elif T <= 25000:
         y = 3.081758*x**3 - 5.8733867*x**2 + 3.75112997*x - 0.37001483
 
-    x, y = xy2tradfri(x, y)
+    x, y = normalize_xy(x, y)
     return {X: x, Y: y}
 
 
@@ -92,6 +93,30 @@ def xyY_to_kelvin(x, y):
     n = (x/65535-0.3320) / (y/65535-0.1858)
     kelvin = int((-449*n**3 + 3525*n**2 - 6823.3*n + 5520.33) + 0.5)
     return kelvin if MIN_KELVIN <= kelvin <= MAX_KELVIN else None
+
+
+def rgb2xyzA(r, g, b):
+    # Uses CIE standard illuminant A = 2856K
+    # src: http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+    # calculation https://gist.github.com/r41d/43e14df2ccaeca56d32796efd6584b48
+    X = 0.76103282*r + 0.29537849*g + 0.04208869*b
+    Y = 0.39240755*r + 0.59075697*g + 0.01683548*b
+    Z = 0.03567341*r + 0.0984595*g + 0.22166709*b
+    return X, Y, Z
+
+
+def rgb2xyzD65(r, g, b):
+    # Uses CIE standard illuminant D65 = 6504K
+    # src: http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+    X = 0.4124564 * r + 0.3575761 * g + 0.1804375 * b
+    Y = 0.2126729 * r + 0.7151522 * g + 0.0721750 * b
+    Z = 0.0193339 * r + 0.1191920 * g + 0.9503041 * b
+    return X, Y, Z
+
+
+def xyz2xyY(X, Y, Z):
+    total = X + Y + Z
+    return (0, 0) if total == 0 else normalize_xy(X / total, Y / total)
 
 
 def rgb_to_xyY(r, g, b):
@@ -105,12 +130,5 @@ def rgb_to_xyY(r, g, b):
             return ((val + 0.055) / 1.055) ** 2.4
     r, g, b = map(prepare, (r, g, b))
 
-    # source: http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
-    CIE_X = 0.4124564*r + 0.3575761*g + 0.1804375*b
-    CIE_Y = 0.2126729*r + 0.7151522*g + 0.0721750*b
-    CIE_Z = 0.0193339*r + 0.1191920*g + 0.9503041*b
-    CIE_sum = CIE_X + CIE_Y + CIE_Z
-
-    (x, y) = (0, 0) if CIE_sum == 0 else \
-        xy2tradfri(CIE_X / CIE_sum, CIE_Y / CIE_sum)
+    x, y = xyz2xyY(*rgb2xyzA(r, g, b))
     return {X: x, Y: y}
