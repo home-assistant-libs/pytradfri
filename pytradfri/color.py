@@ -1,8 +1,14 @@
 from .const import (ATTR_LIGHT_COLOR_X as X, ATTR_LIGHT_COLOR_Y as Y)
 
 
+# Kelvin range for which the conversion functions work
+# and that RGB bulbs can show
 MIN_KELVIN = 1667
 MAX_KELVIN = 25000
+
+# Kelvin range that white-spectrum bulbs can actually show
+MIN_KELVIN_WS = 2200
+MAX_KELVIN_WS = 4000
 
 
 def can_kelvin_to_xy(k):
@@ -14,13 +20,22 @@ def xy2tradfri(x, y):
     return (int(x*65535+0.5), int(y*65535+0.5))
 
 
-def kelvin_to_xyY(T):
+def kelvin_to_xyY(T, white_spectrum_bulb=False):
     # Sources: "Design of Advanced Color - Temperature Control System
     #           for HDTV Applications" [Lee, Cho, Kim]
     # and https://en.wikipedia.org/wiki/Planckian_locus#Approximation
     # and http://fcam.garage.maemo.org/apiDocs/_color_8cpp_source.html
-    if not (1667 <= T <= 25000):
-        return None
+
+    # Check for Kelvin range for which this function works
+    if not (MIN_KELVIN <= T <= MAX_KELVIN):
+        raise ValueError('Kelvin needs to be between {} and {}'.format(
+            MIN_KELVIN, MAX_KELVIN))
+
+    # Check for White-Spectrum kelvin range
+    if white_spectrum_bulb and not (MIN_KELVIN_WS <= T <= MAX_KELVIN_WS):
+        raise ValueError('Kelvin needs to be between {} and {} for '
+                         'white spectrum bulbs'.format(
+                          MIN_KELVIN_WS, MAX_KELVIN_WS))
 
     if T <= 4000:
         # One number differs on Wikipedia and the paper:
