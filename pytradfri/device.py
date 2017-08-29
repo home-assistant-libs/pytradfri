@@ -16,7 +16,8 @@ from .const import (
     ATTR_LIGHT_COLOR,
     ATTR_TRANSITION_TIME
 )
-from .color import kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY, COLORS
+from .color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY,\
+    COLORS
 from .resource import ApiResource
 
 
@@ -241,7 +242,10 @@ class Light:
         current_x = self.raw.get(ATTR_LIGHT_COLOR_X)
         current_y = self.raw.get(ATTR_LIGHT_COLOR_Y)
         if current_x is not None and current_y is not None:
-            return xyY_to_kelvin(current_x, current_y)
+            kelvin = xyY_to_kelvin(current_x, current_y)
+            # Only return a kelvin value if it is inside the range that the
+            # kelvin->xyY function supports
+            return kelvin if can_kelvin_to_xy(kelvin) else None
 
     @property
     def raw(self):

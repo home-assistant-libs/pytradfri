@@ -92,7 +92,7 @@ def xyY_to_kelvin(x, y):
     # Input range for x and y is 0-65535
     n = (x/65535-0.3320) / (y/65535-0.1858)
     kelvin = int((-449*n**3 + 3525*n**2 - 6823.3*n + 5520.33) + 0.5)
-    return kelvin if MIN_KELVIN <= kelvin <= MAX_KELVIN else None
+    return kelvin
 
 
 def rgb2xyzA(r, g, b):
