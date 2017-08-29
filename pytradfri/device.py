@@ -16,7 +16,8 @@ from .const import (
     ATTR_LIGHT_COLOR,
     ATTR_TRANSITION_TIME
 )
-from .color import kelvin_to_xy, x_to_kelvin, can_x_to_kelvin
+from .color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY,\
+    COLORS
 from .resource import ApiResource
 
 
@@ -176,7 +177,18 @@ class LightControl:
         }, index=index)
 
     def set_kelvin_color(self, kelvins, *, index=0):
-        return self.set_values(kelvin_to_xy(kelvins), index=index)
+        return self.set_values(kelvin_to_xyY(kelvins), index=index)
+
+    def set_predefined_color(self, colorname, *, index=0):
+        try:
+            color = COLORS[colorname.lower().replace(" ", "_")]
+        except:
+            pass
+        else:
+            return self.set_hex_color(color, index=index)
+
+    def set_rgb_color(self, r, g, b, *, index=0):
+        return self.set_values(rgb_to_xyY(r, g, b), index=index)
 
     def set_values(self, values, *, index=0):
         """
@@ -228,8 +240,12 @@ class Light:
     @property
     def kelvin_color(self):
         current_x = self.raw.get(ATTR_LIGHT_COLOR_X)
-        if current_x is not None and can_x_to_kelvin(current_x):
-            return x_to_kelvin(current_x)
+        current_y = self.raw.get(ATTR_LIGHT_COLOR_Y)
+        if current_x is not None and current_y is not None:
+            kelvin = xyY_to_kelvin(current_x, current_y)
+            # Only return a kelvin value if it is inside the range that the
+            # kelvin->xyY function supports
+            return kelvin if can_kelvin_to_xy(kelvin) else None
 
     @property
     def raw(self):
