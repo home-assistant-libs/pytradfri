@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = "2.2"
+VERSION = "2.2.1"
 DOWNLOAD_URL = \
     'https://github.com/ggravlingen/pytradfri/archive/{}.zip'.format(VERSION)
 
@@ -9,7 +9,7 @@ EXTRAS_REQUIRE = {
 }
 
 DEP_LINKS = [
-    "http://github.com/chrysn/aiocoap/tarball/tinydtls#egg=aiocoap-0.3"
+    "http://github.com/chrysn/aiocoap/tarball/master#egg=aiocoap-0.3"
 ]
 
 PACKAGES = find_packages(exclude=['tests', 'tests.*'])
