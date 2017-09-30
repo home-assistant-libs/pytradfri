@@ -9,7 +9,7 @@ EXTRAS_REQUIRE = {
 }
 
 DEP_LINKS = [
-    "http://github.com/chrysn/aiocoap/tarball/master#egg=aiocoap-0.3"
+    "https://github.com/chrysn/aiocoap/archive/0df6a1e44582de99ae944b6a7536d08e2a612e8f.zip#egg=aiocoap-0.3"
 ]
 
 PACKAGES = find_packages(exclude=['tests', 'tests.*'])
@@ -19,8 +19,8 @@ setup(
   packages=PACKAGES,
   python_requires='>=3.4',
   version=VERSION,
-  description='A python library for communicating with the Tradfri Gateway',
-  author='balloob, ggravlingen',
+  description='A Python library for communicating with the Tradfri Gateway',
+  author='balloob, ggravlingen, lwis',
   author_email='no@email.com',
   url='https://github.com/ggravlingen/pytradfri',
   download_url=DOWNLOAD_URL,

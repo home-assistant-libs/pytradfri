@@ -1,1 +1,1 @@
-https://github.com/chrysn/aiocoap/archive/b4c5b1da46312e42d5070643556bf3c866e84271.zip
+https://github.com/chrysn/aiocoap/archive/0df6a1e44582de99ae944b6a7536d08e2a612e8f.zip

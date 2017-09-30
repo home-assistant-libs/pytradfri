@@ -27,10 +27,10 @@ tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 
 
 def _patched_datagram_received(self, data, addr):
-    self._dtls_socket.handleMessage(self._connection, data, 0)
+    self.parent._dtls_socket.handleMessage(self.parent._connection, data, 0)
 
 
-tinydtls.DTLSClientConnection.datagram_received = \
+tinydtls.DTLSClientConnection.SingleConnection.datagram_received = \
     _patched_datagram_received
 
 
