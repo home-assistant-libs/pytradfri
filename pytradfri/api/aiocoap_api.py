@@ -1,5 +1,6 @@
 """Coap implementation using aiocoap."""
 import asyncio
+import collections
 import json
 import logging
 
@@ -119,10 +120,10 @@ def api_factory(host, security_code, loop=None):
         return api_command.result
 
     @asyncio.coroutine
-    def request(*api_commands):
+    def request(api_commands):
         """Make a request."""
-        if len(api_commands) == 1:
-            result = yield from _execute(api_commands[0])
+        if not isinstance(api_commands, collections.Iterable):
+            result = yield from _execute(api_commands)
             return result
 
         commands = (_execute(api_command) for api_command in api_commands)
