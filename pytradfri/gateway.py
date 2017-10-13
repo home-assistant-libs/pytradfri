@@ -150,6 +150,34 @@ class Gateway:
         return Command('get', [ROOT_SMART_TASKS, task_id],
                        process_result=process_result)
 
+    def reboot(self):
+        """
+        Reboot gateway.
+
+        Returns a Command.
+        """
+        def process_result(result):
+            #~ result is None on success and not known to me in case of failure
+            return (result)
+        
+        return Command('post',
+                      PATH_GATEWAY_INFO[0] + '/' + ATTR_GATEWAY_REBOOT,
+                      process_result=process_result)
+
+    def wipe(self):
+        """
+        Resets gateway to factory default!
+        WARNING: All configuration data in the gateway will be lost (pairing, groups, etc.).
+
+        Returns a Command.
+        """
+        def process_result(result):
+            #~ result is None on success and not known to me in case of failure
+            return (result)
+        
+        return Command('post',
+                      PATH_GATEWAY_INFO[0] + '/' + ATTR_GATEWAY_WIPE,
+                      process_result=process_result)
 
 class GatewayInfo:
     """This class contains Gateway information."""
