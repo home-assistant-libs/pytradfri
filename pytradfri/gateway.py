@@ -6,7 +6,8 @@ from .const import (
     ROOT_DEVICES, ROOT_GROUPS, ROOT_MOODS, ROOT_SMART_TASKS,
     PATH_GATEWAY_INFO, ATTR_NTP, ATTR_FIRMWARE_VERSION,
     ATTR_CURRENT_TIME_UNIX, ATTR_CURRENT_TIME_ISO8601,
-    ATTR_FIRST_SETUP, ATTR_GATEWAY_ID)
+    ATTR_FIRST_SETUP, ATTR_GATEWAY_ID, ATTR_GATEWAY_REBOOT,
+    ATTR_GATEWAY_WIPE)
 from .device import Device
 from .group import Group
 from .mood import Mood
@@ -157,27 +158,29 @@ class Gateway:
         Returns a Command.
         """
         def process_result(result):
-            #~ result is None on success and not known to me in case of failure
+            # result is None on success and not known to me in case of failure
             return (result)
-        
+
         return Command('post',
-                      PATH_GATEWAY_INFO[0] + '/' + ATTR_GATEWAY_REBOOT,
-                      process_result=process_result)
+                       PATH_GATEWAY_INFO[0] + '/' + ATTR_GATEWAY_REBOOT,
+                       process_result=process_result)
 
     def wipe(self):
         """
         Resets gateway to factory default!
-        WARNING: All configuration data in the gateway will be lost (pairing, groups, etc.).
+        WARNING:
+        All configuration data in the gateway will be lost (pairing, etc.).
 
         Returns a Command.
         """
         def process_result(result):
-            #~ result is None on success and not known to me in case of failure
+            # result is None on success and not known to me in case of failure
             return (result)
-        
+
         return Command('post',
-                      PATH_GATEWAY_INFO[0] + '/' + ATTR_GATEWAY_WIPE,
-                      process_result=process_result)
+                       PATH_GATEWAY_INFO[0] + '/' + ATTR_GATEWAY_WIPE,
+                       process_result=process_result)
+
 
 class GatewayInfo:
     """This class contains Gateway information."""
