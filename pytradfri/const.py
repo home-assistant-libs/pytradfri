@@ -19,9 +19,9 @@ ATTR_FIRMWARE_VERSION = "9029"
 ATTR_CURRENT_TIME_UNIX = "9059"
 ATTR_CURRENT_TIME_ISO8601 = "9060"
 ATTR_FIRST_SETUP = "9069"  # ??? unix epoch value when gateway first setup
-ATTR_GATEWAY_ID = "9081"  # ??? id of the gateway
-ATTR_GATEWAY_REBOOT = "9030" # gw reboots if this attr is posted to 15011
-ATTR_GATEWAY_WIPE = "9031" # gw is set to factory defaults if this attr is posted to 15011
+ATTR_GATEWAY_ID = "9081"   # ??? id of the gateway
+ATTR_GATEWAY_REBOOT = "9030"  # gw reboots (posted to 15011)
+ATTR_GATEWAY_WIPE = "9031" # gw is set to factory defaults (posted to 15011)
 
 ATTR_LIGHT_STATE = "5850"  # 0 / 1
 ATTR_LIGHT_DIMMER = "5851"  # Dimmer, not following spec: 0..255
