@@ -1,6 +1,5 @@
 """Coap implementation using aiocoap."""
 import asyncio
-import collections
 import json
 import logging
 
@@ -25,14 +24,6 @@ class PatchedDTLSSecurityStore:
 
 
 tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
-
-
-def _patched_datagram_received(self, data, addr):
-    self.parent._dtls_socket.handleMessage(self.parent._connection, data, 0)
-
-
-tinydtls.DTLSClientConnection.SingleConnection.datagram_received = \
-    _patched_datagram_received
 
 
 @asyncio.coroutine
@@ -76,7 +67,7 @@ def api_factory(host, security_code, loop=None):
             protocol = yield from _get_protocol()
             pr = protocol.request(msg)
             r = yield from pr.response
-            return (pr, r)
+            return pr, r
         except ConstructionRenderableError as e:
             raise ClientError("There was an error with the request.", e)
         except RequestTimedOut as e:
@@ -122,7 +113,7 @@ def api_factory(host, security_code, loop=None):
     @asyncio.coroutine
     def request(api_commands):
         """Make a request."""
-        if not isinstance(api_commands, collections.Iterable):
+        if not isinstance(api_commands, list):
             result = yield from _execute(api_commands)
             return result
 

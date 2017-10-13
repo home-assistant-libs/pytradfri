@@ -1,5 +1,4 @@
 """Coap implementation."""
-import collections
 import json
 import logging
 import subprocess
@@ -75,7 +74,7 @@ def api_factory(host, security_code):
 
     def request(api_commands):
         """Make a request."""
-        if not isinstance(api_commands, collections.Iterable):
+        if not isinstance(api_commands, list):
             return _execute(api_commands[0])
 
         command_results = []

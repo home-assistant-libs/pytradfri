@@ -14,8 +14,8 @@ RUN python3 -m pip install cython
 COPY ./script/install-coap-client.sh install-coap-client.sh
 RUN ./install-coap-client.sh
 
-COPY ./script/install-aiocoap.sh install-aiocoap.sh
-RUN ./install-aiocoap.sh
+COPY requirements.txt requirements.txt
+RUN python3 -m pip install -r requirements.txt
 
 WORKDIR /usr/src/app
 ENV LANG=C.UTF-8
