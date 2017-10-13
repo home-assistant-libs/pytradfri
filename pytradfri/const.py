@@ -22,7 +22,7 @@ ATTR_FIRST_SETUP = "9069"  # ??? unix epoch value when gateway first setup
 ATTR_GATEWAY_INFO = "15012"
 ATTR_GATEWAY_ID = "9081"  # ??? id of the gateway
 ATTR_GATEWAY_REBOOT = "9030"  # gw reboot (post to 15011)
-ATTR_GATEWAY_FACTORY_RESET = "9031"  # gw to factory defaults (post to 15011)
+ATTR_GATEWAY_FACTORY_DEFAULTS = "9031"  # gw to factory defaults (post to 15011)
 
 ATTR_LIGHT_STATE = "5850"  # 0 / 1
 ATTR_LIGHT_DIMMER = "5851"  # Dimmer, not following spec: 0..255
