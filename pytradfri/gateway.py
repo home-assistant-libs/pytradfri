@@ -84,8 +84,8 @@ class Gateway:
         def process_result(result):
             return GatewayInfo(result)
 
-        return Command('get', 
-                       [ROOT_GATEWAY, ATTR_GATEWAY_INFO], 
+        return Command('get',
+                       [ROOT_GATEWAY, ATTR_GATEWAY_INFO],
                        process_result=process_result)
 
     def get_moods(self):
