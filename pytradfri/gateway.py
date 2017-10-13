@@ -84,7 +84,9 @@ class Gateway:
         def process_result(result):
             return GatewayInfo(result)
 
-        return Command('get', PATH_GATEWAY_INFO, process_result=process_result)
+        return Command('get', 
+                       [ROOT_GATEWAY, ATTR_GATEWAY_INFO], 
+                       process_result=process_result)
 
     def get_moods(self):
         """
@@ -159,7 +161,7 @@ class Gateway:
         """
 
         return Command('post',
-                      [ROOT_GATEWAY, ATTR_GATEWAY_REBOOT])
+                       [ROOT_GATEWAY, ATTR_GATEWAY_REBOOT])
 
     def factory_defaults(self):
         """
@@ -170,7 +172,7 @@ class Gateway:
         """
 
         return Command('post',
-                      [ROOT_GATEWAY, ATTR_GATEWAY_FACTORY_DEFAULTS])
+                       [ROOT_GATEWAY, ATTR_GATEWAY_FACTORY_DEFAULTS])
 
 
 class GatewayInfo:
@@ -213,7 +215,7 @@ class GatewayInfo:
 
     @property
     def path(self):
-        return PATH_GATEWAY_INFO
+        return [ROOT_GATEWAY, ATTR_GATEWAY_INFO]
 
     def set_values(self, values):
         """
