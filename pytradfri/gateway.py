@@ -4,10 +4,10 @@ from datetime import datetime
 from .command import Command
 from .const import (
     ROOT_DEVICES, ROOT_GROUPS, ROOT_MOODS, ROOT_SMART_TASKS,
-    PATH_GATEWAY_INFO, ATTR_NTP, ATTR_FIRMWARE_VERSION,
+    ROOT_GATEWAY, ATTR_NTP, ATTR_FIRMWARE_VERSION,
     ATTR_CURRENT_TIME_UNIX, ATTR_CURRENT_TIME_ISO8601,
-    ATTR_FIRST_SETUP, ATTR_GATEWAY_ID, ATTR_GATEWAY_REBOOT,
-    ATTR_GATEWAY_WIPE)
+    ATTR_FIRST_SETUP, ATTR_GATEWAY_INFO, ATTR_GATEWAY_ID,
+    ATTR_GATEWAY_REBOOT, ATTR_GATEWAY_FACTORY_DEFAULTS)
 from .device import Device
 from .group import Group
 from .mood import Mood
@@ -153,23 +153,24 @@ class Gateway:
 
     def reboot(self):
         """
-        Reboot gateway.
+        reboot GW
 
         Returns a Command.
         """
-        return Command('post',
-                       PATH_GATEWAY_INFO[0] + '/' + ATTR_GATEWAY_REBOOT)
 
-    def wipe(self):
+        return Command('post',
+                      [ROOT_GATEWAY, ATTR_GATEWAY_REBOOT])
+
+    def factory_defaults(self):
         """
-        Resets gateway to factory default!
-        WARNING:
-        All configuration data in the gateway will be lost (pairing, etc.).
+        resets GW to factory default
+        warning: all data in GW is lost (pairing, groups, ...)
 
         Returns a Command.
         """
+
         return Command('post',
-                       PATH_GATEWAY_INFO[0] + '/' + ATTR_GATEWAY_WIPE)
+                      [ROOT_GATEWAY, ATTR_GATEWAY_FACTORY_DEFAULTS])
 
 
 class GatewayInfo:
