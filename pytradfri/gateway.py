@@ -155,7 +155,7 @@ class Gateway:
 
     def reboot(self):
         """
-        reboot GW
+        Reboot the Gateway
 
         Returns a Command.
         """
@@ -163,10 +163,10 @@ class Gateway:
         return Command('post',
                        [ROOT_GATEWAY, ATTR_GATEWAY_REBOOT])
 
-    def factory_defaults(self):
+    def factory_reset(self):
         """
-        resets GW to factory default
-        warning: all data in GW is lost (pairing, groups, ...)
+        Resets the Gateway to factory defaults.
+        WARNING: All data in Gateway is lost (pairing, groups, etc)
 
         Returns a Command.
         """
