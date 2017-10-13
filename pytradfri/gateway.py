@@ -157,13 +157,8 @@ class Gateway:
 
         Returns a Command.
         """
-        def process_result(result):
-            # result is None on success and not known to me in case of failure
-            return (result)
-
         return Command('post',
-                       PATH_GATEWAY_INFO[0] + '/' + ATTR_GATEWAY_REBOOT,
-                       process_result=process_result)
+                       PATH_GATEWAY_INFO[0] + '/' + ATTR_GATEWAY_REBOOT)
 
     def wipe(self):
         """
@@ -173,13 +168,8 @@ class Gateway:
 
         Returns a Command.
         """
-        def process_result(result):
-            # result is None on success and not known to me in case of failure
-            return (result)
-
         return Command('post',
-                       PATH_GATEWAY_INFO[0] + '/' + ATTR_GATEWAY_WIPE,
-                       process_result=process_result)
+                       PATH_GATEWAY_INFO[0] + '/' + ATTR_GATEWAY_WIPE)
 
 
 class GatewayInfo:
