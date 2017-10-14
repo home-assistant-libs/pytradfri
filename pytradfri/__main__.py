@@ -53,6 +53,7 @@ if __name__ == '__main__':
     print("> api(light.light_control.set_xy_color(254))")
     print("> api(lights[1].light_control.set_dimmer(20))")
     print("> tasks[0].repeat_days_list")
+    print("> api(gateway.reboot())")
     print("> groups")
     print("> moods")
     print("> tasks")

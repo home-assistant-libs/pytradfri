@@ -4,9 +4,10 @@ from datetime import datetime
 from .command import Command
 from .const import (
     ROOT_DEVICES, ROOT_GROUPS, ROOT_MOODS, ROOT_SMART_TASKS,
-    PATH_GATEWAY_INFO, ATTR_NTP, ATTR_FIRMWARE_VERSION,
+    ROOT_GATEWAY, ATTR_NTP, ATTR_FIRMWARE_VERSION,
     ATTR_CURRENT_TIME_UNIX, ATTR_CURRENT_TIME_ISO8601,
-    ATTR_FIRST_SETUP, ATTR_GATEWAY_ID)
+    ATTR_FIRST_SETUP, ATTR_GATEWAY_INFO, ATTR_GATEWAY_ID,
+    ATTR_GATEWAY_REBOOT, ATTR_GATEWAY_FACTORY_DEFAULTS)
 from .device import Device
 from .group import Group
 from .mood import Mood
@@ -83,7 +84,9 @@ class Gateway:
         def process_result(result):
             return GatewayInfo(result)
 
-        return Command('get', PATH_GATEWAY_INFO, process_result=process_result)
+        return Command('get',
+                       [ROOT_GATEWAY, ATTR_GATEWAY_INFO],
+                       process_result=process_result)
 
     def get_moods(self):
         """
@@ -150,6 +153,27 @@ class Gateway:
         return Command('get', [ROOT_SMART_TASKS, task_id],
                        process_result=process_result)
 
+    def reboot(self):
+        """
+        Reboot the Gateway
+
+        Returns a Command.
+        """
+
+        return Command('post',
+                       [ROOT_GATEWAY, ATTR_GATEWAY_REBOOT])
+
+    def factory_reset(self):
+        """
+        Resets the Gateway to factory defaults.
+        WARNING: All data in Gateway is lost (pairing, groups, etc)
+
+        Returns a Command.
+        """
+
+        return Command('post',
+                       [ROOT_GATEWAY, ATTR_GATEWAY_FACTORY_DEFAULTS])
+
 
 class GatewayInfo:
     """This class contains Gateway information."""
@@ -191,7 +215,7 @@ class GatewayInfo:
 
     @property
     def path(self):
-        return PATH_GATEWAY_INFO
+        return [ROOT_GATEWAY, ATTR_GATEWAY_INFO]
 
     def set_values(self, values):
         """
