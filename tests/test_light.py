@@ -1,4 +1,3 @@
-from pytradfri.const import ROOT_DEVICES, ATTR_NAME
 from pytradfri.device import Device
 
 LIGHT_W = {
@@ -189,4 +188,3 @@ def test_color_bulb_custom_color():
     assert bulb.hex_color == 'cdff67'
     assert bulb.xy_color == (23327, 33940)
     assert bulb.kelvin_color == 5046
-

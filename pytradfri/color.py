@@ -133,8 +133,10 @@ def rgb_to_xyY(r, g, b):
     x, y = xyz2xyY(*rgb2xyzA(r, g, b))
     return {X: x, Y: y}
 
-# Converted to Python from Obj-C, original source from: http://www.developers.meethue.com/documentation/color-conversions-rgb-xy pylint: 
-# disable=invalid-sequence-index
+
+# Converted to Python from Obj-C, original source from:
+# http://www.developers.meethue.com/documentation/color-conversions-rgb-xy
+# pylint: disable=invalid-sequence-index
 def xy_brightness_to_rgb(vX: float, vY: float, ibrightness: int):
     """Convert from XYZ to RGB."""
     brightness = ibrightness / 255.

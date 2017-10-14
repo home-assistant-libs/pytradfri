@@ -234,9 +234,12 @@ class Light:
         if raw_color is not None and len(raw_color) == 6:
             return raw_color
         (x, y) = self.xy_color
+
         def scale(val):
             return float(val)/65535
-        return '{0:02x}{1:02x}{2:02x}'.format(*xy_brightness_to_rgb(scale(x), scale(y), self.dimmer))
+        return '{0:02x}{1:02x}{2:02x}'.format(
+                *xy_brightness_to_rgb(scale(x), scale(y), self.dimmer)
+        )
 
     @property
     def xy_color(self):
