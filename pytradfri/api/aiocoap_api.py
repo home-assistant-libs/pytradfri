@@ -26,14 +26,6 @@ class PatchedDTLSSecurityStore:
 tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 
 
-def _patched_datagram_received(self, data, addr):
-    self.parent._dtls_socket.handleMessage(self.parent._connection, data, 0)
-
-
-tinydtls.DTLSClientConnection.SingleConnection.datagram_received = \
-    _patched_datagram_received
-
-
 @asyncio.coroutine
 def api_factory(host, security_code, loop=None):
     """Generate a request method."""
@@ -75,7 +67,7 @@ def api_factory(host, security_code, loop=None):
             protocol = yield from _get_protocol()
             pr = protocol.request(msg)
             r = yield from pr.response
-            return (pr, r)
+            return pr, r
         except ConstructionRenderableError as e:
             raise ClientError("There was an error with the request.", e)
         except RequestTimedOut as e:
@@ -119,10 +111,10 @@ def api_factory(host, security_code, loop=None):
         return api_command.result
 
     @asyncio.coroutine
-    def request(*api_commands):
+    def request(api_commands):
         """Make a request."""
-        if len(api_commands) == 1:
-            result = yield from _execute(api_commands[0])
+        if not isinstance(api_commands, list):
+            result = yield from _execute(api_commands)
             return result
 
         commands = (_execute(api_command) for api_command in api_commands)

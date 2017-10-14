@@ -41,7 +41,7 @@ def run():
 
     devices_command = gateway.get_devices()
     devices_commands = yield from api(devices_command)
-    devices = yield from api(*devices_commands)
+    devices = yield from api(devices_commands)
 
     lights = [dev for dev in devices if dev.has_light_control]
 

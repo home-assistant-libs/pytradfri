@@ -1,2 +1,2 @@
-pytest
+pytest>=3.2.3
 flake8

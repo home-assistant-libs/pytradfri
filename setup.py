@@ -1,15 +1,15 @@
 from setuptools import setup, find_packages
 
-VERSION = "2.2.3"
+VERSION = "3.0"
 DOWNLOAD_URL = \
     'https://github.com/ggravlingen/pytradfri/archive/{}.zip'.format(VERSION)
 
 EXTRAS_REQUIRE = {
-    'async': ['aiocoap >= 0.3']
+    'async': ['aiocoap >= 0.3', 'DTLSSocket >= 0.1.3']
 }
 
 DEP_LINKS = [
-    "https://github.com/chrysn/aiocoap/archive/0df6a1e44582de99ae944b6a7536d08e2a612e8f.zip#egg=aiocoap-0.3"
+    "https://github.com/chrysn/aiocoap/archive/3286f48f0b949901c8b5c04c0719dc54ab63d431.zip#egg=aiocoap-0.3"
 ]
 
 PACKAGES = find_packages(exclude=['tests', 'tests.*'])

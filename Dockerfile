@@ -9,13 +9,13 @@ RUN apt-get update -y && \
 RUN mkdir -p /usr/src/app /usr/src/build
 WORKDIR /usr/src/build
 
-RUN python3 -m pip install cython
+RUN python3 -m pip install --upgrade pip setuptools wheel cython
 
 COPY ./script/install-coap-client.sh install-coap-client.sh
 RUN ./install-coap-client.sh
 
-COPY ./script/install-aiocoap.sh install-aiocoap.sh
-RUN ./install-aiocoap.sh
+COPY requirements.txt requirements.txt
+RUN python3 -m pip install -r requirements.txt
 
 WORKDIR /usr/src/app
 ENV LANG=C.UTF-8
