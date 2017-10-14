@@ -17,7 +17,7 @@ from .const import (
     ATTR_TRANSITION_TIME
 )
 from .color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY,\
-    COLORS
+    xy_brightness_to_rgb, COLORS
 from .resource import ApiResource
 
 
@@ -230,12 +230,24 @@ class Light:
 
     @property
     def hex_color(self):
-        return self.raw.get(ATTR_LIGHT_COLOR)
+        raw_color = self.raw.get(ATTR_LIGHT_COLOR)
+        if raw_color is not None and len(raw_color) == 6:
+            return raw_color
+        (x, y) = self.xy_color
+        def scale(val):
+            return float(val)/65535
+        return '{0:02x}{1:02x}{2:02x}'.format(*xy_brightness_to_rgb(scale(x), scale(y), self.dimmer))
 
     @property
     def xy_color(self):
-        return (self.raw.get(ATTR_LIGHT_COLOR_X),
-                self.raw.get(ATTR_LIGHT_COLOR_Y))
+        current_x = self.raw.get(ATTR_LIGHT_COLOR_X)
+        current_y = self.raw.get(ATTR_LIGHT_COLOR_Y)
+        if current_x is not None and current_y is not None:
+            return (self.raw.get(ATTR_LIGHT_COLOR_X),
+                    self.raw.get(ATTR_LIGHT_COLOR_Y))
+        # White Tradfri has no x and y, but spec provide 2700K value
+        xy = kelvin_to_xyY(2700)
+        return (xy[ATTR_LIGHT_COLOR_X], xy[ATTR_LIGHT_COLOR_Y])
 
     @property
     def kelvin_color(self):
@@ -246,6 +258,8 @@ class Light:
             # Only return a kelvin value if it is inside the range that the
             # kelvin->xyY function supports
             return kelvin if can_kelvin_to_xy(kelvin) else None
+        # White Tradfri has no x and y, but spec provide 2700K value
+        return 2700
 
     @property
     def raw(self):
@@ -259,6 +273,7 @@ class Light:
                "state: {}, " \
                "dimmer: {}, "\
                "hex_color: {}, " \
-               "xy_color: {}" \
+               "xy_color: {}, " \
+               "kelvin_color: {}" \
                ">".format(self.index, self.device.name, state, self.dimmer,
-                          self.hex_color, self.xy_color)
+                          self.hex_color, self.xy_color, self.kelvin_color)
