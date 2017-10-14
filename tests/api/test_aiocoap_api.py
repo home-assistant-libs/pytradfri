@@ -1,9 +1,19 @@
 """Test API utilities."""
 import asyncio
-import pytest
+import functools
 
 from pytradfri.api.aiocoap_api import api_factory
 from pytradfri.command import Command
+
+
+def async_test(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        coro = asyncio.coroutine(f)
+        future = coro(*args, **kwargs)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(future)
+    return wrapper
 
 
 class MockCode:
@@ -42,7 +52,7 @@ def mock_create_context(loop):
     return MockContext()
 
 
-@pytest.mark.asyncio
+@async_test
 def test_request_returns_single(monkeypatch):
     monkeypatch.setattr('aiocoap.Context.create_client_context',
                         mock_create_context)
@@ -56,7 +66,7 @@ def test_request_returns_single(monkeypatch):
     assert type(response) != list
 
 
-@pytest.mark.asyncio
+@async_test
 def test_request_returns_list(monkeypatch):
     monkeypatch.setattr('aiocoap.Context.create_client_context',
                         mock_create_context)

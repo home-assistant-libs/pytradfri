@@ -9,7 +9,7 @@ RUN apt-get update -y && \
 RUN mkdir -p /usr/src/app /usr/src/build
 WORKDIR /usr/src/build
 
-RUN python3 -m pip install cython
+RUN python3 -m pip install --upgrade pip setuptools wheel cython
 
 COPY ./script/install-coap-client.sh install-coap-client.sh
 RUN ./install-coap-client.sh
