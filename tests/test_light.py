@@ -153,7 +153,7 @@ def light(raw):
 def test_white_bulb():
     bulb = light(LIGHT_W)
 
-    assert bulb.hex_color_raw == None
+    assert bulb.hex_color_raw is None
     assert bulb.hex_color == 'c19b57'
     assert bulb.xy_color_raw == (None, None)
     assert bulb.xy_color == (30101, 26913)
