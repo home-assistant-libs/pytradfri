@@ -153,7 +153,9 @@ def light(raw):
 def test_white_bulb():
     bulb = light(LIGHT_W)
 
+    assert bulb.hex_color_raw == None
     assert bulb.hex_color == 'c19b57'
+    assert bulb.xy_color_raw == (None, None)
     assert bulb.xy_color == (30101, 26913)
     assert bulb.kelvin_color == 2700
 
@@ -161,7 +163,9 @@ def test_white_bulb():
 def test_spectrum_bulb():
     bulb = light(LIGHT_WS)
 
+    assert bulb.hex_color_raw == 'f1e0b5'
     assert bulb.hex_color == 'f1e0b5'
+    assert bulb.xy_color_raw == (30138, 26909)
     assert bulb.xy_color == (30138, 26909)
     assert bulb.kelvin_color == 2697
 
@@ -169,7 +173,9 @@ def test_spectrum_bulb():
 def test_spectrum_bulb_custom_color():
     bulb = light(LIGHT_WS_CUSTOM_COLOR)
 
+    assert bulb.hex_color_raw == '0'
     assert bulb.hex_color == 'f9bc5a'
+    assert bulb.xy_color_raw == (32228, 27203)
     assert bulb.xy_color == (32228, 27203)
     assert bulb.kelvin_color == 2325
 
@@ -177,7 +183,9 @@ def test_spectrum_bulb_custom_color():
 def test_color_bulb():
     bulb = light(LIGHT_CWS)
 
+    assert bulb.hex_color_raw == 'd9337c'
     assert bulb.hex_color == 'd9337c'
+    assert bulb.xy_color_raw == (32768, 15729)
     assert bulb.xy_color == (32768, 15729)
     assert bulb.kelvin_color == 4866
 
@@ -185,6 +193,8 @@ def test_color_bulb():
 def test_color_bulb_custom_color():
     bulb = light(LIGHT_CWS_CUSTOM_COLOR)
 
+    assert bulb.hex_color_raw == '0'
     assert bulb.hex_color == 'cdff67'
+    assert bulb.xy_color_raw == (23327, 33940)
     assert bulb.xy_color == (23327, 33940)
     assert bulb.kelvin_color == 5046

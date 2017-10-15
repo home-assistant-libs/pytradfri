@@ -229,8 +229,12 @@ class Light:
         return self.raw.get(ATTR_LIGHT_DIMMER)
 
     @property
+    def hex_color_raw(self):
+        return self.raw.get(ATTR_LIGHT_COLOR)
+
+    @property
     def hex_color(self):
-        raw_color = self.raw.get(ATTR_LIGHT_COLOR)
+        raw_color = self.hex_color_raw
         if raw_color is not None and len(raw_color) == 6:
             return raw_color
         (x, y) = self.xy_color
@@ -242,9 +246,13 @@ class Light:
         )
 
     @property
+    def xy_color_raw(self):
+        return (self.raw.get(ATTR_LIGHT_COLOR_X),
+                self.raw.get(ATTR_LIGHT_COLOR_Y))
+
+    @property
     def xy_color(self):
-        current_x = self.raw.get(ATTR_LIGHT_COLOR_X)
-        current_y = self.raw.get(ATTR_LIGHT_COLOR_Y)
+        (current_x, current_y) = self.xy_color_raw
         if current_x is not None and current_y is not None:
             return (self.raw.get(ATTR_LIGHT_COLOR_X),
                     self.raw.get(ATTR_LIGHT_COLOR_Y))
