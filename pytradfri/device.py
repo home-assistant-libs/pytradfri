@@ -17,7 +17,8 @@ from .const import (
     ATTR_TRANSITION_TIME
 )
 from .color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY,\
-    xy_brightness_to_rgb, COLORS
+    xy_brightness_to_rgb, COLORS, MIN_KELVIN, MAX_KELVIN,\
+    MIN_KELVIN_WS, MAX_KELVIN_WS
 from .resource import ApiResource
 
 
@@ -142,6 +143,39 @@ class LightControl:
     def raw(self):
         """Return raw data that it represents."""
         return self._device.raw[ATTR_LIGHT_CONTROL]
+
+    @property
+    def can_set_kelvin(self):
+        """Return whether controlled light supports color temperature.
+        The range of supported tempertures is defined by properties
+        min_kelvin and max_kelvin."""
+        return 'WS' in self._device.device_info.model_number
+
+    @property
+    def can_set_color(self):
+        """Return whether controlled light supports arbitrary color."""
+        return 'CWS' in self._device.device_info.model_number
+
+    @property
+    def _kelvin_range(self):
+        if not self.can_set_kelvin:
+            # White bulb
+            return (None, None)
+        if not self.can_set_color:
+            # White spectrum bulb
+            return (MIN_KELVIN_WS, MAX_KELVIN_WS)
+        # Color bulb
+        return (MIN_KELVIN, MAX_KELVIN)
+
+    @property
+    def min_kelvin(self):
+        """Return minimum supported color temperature."""
+        return self._kelvin_range[0]
+
+    @property
+    def max_kelvin(self):
+        """Return maximum supported color temperature."""
+        return self._kelvin_range[1]
 
     def set_state(self, state, *, index=0):
         """Set state of a light."""
