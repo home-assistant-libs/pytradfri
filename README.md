@@ -69,4 +69,4 @@ There is a Docker script available to bootstrap a dev environment. Run `./script
 ## 5. Acknowledgements
 This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/).
 
-A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this library, further work was done by Lewis Juggins ([@lwis](https://github.com/lwis)) to take the library to 2.0 with support for asyncio.
+A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this library. Further work was done by Lewis Juggins ([@lwis](https://github.com/lwis)) to take the library to 2.0 with support for asyncio and 3.0 with more effective management of dependencies and consistency around return types.
