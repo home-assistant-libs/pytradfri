@@ -263,15 +263,15 @@ class Light:
         return self.raw.get(ATTR_LIGHT_DIMMER)
 
     @property
-    def hex_color_raw(self):
+    def hex_color(self):
         return self.raw.get(ATTR_LIGHT_COLOR)
 
     @property
-    def hex_color(self):
-        raw_color = self.hex_color_raw
+    def hex_color_inferred(self):
+        raw_color = self.hex_color
         if raw_color is not None and len(raw_color) == 6:
             return raw_color
-        (x, y) = self.xy_color
+        (x, y) = self.xy_color_inferred
 
         def scale(val):
             return float(val)/65535
@@ -280,13 +280,13 @@ class Light:
         )
 
     @property
-    def xy_color_raw(self):
+    def xy_color(self):
         return (self.raw.get(ATTR_LIGHT_COLOR_X),
                 self.raw.get(ATTR_LIGHT_COLOR_Y))
 
     @property
-    def xy_color(self):
-        (current_x, current_y) = self.xy_color_raw
+    def xy_color_inferred(self):
+        (current_x, current_y) = self.xy_color
         if current_x is not None and current_y is not None:
             return (self.raw.get(ATTR_LIGHT_COLOR_X),
                     self.raw.get(ATTR_LIGHT_COLOR_Y))
@@ -295,7 +295,7 @@ class Light:
         return (xy[ATTR_LIGHT_COLOR_X], xy[ATTR_LIGHT_COLOR_Y])
 
     @property
-    def kelvin_color(self):
+    def kelvin_color_inferred(self):
         current_x = self.raw.get(ATTR_LIGHT_COLOR_X)
         current_y = self.raw.get(ATTR_LIGHT_COLOR_Y)
         if current_x is not None and current_y is not None:
@@ -319,6 +319,5 @@ class Light:
                "dimmer: {}, "\
                "hex_color: {}, " \
                "xy_color: {}, " \
-               "kelvin_color: {}" \
                ">".format(self.index, self.device.name, state, self.dimmer,
-                          self.hex_color, self.xy_color, self.kelvin_color)
+                          self.hex_color, self.xy_color)
