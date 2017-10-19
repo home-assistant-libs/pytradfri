@@ -17,7 +17,8 @@ from .const import (
     ATTR_TRANSITION_TIME
 )
 from .color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY,\
-    COLORS
+    xy_brightness_to_rgb, COLORS, MIN_KELVIN, MAX_KELVIN,\
+    MIN_KELVIN_WS, MAX_KELVIN_WS
 from .resource import ApiResource
 
 
@@ -143,6 +144,39 @@ class LightControl:
         """Return raw data that it represents."""
         return self._device.raw[ATTR_LIGHT_CONTROL]
 
+    @property
+    def can_set_kelvin(self):
+        """Return whether controlled light supports color temperature.
+        The range of supported tempertures is defined by properties
+        min_kelvin and max_kelvin."""
+        return 'WS' in self._device.device_info.model_number
+
+    @property
+    def can_set_color(self):
+        """Return whether controlled light supports arbitrary color."""
+        return 'CWS' in self._device.device_info.model_number
+
+    @property
+    def _kelvin_range(self):
+        if not self.can_set_kelvin:
+            # White bulb
+            return (None, None)
+        if not self.can_set_color:
+            # White spectrum bulb
+            return (MIN_KELVIN_WS, MAX_KELVIN_WS)
+        # Color bulb
+        return (MIN_KELVIN, MAX_KELVIN)
+
+    @property
+    def min_kelvin(self):
+        """Return minimum supported color temperature."""
+        return self._kelvin_range[0]
+
+    @property
+    def max_kelvin(self):
+        """Return maximum supported color temperature."""
+        return self._kelvin_range[1]
+
     def set_state(self, state, *, index=0):
         """Set state of a light."""
         return self.set_values({
@@ -233,12 +267,35 @@ class Light:
         return self.raw.get(ATTR_LIGHT_COLOR)
 
     @property
+    def hex_color_inferred(self):
+        raw_color = self.hex_color
+        if raw_color is not None and len(raw_color) == 6:
+            return raw_color
+        (x, y) = self.xy_color_inferred
+
+        def scale(val):
+            return float(val)/65535
+        return '{0:02x}{1:02x}{2:02x}'.format(
+                *xy_brightness_to_rgb(scale(x), scale(y), self.dimmer)
+        )
+
+    @property
     def xy_color(self):
         return (self.raw.get(ATTR_LIGHT_COLOR_X),
                 self.raw.get(ATTR_LIGHT_COLOR_Y))
 
     @property
-    def kelvin_color(self):
+    def xy_color_inferred(self):
+        (current_x, current_y) = self.xy_color
+        if current_x is not None and current_y is not None:
+            return (self.raw.get(ATTR_LIGHT_COLOR_X),
+                    self.raw.get(ATTR_LIGHT_COLOR_Y))
+        # White Tradfri has no x and y, but spec provide 2700K value
+        xy = kelvin_to_xyY(2700)
+        return (xy[ATTR_LIGHT_COLOR_X], xy[ATTR_LIGHT_COLOR_Y])
+
+    @property
+    def kelvin_color_inferred(self):
         current_x = self.raw.get(ATTR_LIGHT_COLOR_X)
         current_y = self.raw.get(ATTR_LIGHT_COLOR_Y)
         if current_x is not None and current_y is not None:
@@ -246,6 +303,8 @@ class Light:
             # Only return a kelvin value if it is inside the range that the
             # kelvin->xyY function supports
             return kelvin if can_kelvin_to_xy(kelvin) else None
+        # White Tradfri has no x and y, but spec provide 2700K value
+        return 2700
 
     @property
     def raw(self):
@@ -259,6 +318,6 @@ class Light:
                "state: {}, " \
                "dimmer: {}, "\
                "hex_color: {}, " \
-               "xy_color: {}" \
+               "xy_color: {}, " \
                ">".format(self.index, self.device.name, state, self.dimmer,
                           self.hex_color, self.xy_color)
