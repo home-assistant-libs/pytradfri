@@ -49,8 +49,8 @@ class Device(ApiResource):
 
     @property
     def has_light_control(self):
-        return (ATTR_LIGHT_CONTROL in self.raw and
-                len(self.raw.get(ATTR_LIGHT_CONTROL)) > 0)
+        return (self.raw is not None and
+                len(self.raw.get(ATTR_LIGHT_CONTROL, "")) > 0)
 
     @property
     def light_control(self):
