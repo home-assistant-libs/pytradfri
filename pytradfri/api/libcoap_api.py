@@ -75,7 +75,7 @@ def api_factory(host, security_code):
     def request(api_commands):
         """Make a request."""
         if not isinstance(api_commands, list):
-            return _execute(api_commands[0])
+            return _execute(api_commands)
 
         command_results = []
 
