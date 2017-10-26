@@ -27,6 +27,8 @@ For asynchronous functionality please install tinydtls and the tinydtls branch f
 
 
 ## 2. Stand-alone use (command-line interface)
+![Screenshot of command line interface](/master/docs/pytradfri_cli.png)
+
 If you want to test this library stand-alone in a command-line interface:
 
 ```shell
