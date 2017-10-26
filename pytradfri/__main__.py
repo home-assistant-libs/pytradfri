@@ -19,7 +19,7 @@ if __name__ == '__main__':
     api = api_factory(sys.argv[1], sys.argv[2])
     gateway = Gateway()
     devices_commands = api(gateway.get_devices())
-    devices = api(*devices_commands)
+    devices = api(devices_commands)
     lights = [dev for dev in devices if dev.has_light_control]
     light = lights[0]
     groups = api(gateway.get_groups())
