@@ -1,13 +1,14 @@
 # Pytradfri #
 
-This is a Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. The gateway can control IKEA lights and also Philips Hue bulbs. Some of the features include:
+This is a Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. Using this library you can, by communicating with the gateway, control IKEA lights (including the RGB ones) and also Philips Hue bulbs. Some of the features include:
 
 - Get information on the gateway
+- Observe lights, groups and other resources and get notified when they change
 - List all devices connected to gateway
 - List all lights and get attributes of lights (name, state, color temp, dimmer level etc)
 - Change attribute values of lights (name, state, color temp, dimmer level etc)
+- Restart and reset gateway
 - List smart tasks (wake up, on/off and not home) and their attributes
-- Observe lights, groups and other resources and get notified when they change
 - Alter values in smart tasks (some of these features not available in app yet)
 
 Table of contents:
@@ -27,6 +28,8 @@ For asynchronous functionality please install tinydtls and the tinydtls branch f
 
 
 ## 2. Stand-alone use (command-line interface)
+![Screenshot of command line interface](./docs/pytradfri_cli.png)
+
 If you want to test this library stand-alone in a command-line interface:
 
 ```shell
