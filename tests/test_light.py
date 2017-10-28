@@ -228,6 +228,7 @@ def test_color_device_control():
     assert light_control.min_kelvin == 1667
     assert light_control.max_kelvin == 25000
 
+
 def test_setters():
     cmd = Device(LIGHT_CWS).light_control \
         .set_predefined_color('Warm glow')
