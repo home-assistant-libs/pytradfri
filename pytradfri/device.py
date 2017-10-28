@@ -217,7 +217,7 @@ class LightControl:
         try:
             color = COLORS[colorname.lower().replace(" ", "_")]
         except:
-            pass
+            raise PyTradFriError('Could not match color name')
         else:
             return self.set_hex_color(color, index=index)
 

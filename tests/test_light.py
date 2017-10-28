@@ -232,5 +232,5 @@ def test_color_device_control():
 def test_setters():
     light_control = light_device_control(LIGHT_CWS)
     light_control.set_predefined_color('Warm white')
-
+    _LOGGER.debug('Executing %s %s %s: %s', host, method, path, data)
     assert light_control.lights[0].hex_color == 'f1e0b5'
