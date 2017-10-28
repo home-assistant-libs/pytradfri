@@ -1,5 +1,6 @@
 from pytradfri.device import Device
 
+
 LIGHT_W = {
     '3': {
         '0': 'IKEA of Sweden',
@@ -227,3 +228,13 @@ def test_color_device_control():
     assert light_control.can_set_kelvin
     assert light_control.min_kelvin == 1667
     assert light_control.max_kelvin == 25000
+
+
+def test_setters():
+    cmd = Device(LIGHT_CWS).light_control \
+        .set_predefined_color('Warm glow')
+    assert cmd.data == {'3311': [{'5706': 'efd275'}]}
+
+    cmd = Device(LIGHT_CWS).light_control \
+        .set_predefined_color('Ggravlingen')
+    assert hasattr(cmd, 'data') is False
