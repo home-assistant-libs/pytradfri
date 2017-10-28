@@ -216,7 +216,7 @@ class LightControl:
     def set_predefined_color(self, colorname, *, index=0):
         try:
             color = COLORS[colorname.lower().replace(" ", "_")]
-        except:
+        except KeyError:
             """If color name can't be matched, default to something"""
             color = COLORS['sunrise']
         else:
