@@ -18,6 +18,7 @@ Table of contents:
 3. [Implement in your own Python platform](#3-implement-in-your-own-python-platform)
 4. [Docker support](#4-docker-support)
 5. [Acknowledgements](#5-acknowledgements)
+6. [Coverage](#6-coverage)
 
 ## 1. Installation
 In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap)(sync), or cython3, [tinydtls](https://git.fslab.de/jkonra2m/tinydtls) and [aiocoap](https://github.com/chrysn/aiocoap) depending on which functionality you're interested in, as per the following instructions (you might have to use sudo for some commands to work).
@@ -73,3 +74,6 @@ There is a Docker script available to bootstrap a dev environment. Run `./script
 This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/).
 
 A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this library. Further work was done by Lewis Juggins ([@lwis](https://github.com/lwis)) to take the library to 2.0 with support for asyncio and 3.0 with more effective management of dependencies and consistency around return types. Lennart Buhl [@r41d](https://github.com/r41d) and Maciej Sokołowski [@matemaciek](https://github.com/matemaciek) made sure the library is supporting RGB bulbs.
+
+## 6. Coverage
+[![Coverage Status](https://coveralls.io/repos/github/ggravlingen/pytradfri/badge.svg?branch=master)](https://coveralls.io/github/ggravlingen/pytradfri?branch=master)
