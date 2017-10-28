@@ -1,5 +1,10 @@
 from pytradfri.device import Device
 
+#  Remove later on
+import logging
+_LOGGER = logging.getLogger(__name__)
+
+
 LIGHT_W = {
     '3': {
         '0': 'IKEA of Sweden',
