@@ -1,5 +1,4 @@
 from pytradfri.device import Device
-from pytradfri.gateway import Gateway
 
 
 LIGHT_W = {
@@ -233,9 +232,6 @@ def test_color_device_control():
 
 def test_setters_v2():
     cmd = Device(LIGHT_CWS).light_control \
-        .set_predefined_color('Warm white')
+        .set_predefined_color('Warm glow')
 
-    assert cmd.data == {'9042': {'15013': [
-        {'5712': 18000, '5851': 30, '9003': 65537},
-        {'5712': 18000, '5851': 254, '9003': 65538}],
-        '5850': 1}}
+    assert cmd.data == {'3311': [{'5706': 'efd275'}]}
