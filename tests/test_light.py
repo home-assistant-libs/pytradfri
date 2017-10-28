@@ -227,3 +227,10 @@ def test_color_device_control():
     assert light_control.can_set_kelvin
     assert light_control.min_kelvin == 1667
     assert light_control.max_kelvin == 25000
+
+
+def test_setters():
+    light_control = light_device_control(LIGHT_CWS)
+    command = light_control.set_predefined_color('Warm white')
+
+    assert command.hex_color == 'f1e0b5'
