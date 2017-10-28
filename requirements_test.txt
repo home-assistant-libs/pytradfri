@@ -4,3 +4,4 @@ flake8
 coveralls
 pytest-cov
 aiocoap
+tinydtls
