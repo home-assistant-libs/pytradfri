@@ -221,8 +221,8 @@ class LightControl:
             color = COLORS[colorname.lower().replace(" ", "_")]
         except KeyError:
             _LOGGER.debug('Could not match color name')
-
-        return self.set_hex_color(color, index=index)
+        else:
+            return self.set_hex_color(color, index=index)
 
     def set_rgb_color(self, r, g, b, *, index=0):
         return self.set_values(rgb_to_xyY(r, g, b), index=index)
