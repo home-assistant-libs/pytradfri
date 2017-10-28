@@ -233,10 +233,8 @@ def test_color_device_control():
 def test_setters():
     cmd = Device(LIGHT_CWS).light_control \
         .set_predefined_color('Warm glow')
-
     assert cmd.data == {'3311': [{'5706': 'efd275'}]}
 
     cmd = Device(LIGHT_CWS).light_control \
         .set_predefined_color('Ggravlingen')
-
     assert cmd.data == {'3311': [{'5706': 'f2eccf'}]}
