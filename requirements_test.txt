@@ -1,2 +1,5 @@
 pytest>=3.2.3
 flake8
+pytest-timeout>=1.2.0
+coveralls
+pytest-cov
