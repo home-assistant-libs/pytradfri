@@ -59,3 +59,9 @@ def test_set_name():
     assert command.method == 'put'
     assert command.path == dev.path
     assert command.data == {ATTR_NAME: 'New name'}
+
+def test_setters():
+    dev = Device(LIGHT)
+    command = dev.set_predefined_color('Warm white')
+
+    assert command.hex_color == 'f1e0b5'
