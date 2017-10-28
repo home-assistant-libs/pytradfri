@@ -237,4 +237,4 @@ def test_setters():
 
     cmd = Device(LIGHT_CWS).light_control \
         .set_predefined_color('Ggravlingen')
-    assert cmd.data is None
+    assert hasattr(cmd, data) == False
