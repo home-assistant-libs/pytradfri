@@ -3,3 +3,4 @@ pytest-timeout>=1.2.0
 flake8
 coveralls
 pytest-cov
+aiocoap
