@@ -20,7 +20,6 @@ from .color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY,\
     xy_brightness_to_rgb, COLORS, MIN_KELVIN, MAX_KELVIN,\
     MIN_KELVIN_WS, MAX_KELVIN_WS
 from .resource import ApiResource
-from .error import PyTradFriError
 
 
 class Device(ApiResource):
@@ -218,7 +217,8 @@ class LightControl:
         try:
             color = COLORS[colorname.lower().replace(" ", "_")]
         except:
-            raise PyTradFriError('Could not match color name')
+            """If color name can't be matched, default to something"""
+            color = COLORS['sunrise']
         else:
             return self.set_hex_color(color, index=index)
 
