@@ -22,3 +22,5 @@ language: python
 script:
   - py.test
   - flake8
+after_success:
+  - coveralls
