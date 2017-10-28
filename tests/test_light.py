@@ -1,8 +1,5 @@
 from pytradfri.device import Device
-
-#  Remove later on
-import logging
-_LOGGER = logging.getLogger(__name__)
+from pytradfri.gateway import Gateway
 
 
 LIGHT_W = {
@@ -234,7 +231,13 @@ def test_color_device_control():
     assert light_control.max_kelvin == 25000
 
 
-def test_setters():
-    light_control = light_device_control(LIGHT_CWS)
-    light_control.set_predefined_color('Warm white')
-    assert light_control.lights[0].hex_color == 'f1e0b5'
+def test_setters_v2():
+    gateway = Gateway()
+
+    cmd = Device(gateway, LIGHT_CWS).light_control.lights[0]. \
+        set_predefined_color('Warm white')
+
+    assert cmd.data == {'9042': {'15013': [
+        {'5712': 18000, '5851': 30, '9003': 65537},
+        {'5712': 18000, '5851': 254, '9003': 65538}],
+        '5850': 1}}
