@@ -219,8 +219,8 @@ class LightControl:
         except KeyError:
             """If color name can't be matched, default to something"""
             color = COLORS['sunrise']
-        else:
-            return self.set_hex_color(color, index=index)
+
+        return self.set_hex_color(color, index=index)
 
     def set_rgb_color(self, r, g, b, *, index=0):
         return self.set_values(rgb_to_xyY(r, g, b), index=index)
