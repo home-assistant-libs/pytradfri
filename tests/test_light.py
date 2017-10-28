@@ -237,4 +237,4 @@ def test_setters():
 
     cmd = Device(LIGHT_CWS).light_control \
         .set_predefined_color('Ggravlingen')
-    assert cmd.data == {'3311': [{'5706': 'f2eccf'}]}
+    assert cmd.data == None
