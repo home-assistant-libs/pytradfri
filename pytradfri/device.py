@@ -220,7 +220,7 @@ class LightControl:
             color = COLORS[colorname.lower().replace(" ", "_")]
             return self.set_hex_color(color, index=index)
         except KeyError:
-            PyTradFriError("Could not match color name in COLOR_NAMES")
+            raise PyTradFriError("Could not match color name in COLOR_NAMES")
 
     def set_rgb_color(self, r, g, b, *, index=0):
         return self.set_values(rgb_to_xyY(r, g, b), index=index)
