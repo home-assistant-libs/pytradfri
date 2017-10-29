@@ -1,6 +1,7 @@
 """Classes to interact with devices."""
 from datetime import datetime
 
+
 from .command import Command
 from .const import (
     ROOT_DEVICES,
@@ -20,9 +21,7 @@ from .color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY,\
     xy_brightness_to_rgb, COLORS, MIN_KELVIN, MAX_KELVIN,\
     MIN_KELVIN_WS, MAX_KELVIN_WS
 from .resource import ApiResource
-import logging
-
-_LOGGER = logging.getLogger(__name__)
+from .error import PyTradFriError
 
 
 class Device(ApiResource):
