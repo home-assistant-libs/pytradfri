@@ -1,5 +1,5 @@
 [run]
-source = homeassistant
+source = pytradfri
 
 [report]
 # Regexes for lines to exclude from consideration
