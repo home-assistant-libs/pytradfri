@@ -18,3 +18,7 @@ dist/
 # Python setuptools
 .cache
 *.egg-info
+
+# Unit test / coverage reports
+.coverage
+.tox
