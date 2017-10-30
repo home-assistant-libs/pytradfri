@@ -1,4 +1,7 @@
 from pytradfri.device import Device
+import pytest
+from pytradfri import error
+
 
 LIGHT_W = {
     '3': {
@@ -233,3 +236,7 @@ def test_setters():
     cmd = Device(LIGHT_CWS).light_control \
         .set_predefined_color('Warm glow')
     assert cmd.data == {'3311': [{'5706': 'efd275'}]}
+
+    with pytest.raises(error.ColorError):
+        Device(LIGHT_CWS).light_control \
+            .set_predefined_color('Ggravlingen')
