@@ -3,7 +3,7 @@ import asyncio
 import json
 import logging
 
-from aiocoap import Message, Context
+from aiocoap import Message, Context, Gateway
 from aiocoap.error import RequestTimedOut, Error, ConstructionRenderableError
 from aiocoap.numbers.codes import Code
 from aiocoap.transports import tinydtls
