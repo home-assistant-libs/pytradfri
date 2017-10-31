@@ -21,7 +21,7 @@ def api_factory(host, identity='pytradfri', psk=None, security_code=None):
         """Return base command."""
         return [
             'coap-client',
-            '-u'
+            '-u',
             identity,
             '-k',
             psk if psk else security_code,

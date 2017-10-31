@@ -28,7 +28,7 @@ tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 
 
 @asyncio.coroutine
-def api_factory(host, identity='pytradfri', psk=None, security_code=None
+def api_factory(host, identity='pytradfri', psk=None, security_code=None,
                 loop=None):
     """Generate a request method."""
     if loop is None:
