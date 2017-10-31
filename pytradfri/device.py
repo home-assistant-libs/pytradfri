@@ -220,7 +220,7 @@ class LightControl:
             color = COLORS[colorname.lower().replace(" ", "_")]
             return self.set_hex_color(color, index=index)
         except KeyError:
-            raise ColorError('Unable to match %s in COLOR_NAMES',
+            raise ColorError('Invalid color specified: %s',
                              colorname)
 
     def set_rgb_color(self, r, g, b, *, index=0):
