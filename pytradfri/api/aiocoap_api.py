@@ -29,10 +29,10 @@ tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 
 class APIFactory:
 
-    def __init__(self, host, identity='pytradfri', psk=None, loop=None):
+    def __init__(self, host, pskId='pytradfri', psk=None, loop=None):
         self._psk = psk
         self._host = host
-        self._identity = identity
+        self._pskId = pskId
         self._loop = loop
         self._observations_err_callbacks = []
         self._protocol = None
@@ -41,7 +41,7 @@ class APIFactory:
             self._loop = asyncio.get_event_loop()
 
         if self._psk:
-            PatchedDTLSSecurityStore.IDENTITY = self._identity.encode('utf-8')
+            PatchedDTLSSecurityStore.IDENTITY = self._pskId.encode('utf-8')
             PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')
 
     @asyncio.coroutine
@@ -163,11 +163,13 @@ class APIFactory:
                 'utf-8')
             PatchedDTLSSecurityStore.KEY = security_key.encode('utf-8')
 
-            command = Gateway().generate_psk(self._identity)
+            command = Gateway().generate_psk(self._pskId)
             self._psk = yield from self.request(command)
-            print(command.raw_result)
 
-        PatchedDTLSSecurityStore.IDENTITY = self._identity.encode('utf-8')
+            # aiocoap has now cached our psk, so it must be reset.
+            yield from self._reset_protocol()
+
+        PatchedDTLSSecurityStore.IDENTITY = self._pskId.encode('utf-8')
         PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')
 
         return self._psk
