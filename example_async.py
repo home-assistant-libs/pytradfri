@@ -35,7 +35,7 @@ except ImportError:
 def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
-    api = yield from api_factory(sys.argv[1], sys.argv[2])
+    api = yield from api_factory(sys.argv[1], security_key=sys.argv[2])
 
     gateway = Gateway()
 

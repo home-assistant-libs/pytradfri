@@ -5,7 +5,7 @@ import subprocess
 from time import time
 from functools import wraps
 
-from ..command import Command
+from ..command import Command, Gateway
 from ..error import RequestError, RequestTimeout, ClientError, ServerError
 
 _LOGGER = logging.getLogger(__name__)
@@ -14,15 +14,17 @@ CLIENT_ERROR_PREFIX = '4.'
 SERVER_ERROR_PREFIX = '5.'
 
 
-def api_factory(host, security_code):
+def api_factory(host, identity='pytradfri', psk=None, security_code=None):
     """Generate a request method."""
     def base_command(method):
 
         """Return base command."""
         return [
             'coap-client',
+            '-u'
+            identity,
             '-k',
-            security_code,
+            psk if psk else security_code,
             '-v',
             '0',
             '-m',
@@ -127,8 +129,14 @@ def api_factory(host, security_code):
                 api_command.result = _process_output(output)
                 output = ''
 
+    if not psk:
+        old_identity = identity
+        identity = 'Client_identity'
+        psk = request(Gateway().generate_key(identity))
+        identity = old_identity
+
     # This will cause a RequestError to be raised if credentials invalid
-    request(Command('get', ['status']))
+    yield from request(Command('get', ['status']))
 
     return request
 

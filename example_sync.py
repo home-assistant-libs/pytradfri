@@ -39,7 +39,7 @@ def observe(api, device):
 def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
-    api = api_factory(sys.argv[1], sys.argv[2])
+    api = api_factory(sys.argv[1], security_key=sys.argv[2])
 
     gateway = Gateway()
 

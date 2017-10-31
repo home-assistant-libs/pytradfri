@@ -28,13 +28,11 @@ tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 
 
 @asyncio.coroutine
-def api_factory(host, security_code, identity='pytradfri', loop=None):
+def api_factory(host, identity='pytradfri', psk=None, security_code=None
+                loop=None):
     """Generate a request method."""
     if loop is None:
         loop = asyncio.get_event_loop()
-
-    PatchedDTLSSecurityStore.IDENTITY = 'Client_identity'.encode('utf-8')
-    PatchedDTLSSecurityStore.KEY = security_code.encode('utf-8')
 
     _observations_err_callbacks = []
     _protocol = yield from Context.create_client_context(loop=loop)
@@ -150,11 +148,17 @@ def api_factory(host, security_code, identity='pytradfri', loop=None):
         nonlocal _observations_err_callbacks
         _observations_err_callbacks.append(ob.error)
 
-    # This will cause a RequestError to be raised if credentials invalid
-    _pre_shared_key = yield from request(Gateway().generate_key(identity))
+    if not psk:
+        PatchedDTLSSecurityStore.IDENTITY = 'Client_identity'.encode('utf-8')
+        PatchedDTLSSecurityStore.KEY = security_code.encode('utf-8')
+
+        psk = yield from request(Gateway().generate_key(identity))
 
     PatchedDTLSSecurityStore.IDENTITY = identity.encode('utf-8')
-    PatchedDTLSSecurityStore.KEY = _pre_shared_key.encode('utf-8')
+    PatchedDTLSSecurityStore.KEY = psk.encode('utf-8')
+
+    # This will cause a RequestError to be raised if credentials invalid
+    yield from request(Command('get', ['status']))
 
     return request
 
