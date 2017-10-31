@@ -11,6 +11,11 @@ class RequestError(PyTradFriError):
     pass
 
 
+class ColorError(PyTradFriError):
+    """An error happened matching color name."""
+    pass
+
+
 class RequestTimeout(RequestError):
     """Error when sending or receiving the command timed out."""
     pass

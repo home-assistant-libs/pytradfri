@@ -1,6 +1,7 @@
 """Classes to interact with devices."""
 from datetime import datetime
 
+
 from .command import Command
 from .const import (
     ROOT_DEVICES,
@@ -20,9 +21,7 @@ from .color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY,\
     xy_brightness_to_rgb, COLORS, MIN_KELVIN, MAX_KELVIN,\
     MIN_KELVIN_WS, MAX_KELVIN_WS
 from .resource import ApiResource
-import logging
-
-_LOGGER = logging.getLogger(__name__)
+from .error import ColorError
 
 
 class Device(ApiResource):
@@ -221,7 +220,8 @@ class LightControl:
             color = COLORS[colorname.lower().replace(" ", "_")]
             return self.set_hex_color(color, index=index)
         except KeyError:
-            _LOGGER.debug('Could not match color name')
+            raise ColorError('Invalid color specified: %s',
+                             colorname)
 
     def set_rgb_color(self, r, g, b, *, index=0):
         return self.set_values(rgb_to_xyY(r, g, b), index=index)
