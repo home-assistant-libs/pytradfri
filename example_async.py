@@ -40,7 +40,7 @@ def run():
         psk = file.readline()
         if not psk:
             psk = yield from api_factory.generate_psk(sys.argv[2])
-            print(psk)
+            print('Generated PSK: ', psk)
             file.write(psk)
     api = api_factory.request
 

@@ -166,11 +166,11 @@ class APIFactory:
             command = Gateway().generate_psk(self._pskId)
             self._psk = yield from self.request(command)
 
+            PatchedDTLSSecurityStore.IDENTITY = self._pskId.encode('utf-8')
+            PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')
+
             # aiocoap has now cached our psk, so it must be reset.
             yield from self._reset_protocol()
-
-        PatchedDTLSSecurityStore.IDENTITY = self._pskId.encode('utf-8')
-        PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')
 
         return self._psk
 
