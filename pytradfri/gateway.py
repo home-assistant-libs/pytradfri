@@ -17,6 +17,16 @@ from .smart_task import SmartTask
 class Gateway:
     """This class connects to the IKEA Tradfri Gateway."""
 
+    def generate_key(self, identity):
+        """
+        Generates the PRE_SHARED_KEY from the gateway.
+
+        Returns a Command.
+        """
+        return Command('post', [ROOT_GATEWAY, ATTR_AUTH], {
+            ATTR_IDENTITY: identity
+        })
+
     def get_endpoints(self):
         """
         Return all available endpoints on the gateway.
