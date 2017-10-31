@@ -5,7 +5,8 @@ import subprocess
 from time import time
 from functools import wraps
 
-from ..command import Command, Gateway
+from ..gateway import Gateway
+from ..command import Command
 from ..error import RequestError, RequestTimeout, ClientError, ServerError
 
 _LOGGER = logging.getLogger(__name__)
@@ -132,7 +133,7 @@ def api_factory(host, identity='pytradfri', psk=None, security_code=None):
     if not psk:
         old_identity = identity
         identity = 'Client_identity'
-        psk = request(Gateway().generate_key(identity))
+        psk = request(Gateway().generate_psk(identity))
         identity = old_identity
 
     # This will cause a RequestError to be raised if credentials invalid

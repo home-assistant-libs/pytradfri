@@ -18,7 +18,7 @@ from .smart_task import SmartTask
 class Gateway:
     """This class connects to the IKEA Tradfri Gateway."""
 
-    def generate_key(self, identity):
+    def generate_psk(self, identity):
         """
         Generates the PRE_SHARED_KEY from the gateway.
 
