@@ -2,7 +2,7 @@
 import asyncio
 import functools
 
-from pytradfri.api.aiocoap_api import api_factory
+from pytradfri.api.aiocoap_api import api_factory, APIFactory
 from pytradfri.command import Command
 
 
@@ -57,7 +57,7 @@ def test_request_returns_single(monkeypatch):
     monkeypatch.setattr('aiocoap.Context.create_client_context',
                         mock_create_context)
 
-    api = yield from api_factory('127.0.0.1', 'key')
+    api = APIFactory('127.0.0.1').request
 
     command = Command('', '')
 
@@ -71,7 +71,7 @@ def test_request_returns_list(monkeypatch):
     monkeypatch.setattr('aiocoap.Context.create_client_context',
                         mock_create_context)
 
-    api = yield from api_factory('127.0.0.1', 'key')
+    api = APIFactory('127.0.0.1').request
 
     command = Command('', '')
 

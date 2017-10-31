@@ -30,23 +30,26 @@ tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 class APIFactory:
 
     def __init__(self, host, identity='pytradfri', psk=None, loop=None):
-        self.host = host
-        self.identity = identity
-        self.psk = psk
-        self.loop = loop
-
-        if self.loop is None:
-            self.loop = asyncio.get_event_loop()
-
+        self._psk = psk
+        self._host = host
+        self._identity = identity
+        self._loop = loop
         self._observations_err_callbacks = []
         self._protocol = None
+
+        if self._loop is None:
+            self._loop = asyncio.get_event_loop()
+
+        if self._psk:
+            PatchedDTLSSecurityStore.IDENTITY = self._identity.encode('utf-8')
+            PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')
 
     @asyncio.coroutine
     def _get_protocol(self):
         """Get the protocol for the request."""
         if not self._protocol:
             self._protocol = yield from Context.create_client_context(
-                loop=self.loop)
+                loop=self._loop)
         return self._protocol
 
     @asyncio.coroutine
@@ -90,16 +93,16 @@ class APIFactory:
         path = api_command.path
         data = api_command.data
         parse_json = api_command.parse_json
-        url = api_command.url(self.host)
+        url = api_command.url(self._host)
 
         kwargs = {}
 
         if data is not None:
             kwargs['payload'] = json.dumps(data).encode('utf-8')
-            _LOGGER.debug('Executing %s %s %s: %s', self.host, method, path,
+            _LOGGER.debug('Executing %s %s %s: %s', self._host, method, path,
                           data)
         else:
-            _LOGGER.debug('Executing %s %s %s', self.host, method, path)
+            _LOGGER.debug('Executing %s %s %s', self._host, method, path)
 
         api_method = Code.GET
         if method == 'put':
@@ -121,7 +124,7 @@ class APIFactory:
             return result
 
         commands = (self._execute(api_command) for api_command in api_commands)
-        command_results = yield from asyncio.gather(*commands, loop=self.loop)
+        command_results = yield from asyncio.gather(*commands, loop=self._loop)
 
         return command_results
 
@@ -129,7 +132,7 @@ class APIFactory:
     def _observe(self, api_command):
         """Observe an endpoint."""
         duration = api_command.observe_duration
-        url = api_command.url(self.host)
+        url = api_command.url(self._host)
         err_callback = api_command.err_callback
 
         msg = Message(code=Code.GET, uri=url, observe=duration)
@@ -155,18 +158,18 @@ class APIFactory:
         """
         Generate and set a psk from the security key.
         """
-        if not self.psk:
+        if not self._psk:
             PatchedDTLSSecurityStore.IDENTITY = 'Client_identity'.encode(
                 'utf-8')
             PatchedDTLSSecurityStore.KEY = security_key.encode('utf-8')
 
-            self.psk = yield from self.request(Gateway().generate_psk(
-                self.identity))
+            self._psk = yield from self.request(Gateway().generate_psk(
+                self._identity))
 
-        PatchedDTLSSecurityStore.IDENTITY = self.identity.encode('utf-8')
-        PatchedDTLSSecurityStore.KEY = self.psk.encode('utf-8')
+        PatchedDTLSSecurityStore.IDENTITY = self._identity.encode('utf-8')
+        PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')
 
-        return self.psk
+        return self._psk
 
 
 def _process_output(res, parse_json=True):

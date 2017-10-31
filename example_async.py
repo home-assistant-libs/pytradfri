@@ -16,7 +16,7 @@ import logging
 import sys
 
 from pytradfri import Gateway
-from pytradfri.api.aiocoap_api import api_factory
+from pytradfri.api.aiocoap_api import APIFactory
 
 root = logging.getLogger()
 root.setLevel(logging.INFO)
@@ -35,7 +35,12 @@ except ImportError:
 def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
-    api = yield from api_factory(sys.argv[1], security_key=sys.argv[2])
+    api_factory = APIFactory(sys.argv[1])
+    with open('gateway_psk.txt', 'rw') as file:
+        psk = file.readline()
+        if not psk:
+            file.write(api_factory.generate_psk(sys.argv[2]))
+    api = api_factory.request
 
     gateway = Gateway()
 
