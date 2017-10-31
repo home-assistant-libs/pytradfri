@@ -2,7 +2,7 @@
 import asyncio
 import functools
 
-from pytradfri.api.aiocoap_api import api_factory, APIFactory
+from pytradfri.api.aiocoap_api import APIFactory
 from pytradfri.command import Command
 
 

@@ -163,8 +163,9 @@ class APIFactory:
                 'utf-8')
             PatchedDTLSSecurityStore.KEY = security_key.encode('utf-8')
 
-            self._psk = yield from self.request(Gateway().generate_psk(
-                self._identity))
+            command = Gateway().generate_psk(self._identity)
+            self._psk = yield from self.request(command)
+            print(command.raw_result)
 
         PatchedDTLSSecurityStore.IDENTITY = self._identity.encode('utf-8')
         PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')

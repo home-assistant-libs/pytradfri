@@ -36,10 +36,12 @@ def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
     api_factory = APIFactory(sys.argv[1])
-    with open('gateway_psk.txt', 'rw') as file:
+    with open('gateway_psk.txt', 'a+') as file:
         psk = file.readline()
         if not psk:
-            file.write(api_factory.generate_psk(sys.argv[2]))
+            psk = yield from api_factory.generate_psk(sys.argv[2])
+            print(psk)
+            file.write(psk)
     api = api_factory.request
 
     gateway = Gateway()
