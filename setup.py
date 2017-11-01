@@ -19,7 +19,7 @@ setup(
   packages=PACKAGES,
   python_requires='>=3.4',
   version=VERSION,
-  description='IKEA Trådfri/Tradfri API. Control and observe your
+  description='IKEA Trådfri/Tradfri API. Control and observe your\
     lights from Python.',
   author='balloob, lwis, ggravlingen',
   author_email='no@email.com',
