@@ -22,3 +22,5 @@ dist/
 # Unit test / coverage reports
 .coverage
 .tox
+
+gateway_psk.txt

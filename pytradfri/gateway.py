@@ -7,7 +7,8 @@ from .const import (
     ROOT_GATEWAY, ATTR_NTP, ATTR_FIRMWARE_VERSION,
     ATTR_CURRENT_TIME_UNIX, ATTR_CURRENT_TIME_ISO8601,
     ATTR_FIRST_SETUP, ATTR_GATEWAY_INFO, ATTR_GATEWAY_ID,
-    ATTR_GATEWAY_REBOOT, ATTR_GATEWAY_FACTORY_DEFAULTS)
+    ATTR_GATEWAY_REBOOT, ATTR_GATEWAY_FACTORY_DEFAULTS,
+    ATTR_AUTH, ATTR_IDENTITY, ATTR_PSK)
 from .device import Device
 from .group import Group
 from .mood import Mood
@@ -16,6 +17,19 @@ from .smart_task import SmartTask
 
 class Gateway:
     """This class connects to the IKEA Tradfri Gateway."""
+
+    def generate_psk(self, identity):
+        """
+        Generates the PRE_SHARED_KEY from the gateway.
+
+        Returns a Command.
+        """
+        def process_result(result):
+            return result[ATTR_PSK]
+
+        return Command('post', [ROOT_GATEWAY, ATTR_AUTH], {
+            ATTR_IDENTITY: identity
+        }, process_result=process_result)
 
     def get_endpoints(self):
         """

@@ -17,7 +17,7 @@ import threading
 import time
 
 from pytradfri import Gateway
-from pytradfri.api.libcoap_api import api_factory
+from pytradfri.api.libcoap_api import APIFactory
 
 
 def observe(api, device):
@@ -39,7 +39,17 @@ def observe(api, device):
 def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
-    api = api_factory(sys.argv[1], sys.argv[2])
+    api_factory = APIFactory(sys.argv[1])
+    with open('gateway_psk.txt', 'a+') as file:
+        file.seek(0)
+        psk = file.read()
+        if psk:
+            api_factory.psk = psk.strip()
+        else:
+            psk = api_factory.generate_psk(sys.argv[2])
+            print('Generated PSK: ', psk)
+            file.write(psk)
+    api = api_factory.request
 
     gateway = Gateway()
 
@@ -48,9 +58,6 @@ def run():
     devices = api(devices_commands)
 
     lights = [dev for dev in devices if dev.has_light_control]
-
-    tasks_command = gateway.get_smart_tasks()
-    tasks = api(tasks_command)
 
     # Print all lights
     print(lights)
@@ -77,6 +84,10 @@ def run():
     # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
     color_command = light.light_control.set_hex_color('efd275')
     api(color_command)
+
+    tasks_command = gateway.get_smart_tasks()
+    tasks_commands = api(tasks_command)
+    tasks = api(tasks_commands)
 
     # Example 6: Return the transition time (in minutes) for task#1
     if tasks:
