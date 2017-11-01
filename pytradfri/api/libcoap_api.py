@@ -6,7 +6,6 @@ from time import time
 from functools import wraps
 
 from ..gateway import Gateway
-from ..command import Command
 from ..error import RequestError, RequestTimeout, ClientError, ServerError
 
 _LOGGER = logging.getLogger(__name__)
@@ -15,28 +14,32 @@ CLIENT_ERROR_PREFIX = '4.'
 SERVER_ERROR_PREFIX = '5.'
 
 
-def api_factory(host, identity='pytradfri', psk=None, security_code=None):
-    """Generate a request method."""
-    def base_command(method):
+class APIFactory:
+    def __init__(self, host, psk_id='pytradfri', psk=None):
+        self._psk = psk
+        self._host = host
+        self._psk_id = psk_id
+        self._security_code = None
 
+    def _base_command(self, method):
         """Return base command."""
         return [
             'coap-client',
             '-u',
-            identity,
+            self._psk_id,
             '-k',
-            psk if psk else security_code,
+            self._psk if self._psk else self._security_code,
             '-v',
             '0',
             '-m',
             method
         ]
 
-    def _execute(api_command):
+    def _execute(self, api_command):
         """Execute the command."""
 
         if api_command.observe:
-            _observe(api_command)
+            self._observe(api_command)
             return
 
         method = api_command.method
@@ -44,9 +47,9 @@ def api_factory(host, identity='pytradfri', psk=None, security_code=None):
         data = api_command.data
         parse_json = api_command.parse_json
         timeout = api_command.timeout
-        url = api_command.url(host)
+        url = api_command.url(self._host)
 
-        command = base_command(method)
+        command = self._base_command(method)
 
         kwargs = {
             'stderr': subprocess.DEVNULL,
@@ -58,9 +61,10 @@ def api_factory(host, identity='pytradfri', psk=None, security_code=None):
             kwargs['input'] = json.dumps(data)
             command.append('-f')
             command.append('-')
-            _LOGGER.debug('Executing %s %s %s: %s', host, method, path, data)
+            _LOGGER.debug('Executing %s %s %s: %s', self._host, method, path,
+                          data)
         else:
-            _LOGGER.debug('Executing %s %s %s', host, method, path)
+            _LOGGER.debug('Executing %s %s %s', self._host, method, path)
 
         command.append(url)
 
@@ -75,27 +79,27 @@ def api_factory(host, identity='pytradfri', psk=None, security_code=None):
         api_command.result = _process_output(return_value, parse_json)
         return api_command.result
 
-    def request(api_commands):
+    def request(self, api_commands):
         """Make a request."""
         if not isinstance(api_commands, list):
-            return _execute(api_commands)
+            return self._execute(api_commands)
 
         command_results = []
 
         for api_command in api_commands:
-            result = _execute(api_command)
+            result = self._execute(api_command)
             command_results.append(result)
 
         return command_results
 
-    def _observe(api_command):
+    def _observe(self, api_command):
         """Observe an endpoint."""
         path = api_command.path
         duration = api_command.observe_duration
-        url = api_command.url(host)
+        url = api_command.url(self._host)
         err_callback = api_command.err_callback
 
-        command = base_command('get') + ['-s', str(duration), url]
+        command = self._base_command('get') + ['-s', str(duration), url]
 
         kwargs = {
             'stdout': subprocess.PIPE,
@@ -130,16 +134,22 @@ def api_factory(host, identity='pytradfri', psk=None, security_code=None):
                 api_command.result = _process_output(output)
                 output = ''
 
-    if not psk:
-        old_identity = identity
-        identity = 'Client_identity'
-        psk = request(Gateway().generate_psk(identity))
-        identity = old_identity
+    def generate_psk(self, security_key):
+        """
+        Generate and set a psk from the security key.
+        """
+        if not self._psk:
+            existing_psk_id = self._psk_id
 
-    # This will cause a RequestError to be raised if credentials invalid
-    request(Command('get', ['status']))
+            self._psk_id = 'Client_identity'
+            self._psk = security_key
 
-    return request
+            command = Gateway().generate_psk(self._psk_id)
+            self._psk = self.request(command)
+
+            self._psk_id = existing_psk_id
+
+        return self._psk
 
 
 def _process_output(output, parse_json=True):

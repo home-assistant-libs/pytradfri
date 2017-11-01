@@ -17,7 +17,7 @@ import threading
 import time
 
 from pytradfri import Gateway
-from pytradfri.api.libcoap_api import api_factory
+from pytradfri.api.libcoap_api import APIFactory
 
 
 def observe(api, device):
@@ -39,7 +39,16 @@ def observe(api, device):
 def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
-    api = api_factory(sys.argv[1], security_key=sys.argv[2])
+    api_factory = APIFactory(sys.argv[1])
+    with open('gateway_psk.txt', 'a+') as file:
+        file.seek(0)
+        psk = file.read()
+        api_factory.psk = psk
+        if not psk:
+            psk = api_factory.generate_psk(sys.argv[2])
+            print('Generated PSK: ', psk)
+            file.write(psk)
+    api = api_factory.request
 
     gateway = Gateway()
 

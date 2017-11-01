@@ -28,7 +28,6 @@ tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 
 
 class APIFactory:
-
     def __init__(self, host, psk_id='pytradfri', psk=None, loop=None):
         self._psk = psk
         self._host = host
@@ -44,6 +43,15 @@ class APIFactory:
 
         if self._psk:
             PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')
+
+    @property
+    def psk_id(self):
+        return self._psk_id
+
+    @psk_id.setter
+    def psk_id(self, value):
+        self._psk_id = value
+        PatchedDTLSSecurityStore.IDENTITY = self._psk_id.encode('utf-8')
 
     @property
     def psk(self):
@@ -188,6 +196,7 @@ class APIFactory:
             PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')
 
             # aiocoap has now cached our psk, so it must be reset.
+            # We also no longer need the protocol, so this will shutdown that.
             yield from self._reset_protocol()
 
         return self._psk
