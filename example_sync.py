@@ -43,8 +43,9 @@ def run():
     with open('gateway_psk.txt', 'a+') as file:
         file.seek(0)
         psk = file.read()
-        api_factory.psk = psk
-        if not psk:
+        if psk:
+            api_factory.psk = psk.strip()
+        else:
             psk = api_factory.generate_psk(sys.argv[2])
             print('Generated PSK: ', psk)
             file.write(psk)
