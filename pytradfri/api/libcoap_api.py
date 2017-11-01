@@ -16,10 +16,18 @@ SERVER_ERROR_PREFIX = '5.'
 
 class APIFactory:
     def __init__(self, host, psk_id='pytradfri', psk=None):
-        self._psk = psk
         self._host = host
+        self._psk = psk
         self._psk_id = psk_id
         self._security_code = None
+
+    @property
+    def psk(self):
+        return self._psk
+
+    @psk.setter
+    def psk(self, value):
+        self._psk = value
 
     def _base_command(self, method):
         """Return base command."""
@@ -67,6 +75,7 @@ class APIFactory:
             _LOGGER.debug('Executing %s %s %s', self._host, method, path)
 
         command.append(url)
+        print(command)
 
         try:
             return_value = subprocess.check_output(command, **kwargs)
