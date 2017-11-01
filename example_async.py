@@ -55,9 +55,6 @@ def run():
 
     lights = [dev for dev in devices if dev.has_light_control]
 
-    tasks_command = gateway.get_smart_tasks()
-    tasks = yield from api(tasks_command)
-
     # Print all lights
     print(lights)
 
@@ -96,6 +93,10 @@ def run():
     # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
     color_command = light.light_control.set_hex_color('efd275')
     yield from api(color_command)
+
+    tasks_command = gateway.get_smart_tasks()
+    tasks_commands = yield from api(tasks_command)
+    tasks = yield from api(tasks_commands)
 
     # Example 6: Return the transition time (in minutes) for task#1
     if tasks:
