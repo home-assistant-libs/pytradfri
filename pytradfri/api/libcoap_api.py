@@ -75,7 +75,6 @@ class APIFactory:
             _LOGGER.debug('Executing %s %s %s', self._host, method, path)
 
         command.append(url)
-        print(command)
 
         try:
             return_value = subprocess.check_output(command, **kwargs)
