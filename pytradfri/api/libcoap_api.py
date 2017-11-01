@@ -137,7 +137,7 @@ def api_factory(host, identity='pytradfri', psk=None, security_code=None):
         identity = old_identity
 
     # This will cause a RequestError to be raised if credentials invalid
-    yield from request(Command('get', ['status']))
+    request(Command('get', ['status']))
 
     return request
 

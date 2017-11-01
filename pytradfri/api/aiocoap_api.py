@@ -29,10 +29,10 @@ tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 
 class APIFactory:
 
-    def __init__(self, host, pskId='pytradfri', psk=None, loop=None):
+    def __init__(self, host, psk_id='pytradfri', psk=None, loop=None):
         self._psk = psk
         self._host = host
-        self._pskId = pskId
+        self._psk_id = psk_id
         self._loop = loop
         self._observations_err_callbacks = []
         self._protocol = None
@@ -40,9 +40,19 @@ class APIFactory:
         if self._loop is None:
             self._loop = asyncio.get_event_loop()
 
+        PatchedDTLSSecurityStore.IDENTITY = self._psk_id.encode('utf-8')
+
         if self._psk:
-            PatchedDTLSSecurityStore.IDENTITY = self._pskId.encode('utf-8')
             PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')
+
+    @property
+    def psk(self):
+        return self._psk
+
+    @psk.setter
+    def psk(self, value):
+        self._psk = value
+        PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')
 
     @asyncio.coroutine
     def _get_protocol(self):
@@ -53,7 +63,7 @@ class APIFactory:
         return self._protocol
 
     @asyncio.coroutine
-    def _reset_protocol(self, exc):
+    def _reset_protocol(self, exc=None):
         """Reset the protocol if an error occurs.
            This can be removed when chrysn/aiocoap#79 is closed."""
         # Be responsible and clean up.
@@ -107,6 +117,14 @@ class APIFactory:
         api_method = Code.GET
         if method == 'put':
             api_method = Code.PUT
+        elif method == 'post':
+            api_method = Code.POST
+        elif method == 'delete':
+            api_method = Code.DELETE
+        elif method == 'fetch':
+            api_method = Code.FETCH
+        elif method == 'patch':
+            api_method = Code.PATCH
 
         msg = Message(code=api_method, uri=url, **kwargs)
 
@@ -163,10 +181,10 @@ class APIFactory:
                 'utf-8')
             PatchedDTLSSecurityStore.KEY = security_key.encode('utf-8')
 
-            command = Gateway().generate_psk(self._pskId)
+            command = Gateway().generate_psk(self._psk_id)
             self._psk = yield from self.request(command)
 
-            PatchedDTLSSecurityStore.IDENTITY = self._pskId.encode('utf-8')
+            PatchedDTLSSecurityStore.IDENTITY = self._psk_id.encode('utf-8')
             PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')
 
             # aiocoap has now cached our psk, so it must be reset.

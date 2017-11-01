@@ -37,7 +37,9 @@ def run():
     # The configuration check takes care they are present.
     api_factory = APIFactory(sys.argv[1])
     with open('gateway_psk.txt', 'a+') as file:
-        psk = file.readline()
+        file.seek(0)
+        psk = file.read()
+        api_factory.psk = psk
         if not psk:
             psk = yield from api_factory.generate_psk(sys.argv[2])
             print('Generated PSK: ', psk)
