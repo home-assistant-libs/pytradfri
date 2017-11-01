@@ -29,6 +29,7 @@ For synchronous functionality please install libcoap using [this script.](script
 
 For asynchronous functionality please install tinydtls and the tinydtls branch for aiocoap using [this script.](script/install-aiocoap.sh).
 
+Security best practice is to not store the security code that is printed on the gateway permanently in your application. Please always use the PSK when communicating with the gateway.
 
 ## 2. Stand-alone use (command-line interface)
 ![Screenshot of command line interface](./docs/pytradfri_cli.png)
