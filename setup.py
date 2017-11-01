@@ -5,7 +5,7 @@ DOWNLOAD_URL = \
     'https://github.com/ggravlingen/pytradfri/archive/{}.zip'.format(VERSION)
 
 EXTRAS_REQUIRE = {
-    'async': ['aiocoap >= 0.3', 'DTLSSocket >= 0.1.3']
+    'async': ['aiocoap >= 0.3', 'DTLSSocket >= 0.1.4']
 }
 
 DEP_LINKS = [
