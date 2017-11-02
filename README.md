@@ -23,9 +23,9 @@ Table of contents:
 5. [Acknowledgements](#5-acknowledgements)
 
 ## 1. Installation
-To use the code for basic functionality, you first need to install [libcoap](https://github.com/obgm/libcoap)(sync) using [this script.](script/install-coap-client.sh).
+To use the code for basic functionality, you first need to install [libcoap](https://github.com/obgm/libcoap) using [this script.](script/install-coap-client.sh). Use ```example_sync.py``` when testing this.
 
-If you want more advanced features, such as observing the states of your devices, cython3, [tinydtls](https://git.fslab.de/jkonra2m/tinydtls) and [aiocoap](https://github.com/chrysn/aiocoap) must be installed, for instance by invoking the following command in shell ```shell pip install -r requirements.txt ```. Please note that you might have to use sudo for some commands to work.
+If you want more advanced features, such as observing the states of your devices, cython3, [tinydtls](https://git.fslab.de/jkonra2m/tinydtls) and [aiocoap](https://github.com/chrysn/aiocoap) must be installed, for instance by invoking the following command in shell: ```shell pip install -r requirements.txt ```. Please note that you might have to use sudo for some commands to work. Use ```example_async.py``` when testing this.
 
 Security best practice is to not store the security code that is printed on the gateway permanently in your application. Please always use the PSK when communicating with the gateway.
 
