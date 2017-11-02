@@ -23,9 +23,11 @@ Table of contents:
 5. [Acknowledgements](#5-acknowledgements)
 
 ## 1. Installation
-To use the code for basic functionality, you first need to install [libcoap](https://github.com/obgm/libcoap) using [this script.](script/install-coap-client.sh) Use ```example_sync.py``` when testing this.
+You might have to use sudo for some commands to work when installing.
 
-If you want more advanced features, such as observing the states of your devices, you need [DTLSSocket](https://pypi.python.org/pypi/DTLSSocket). Install the requirements file if you want this functionality: ```shell pip install -r requirements.txt ```. Please note that you might have to use sudo for some commands to work and that install might take considerable time on slow devices. Use ```example_async.py``` when testing this.
+To use the library in a synchronous application, you first need to install [libcoap](https://github.com/obgm/libcoap) using [this script.](script/install-coap-client.sh) Use ```example_sync.py``` when testing this.
+
+For asynchronous applications you will need to install [DTLSSocket](https://pypi.python.org/pypi/DTLSSocket), for instance using the requirements file: ```shell pip install -r requirements.txt ```. Please note that install might take considerable time on slow devices. Use ```example_async.py``` when testing this.
 
 Security best practice is to not store the security code that is printed on the gateway permanently in your application. Please always use the PSK when communicating with the gateway.
 
