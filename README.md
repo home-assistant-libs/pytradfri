@@ -23,11 +23,11 @@ Table of contents:
 5. [Acknowledgements](#5-acknowledgements)
 
 ## 1. Installation
-In order to use the code, you first need to install [libcoap](https://github.com/obgm/libcoap)(sync), or cython3, [tinydtls](https://git.fslab.de/jkonra2m/tinydtls) and [aiocoap](https://github.com/chrysn/aiocoap) depending on which functionality you're interested in, as per the following instructions (you might have to use sudo for some commands to work).
+You might have to use sudo for some commands to work when installing.
 
-For synchronous functionality please install libcoap using [this script.](script/install-coap-client.sh).
+To use the library in a synchronous application, you first need to install [libcoap](https://github.com/obgm/libcoap) using [this script.](script/install-coap-client.sh) Use ```example_sync.py``` when testing this.
 
-For asynchronous functionality please install tinydtls and the tinydtls branch for aiocoap using [this script.](script/install-aiocoap.sh).
+For asynchronous applications you will need to install [DTLSSocket](https://pypi.python.org/pypi/DTLSSocket), for instance using the requirements file: ```shell pip install -r requirements.txt ```. Please note that install might take considerable time on slow devices. Use ```example_async.py``` when testing this.
 
 Security best practice is to not store the security code that is printed on the gateway permanently in your application. Please always use the PSK when communicating with the gateway.
 
