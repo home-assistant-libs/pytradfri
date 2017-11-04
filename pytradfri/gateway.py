@@ -102,6 +102,11 @@ class Gateway:
                        [ROOT_GATEWAY, ATTR_GATEWAY_INFO],
                        process_result=process_result)
 
+    #debug
+    @property
+    def gateway_info(self):
+        return GatewayInfo(self)
+
     def get_moods(self):
         """
         Return moods defined on the gateway.
@@ -188,12 +193,14 @@ class Gateway:
         return Command('post',
                        [ROOT_GATEWAY, ATTR_GATEWAY_FACTORY_DEFAULTS])
 
-
 class GatewayInfo:
     """This class contains Gateway information."""
 
-    def __init__(self, raw):
-        self.raw = raw
+    def __init__(self, result):
+        self._result = result
+
+#    def __init__(self, raw):
+#        self.raw = raw
 
     @property
     def id(self):
@@ -228,8 +235,19 @@ class GatewayInfo:
         return datetime.utcfromtimestamp(self.raw[ATTR_FIRST_SETUP])
 
     @property
+    def homekit_id(self):
+        return self.raw.get(ATTR_HOMEKIT_ID)
+
+    @property
     def path(self):
         return [ROOT_GATEWAY, ATTR_GATEWAY_INFO]
+
+    #debug
+    @property
+    def raw(self):
+        """Return raw data that it represents."""
+        return Command('get',
+                       [ROOT_GATEWAY, ATTR_GATEWAY_INFO])
 
     def set_values(self, values):
         """
