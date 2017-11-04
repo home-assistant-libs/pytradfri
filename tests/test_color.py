@@ -1,6 +1,16 @@
 from pytradfri.const import (ATTR_LIGHT_COLOR_X as X, ATTR_LIGHT_COLOR_Y as Y)
 from pytradfri.color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, \
-    rgb_to_xyY
+    rgb_to_xyY, rgb2xyzD65, xy_brightness_to_rgb
+import pytest
+
+# Kelvin range for which the conversion functions work
+# and that RGB bulbs can show
+MIN_KELVIN = 1667
+MAX_KELVIN = 25000
+
+# Kelvin range that white-spectrum bulbs can actually show
+MIN_KELVIN_WS = 2200
+MAX_KELVIN_WS = 4000
 
 
 def test_can_dekelvinize():
@@ -34,6 +44,16 @@ def test_kelvin_to_xyY():
     assert cold[X] in range(24930-50, 24930+51)
     assert cold[Y] in range(24694-50, 24694+51)
 
+    cold = kelvin_to_xyY(25000)
+    assert cold[X] in range(16546-50, 16546+51)
+    assert cold[Y] in range(16546-50, 16546+51)
+
+    with pytest.raises(ValueError):
+        kelvin_to_xyY(99999)
+
+    with pytest.raises(ValueError):
+        kelvin_to_xyY(0, True)
+
 
 def test_xyY_to_kelvin():
     # xyY_to_kelvin approximates, so +-20 is sufficiently precise.
@@ -63,3 +83,34 @@ def test_rgb_to_xyY():
     blue = rgb_to_xyY(0, 0, 255)
     assert blue[X] in range(9831-50, 9831+51)
     assert blue[Y] in range(3933-50, 3933+51)
+
+
+def test_rgb_to_xyzD65():
+    # Uses CIE standard illuminant A = 2856K
+    # src: http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+    # calculation https://gist.github.com/r41d/43e14df2ccaeca56d32796efd6584b48
+
+    red = rgb2xyzD65(255, 0, 0)
+    assert round(red[0], 4) == 105.1764
+    assert round(red[1], 4) == 54.2316
+    assert round(red[2], 4) == 4.9301
+
+    green = rgb2xyzD65(0, 255, 0)
+    assert round(green[0], 4) == 91.1819
+    assert round(green[1], 4) == 182.3638
+    assert round(green[2], 4) == 30.394
+
+    blue = rgb2xyzD65(0, 0, 255)
+    assert round(blue[0], 4) == 46.0116
+    assert round(blue[1], 4) == 18.4046
+    assert round(blue[2], 4) == 242.3275
+
+
+def test_xy_brightness_to_rgb():
+    # Converted to Python from Obj-C, original source from:
+    # http://www.developers.meethue.com/documentation/color-conversions-rgb-xy
+    rgb = xy_brightness_to_rgb(33135, 27211, 0)
+    assert rgb == (0, 0, 0)
+
+    rgb = xy_brightness_to_rgb(33135, 27211, 15)
+    assert rgb == (101, 57, 0)
