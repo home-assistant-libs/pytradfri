@@ -188,6 +188,7 @@ class Gateway:
         return Command('post',
                        [ROOT_GATEWAY, ATTR_GATEWAY_FACTORY_DEFAULTS])
 
+
 class GatewayInfo:
     """This class contains Gateway information."""
 
