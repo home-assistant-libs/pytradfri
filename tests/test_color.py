@@ -1,6 +1,16 @@
 from pytradfri.const import (ATTR_LIGHT_COLOR_X as X, ATTR_LIGHT_COLOR_Y as Y)
 from pytradfri.color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, \
     rgb_to_xyY, rgb2xyzD65, xy_brightness_to_rgb
+import pytest
+
+# Kelvin range for which the conversion functions work
+# and that RGB bulbs can show
+MIN_KELVIN = 1667
+MAX_KELVIN = 25000
+
+# Kelvin range that white-spectrum bulbs can actually show
+MIN_KELVIN_WS = 2200
+MAX_KELVIN_WS = 4000
 
 
 def test_can_dekelvinize():
@@ -37,6 +47,12 @@ def test_kelvin_to_xyY():
     cold = kelvin_to_xyY(25000)
     assert cold[X] in range(16546-50, 16546+51)
     assert cold[Y] in range(16546-50, 16546+51)
+
+    with pytest.raises(ValueError):
+        kelvin_to_xyY(99999)
+
+    with pytest.raises(ValueError):
+        kelvin_to_xyY(99999, True)
 
 
 def test_xyY_to_kelvin():
