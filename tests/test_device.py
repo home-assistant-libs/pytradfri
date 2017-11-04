@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pytradfri.const import ROOT_DEVICES, ATTR_NAME
 from pytradfri.device import Device
 
@@ -38,6 +40,7 @@ def test_device_properties():
     assert dev.application_type == 2
     assert dev.name == 'Light name'
     assert dev.id == 65537
+    assert dev.created_at == datetime.utcfromtimestamp(1491771330)
     assert dev.reachable
     assert dev.path == [ROOT_DEVICES, 65537]
 
