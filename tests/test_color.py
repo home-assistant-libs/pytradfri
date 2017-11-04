@@ -52,7 +52,7 @@ def test_kelvin_to_xyY():
         kelvin_to_xyY(99999)
 
     with pytest.raises(ValueError):
-        kelvin_to_xyY(99999, True)
+        kelvin_to_xyY(0, True)
 
 
 def test_xyY_to_kelvin():
