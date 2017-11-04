@@ -228,7 +228,7 @@ class GatewayInfo:
 
     @property
     def homekit_id(self):
-        return self.raw.get(ATTR_HOMEKIT_ID)
+        return self.raw.get(ATTR_HOMEKIT_ID2)
 
     @property
     def path(self):
