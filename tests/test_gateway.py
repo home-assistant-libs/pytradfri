@@ -34,6 +34,7 @@ GATEWAY_INFO = {
 
 GATEWAY_INFO_EMPTY = {}
 
+
 def test_get_device():
     gateway = Gateway()
     command = gateway.get_device(123)
