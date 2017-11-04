@@ -1,6 +1,6 @@
 from pytradfri.const import (ATTR_LIGHT_COLOR_X as X, ATTR_LIGHT_COLOR_Y as Y)
 from pytradfri.color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, \
-    rgb_to_xyY,rgb2xyzD65
+    rgb_to_xyY, rgb2xyzD65
 
 
 def test_can_dekelvinize():
@@ -66,6 +66,7 @@ def test_rgb_to_xyY():
     blue = rgb_to_xyY(0, 0, 255)
     assert blue[X] in range(9831-50, 9831+51)
     assert blue[Y] in range(3933-50, 3933+51)
+
 
 def test_rgb_to_xyzD65():
     # Uses CIE standard illuminant A = 2856K
