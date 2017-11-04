@@ -3,7 +3,7 @@ from pytradfri.gateway import Gateway, GatewayInfo
 
 
 GATEWAY = {
-  "9023": "3.tradfri.pool.ntp.org",
+  "9023": "xyz.pool.ntp.pool",
   "9029": "1.2.42",
   "9054": 0,
   "9055": 0,
@@ -42,7 +42,7 @@ def test_gateway_info():
     gateway_info = GatewayInfo(GATEWAY)
 
     assert gateway_info.id == '7e0000000000000a'
-    assert gateway_info.ntp_server == 'xyz.pool.ntp.org'
+    assert gateway_info.ntp_server == 'xyz.pool.ntp.pool'
     assert gateway_info.firmware_version == '1.2.42'
     assert gateway_info.current_time_iso8601 == '2017-11-04T09:46:39.046784Z'
     assert gateway_info.first_setup == '1509474847'
