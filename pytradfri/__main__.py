@@ -5,7 +5,7 @@ import sys
 
 from .const import *  # noqa
 from pytradfri.api.libcoap_api import APIFactory
-from .gateway import Gateway, GatewayInfo
+from .gateway import Gateway
 from .command import Command
 
 
