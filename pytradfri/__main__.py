@@ -5,7 +5,7 @@ import sys
 
 from .const import *  # noqa
 from pytradfri.api.libcoap_api import APIFactory
-from .gateway import Gateway
+from .gateway import Gateway, GatewayInfo
 from .command import Command
 
 
@@ -39,6 +39,7 @@ if __name__ == '__main__':
     moods = api(gateway.get_moods())
     mood = moods[0]
     tasks = api(gateway.get_smart_tasks())
+    homekit_id = api(gateway.get_gateway_info()).homekit_id
 
     def dump_all():
         endpoints = api(gateway.get_endpoints())
@@ -59,6 +60,7 @@ if __name__ == '__main__':
     print()
     print("Example commands:")
     print("> devices")
+    print("> homekit_id")
     print("> light.light_control.lights")
     print("> api(light.light_control.set_dimmer(10))")
     print("> api(light.light_control.set_dimmer(254))")
