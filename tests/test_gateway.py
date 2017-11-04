@@ -4,7 +4,7 @@ from pytradfri.const import ROOT_DEVICES
 from pytradfri.gateway import Gateway, GatewayInfo
 
 
-GATEWAY = {
+GATEWAY_INFO = {
   "9023": "xyz.pool.ntp.pool",
   "9029": "1.2.42",
   "9054": 0,
@@ -32,7 +32,6 @@ GATEWAY = {
   "9106": 0
 }
 
-
 def test_get_device():
     gateway = Gateway()
     command = gateway.get_device(123)
@@ -42,7 +41,7 @@ def test_get_device():
 
 
 def test_gateway_info():
-    gateway_info = GatewayInfo(GATEWAY)
+    gateway_info = GatewayInfo(GATEWAY_INFO)
 
     assert gateway_info.id == '7e0000000000000a'
     assert gateway_info.ntp_server == 'xyz.pool.ntp.pool'
