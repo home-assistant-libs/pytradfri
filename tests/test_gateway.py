@@ -32,6 +32,7 @@ GATEWAY = {
   "9106": 0
 }
 
+
 def test_get_device():
     gateway = Gateway()
     command = gateway.get_device(123)
