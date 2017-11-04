@@ -47,6 +47,7 @@ def test_gateway_info():
     assert gateway_info.id == '7e0000000000000a'
     assert gateway_info.ntp_server == 'xyz.pool.ntp.pool'
     assert gateway_info.firmware_version == '1.2.42'
+    assert gateway_info.current_time == datetime.utcfromtimestamp(1509788799)
     assert gateway_info.current_time_iso8601 == '2017-11-04T09:46:39.046784Z'
     assert gateway_info.first_setup == datetime.utcfromtimestamp(1509474847)
     assert gateway_info.homekit_id == '123-45-67'
