@@ -1,5 +1,5 @@
 from pytradfri.const import ROOT_DEVICES
-from pytradfri.gateway import Gateway,GatewayInfo
+from pytradfri.gateway import Gateway, GatewayInfo
 
 
 GATEWAY = {
@@ -24,7 +24,6 @@ GATEWAY = {
   "9079": 0,
   "9080": 0,
   "9081": "7e0000000000000a",
-  "9082": true,
   "9083": "123-45-67",
   "9092": 0,
   "9093": 0,
@@ -38,13 +37,13 @@ def test_get_device():
     assert command.method == 'get'
     assert command.path == [ROOT_DEVICES, 123]
 
+
 def test_gateway_info():
     gateway_info = GatewayInfo(GATEWAY)
 
     assert gateway_info.id == '7e0000000000000a'
     assert gateway_info.ntp_server == 'xyz.pool.ntp.org'
     assert gateway_info.firmware_version == '1.2.42'
-    #assert gateway_info.current_time == '0'
     assert gateway_info.current_time_iso8601 == '2017-11-04T09:46:39.046784Z'
     assert gateway_info.first_setup == '1509474847'
     assert gateway_info.homekit_id == '123-45-67'
