@@ -32,6 +32,7 @@ GATEWAY_INFO = {
   "9106": 0
 }
 
+GATEWAY_INFO_EMPTY = {}
 
 def test_get_device():
     gateway = Gateway()
@@ -43,6 +44,7 @@ def test_get_device():
 
 def test_gateway_info():
     gateway_info = GatewayInfo(GATEWAY_INFO)
+    gateway_info_empty = GatewayInfo(GATEWAY_INFO_EMPTY)
 
     assert gateway_info.id == '7e0000000000000a'
     assert gateway_info.ntp_server == 'xyz.pool.ntp.pool'
@@ -52,3 +54,6 @@ def test_gateway_info():
     assert gateway_info.first_setup == datetime.utcfromtimestamp(1509474847)
     assert gateway_info.homekit_id == '123-45-67'
     assert gateway_info.path == ['15011', '15012']
+
+    assert gateway_info_empty.current_time is None
+    assert gateway_info_empty.first_setup is None
