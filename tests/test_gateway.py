@@ -49,4 +49,4 @@ def test_gateway_info():
     assert gateway_info.current_time_iso8601 == '2017-11-04T09:46:39.046784Z'
     assert gateway_info.first_setup == datetime.utcfromtimestamp(1509474847)
     assert gateway_info.homekit_id == '123-45-67'
-    assert gateway_info.path == '15011/15012'
+    assert gateway_info.path == ['15011', '15012']
