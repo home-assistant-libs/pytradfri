@@ -38,6 +38,7 @@ def test_kelvin_to_xyY():
     assert cold[X] in range(16546-50, 16546+51)
     assert cold[Y] in range(16546-50, 16546+51)
 
+
 def test_xyY_to_kelvin():
     # xyY_to_kelvin approximates, so +-20 is sufficiently precise.
     # Values taken from Tradfri App.
