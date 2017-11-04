@@ -4,7 +4,7 @@ from pprint import pprint
 import sys
 
 from .const import *  # noqa
-from .api.libcoap_api import api_factory
+from pytradfri.api.libcoap_api import APIFactory
 from .gateway import Gateway
 from .command import Command
 
@@ -16,7 +16,19 @@ if __name__ == '__main__':
 
     logging.basicConfig(level=logging.DEBUG)
 
-    api = api_factory(sys.argv[1], sys.argv[2])
+    api_factory = APIFactory(sys.argv[1])
+    with open('gateway_psk.txt', 'a+') as file:
+        file.seek(0)
+        psk = file.read()
+        if psk:
+            api_factory.psk = psk.strip()
+        else:
+            psk = api_factory.generate_psk(sys.argv[2])
+            print('Generated PSK: ', psk)
+            file.write(psk)
+
+    api = api_factory.request
+
     gateway = Gateway()
     devices_commands = api(gateway.get_devices())
     devices = api(devices_commands)
@@ -27,6 +39,7 @@ if __name__ == '__main__':
     moods = api(gateway.get_moods())
     mood = moods[0]
     tasks = api(gateway.get_smart_tasks())
+    homekit_id = api(gateway.get_gateway_info()).homekit_id
 
     def dump_all():
         endpoints = api(gateway.get_endpoints())
@@ -47,6 +60,7 @@ if __name__ == '__main__':
     print()
     print("Example commands:")
     print("> devices")
+    print("> homekit_id")
     print("> light.light_control.lights")
     print("> api(light.light_control.set_dimmer(10))")
     print("> api(light.light_control.set_dimmer(254))")

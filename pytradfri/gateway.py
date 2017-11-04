@@ -8,7 +8,7 @@ from .const import (
     ATTR_CURRENT_TIME_UNIX, ATTR_CURRENT_TIME_ISO8601,
     ATTR_FIRST_SETUP, ATTR_GATEWAY_INFO, ATTR_GATEWAY_ID,
     ATTR_GATEWAY_REBOOT, ATTR_GATEWAY_FACTORY_DEFAULTS,
-    ATTR_AUTH, ATTR_IDENTITY, ATTR_PSK)
+    ATTR_AUTH, ATTR_IDENTITY, ATTR_PSK, ATTR_HOMEKIT_ID)
 from .device import Device
 from .group import Group
 from .mood import Mood
@@ -226,6 +226,10 @@ class GatewayInfo:
         if ATTR_FIRST_SETUP not in self.raw:
             return None
         return datetime.utcfromtimestamp(self.raw[ATTR_FIRST_SETUP])
+
+    @property
+    def homekit_id(self):
+        return self.raw.get(ATTR_HOMEKIT_ID)
 
     @property
     def path(self):
