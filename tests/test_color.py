@@ -1,6 +1,6 @@
 from pytradfri.const import (ATTR_LIGHT_COLOR_X as X, ATTR_LIGHT_COLOR_Y as Y)
 from pytradfri.color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, \
-    rgb_to_xyY, rgb2xyzD65
+    rgb_to_xyY, rgb2xyzD65, xy_brightness_to_rgb
 
 
 def test_can_dekelvinize():
@@ -88,3 +88,13 @@ def test_rgb_to_xyzD65():
     assert round(blue[0], 4) == 46.0116
     assert round(blue[1], 4) == 18.4046
     assert round(blue[2], 4) == 242.3275
+
+
+def test_xy_brightness_to_rgb():
+    # Converted to Python from Obj-C, original source from:
+    # http://www.developers.meethue.com/documentation/color-conversions-rgb-xy
+    rgb = xy_brightness_to_rgb(33135, 27211, 0)
+    assert rgb == (0, 0, 0)
+
+    rgb = xy_brightness_to_rgb(33135, 27211, 15)
+    assert rgb == (101, 57, 0)
