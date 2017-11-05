@@ -165,3 +165,33 @@ def xy_brightness_to_rgb(vX: float, vY: float, ibrightness: int):
         r, g, b = map(lambda x: x / max_component, [r, g, b])
     ir, ig, ib = map(lambda x: int(x * 255), [r, g, b])
     return (ir, ig, ib)
+
+def supported_colors(light_control_json):
+    SUPPORTED_FEATURES = []
+    if light_control_json[ATTR_LIGHT_DIMMER]:
+        SUPPORTED_FEATURES['dimmer'] = True
+
+    if light_control_json[ATTR_LIGHT_MIREDS]:
+        SUPPORTED_FEATURES['color_temp'] = True
+
+    """
+        Three temps:
+          '{'5709': 32372,
+            '5710': 27208,
+            '5711': 454, -- mireds
+            '5851': 254 -- dimmer
+            }
+
+{'5850': 1, '5711': 454, '5710': 27211, '9003': 0, '5709': 33111, '5851': 254, '5706': 'efd275'}
+
+
+        RGB:
+           {'5707': 62804,
+            '5708': 25079,
+            '5709': 25097, -- x
+            '5710': 19962, -- y
+            '5851': 1, ---- dimmer
+            }
+        white:
+            {'5851': 174, '9003': 0}
+    """
