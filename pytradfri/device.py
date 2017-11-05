@@ -14,7 +14,7 @@ from .const import (
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_COLOR_X,
     ATTR_LIGHT_COLOR_Y,
-    ATTR_LIGHT_COLOR,
+    ATTR_LIGHT_COLOR_HEX,
     ATTR_TRANSITION_TIME
 )
 from .color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY,\
@@ -202,7 +202,7 @@ class LightControl:
     def set_hex_color(self, color, *, index=0):
         """Set xy color of the light."""
         return self.set_values({
-            ATTR_LIGHT_COLOR: color,
+            ATTR_LIGHT_COLOR_HEX: color,
         }, index=index)
 
     def set_xy_color(self, color_x, color_y, *, index=0):
@@ -266,7 +266,7 @@ class Light:
 
     @property
     def hex_color(self):
-        return self.raw.get(ATTR_LIGHT_COLOR)
+        return self.raw.get(ATTR_LIGHT_COLOR_HEX)
 
     @property
     def hex_color_inferred(self):
