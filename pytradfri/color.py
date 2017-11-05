@@ -1,4 +1,8 @@
-from .const import (ATTR_LIGHT_COLOR_X as X, ATTR_LIGHT_COLOR_Y as Y)
+from .const import (
+    ATTR_LIGHT_COLOR_X as X, ATTR_LIGHT_COLOR_Y as Y,
+    SUPPORT_BRIGHTNESS, SUPPORT_COLOR_TEMP,
+    SUPPORT_RGB_COLOR, ATTR_LIGHT_DIMMER,
+    ATTR_LIGHT_MIREDS)
 
 
 # Kelvin range for which the conversion functions work
@@ -166,32 +170,22 @@ def xy_brightness_to_rgb(vX: float, vY: float, ibrightness: int):
     ir, ig, ib = map(lambda x: int(x * 255), [r, g, b])
     return (ir, ig, ib)
 
-def supported_colors(light_control_json):
-    SUPPORTED_FEATURES = []
-    if light_control_json[ATTR_LIGHT_DIMMER]:
-        SUPPORTED_FEATURES['dimmer'] = True
 
-    if light_control_json[ATTR_LIGHT_MIREDS]:
-        SUPPORTED_FEATURES['color_temp'] = True
+def supported_color_features(light_control):  # what should I name this?
+    data = light_control
 
-    """
-        Three temps:
-          '{'5709': 32372,
-            '5710': 27208,
-            '5711': 454, -- mireds
-            '5851': 254 -- dimmer
-            }
+    SUPPORTED_COLOR_FEATURES = 0
 
-{'5850': 1, '5711': 454, '5710': 27211, '9003': 0, '5709': 33111, '5851': 254, '5706': 'efd275'}
+    if data[ATTR_LIGHT_DIMMER]:
+        SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES\
+            + SUPPORT_BRIGHTNESS
 
+    if data[ATTR_LIGHT_MIREDS]:
+        SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES\
+            + SUPPORT_COLOR_TEMP
 
-        RGB:
-           {'5707': 62804,
-            '5708': 25079,
-            '5709': 25097, -- x
-            '5710': 19962, -- y
-            '5851': 1, ---- dimmer
-            }
-        white:
-            {'5851': 174, '9003': 0}
-    """
+    if data[X] and data[Y]\
+            and not data[ATTR_LIGHT_MIREDS]:
+        SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES + SUPPORT_RGB_COLOR
+
+    return SUPPORTED_COLOR_FEATURES
