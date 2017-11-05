@@ -171,21 +171,19 @@ def xy_brightness_to_rgb(vX: float, vY: float, ibrightness: int):
     return (ir, ig, ib)
 
 
-def supported_color_features(light_control):  # what should I name this?
-    data = light_control
-
+def supported_color_features(data):  # what should I name this?
     SUPPORTED_COLOR_FEATURES = 0
 
-    if data[ATTR_LIGHT_DIMMER]:
+    if ATTR_LIGHT_DIMMER in data:
         SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES\
             + SUPPORT_BRIGHTNESS
 
-    if data[ATTR_LIGHT_MIREDS]:
+    if ATTR_LIGHT_MIREDS in data:
         SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES\
             + SUPPORT_COLOR_TEMP
 
-    if data[X] and data[Y]\
-            and not data[ATTR_LIGHT_MIREDS]:
-        SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES + SUPPORT_RGB_COLOR
+    if X in data and Y in data and ATTR_LIGHT_MIREDS not in data:
+            SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES\
+                + SUPPORT_RGB_COLOR
 
     return SUPPORTED_COLOR_FEATURES
