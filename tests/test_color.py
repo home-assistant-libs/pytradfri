@@ -1,7 +1,28 @@
 from pytradfri.const import (ATTR_LIGHT_COLOR_X as X, ATTR_LIGHT_COLOR_Y as Y)
 from pytradfri.color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, \
-    rgb_to_xyY, rgb2xyzD65, xy_brightness_to_rgb
+    rgb_to_xyY, rgb2xyzD65, xy_brightness_to_rgb, supported_color_features
 import pytest
+
+WS_BULB = {
+            '5706': 'efd275',  # hex
+            '5709': 33111,  # x
+            '5710': 27211,  # y
+            '5711': 454,  # mireds
+            '5851': 254,  # dimmer
+           }
+
+RGB_BULB = {
+            '5707': 62804,
+            '5708': 25079,
+            '5709': 25097,  # x
+            '5710': 19962,  # y
+            '5851': 1  # dimmer
+            }
+
+WHITE_BULB = {
+             '5851': 174  # dimmer
+            }
+
 
 # Kelvin range for which the conversion functions work
 # and that RGB bulbs can show
@@ -114,3 +135,9 @@ def test_xy_brightness_to_rgb():
 
     rgb = xy_brightness_to_rgb(33135, 27211, 15)
     assert rgb == (101, 57, 0)
+
+
+def test_supported_colors():
+    assert supported_color_features(WS_BULB) == 3
+#    assert supported_color_features(WHITE_BULB) == 1
+#    assert supported_color_features(RGB_BULB) == 17
