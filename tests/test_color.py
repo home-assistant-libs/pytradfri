@@ -139,5 +139,5 @@ def test_xy_brightness_to_rgb():
 
 def test_supported_colors():
     assert supported_color_features(WS_BULB) == 3
-#    assert supported_color_features(WHITE_BULB) == 1
-#    assert supported_color_features(RGB_BULB) == 17
+    assert supported_color_features(WHITE_BULB) == 1
+    assert supported_color_features(RGB_BULB) == 17
