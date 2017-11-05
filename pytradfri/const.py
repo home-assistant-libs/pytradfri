@@ -30,9 +30,10 @@ ATTR_GATEWAY_FACTORY_DEFAULTS = "9031"  # gw to factory defaults
 
 ATTR_LIGHT_STATE = "5850"  # 0 / 1
 ATTR_LIGHT_DIMMER = "5851"  # Dimmer, not following spec: 0..255
-ATTR_LIGHT_COLOR = "5706"  # string representing a value in some color space
+ATTR_LIGHT_COLOR_HEX = "5706"  # string representing a value in hex
 ATTR_LIGHT_COLOR_X = "5709"
 ATTR_LIGHT_COLOR_Y = "5710"
+ATTR_LIGHT_MIREDS = "5711"
 
 ATTR_START_ACTION = "9042"  # array
 
