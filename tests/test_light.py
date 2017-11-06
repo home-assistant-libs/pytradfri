@@ -161,50 +161,35 @@ def test_white_bulb():
     bulb = light(LIGHT_W)
 
     assert bulb.hex_color is None
-    assert bulb.hex_color_inferred == 'c19b57'
     assert bulb.xy_color == (None, None)
-    assert bulb.xy_color_inferred == (30101, 26913)
-    assert bulb.kelvin_color_inferred == 2700
 
 
 def test_spectrum_bulb():
     bulb = light(LIGHT_WS)
 
     assert bulb.hex_color == 'f1e0b5'
-    assert bulb.hex_color_inferred == 'f1e0b5'
     assert bulb.xy_color == (30138, 26909)
-    assert bulb.xy_color_inferred == (30138, 26909)
-    assert bulb.kelvin_color_inferred == 2697
 
 
 def test_spectrum_bulb_custom_color():
     bulb = light(LIGHT_WS_CUSTOM_COLOR)
 
     assert bulb.hex_color == '0'
-    assert bulb.hex_color_inferred == 'f9bc5a'
     assert bulb.xy_color == (32228, 27203)
-    assert bulb.xy_color_inferred == (32228, 27203)
-    assert bulb.kelvin_color_inferred == 2325
 
 
 def test_color_bulb():
     bulb = light(LIGHT_CWS)
 
     assert bulb.hex_color == 'd9337c'
-    assert bulb.hex_color_inferred == 'd9337c'
     assert bulb.xy_color == (32768, 15729)
-    assert bulb.xy_color_inferred == (32768, 15729)
-    assert bulb.kelvin_color_inferred == 4866
 
 
 def test_color_bulb_custom_color():
     bulb = light(LIGHT_CWS_CUSTOM_COLOR)
 
     assert bulb.hex_color == '0'
-    assert bulb.hex_color_inferred == 'cdff67'
     assert bulb.xy_color == (23327, 33940)
-    assert bulb.xy_color_inferred == (23327, 33940)
-    assert bulb.kelvin_color_inferred == 5046
 
 
 def test_white_device_control():
