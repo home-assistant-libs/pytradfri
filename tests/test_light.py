@@ -17,21 +17,21 @@ def test_white_bulb():
     bulb = light(LIGHT_W)
 
     assert bulb.hex_color is None
-    assert bulb.xy_color == (None, None)
+    assert bulb.xy_color is None
 
 
 def test_spectrum_bulb():
     bulb = light(LIGHT_WS)
 
     assert bulb.hex_color == 'f1e0b5'
-    assert bulb.xy_color == (30138, 26909)
+    assert bulb.xy_color is None
 
 
 def test_spectrum_bulb_custom_color():
     bulb = light(LIGHT_WS_CUSTOM_COLOR)
 
     assert bulb.hex_color == '0'
-    assert bulb.xy_color == (32228, 27203)
+    assert bulb.xy_color is None
 
 
 def test_color_bulb():
