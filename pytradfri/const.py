@@ -46,8 +46,8 @@ ATTR_LIGHT_DIMMER = "5851"  # Dimmer, not following spec: 0..255
 ATTR_LIGHT_COLOR_HEX = "5706"  # string representing a value in hex
 ATTR_LIGHT_COLOR_X = "5709"
 ATTR_LIGHT_COLOR_Y = "5710"
-ATTR_LIGHT_COLOR_A = "5707"  # What are these?
-ATTR_LIGHT_COLOR_B = "5708"  # What are these?
+ATTR_LIGHT_COLOR_SATURATION = "5707"  # this is a guess
+ATTR_LIGHT_COLOR_HUE = "5708"  # this is a guess
 ATTR_LIGHT_MIREDS = "5711"
 
 ATTR_MASTER_TOKEN_TAG = "9036"
