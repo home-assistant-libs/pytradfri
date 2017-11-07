@@ -310,8 +310,8 @@ class Light:
 
     @property
     def hex_color(self):
-        if self.supported_features >= 17:
-            return self.raw.get(ATTR_LIGHT_COLOR_HEX)
+        """ For backwards compatibility, don't add supported feats? """
+        return self.raw.get(ATTR_LIGHT_COLOR_HEX)
 
     @property
     def rgb_color(self):
