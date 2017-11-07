@@ -1,7 +1,7 @@
 from pytradfri.device import Device
 import pytest
 from pytradfri import error
-from bulbs import LIGHT_W, LIGHT_WS, LIGHT_WS_CUSTOM_COLOR, LIGHT_CWS,\
+from devices import LIGHT_W, LIGHT_WS, LIGHT_WS_CUSTOM_COLOR, LIGHT_CWS,\
     LIGHT_CWS_CUSTOM_COLOR
 
 
