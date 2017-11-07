@@ -182,7 +182,7 @@ def hex_to_rgb(hex):
     return tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
 
 
-def supported_color_features(data):  # what should I name this?
+def light_supported_features(data):  # what should I name this?
     SUPPORTED_COLOR_FEATURES = 0
 
     if ATTR_LIGHT_DIMMER in data:
