@@ -24,7 +24,7 @@ from .const import (
     SUPPORT_XY_COLOR)
 from .color import kelvin_to_xyY, rgb_to_xyY, COLORS, MIN_KELVIN, MAX_KELVIN,\
     MIN_KELVIN_WS, MAX_KELVIN_WS, supported_color_features, hex_to_rgb,\
-    xyY_to_kelvin, can_kelvin_to_xy, xy_brightness_to_rgb
+    xyY_to_kelvin, xy_brightness_to_rgb, can_kelvin_to_xy
 from .resource import ApiResource
 from .error import ColorError
 
@@ -304,7 +304,7 @@ class Light:
         return self.raw.get(ATTR_LIGHT_STATE) == 1
 
     @property
-    def dimmer(self): #  Not convinced this is correct binary calc...
+    def dimmer(self):  # Not convinced this is correct binary calc...
         if self.supported_color_features / SUPPORT_BRIGHTNESS >= 1:
             return self.raw.get(ATTR_LIGHT_DIMMER)
 
