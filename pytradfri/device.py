@@ -296,7 +296,7 @@ class Light:
         self.index = index
 
     @property
-    def supported_features(self):
+    def supported_color_features(self):
         return supported_color_features(self.raw)
 
     @property
@@ -304,29 +304,28 @@ class Light:
         return self.raw.get(ATTR_LIGHT_STATE) == 1
 
     @property
-    def dimmer(self):
-        #  Do proper binary calc
-        if self.supported_features & SUPPORT_BRIGHTNESS == SUPPORT_BRIGHTNESS:
+    def dimmer(self): #  Not convinced this is correct binary calc...
+        if self.supported_color_features / SUPPORT_BRIGHTNESS >= 1:
             return self.raw.get(ATTR_LIGHT_DIMMER)
 
     @property
     def color_temp(self):
-        if self.supported_features & SUPPORT_COLOR_TEMP == SUPPORT_COLOR_TEMP:
+        if self.supported_color_features / SUPPORT_COLOR_TEMP >= 1:
             return 1000000 / self.raw.get(ATTR_LIGHT_MIREDS)
 
     @property
     def hex_color(self):
-        if self.supported_features & SUPPORT_HEX_COLOR == SUPPORT_HEX_COLOR:
+        if self.supported_color_features / SUPPORT_HEX_COLOR >= 1:
             return self.raw.get(ATTR_LIGHT_COLOR_HEX)
 
     @property
     def rgb_color(self):
-        if self.supported_features & SUPPORT_RGB_COLOR == SUPPORT_RGB_COLOR:
+        if self.supported_color_features / SUPPORT_RGB_COLOR >= 1:
             return hex_to_rgb(self.raw.get(ATTR_LIGHT_COLOR_HEX))
 
     @property
     def xy_color(self):
-        if self.supported_features & SUPPORT_XY_COLOR == SUPPORT_XY_COLOR:
+        if self.supported_color_features / SUPPORT_XY_COLOR >= 1:
             return (self.raw.get(ATTR_LIGHT_COLOR_X),
                     self.raw.get(ATTR_LIGHT_COLOR_Y))
 
@@ -343,5 +342,7 @@ class Light:
                "dimmer: {}, "\
                "hex_color: {}, " \
                "xy_color: {}, " \
+               "supported color features: {} " \
                ">".format(self.index, self.device.name, state, self.dimmer,
-                          self.hex_color, self.xy_color)
+                          self.hex_color, self.xy_color,
+                          self.supported_color_features)
