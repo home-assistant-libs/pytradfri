@@ -16,11 +16,15 @@ from .const import (
     ATTR_LIGHT_COLOR_Y,
     ATTR_LIGHT_COLOR_HEX,
     ATTR_LIGHT_MIREDS,
-    ATTR_TRANSITION_TIME
-)
+    ATTR_TRANSITION_TIME,
+    SUPPORT_BRIGHTNESS,
+    SUPPORT_COLOR_TEMP,
+    SUPPORT_HEX_COLOR,
+    SUPPORT_RGB_COLOR,
+    SUPPORT_XY_COLOR)
 from .color import kelvin_to_xyY, rgb_to_xyY, COLORS, MIN_KELVIN, MAX_KELVIN,\
     MIN_KELVIN_WS, MAX_KELVIN_WS, supported_color_features, hex_to_rgb,\
-    xyY_to_kelvin, can_kelvin_to_xy
+    xyY_to_kelvin, can_kelvin_to_xy, xy_brightness_to_rgb
 from .resource import ApiResource
 from .error import ColorError
 
@@ -301,28 +305,30 @@ class Light:
 
     @property
     def dimmer(self):
-        if self.supported_features >= 1:
+        #  Do proper binary calc
+        if self.supported_features & SUPPORT_BRIGHTNESS == SUPPORT_BRIGHTNESS:
             return self.raw.get(ATTR_LIGHT_DIMMER)
 
     @property
     def color_temp(self):
-        if self.supported_features >= 3:
+        if self.supported_features & SUPPORT_COLOR_TEMP == SUPPORT_COLOR_TEMP:
             return 1000000 / self.raw.get(ATTR_LIGHT_MIREDS)
 
     @property
     def hex_color(self):
-        """ For backwards compatibility, don't add supported feats? """
-        return self.raw.get(ATTR_LIGHT_COLOR_HEX)
+        if self.supported_features & SUPPORT_HEX_COLOR == SUPPORT_HEX_COLOR:
+            return self.raw.get(ATTR_LIGHT_COLOR_HEX)
 
     @property
     def rgb_color(self):
-        if self.supported_features >= 17:
+        if self.supported_features & SUPPORT_RGB_COLOR == SUPPORT_RGB_COLOR:
             return hex_to_rgb(self.raw.get(ATTR_LIGHT_COLOR_HEX))
 
     @property
     def xy_color(self):
-        return (self.raw.get(ATTR_LIGHT_COLOR_X),
-                self.raw.get(ATTR_LIGHT_COLOR_Y))
+        if self.supported_features & SUPPORT_XY_COLOR == SUPPORT_XY_COLOR:
+            return (self.raw.get(ATTR_LIGHT_COLOR_X),
+                    self.raw.get(ATTR_LIGHT_COLOR_Y))
 
     @property
     def raw(self):
