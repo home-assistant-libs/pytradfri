@@ -29,7 +29,7 @@ def test_spectrum_bulb():
     bulb = light(LIGHT_WS)
 
     assert bulb.hex_color == '0'
-    assert bulb.xy_color is None
+    assert bulb.xy_color == (31103, 27007)
     assert bulb.color_temp == 2500
 
 
@@ -37,7 +37,7 @@ def test_spectrum_bulb_custom_color():
     bulb = light(LIGHT_WS_CUSTOM_COLOR)
 
     assert bulb.hex_color == '0'
-    assert bulb.xy_color is None
+    assert bulb.xy_color == (32228, 27203)
 
 
 def test_color_bulb():
