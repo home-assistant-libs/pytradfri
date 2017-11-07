@@ -11,7 +11,7 @@ from pytradfri.const import (
 from pytradfri.color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, \
     rgb_to_xyY, rgb2xyzD65, xy_brightness_to_rgb, supported_color_features
 import pytest
-from devices import(
+from devices import (
     LIGHT_W,
     LIGHT_WS,
     LIGHT_WS_CUSTOM_COLOR,
