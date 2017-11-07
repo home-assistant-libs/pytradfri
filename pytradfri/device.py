@@ -23,7 +23,7 @@ from .const import (
     SUPPORT_RGB_COLOR,
     SUPPORT_XY_COLOR)
 from .color import kelvin_to_xyY, rgb_to_xyY, COLORS, MIN_KELVIN, MAX_KELVIN,\
-    MIN_KELVIN_WS, MAX_KELVIN_WS, supported_color_features, hex_to_rgb,\
+    MIN_KELVIN_WS, MAX_KELVIN_WS, light_supported_features, hex_to_rgb,\
     xyY_to_kelvin, xy_brightness_to_rgb, can_kelvin_to_xy
 from .resource import ApiResource
 from .error import ColorError
@@ -296,8 +296,8 @@ class Light:
         self.index = index
 
     @property
-    def supported_color_features(self):
-        return supported_color_features(self.raw)
+    def supported_features(self):
+        return light_supported_features(self.raw)
 
     @property
     def state(self):
@@ -305,27 +305,27 @@ class Light:
 
     @property
     def dimmer(self):  # Not convinced this is correct binary calc...
-        if self.supported_color_features / SUPPORT_BRIGHTNESS >= 1:
+        if self.supported_features / SUPPORT_BRIGHTNESS >= 1:
             return self.raw.get(ATTR_LIGHT_DIMMER)
 
     @property
     def color_temp(self):
-        if self.supported_color_features / SUPPORT_COLOR_TEMP >= 1:
+        if self.supported_features / SUPPORT_COLOR_TEMP >= 1:
             return 1000000 / self.raw.get(ATTR_LIGHT_MIREDS)
 
     @property
     def hex_color(self):
-        if self.supported_color_features / SUPPORT_HEX_COLOR >= 1:
+        if self.supported_features / SUPPORT_HEX_COLOR >= 1:
             return self.raw.get(ATTR_LIGHT_COLOR_HEX)
 
     @property
     def rgb_color(self):
-        if self.supported_color_features / SUPPORT_RGB_COLOR >= 1:
+        if self.supported_features / SUPPORT_RGB_COLOR >= 1:
             return hex_to_rgb(self.raw.get(ATTR_LIGHT_COLOR_HEX))
 
     @property
     def xy_color(self):
-        if self.supported_color_features / SUPPORT_XY_COLOR >= 1:
+        if self.supported_features / SUPPORT_XY_COLOR >= 1:
             return (self.raw.get(ATTR_LIGHT_COLOR_X),
                     self.raw.get(ATTR_LIGHT_COLOR_Y))
 
