@@ -9,7 +9,7 @@ from pytradfri.const import (
     #  SUPPORT_XY_COLOR
     )
 from pytradfri.color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, \
-    rgb_to_xyY, rgb2xyzD65, xy_brightness_to_rgb, supported_color_features
+    rgb_to_xyY, rgb2xyzD65, xy_brightness_to_rgb, light_supported_features
 import pytest
 from devices import (
     LIGHT_W,
@@ -135,13 +135,13 @@ def test_xy_brightness_to_rgb():
 
 def test_supported_colors():
     print(LIGHT_W[ATTR_LIGHT_CONTROL][0])
-    assert supported_color_features(LIGHT_W[ATTR_LIGHT_CONTROL][0]) ==\
+    assert light_supported_features(LIGHT_W[ATTR_LIGHT_CONTROL][0]) ==\
         SUPPORT_BRIGHTNESS
-    assert supported_color_features(LIGHT_WS['3311'][0]) == SUPPORT_BRIGHTNESS\
+    assert light_supported_features(LIGHT_WS['3311'][0]) == SUPPORT_BRIGHTNESS\
         + SUPPORT_COLOR_TEMP + SUPPORT_HEX_COLOR
-    assert supported_color_features(LIGHT_WS_CUSTOM_COLOR['3311'][0]) ==\
+    assert light_supported_features(LIGHT_WS_CUSTOM_COLOR['3311'][0]) ==\
         SUPPORT_BRIGHTNESS + SUPPORT_COLOR_TEMP + SUPPORT_HEX_COLOR
-    assert supported_color_features(LIGHT_CWS['3311'][0]) ==\
+    assert light_supported_features(LIGHT_CWS['3311'][0]) ==\
         SUPPORT_BRIGHTNESS + SUPPORT_RGB_COLOR + SUPPORT_HEX_COLOR
-    assert supported_color_features(LIGHT_CWS_CUSTOM_COLOR['3311'][0]) ==\
+    assert light_supported_features(LIGHT_CWS_CUSTOM_COLOR['3311'][0]) ==\
         SUPPORT_BRIGHTNESS + SUPPORT_RGB_COLOR + SUPPORT_HEX_COLOR
