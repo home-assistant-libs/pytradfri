@@ -226,6 +226,40 @@ class LightControl:
     def set_rgb_color(self, r, g, b, *, index=0):
         return self.set_values(rgb_to_xyY(r, g, b), index=index)
 
+    @property
+    def xy_color_inferred(self):
+        (current_x, current_y) = self.xy_color
+        if current_x is not None and current_y is not None:
+            return (self.raw.get(ATTR_LIGHT_COLOR_X),
+                    self.raw.get(ATTR_LIGHT_COLOR_Y))
+        # White Tradfri has no x and y, but spec provide 2700K value
+        xy = kelvin_to_xyY(2700)
+        return (xy[ATTR_LIGHT_COLOR_X], xy[ATTR_LIGHT_COLOR_Y])
+
+    @property
+    def kelvin_color_inferred(self):
+        current_x = self.raw.get(ATTR_LIGHT_COLOR_X)
+        current_y = self.raw.get(ATTR_LIGHT_COLOR_Y)
+        if current_x is not None and current_y is not None:
+            kelvin = xyY_to_kelvin(current_x, current_y)
+            # Only return a kelvin value if it is inside the range that the
+            # kelvin->xyY function supports
+            return kelvin if can_kelvin_to_xy(kelvin) else None
+        # White Tradfri has no x and y, but spec provide 2700K value
+        return 2700
+
+    def hex_color_inferred(self):
+        raw_color = self.hex_color
+        if raw_color is not None and len(raw_color) == 6:
+            return raw_color
+        (x, y) = self.xy_color_inferred
+
+        def scale(val):
+            return float(val)/65535
+        return '{0:02x}{1:02x}{2:02x}'.format(
+                *xy_brightness_to_rgb(scale(x), scale(y), self.dimmer)
+        )
+
     def set_values(self, values, *, index=0):
         """
         Set values on light control.
