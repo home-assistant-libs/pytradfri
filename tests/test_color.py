@@ -2,6 +2,8 @@ from pytradfri.const import (ATTR_LIGHT_COLOR_X as X, ATTR_LIGHT_COLOR_Y as Y)
 from pytradfri.color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, \
     rgb_to_xyY, rgb2xyzD65, xy_brightness_to_rgb, supported_color_features
 import pytest
+from devices import LIGHT_W, LIGHT_WS, LIGHT_WS_CUSTOM_COLOR, LIGHT_CWS,\
+    LIGHT_CWS_CUSTOM_COLOR
 
 WS_BULB = {
             '5706': 'efd275',  # hex
@@ -138,6 +140,6 @@ def test_xy_brightness_to_rgb():
 
 
 def test_supported_colors():
-    assert supported_color_features(WS_BULB) == 3
-    assert supported_color_features(WHITE_BULB) == 1
-    assert supported_color_features(RGB_BULB) == 17
+    assert supported_color_features(LIGHT_WS['3311']) == 3
+    #assert supported_color_features(WHITE_BULB) == 1
+    #assert supported_color_features(RGB_BULB) == 17
