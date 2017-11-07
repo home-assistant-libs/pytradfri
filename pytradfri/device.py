@@ -14,6 +14,8 @@ from .const import (
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_COLOR_X,
     ATTR_LIGHT_COLOR_Y,
+    ATTR_LIGHT_COLOR_SATURATION,
+    ATTR_LIGHT_COLOR_HUE,
     ATTR_LIGHT_COLOR_HEX,
     ATTR_LIGHT_MIREDS,
     ATTR_TRANSITION_TIME,
@@ -253,18 +255,6 @@ class LightControl:
         # White Tradfri has no x and y, but spec provide 2700K value
         return 2700
 
-    def hex_color_inferred(self):
-        raw_color = self.hex_color
-        if raw_color is not None and len(raw_color) == 6:
-            return raw_color
-        (x, y) = self.xy_color_inferred
-
-        def scale(val):
-            return float(val)/65535
-        return '{0:02x}{1:02x}{2:02x}'.format(
-                *xy_brightness_to_rgb(scale(x), scale(y), self.dimmer)
-        )
-
     def set_values(self, values, *, index=0):
         """
         Set values on light control.
@@ -321,13 +311,29 @@ class Light:
     @property
     def rgb_color(self):
         if self.supported_features / SUPPORT_RGB_COLOR >= 1:
-            return hex_to_rgb(self.raw.get(ATTR_LIGHT_COLOR_HEX))
+            raw_color = self.hex_color
+            if raw_color is not None and len(raw_color) == 6:
+                return hex_to_rgb(raw_color)
+            (x, y) = self.xy_color
+
+            def scale(val):
+                return float(val)/65535
+
+            return hex_to_rgb(xy_brightness_to_rgb(
+                    scale(x), scale(y), self.dimmer))
 
     @property
     def xy_color(self):
         if self.supported_features / SUPPORT_XY_COLOR >= 1:
             return (self.raw.get(ATTR_LIGHT_COLOR_X),
                     self.raw.get(ATTR_LIGHT_COLOR_Y))
+
+    @property
+    def hsxy_color(self):
+        return (self.raw.get(ATTR_LIGHT_COLOR_X),
+                self.raw.get(ATTR_LIGHT_COLOR_Y),
+                self.raw.get(ATTR_LIGHT_COLOR_SATURATION),
+                self.raw.get(ATTR_LIGHT_COLOR_HUE))
 
     @property
     def raw(self):
@@ -342,7 +348,8 @@ class Light:
                "dimmer: {}, "\
                "hex_color: {}, " \
                "xy_color: {}, " \
-               "supported color features: {} " \
+               "hsxy_color: {}, "\
+               "supported features: {} " \
                ">".format(self.index, self.device.name, state, self.dimmer,
-                          self.hex_color, self.xy_color,
-                          self.supported_color_features)
+                          self.hex_color, self.xy_color, self.hsxy_color,
+                          self.supported_features)
