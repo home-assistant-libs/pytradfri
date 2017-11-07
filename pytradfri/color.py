@@ -7,7 +7,8 @@ from .const import (
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
     SUPPORT_HEX_COLOR,
-    SUPPORT_RGB_COLOR)
+    SUPPORT_RGB_COLOR,
+    SUPPORT_XY_COLOR)
 
 
 # Kelvin range for which the conversion functions work
@@ -195,6 +196,10 @@ def supported_color_features(data):  # what should I name this?
     if ATTR_LIGHT_MIREDS in data:
         SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES\
             + SUPPORT_COLOR_TEMP
+
+    if SUPPORT_XY_COLOR in data:
+        SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES\
+            + SUPPORT_XY_COLOR
 
     if X in data and Y in data and ATTR_LIGHT_MIREDS not in data:
             SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES\
