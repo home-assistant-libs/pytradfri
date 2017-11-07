@@ -19,7 +19,8 @@ from .const import (
     ATTR_TRANSITION_TIME
 )
 from .color import kelvin_to_xyY, rgb_to_xyY, COLORS, MIN_KELVIN, MAX_KELVIN,\
-    MIN_KELVIN_WS, MAX_KELVIN_WS, supported_color_features, hex_to_rgb
+    MIN_KELVIN_WS, MAX_KELVIN_WS, supported_color_features, hex_to_rgb,\
+    xyY_to_kelvin, can_kelvin_to_xy
 from .resource import ApiResource
 from .error import ColorError
 
