@@ -52,10 +52,6 @@ COLORS = {name.lower().replace(" ", "_"): hex
           for hex, name in COLOR_NAMES.items()}
 
 
-def can_kelvin_to_xy(k):
-    return MIN_KELVIN <= k <= MAX_KELVIN
-
-
 # Only used locally to perform normalization of x, y values
 # Scaling to 65535 range and rounding
 def normalize_xy(x, y):
@@ -99,15 +95,6 @@ def kelvin_to_xyY(T, white_spectrum_bulb=False):
     return {X: x, Y: y}
 
 
-def xyY_to_kelvin(x, y):
-    # This is an approximation, for information, see the source.
-    # Source: https://en.wikipedia.org/wiki/Color_temperature#Approximation
-    # Input range for x and y is 0-65535
-    n = (x/65535-0.3320) / (y/65535-0.1858)
-    kelvin = int((-449*n**3 + 3525*n**2 - 6823.3*n + 5520.33) + 0.5)
-    return kelvin
-
-
 def rgb2xyzA(r, g, b):
     # Uses CIE standard illuminant A = 2856K
     # src: http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
@@ -127,11 +114,6 @@ def rgb2xyzD65(r, g, b):
     return X, Y, Z
 
 
-def xyz2xyY(X, Y, Z):
-    total = X + Y + Z
-    return (0, 0) if total == 0 else normalize_xy(X / total, Y / total)
-
-
 def rgb_to_xy(r, g, b):
     # Based on this transformation
     # https://github.com/puzzle-star/SmartThings-IKEA-Tradfri-RGB/blob/master/ikea-tradfri-rgb.groovy
@@ -139,8 +121,8 @@ def rgb_to_xy(r, g, b):
     def colorGammaAdjust(component):
         if component > 0.04045:
             return(math.pow(
-                        (component + 0.055) / (1.0 + 0.055)
-                    , 2.4))
+                        (component + 0.055) / (1.0 + 0.055),
+                   2.4))
         else:
             return(component / 12.92)
 
@@ -164,21 +146,6 @@ def rgb_to_xy(r, g, b):
     y = vY / (vX + vY + vZ)
 
     return {X: int(x*65536), Y: int(y*65536)}
-
-
-def rgb_to_xyY(r, g, b):
-    # According to http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html
-    # and http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_xyY.html
-    def prepare(val):
-        val = max(min(val, 255), 0) / 255.0
-        if val <= 0.04045:
-            return val / 12.92
-        else:
-            return ((val + 0.055) / 1.055) ** 2.4
-    r, g, b = map(prepare, (r, g, b))
-
-    x, y = xyz2xyY(*rgb2xyzA(r, g, b))
-    return {X: x, Y: y}
 
 
 # Converted to Python from Obj-C, original source from:
