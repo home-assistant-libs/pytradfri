@@ -138,7 +138,9 @@ def rgb_to_xy(r, g, b):
 
     def colorGammaAdjust(component):
         if component > 0.04045:
-            return(math.pow((component + 0.055) / (1.0 + 0.055), 2.4))
+            return(math.pow(
+                        (component + 0.055) / (1.0 + 0.055)
+                    , 2.4))
         else:
             return(component / 12.92)
 
