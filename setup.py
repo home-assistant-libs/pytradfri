@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = "4.1"
+VERSION = "5.0"
 DOWNLOAD_URL = \
     'https://github.com/ggravlingen/pytradfri/archive/{}.zip'.format(VERSION)
 
