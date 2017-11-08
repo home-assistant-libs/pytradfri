@@ -232,6 +232,11 @@ class LightControl:
         return self._kelvin_range[0]
 
     @property
+    def max_kelvin(self):
+        """Return maximum supported color temperature."""
+        return self._kelvin_range[1]
+
+    @property
     def can_set_kelvin(self):
         """Return whether controlled light supports color temperature.
         The range of supported tempertures is defined by properties
@@ -242,11 +247,6 @@ class LightControl:
     def can_set_color(self):
         """Return whether controlled light supports arbitrary color."""
         return 'CWS' in self._device.device_info.model_number
-
-    @property
-    def max_kelvin(self):
-        """Return maximum supported color temperature."""
-        return self._kelvin_range[1]
 
     def set_values(self, values, *, index=0):
         """
