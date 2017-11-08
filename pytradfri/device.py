@@ -188,9 +188,15 @@ class LightControl:
     def set_dimmer(self, dimmer, *, index=0, transition_time=None):
         """Set dimmer value of a light.
 
-        dimmer: Integer between 0..255
+        dimmer: Integer between 0..254
         transition_time: Integer representing tenth of a second (default None)
         """
+        # Set bounds for safety.
+        if dimmer < 0:
+            dimmer = 0
+        elif dimmer > 254:
+            dimmer = 254
+
         values = {
             ATTR_LIGHT_DIMMER: dimmer
         }
