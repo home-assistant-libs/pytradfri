@@ -288,23 +288,23 @@ class Light:
 
     @property
     def dimmer(self):  # Not convinced this is correct binary calc...
-        if self.supported_features & SUPPORT_BRIGHTNESS >= 1:
+        if self.supported_features & SUPPORT_BRIGHTNESS:
             return self.raw.get(ATTR_LIGHT_DIMMER)
 
     @property
     def color_temp(self):
-        if self.supported_features & SUPPORT_COLOR_TEMP >= 1:
+        if self.supported_features & SUPPORT_COLOR_TEMP:
             if self.raw.get(ATTR_LIGHT_MIREDS) != 0:
                 return 1000000 / self.raw.get(ATTR_LIGHT_MIREDS)
 
     @property
     def hex_color(self):
-        if self.supported_features & SUPPORT_HEX_COLOR >= 1:
+        if self.supported_features & SUPPORT_HEX_COLOR:
             return self.raw.get(ATTR_LIGHT_COLOR_HEX)
 
     @property
     def rgb_color(self):
-        if self.supported_features & SUPPORT_RGB_COLOR >= 1:
+        if self.supported_features & SUPPORT_RGB_COLOR:
             raw_color = self.hex_color
             if raw_color is not None and len(raw_color) == 6:
                 return hex_to_rgb(raw_color)
@@ -317,7 +317,7 @@ class Light:
 
     @property
     def xy_color(self):
-        if self.supported_features & SUPPORT_XY_COLOR >= 1:
+        if self.supported_features & SUPPORT_XY_COLOR:
             return (self.raw.get(ATTR_LIGHT_COLOR_X),
                     self.raw.get(ATTR_LIGHT_COLOR_Y))
 
