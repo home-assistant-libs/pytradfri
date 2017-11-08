@@ -2,6 +2,8 @@ from .const import (
     ATTR_LIGHT_COLOR_HEX,
     ATTR_LIGHT_COLOR_X as X,
     ATTR_LIGHT_COLOR_Y as Y,
+    ATTR_LIGHT_COLOR_SATURATION,
+    ATTR_LIGHT_COLOR_HUE,
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_MIREDS,
     SUPPORT_BRIGHTNESS,
@@ -201,7 +203,9 @@ def light_supported_features(data):  # what should I name this?
             SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES\
                 + SUPPORT_XY_COLOR
 
-    if X in data and Y in data and ATTR_LIGHT_MIREDS not in data:
+    if ATTR_LIGHT_MIREDS not in data and X in data and Y in data and \
+            ATTR_LIGHT_COLOR_SATURATION in data and ATTR_LIGHT_COLOR_HUE\
+            in data:
             SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES\
                 + SUPPORT_RGB_COLOR
 
