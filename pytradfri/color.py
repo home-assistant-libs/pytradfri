@@ -12,6 +12,7 @@ from .const import (
     SUPPORT_RGB_COLOR,
     SUPPORT_XY_COLOR)
 
+import math
 
 # Kelvin range for which the conversion functions work
 # and that RGB bulbs can show
@@ -129,6 +130,38 @@ def rgb2xyzD65(r, g, b):
 def xyz2xyY(X, Y, Z):
     total = X + Y + Z
     return (0, 0) if total == 0 else normalize_xy(X / total, Y / total)
+
+
+def rgb_to_xy(r, g, b):
+    # Based on this transformation
+    # https://github.com/puzzle-star/SmartThings-IKEA-Tradfri-RGB/blob/master/ikea-tradfri-rgb.groovy
+
+    def colorGammaAdjust(component):
+        if component > 0.04045:
+            return(math.pow((component + 0.055) / (1.0 + 0.055), 2.4))
+        else:
+            return(component / 12.92)
+
+    """
+    sRGB, Reference White D65
+    D65	0.31271	0.32902
+    R     0.64000 0.33000
+    G     0.30000 0.60000
+    B     0.15000 0.06000
+    """
+    M = [
+        [0.4123866,  0.3575915,  0.1804505],
+        [0.2126368,  0.7151830,  0.0721802],
+        [0.0193306,  0.1191972,  0.9503726]]
+
+    vX = r * M[0][0] + g * M[0][1] + b * M[0][2]
+    vY = r * M[1][0] + g * M[1][1] + b * M[1][2]
+    vZ = r * M[2][0] + g * M[2][1] + b * M[2][2]
+
+    x = vX / (vX + vY + vZ)
+    y = vY / (vX + vY + vZ)
+
+    return {X: int(x*65536), Y: int(y*65536)}
 
 
 def rgb_to_xyY(r, g, b):
