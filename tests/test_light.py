@@ -54,18 +54,9 @@ def test_color_bulb_custom_color():
     #  assert bulb.xy_color == (23327, 33940) # temporarily disable
 
 
-def test_white_device_control():
-    light_control = light_device_control(LIGHT_W)
-
-    assert not light_control.can_set_color
-    assert not light_control.can_set_kelvin
-
-
 def test_spectrum_device_control():
     light_control = light_device_control(LIGHT_WS)
 
-    assert not light_control.can_set_color
-    assert light_control.can_set_kelvin
     assert light_control.min_kelvin == 2200
     assert light_control.max_kelvin == 4000
 
@@ -73,8 +64,6 @@ def test_spectrum_device_control():
 def test_color_device_control():
     light_control = light_device_control(LIGHT_CWS)
 
-    assert light_control.can_set_color
-    assert light_control.can_set_kelvin
     assert light_control.min_kelvin == 1667
     assert light_control.max_kelvin == 25000
 
