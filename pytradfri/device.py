@@ -30,9 +30,6 @@ from .color import rgb_to_xy, COLORS, MIN_KELVIN, MAX_KELVIN,\
 from .resource import ApiResource
 from .error import ColorError
 
-import logging
-_LOGGER = logging.getLogger(__name__)
-
 
 class Device(ApiResource):
     """Base class for devices."""
