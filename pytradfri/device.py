@@ -207,7 +207,6 @@ class LightControl:
             ATTR_LIGHT_COLOR_Y: color_y
         }, index=index)
 
-
     def set_hsb(self, hue, saturation, brightness, *, index=0):
         """Set xy color of the light."""
         return self.set_values({
@@ -215,7 +214,6 @@ class LightControl:
             ATTR_LIGHT_COLOR_HUE: saturation,
             ATTR_LIGHT_DIMMER: brightness
         }, index=index)
-
 
     def set_predefined_color(self, colorname, *, index=0):
         try:
