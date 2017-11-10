@@ -25,7 +25,7 @@ from .const import (
     SUPPORT_RGB_COLOR,
     SUPPORT_XY_COLOR)
 from .color import rgb_to_xy, COLORS, MIN_KELVIN, MAX_KELVIN,\
-    MIN_KELVIN_WS, MAX_KELVIN_WS, light_supported_features, hex_to_rgb,\
+    MIN_KELVIN_WS, MAX_KELVIN_WS, supported_features, hex_to_rgb,\
     xy_brightness_to_rgb, kelvin_to_xyY
 from .resource import ApiResource
 from .error import ColorError
@@ -207,6 +207,16 @@ class LightControl:
             ATTR_LIGHT_COLOR_Y: color_y
         }, index=index)
 
+
+    def set_hsb(self, hue, saturation, brightness, *, index=0):
+        """Set xy color of the light."""
+        return self.set_values({
+            ATTR_LIGHT_COLOR_SATURATION: hue,
+            ATTR_LIGHT_COLOR_HUE: saturation,
+            ATTR_LIGHT_DIMMER: brightness
+        }, index=index)
+
+
     def set_predefined_color(self, colorname, *, index=0):
         try:
             color = COLORS[colorname.lower().replace(" ", "_")]
@@ -280,7 +290,7 @@ class Light:
 
     @property
     def supported_features(self):
-        return light_supported_features(self.raw)
+        return supported_features(self.raw)
 
     @property
     def state(self):
@@ -295,7 +305,7 @@ class Light:
     def color_temp(self):
         if self.supported_features & SUPPORT_COLOR_TEMP:
             if self.raw.get(ATTR_LIGHT_MIREDS) != 0:
-                return 1000000 / self.raw.get(ATTR_LIGHT_MIREDS)
+                return self.raw.get(ATTR_LIGHT_MIREDS)
 
     @property
     def hex_color(self):
