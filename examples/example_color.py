@@ -19,15 +19,13 @@ The gateway returns:
 """
 
 import sys
-import threading
-
-import time
 
 from pytradfri import Gateway
 from pytradfri.api.libcoap_api import APIFactory
 
 from colormath.color_conversions import convert_color
 from colormath.color_objects import sRGBColor, XYZColor
+
 
 def run():
     # Assign configuration variables.
@@ -54,11 +52,12 @@ def run():
     rgb = (0, 0, 102)
 
     # Convert RGB to XYZ using a D50 illuminant.
-    xyz = convert_color(sRGBColor(rgb[0], rgb[1], rgb[2]), XYZColor,\
+    xyz = convert_color(sRGBColor(rgb[0], rgb[1], rgb[2]), XYZColor,
                         observer='2', target_illuminant='a')
 
     #  Assuming lights[3] is a RGB bulb
     api(lights[3].light_control.set_xy_color(int(xyz.xyz_x/10),\
                                              int(xyz.xyz_y/10)))
+
 
 run()
