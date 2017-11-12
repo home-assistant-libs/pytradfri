@@ -65,7 +65,7 @@ def test_xy_brightness_to_rgb():
     assert rgb == (0, 0, 0)
 
     rgb = xy_brightness_to_rgb(33135, 27211, 15)
-    assert rgb == (101, 57, 0)
+    assert rgb == (119, 133, 0)
 
 
 def test_supported_colors():

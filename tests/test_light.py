@@ -30,7 +30,7 @@ def test_spectrum_bulb():
 
     assert bulb.hex_color == '0'
     assert bulb.xy_color == (31103, 27007)
-    assert bulb.color_temp == 2500
+    assert bulb.color_temp == 400
 
 
 def test_spectrum_bulb_custom_color():
@@ -57,15 +57,15 @@ def test_color_bulb_custom_color():
 def test_spectrum_device_control():
     light_control = light_device_control(LIGHT_WS)
 
-    assert light_control.min_kelvin == 2200
-    assert light_control.max_kelvin == 4000
+    assert light_control.min_mireds == 250
+    assert light_control.max_mireds == 454
 
 
 def test_color_device_control():
     light_control = light_device_control(LIGHT_CWS)
 
-    assert light_control.min_kelvin == 1667
-    assert light_control.max_kelvin == 25000
+    assert light_control.min_mireds == 40
+    assert light_control.max_mireds == 600
 
 
 def test_setters():

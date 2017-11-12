@@ -19,13 +19,16 @@ from .const import (
     ATTR_LIGHT_COLOR_HEX,
     ATTR_LIGHT_MIREDS,
     ATTR_TRANSITION_TIME,
+    MIN_MIREDS,
+    MAX_MIREDS,
+    MIN_MIREDS_WS,
+    MAX_MIREDS_WS,
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
     SUPPORT_HEX_COLOR,
     SUPPORT_RGB_COLOR,
     SUPPORT_XY_COLOR)
-from .color import rgb_to_xy, COLORS, MIN_KELVIN, MAX_KELVIN,\
-    MIN_KELVIN_WS, MAX_KELVIN_WS, supported_features, hex_to_rgb,\
+from .color import rgb_to_xy, COLORS, supported_features, hex_to_rgb,\
     xy_brightness_to_rgb, kelvin_to_xyY
 from .resource import ApiResource
 from .error import ColorError
@@ -143,6 +146,32 @@ class LightControl:
     def __init__(self, device):
         self._device = device
 
+        self.can_set_mireds = None
+        self.can_set_color = None
+        self._mireds_range = (None, None)
+        self.min_mireds = None
+        self.max_mireds = None
+
+        if 'WS' in self._device.device_info.model_number:
+            self.can_set_mireds = True
+
+        if 'CWS' in self._device.device_info.model_number:
+            self.can_set_color = True
+
+        #  Define kelvin range
+        if not self.can_set_mireds:
+            # White bulb
+            self._mireds_range = (None, None)
+        if not self.can_set_color:
+            # White spectrum bulb
+            self._mireds_range = (MIN_MIREDS_WS, MAX_MIREDS_WS)
+        if self.can_set_color:
+            # Color bulb
+            self._mireds_range = (MIN_MIREDS, MAX_MIREDS)
+
+        self.min_mireds = self._mireds_range[0]
+        self.max_mireds = self._mireds_range[1]
+
     @property
     def lights(self):
         """Return light objects of the light control."""
@@ -222,39 +251,6 @@ class LightControl:
         except KeyError:
             raise ColorError('Invalid color specified: %s',
                              colorname)
-
-    @property
-    def _kelvin_range(self):
-        if not self.can_set_kelvin:
-            # White bulb
-            return (None, None)
-        if not self.can_set_color:
-            # White spectrum bulb
-            return (MIN_KELVIN_WS, MAX_KELVIN_WS)
-        # Color bulb
-        return (MIN_KELVIN, MAX_KELVIN)
-
-    @property
-    def min_kelvin(self):
-        """Return minimum supported color temperature."""
-        return self._kelvin_range[0]
-
-    @property
-    def max_kelvin(self):
-        """Return maximum supported color temperature."""
-        return self._kelvin_range[1]
-
-    @property
-    def can_set_kelvin(self):
-        """Return whether controlled light supports color temperature.
-        The range of supported tempertures is defined by properties
-        min_kelvin and max_kelvin."""
-        return 'WS' in self._device.device_info.model_number
-
-    @property
-    def can_set_color(self):
-        """Return whether controlled light supports arbitrary color."""
-        return 'CWS' in self._device.device_info.model_number
 
     def set_values(self, values, *, index=0):
         """
