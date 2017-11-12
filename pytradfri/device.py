@@ -226,9 +226,6 @@ class LightControl:
             ATTR_LIGHT_COLOR_HEX: color,
         }, index=index)
 
-    def set_rgb_color(self, r, g, b, *, index=0):
-        return self.set_values(rgb_to_xy(r, g, b), index=index)
-
     def set_xy_color(self, color_x, color_y, *, index=0):
         """Set xy color of the light."""
         return self.set_values({
@@ -305,19 +302,6 @@ class Light:
     def hex_color(self):
         if self.supported_features & SUPPORT_HEX_COLOR:
             return self.raw.get(ATTR_LIGHT_COLOR_HEX)
-
-    @property
-    def rgb_color(self):
-        if self.supported_features & SUPPORT_RGB_COLOR:
-            raw_color = self.hex_color
-            if raw_color is not None and len(raw_color) == 6:
-                return hex_to_rgb(raw_color)
-            (x, y) = self.xy_color
-
-            def scale(val):
-                return float(val)/65535
-
-            return xy_brightness_to_rgb(scale(x), scale(y), self.dimmer)
 
     @property
     def xy_color(self):
