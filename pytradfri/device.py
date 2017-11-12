@@ -191,11 +191,8 @@ class LightControl:
         dimmer: Integer between 0..254
         transition_time: Integer representing tenth of a second (default None)
         """
-        # Set bounds for safety.
-        if dimmer < 0:
-            dimmer = 0
-        elif dimmer > 254:
-            dimmer = 254
+        if dimmer < 0 or dimmer > 254:
+            raise ValueError('Dimmer value must be between 0 and 254.')
 
         values = {
             ATTR_LIGHT_DIMMER: dimmer
