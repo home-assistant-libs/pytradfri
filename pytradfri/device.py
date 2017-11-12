@@ -26,10 +26,8 @@ from .const import (
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
     SUPPORT_HEX_COLOR,
-    SUPPORT_RGB_COLOR,
     SUPPORT_XY_COLOR)
-from .color import rgb_to_xy, COLORS, supported_features, hex_to_rgb,\
-    xy_brightness_to_rgb, kelvin_to_xyY
+from .color import COLORS, supported_features, kelvin_to_xyY
 from .resource import ApiResource
 from .error import ColorError
 
