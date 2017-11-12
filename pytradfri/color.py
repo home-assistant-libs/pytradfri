@@ -6,6 +6,10 @@ from .const import (
     ATTR_LIGHT_COLOR_HUE,
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_MIREDS,
+    MIN_MIREDS,
+    MAX_MIREDS,
+    MIN_MIREDS_WS,
+    MAX_MIREDS_WS,
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
     SUPPORT_HEX_COLOR,
@@ -13,15 +17,6 @@ from .const import (
     SUPPORT_XY_COLOR)
 
 import math
-
-# Kelvin range for which the conversion functions work
-# and that RGB bulbs can show
-MIN_KELVIN = 1667
-MAX_KELVIN = 25000
-
-# Kelvin range that white-spectrum bulbs can actually show
-MIN_KELVIN_WS = 2200
-MAX_KELVIN_WS = 4000
 
 # Extracted from Tradfri Android App string.xml
 COLOR_NAMES = {
@@ -114,21 +109,27 @@ def colorGammaAdjustReverse(component):
 
 
 def kelvin_to_xyY(T, white_spectrum_bulb=False):
+
+    min_kelvin = 1000000/MAX_MIREDS
+    max_kelvin = 1000000/MIN_MIREDS
+    min_kelvin_ws = 1000000/MAX_MIREDS_WS
+    max_kelvin_ws = 1000000/MIN_MIREDS_WS
+
     # Sources: "Design of Advanced Color - Temperature Control System
     #           for HDTV Applications" [Lee, Cho, Kim]
     # and https://en.wikipedia.org/wiki/Planckian_locus#Approximation
     # and http://fcam.garage.maemo.org/apiDocs/_color_8cpp_source.html
 
     # Check for Kelvin range for which this function works
-    if not (MIN_KELVIN <= T <= MAX_KELVIN):
+    if not (min_kelvin <= T <= max_kelvin):
         raise ValueError('Kelvin needs to be between {} and {}'.format(
-            MIN_KELVIN, MAX_KELVIN))
+            min_kelvin, max_kelvin))
 
     # Check for White-Spectrum kelvin range
-    if white_spectrum_bulb and not (MIN_KELVIN_WS <= T <= MAX_KELVIN_WS):
+    if white_spectrum_bulb and not (min_kelvin_ws <= T <= max_kelvin_ws):
         raise ValueError('Kelvin needs to be between {} and {} for '
                          'white spectrum bulbs'.format(
-                          MIN_KELVIN_WS, MAX_KELVIN_WS))
+                          min_kelvin_ws, max_kelvin_ws))
 
     if T <= 4000:
         # One number differs on Wikipedia and the paper:
