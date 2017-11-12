@@ -56,7 +56,7 @@ def run():
                         observer='2', target_illuminant='a')
 
     #  Assuming lights[3] is a RGB bulb
-    api(lights[3].light_control.set_xy_color(int(xyz.xyz_x/10),\
+    api(lights[3].light_control.set_xy_color(int(xyz.xyz_x/10),
                                              int(xyz.xyz_y/10)))
 
 
