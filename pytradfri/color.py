@@ -92,11 +92,6 @@ def kelvin_to_xyY(T, white_spectrum_bulb=False):
     return {X: x, Y: y}
 
 
-# https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
-def hex_to_rgb(hex):
-    return tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
-
-
 def supported_features(data):
     SUPPORTED_COLOR_FEATURES = 0
 
