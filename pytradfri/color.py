@@ -16,8 +16,6 @@ from .const import (
     SUPPORT_RGB_COLOR,
     SUPPORT_XY_COLOR)
 
-import math
-
 # Extracted from Tradfri Android App string.xml
 COLOR_NAMES = {
     '4a418a': 'Blue',
@@ -46,69 +44,12 @@ COLOR_NAMES = {
 COLORS = {name.lower().replace(" ", "_"): hex
           for hex, name in COLOR_NAMES.items()}
 
-#  http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
-M_CIE_RGB = [
-            [0.4887180, 0.3106803, 0.2006017],
-            [0.1762044, 0.8129847, 0.0108109],
-            [0.0000000, 0.0102048, 0.9897952]]
-
-M_CIE_RGB_I = [
-              [2.3706743, -0.9000405, -0.4706338],
-              [-0.5138850, 1.4253036, 0.0885814],
-              [0.0052982, -0.0146949, 1.0093968]]
-
-M_S_RGB = [
-          [0.4123866,  0.3575915,  0.1804505],
-          [0.2126368,  0.7151830,  0.0721802],
-          [0.0193306,  0.1191972,  0.9503726]]
-
-M_S_RGB_I = [
-            [3.2404542, -1.5371385, -0.4985314],
-            [-0.9692660, 1.8760108, 0.0415560],
-            [0.0556434, -0.2040259, 1.0572252]]
-
-WIDE_GAMUT_RGB = [
-                 [0.6016556, 0.2241551, 0.1246452],
-                 [0.2423106, 0.8242476, -0.0665581],
-                 [-0.0197805, -0.0432227, 1.1520609]]
-
-WIDE_GAMUT_RGB_I = [
-                   [1.8634534, -0.5189129, -0.2315923],
-                   [-0.5468874, 1.3692053, 0.1382728],
-                   [0.0114768, -0.0424600, 0.8692210]]
-
-HUE_RGB = [
-          [0.664511, 0.154324, 0.162028],
-          [0.283881, 0.668433, 0.047685],
-          [0.000088, 0.072310, 0.986039]]
-
-HUE_RGB_I = [
-            [1.656492, 0.354851, 0.255038],
-            [0.707196, 1.655397, 0.036152],
-            [0.051713, 0.121364, 1.011530]]
-
-
-# Only used locally to perform normalization of x, y values
-# Scaling to 65535 range and rounding
-def normalize_xy(x, y):
-    return (int(x*65535+0.5), int(y*65535+0.5))
-
-
-def colorGammaAdjust(component):
-    if component > 0.04045:
-        return(math.pow((component + 0.055) / (1.0 + 0.055), 2.4))
-    else:
-        return(component / 12.92)
-
-
-def colorGammaAdjustReverse(component):
-    if component <= 0.0031308:
-        return(component * 12.92)
-    else:
-        return((1.0 + 0.055) * math.pow(component, (1.0/2.4) - 0.055))
-
 
 def kelvin_to_xyY(T, white_spectrum_bulb=False):
+    # Only used locally to perform normalization of x, y values
+    # Scaling to 65535 range and rounding
+    def normalize_xy(x, y):
+        return (int(x*65535+0.5), int(y*65535+0.5))
 
     min_kelvin = 1000000/MAX_MIREDS
     max_kelvin = 1000000/MIN_MIREDS
@@ -149,64 +90,6 @@ def kelvin_to_xyY(T, white_spectrum_bulb=False):
 
     x, y = normalize_xy(x, y)
     return {X: x, Y: y}
-
-
-def rgb_to_xy(r, g, b):
-    # Based on this transformation
-    # https://github.com/puzzle-star/SmartThings-IKEA-Tradfri-RGB/blob/master/ikea-tradfri-rgb.groovy
-
-    r = colorGammaAdjust(r)
-    g = colorGammaAdjust(g)
-    b = colorGammaAdjust(b)
-
-    #  Use one of the constants from above
-    M = HUE_RGB
-
-    vX = r * M[0][0] + g * M[0][1] + b * M[0][2]
-    vY = r * M[1][0] + g * M[1][1] + b * M[1][2]
-    vZ = r * M[2][0] + g * M[2][1] + b * M[2][2]
-
-    x = vX / (vX + vY + vZ)
-    y = vY / (vX + vY + vZ)
-
-    return {X: int(x*65535), Y: int(y*65535)}
-
-
-# Converted to Python from Obj-C, original source from:
-# http://www.developers.meethue.com/documentation/color-conversions-rgb-xy
-# pylint: disable=invalid-sequence-index
-def xy_brightness_to_rgb(vX: float, vY: float, ibrightness: int):
-
-    """Convert from XYZ to RGB."""
-    brightness = ibrightness / 255.
-    if brightness == 0:
-        return (0, 0, 0)
-    Y = brightness
-    if vY == 0:
-        vY += 0.00000000001
-    X = (Y / vY) * vX
-    Z = (Y / vY) * (1 - vX - vY)
-
-    M = HUE_RGB_I
-
-    r = X * M[0][0] + Y * M[0][1] + Z * M[0][2]
-    g = X * M[1][0] + Y * M[1][1] + Z * M[1][2]
-    b = X * M[2][0] + Y * M[2][1] + Z * M[2][2]
-
-    # Apply reverse gamma correction.
-    r = colorGammaAdjustReverse(r)
-    g = colorGammaAdjustReverse(g)
-    b = colorGammaAdjustReverse(b)
-
-    # Bring all negative components to zero.
-    r, g, b = map(lambda x: max(0, x), [r, g, b])
-
-    # If one component is greater than 1, weight components by that value.
-    max_component = max(r, g, b)
-    if max_component > 1:
-        r, g, b = map(lambda x: x / max_component, [r, g, b])
-    ir, ig, ib = map(lambda x: int(x * 255), [r, g, b])
-    return (ir, ig, ib)
 
 
 # https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
