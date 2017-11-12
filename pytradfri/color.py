@@ -82,11 +82,35 @@ WIDE_GAMUT_RGB_I = [
                    [-0.5468874, 1.3692053, 0.1382728],
                    [0.0114768, -0.0424600, 0.8692210]]
 
+HUE_RGB = [
+          [0.664511, 0.154324, 0.162028],
+          [0.283881, 0.668433, 0.047685],
+          [0.000088, 0.072310, 0.986039]]
+
+HUE_RGB_I = [
+            [1.656492, 0.354851, 0.255038],
+            [0.707196, 1.655397, 0.036152],
+            [0.051713, 0.121364, 1.011530]]
+
 
 # Only used locally to perform normalization of x, y values
 # Scaling to 65535 range and rounding
 def normalize_xy(x, y):
     return (int(x*65535+0.5), int(y*65535+0.5))
+
+
+def colorGammaAdjust(component):
+    if component > 0.04045:
+        return(math.pow((component + 0.055) / (1.0 + 0.055), 2.4))
+    else:
+        return(component / 12.92)
+
+
+def colorGammaAdjustReverse(component):
+    if component <= 0.0031308:
+        return(component * 12.92)
+    else:
+        return((1.0 + 0.055) * math.pow(component, (1.0/2.4) - 0.055))
 
 
 def kelvin_to_xyY(T, white_spectrum_bulb=False):
@@ -126,39 +150,16 @@ def kelvin_to_xyY(T, white_spectrum_bulb=False):
     return {X: x, Y: y}
 
 
-def rgb2xyzA(r, g, b):
-    # Uses CIE standard illuminant A = 2856K
-    # src: http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
-    # calculation https://gist.github.com/r41d/43e14df2ccaeca56d32796efd6584b48
-    X = 0.76103282*r + 0.29537849*g + 0.04208869*b
-    Y = 0.39240755*r + 0.59075697*g + 0.01683548*b
-    Z = 0.03567341*r + 0.0984595*g + 0.22166709*b
-    return X, Y, Z
-
-
-def rgb2xyzD65(r, g, b):
-    # Uses CIE standard illuminant D65 = 6504K
-    # src: http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
-    X = 0.4124564 * r + 0.3575761 * g + 0.1804375 * b
-    Y = 0.2126729 * r + 0.7151522 * g + 0.0721750 * b
-    Z = 0.0193339 * r + 0.1191920 * g + 0.9503041 * b
-    return X, Y, Z
-
-
-def colorGammaAdjust(component):
-    if component > 0.04045:
-        return(math.pow((component + 0.055) / (1.0 + 0.055),
-               2.4))
-    else:
-        return(component / 12.92)
-
-
 def rgb_to_xy(r, g, b):
     # Based on this transformation
     # https://github.com/puzzle-star/SmartThings-IKEA-Tradfri-RGB/blob/master/ikea-tradfri-rgb.groovy
 
+    r = colorGammaAdjust(r)
+    g = colorGammaAdjust(g)
+    b = colorGammaAdjust(b)
+
     #  Use one of the constants from above
-    M = WIDE_GAMUT_RGB
+    M = HUE_RGB
 
     vX = r * M[0][0] + g * M[0][1] + b * M[0][2]
     vY = r * M[1][0] + g * M[1][1] + b * M[1][2]
@@ -167,13 +168,14 @@ def rgb_to_xy(r, g, b):
     x = vX / (vX + vY + vZ)
     y = vY / (vX + vY + vZ)
 
-    return {X: int(x*65536), Y: int(y*65536)}
+    return {X: int(x*65535), Y: int(y*65535)}
 
 
 # Converted to Python from Obj-C, original source from:
 # http://www.developers.meethue.com/documentation/color-conversions-rgb-xy
 # pylint: disable=invalid-sequence-index
 def xy_brightness_to_rgb(vX: float, vY: float, ibrightness: int):
+
     """Convert from XYZ to RGB."""
     brightness = ibrightness / 255.
     if brightness == 0:
@@ -184,20 +186,20 @@ def xy_brightness_to_rgb(vX: float, vY: float, ibrightness: int):
     X = (Y / vY) * vX
     Z = (Y / vY) * (1 - vX - vY)
 
-    M = WIDE_GAMUT_RGB_I
+    M = HUE_RGB_I
 
     r = X * M[0][0] + Y * M[0][1] + Z * M[0][2]
     g = X * M[1][0] + Y * M[1][1] + Z * M[1][2]
     b = X * M[2][0] + Y * M[2][1] + Z * M[2][2]
 
     # Apply reverse gamma correction.
-    r, g, b = map(
-        lambda x: (12.92 * x) if (x <= 0.0031308) else
-        ((1.0 + 0.055) * pow(x, (1.0 / 2.4)) - 0.055),
-        [r, g, b]
-    )
+    r = colorGammaAdjustReverse(r)
+    g = colorGammaAdjustReverse(g)
+    b = colorGammaAdjustReverse(b)
+
     # Bring all negative components to zero.
     r, g, b = map(lambda x: max(0, x), [r, g, b])
+
     # If one component is greater than 1, weight components by that value.
     max_component = max(r, g, b)
     if max_component > 1:
