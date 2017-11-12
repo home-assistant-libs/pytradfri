@@ -210,7 +210,7 @@ class LightControl:
 
     def set_color_temp(self, color_temp, *, index=0):
         """Set color temp a light."""
-        if 'WS' in self._device.device_info.model_number:
+        if self.can_set_mireds:
             white_spectrum_bulb = True
         else:
             white_spectrum_bulb = False
@@ -237,7 +237,7 @@ class LightControl:
         }, index=index)
 
     def set_hsb(self, hue, saturation, brightness, *, index=0):
-        """Set xy color of the light."""
+        """Set HSB color settings of the light."""
         return self.set_values({
             ATTR_LIGHT_COLOR_SATURATION: hue,
             ATTR_LIGHT_COLOR_HUE: saturation,
