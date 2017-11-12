@@ -85,6 +85,16 @@ ATTR_SWITCH_POWER_FACTOR = "5820"
 
 ATTR_TRANSITION_TIME = "5712"
 
+
+# Mireds range for which the conversion functions work
+# and that RGB bulbs can show
+MIN_MIREDS = 40
+MAX_MIREDS = 600
+
+# Mireds range that white-spectrum bulbs can actually show
+MIN_MIREDS_WS = 250
+MAX_MIREDS_WS = 454
+
 SUPPORT_BRIGHTNESS = 1
 SUPPORT_COLOR_TEMP = 2
 SUPPORT_HEX_COLOR = 4
