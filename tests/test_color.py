@@ -8,8 +8,7 @@ from pytradfri.const import (
     SUPPORT_RGB_COLOR,
     SUPPORT_XY_COLOR
     )
-from pytradfri.color import xy_brightness_to_rgb,\
-    supported_features, kelvin_to_xyY
+from pytradfri.color import supported_features, kelvin_to_xyY
 import pytest
 from devices import (
     LIGHT_W,
@@ -56,16 +55,6 @@ def test_kelvin_to_xyY():
 
     with pytest.raises(ValueError):
         kelvin_to_xyY(0, True)
-
-
-def test_xy_brightness_to_rgb():
-    # Converted to Python from Obj-C, original source from:
-    # http://www.developers.meethue.com/documentation/color-conversions-rgb-xy
-    rgb = xy_brightness_to_rgb(33135, 27211, 0)
-    assert rgb == (0, 0, 0)
-
-    rgb = xy_brightness_to_rgb(33135, 27211, 15)
-    assert rgb == (119, 133, 0)
 
 
 def test_supported_colors():
