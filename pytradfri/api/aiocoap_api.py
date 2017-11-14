@@ -99,6 +99,9 @@ class APIFactory:
         except Error as e:
             yield from self._reset_protocol(e)
             raise ServerError("There was an error with the request.", e)
+        except asyncio.CancelledError as e:
+            yield from self._reset_protocol(e)
+            raise e
 
     @asyncio.coroutine
     def _execute(self, api_command):
