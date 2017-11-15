@@ -65,10 +65,10 @@ class APIFactory:
     @asyncio.coroutine
     def _get_protocol(self):
         """Get the protocol for the request."""
-        if not self._protocol:
-            self._protocol = yield from Context.create_client_context(
-                loop=self._loop)
-        return self._protocol
+        if self._protocol is None:
+            self._protocol = asyncio.Task(Context.create_client_context(
+                loop=self._loop))
+        return (yield from self._protocol)
 
     @asyncio.coroutine
     def _reset_protocol(self, exc=None):
