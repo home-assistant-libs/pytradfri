@@ -209,7 +209,6 @@ class LightControl:
             ATTR_LIGHT_MIREDS: color_temp
         }, index=index)
 
-
     def set_hex_color(self, color, *, index=0):
         """Set xy color of the light."""
         return self.set_values({
