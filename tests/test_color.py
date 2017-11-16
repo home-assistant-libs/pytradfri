@@ -1,6 +1,4 @@
 from pytradfri.const import (
-    ATTR_LIGHT_COLOR_X as X,
-    ATTR_LIGHT_COLOR_Y as Y,
     ATTR_LIGHT_CONTROL,
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
