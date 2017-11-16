@@ -207,8 +207,6 @@ class LightControl:
         """Set color temp a light."""
         if self.can_set_mireds:
             white_spectrum_bulb = True
-        else:
-            white_spectrum_bulb = False
 
         return self.set_values({
             ATTR_LIGHT_MIREDS: color_temp
