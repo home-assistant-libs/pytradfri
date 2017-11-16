@@ -8,7 +8,7 @@ from pytradfri.const import (
     SUPPORT_RGB_COLOR,
     SUPPORT_XY_COLOR
     )
-from pytradfri.color import supported_features, kelvin_to_xyY
+from pytradfri.color import supported_features
 import pytest
 from devices import (
     LIGHT_W,
@@ -27,34 +27,6 @@ MAX_KELVIN = 25000
 # Kelvin range that white-spectrum bulbs can actually show
 MIN_KELVIN_WS = 2200
 MAX_KELVIN_WS = 4000
-
-
-def test_kelvin_to_xyY():
-    # kelvin_to_xyY approximates, so +-50 is sufficiently precise.
-    # Values taken from Tradfri App, these only differ slightly from online
-    # calculators such as https://www.ledtuning.nl/en/cie-convertor
-
-    warm = kelvin_to_xyY(2200)
-    assert warm[X] in range(33135-50, 33135+51)
-    assert warm[Y] in range(27211-50, 27211+51)
-
-    normal = kelvin_to_xyY(2700)
-    assert normal[X] in range(30140-50, 30140+51)
-    assert normal[Y] in range(26909-50, 26909+51)
-
-    cold = kelvin_to_xyY(4000)
-    assert cold[X] in range(24930-50, 24930+51)
-    assert cold[Y] in range(24694-50, 24694+51)
-
-    cold = kelvin_to_xyY(25000)
-    assert cold[X] in range(16546-50, 16546+51)
-    assert cold[Y] in range(16546-50, 16546+51)
-
-    with pytest.raises(ValueError):
-        kelvin_to_xyY(99999)
-
-    with pytest.raises(ValueError):
-        kelvin_to_xyY(0, True)
 
 
 def test_supported_colors():

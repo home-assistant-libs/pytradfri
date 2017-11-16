@@ -27,7 +27,7 @@ from .const import (
     SUPPORT_COLOR_TEMP,
     SUPPORT_HEX_COLOR,
     SUPPORT_XY_COLOR)
-from .color import COLORS, supported_features, kelvin_to_xyY
+from .color import COLORS, supported_features
 from .resource import ApiResource
 from .error import ColorError
 
@@ -156,7 +156,7 @@ class LightControl:
         if 'CWS' in self._device.device_info.model_number:
             self.can_set_color = True
 
-        #  Define kelvin range
+        #  Define mireds range
         if not self.can_set_mireds:
             # White bulb
             self._mireds_range = (None, None)
@@ -210,10 +210,10 @@ class LightControl:
         else:
             white_spectrum_bulb = False
 
-        values = kelvin_to_xyY(color_temp, white_spectrum_bulb)
-        values[ATTR_LIGHT_MIREDS] = int(1000000/color_temp)
+        return self.set_values({
+            ATTR_LIGHT_MIREDS: color_temp
+        }, index=index)
 
-        return self.set_values(values, index=index)
 
     def set_hex_color(self, color, *, index=0):
         """Set xy color of the light."""
