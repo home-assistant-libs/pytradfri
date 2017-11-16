@@ -8,7 +8,8 @@ from .const import (
     ATTR_CURRENT_TIME_UNIX, ATTR_CURRENT_TIME_ISO8601,
     ATTR_FIRST_SETUP, ATTR_GATEWAY_INFO, ATTR_GATEWAY_ID,
     ATTR_GATEWAY_REBOOT, ATTR_GATEWAY_FACTORY_DEFAULTS,
-    ATTR_AUTH, ATTR_IDENTITY, ATTR_PSK, ATTR_HOMEKIT_ID)
+    ATTR_AUTH, ATTR_IDENTITY, ATTR_PSK, ATTR_HOMEKIT_ID,
+    ATTR_COMMISSIONING_MODE)
 from .device import Device
 from .group import Group
 from .mood import Mood
@@ -176,6 +177,16 @@ class Gateway:
 
         return Command('post',
                        [ROOT_GATEWAY, ATTR_GATEWAY_REBOOT])
+
+    def set_commissioning_timeout(self, timeout):
+        """Put the gateway in a state in which it accepts pairings from
+        switches, dimmers and motion sensors for up to timeout seconds.
+
+        Returns a Command."""
+
+        return Command('put',
+                       [ROOT_GATEWAY, ATTR_GATEWAY_INFO],
+                       {ATTR_COMMISSIONING_MODE: timeout})
 
     def factory_reset(self):
         """

@@ -27,6 +27,7 @@ ATTR_GATEWAY_INFO = "15012"
 ATTR_GATEWAY_ID = "9081"  # ??? id of the gateway
 ATTR_GATEWAY_REBOOT = "9030"  # gw reboot
 ATTR_GATEWAY_FACTORY_DEFAULTS = "9031"  # gw to factory defaults
+ATTR_COMMISSIONING_MODE = "9061"  # see set_commissioning_timeout
 
 ATTR_LIGHT_STATE = "5850"  # 0 / 1
 ATTR_LIGHT_DIMMER = "5851"  # Dimmer, not following spec: 0..255
