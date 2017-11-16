@@ -205,9 +205,6 @@ class LightControl:
 
     def set_color_temp(self, color_temp, *, index=0):
         """Set color temp a light."""
-        if self.can_set_mireds:
-            white_spectrum_bulb = True
-
         return self.set_values({
             ATTR_LIGHT_MIREDS: color_temp
         }, index=index)
