@@ -146,9 +146,6 @@ class LightControl:
 
         self.can_set_mireds = None
         self.can_set_color = None
-        self._mireds_range = (None, None)
-        self.min_mireds = None
-        self.max_mireds = None
 
         if 'WS' in self._device.device_info.model_number:
             self.can_set_mireds = True
