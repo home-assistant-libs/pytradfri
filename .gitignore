@@ -24,3 +24,6 @@ dist/
 .tox
 
 gateway_psk.txt
+
+# Emacs backup files
+*~
