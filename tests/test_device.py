@@ -34,6 +34,7 @@ def test_set_name():
     assert command.path == dev.path
     assert command.data == {ATTR_NAME: 'New name'}
 
+
 def test_binary_division():
     dev_ws = Device(LIGHT_WS).light_control.lights[0]
     dev_color = Device(LIGHT_CWS).light_control.lights[0]
