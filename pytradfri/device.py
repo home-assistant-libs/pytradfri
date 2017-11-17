@@ -274,7 +274,7 @@ class Light:
         return self.raw.get(ATTR_LIGHT_STATE) == 1
 
     @property
-    def dimmer(self):  # Not convinced this is correct binary calc...
+    def dimmer(self):
         if self.supported_features & SUPPORT_BRIGHTNESS:
             return self.raw.get(ATTR_LIGHT_DIMMER)
 
