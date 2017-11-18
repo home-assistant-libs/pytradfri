@@ -1,15 +1,12 @@
-"""JSON utility functions.
-From https://github.com/home-assistant/home-assistant/blob/4e8723f345d526ffbcbea74444e1a140a7eec863/homeassistant/util/json.py
-"""
+"""JSON utility functions."""
+#  https://github.com/home-assistant/home-assistant/blob/4e8723f345d526ffbcbea74444e1a140a7eec863/homeassistant/util/json.py
 
 import logging
 from typing import Union, List, Dict
-
+from .error import PytradfriError
 import json
 
 _LOGGER = logging.getLogger(__name__)
-
-from error import PyTradFriError
 
 
 def load_json(filename: str) -> Union[List, Dict]:
@@ -25,10 +22,10 @@ def load_json(filename: str) -> Union[List, Dict]:
         _LOGGER.debug('JSON file not found: %s', filename)
     except ValueError as error:
         _LOGGER.exception('Could not parse JSON content: %s', filename)
-        raise PyTradFriError(error)
+        raise PytradfriError(error)
     except OSError as error:
         _LOGGER.exception('JSON file reading failed: %s', filename)
-        raise PyTradFriError(error)
+        raise PytradfriError(error)
     return {}  # (also evaluates to False)
 
 
@@ -45,9 +42,9 @@ def save_json(filename: str, config: Union[List, Dict]):
     except TypeError as error:
         _LOGGER.exception('Failed to serialize to JSON: %s',
                           filename)
-        raise PyTradFriError(error)
+        raise PytradfriError(error)
     except OSError as error:
         _LOGGER.exception('Saving JSON file failed: %s',
                           filename)
-        raise PyTradFriError(error)
+        raise PytradfriError(error)
     return False
