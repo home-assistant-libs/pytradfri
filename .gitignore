@@ -24,6 +24,7 @@ dist/
 .tox
 
 gateway_psk.txt
+tradfri_standalone_psk.conf
 
 # Emacs backup files
 *~
