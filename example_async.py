@@ -14,25 +14,21 @@ Where <IP> is the address to your IKEA gateway and
 import argparse
 import uuid
 import asyncio
-import logging
-import sys
 
 from pytradfri import Gateway
 from pytradfri.api.aiocoap_api import APIFactory
 from pytradfri.error import PytradfriError
 from pytradfri.util import load_json, save_json
 
-root = logging.getLogger()
-root.setLevel(logging.INFO)
 
 CONFIG_FILE = 'tradfri_standalone_psk.conf'
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-H', '--hostname', dest='host', required=True,
-                help='IP Address of your Tradfri gateway')
+                    help='IP Address of your Tradfri gateway')
 parser.add_argument('-K', '--key', dest='key', required=False,
-                help='Key found on your Tradfri gateway')
+                    help='Key found on your Tradfri gateway')
 args = parser.parse_args()
 
 try:
