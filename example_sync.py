@@ -11,13 +11,25 @@ Where <IP> is the address to your IKEA gateway and
 <KEY> is found on the back of your IKEA gateway.
 """
 
-import sys
+import argparse
+import uuid
 import threading
 
 import time
 
 from pytradfri import Gateway
 from pytradfri.api.libcoap_api import APIFactory
+from pytradfri.error import PytradfriError
+from pytradfri.util import load_json, save_json
+
+CONFIG_FILE = 'tradfri_standalone_psk.conf'
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-H', '--hostname', dest='host', required=True,
+                    help='IP Address of your Tradfri gateway')
+parser.add_argument('-K', '--key', dest='key', required=False,
+                    help='Key found on your Tradfri gateway')
+args = parser.parse_args()
 
 
 def observe(api, device):
@@ -39,16 +51,25 @@ def observe(api, device):
 def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
-    api_factory = APIFactory(sys.argv[1])
-    with open('gateway_psk.txt', 'a+') as file:
-        file.seek(0)
-        psk = file.read()
-        if psk:
-            api_factory.psk = psk.strip()
-        else:
-            psk = api_factory.generate_psk(sys.argv[2])
+    conf = load_json(CONFIG_FILE)
+
+    try:
+        identity = conf[args.host].get('identity')
+        psk = conf[args.host].get('key')
+        api_factory = APIFactory(host=args.host, psk_id=identity, psk=psk)
+    except KeyError:
+        identity = uuid.uuid4().hex
+        api_factory = APIFactory(host=args.host, psk_id=identity)
+
+        try:
+            psk = yield from api_factory.generate_psk(args.key)
             print('Generated PSK: ', psk)
-            file.write(psk)
+
+            conf[args.host] = {'identity': identity,
+                               'key': psk}
+            save_json(CONFIG_FILE, conf)
+        except AttributeError:
+            raise PytradfriError("Please provide a key")
     api = api_factory.request
 
     gateway = Gateway()
