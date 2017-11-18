@@ -3,7 +3,7 @@
 
 **NB:** Latest Gateway version tested and working - 1.2.42.
 
-Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. Using this library you can, by communicating with the gateway, control IKEA lights (including the RGB ones) and also Philips Hue bulbs. Some of the features include:
+Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. Using this library you can, by communicating with the gateway, control IKEA lights (including the RGB ones). Some of the features include:
 
 - Get information on the gateway
 - Observe lights, groups and other resources and get notified when they change
@@ -67,7 +67,7 @@ api(lights[0].observe(change_listener))
 ```
 
 ## 3. Implement in your own Python platform
-Please see the files, example_sync.py, or example_async.py.
+Please see the example files.
 
 ## 4. Docker support
 
