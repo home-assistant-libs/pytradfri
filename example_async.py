@@ -11,8 +11,6 @@ Where <IP> is the address to your IKEA gateway and
 <KEY> is found on the back of your IKEA gateway.
 """
 
-import argparse
-import uuid
 import asyncio
 
 from pytradfri import Gateway
@@ -20,6 +18,9 @@ from pytradfri.api.aiocoap_api import APIFactory
 from pytradfri.error import PytradfriError
 from pytradfri.util import load_json, save_json
 
+from pathlib import Path
+import uuid
+import argparse
 
 CONFIG_FILE = 'tradfri_standalone_psk.conf'
 
@@ -30,6 +31,12 @@ parser.add_argument('-H', '--hostname', dest='host', required=True,
 parser.add_argument('-K', '--key', dest='key', required=False,
                     help='Key found on your Tradfri gateway')
 args = parser.parse_args()
+
+
+if Path(CONFIG_FILE).is_file() is False and args.key is None:
+    raise PytradfriError("Please provide they key found on your "
+                         "Tradfri gateway using the -K flag to this script.")
+
 
 try:
     # pylint: disable=ungrouped-imports
@@ -63,7 +70,7 @@ def run():
                                'key': psk}
             save_json(CONFIG_FILE, conf)
         except AttributeError:
-            raise PytradfriError("Please provide a key")
+            raise PytradfriError("Please provide your Key")
 
     api = api_factory.request
 
