@@ -1,7 +1,7 @@
 """Errors for PyTradfri."""
 
 
-class PyTradFriError(Exception):
+class PytradfriError(Exception):
     """Base Error"""
     pass
 
