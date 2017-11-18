@@ -1,8 +1,8 @@
 """Implement an API wrapper around Ikea Tradfri."""
 
 from .error import (
-    PyTradFriError, RequestError, ClientError, ServerError, RequestTimeout)
+    PytradfriError, RequestError, ClientError, ServerError, RequestTimeout)
 from .gateway import Gateway
 
-__all__ = ['Gateway', 'PyTradFriError', 'RequestError', 'ClientError',
+__all__ = ['Gateway', 'PytradfriError', 'RequestError', 'ClientError',
            'ServerError', 'RequestTimeout']
