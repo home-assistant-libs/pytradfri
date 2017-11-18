@@ -6,12 +6,12 @@ class PytradfriError(Exception):
     pass
 
 
-class RequestError(PyTradFriError):
+class RequestError(PytradfriError):
     """An error happened sending or receiving a command."""
     pass
 
 
-class ColorError(PyTradFriError):
+class ColorError(PytradfriError):
     """An error happened matching color name."""
     pass
 
