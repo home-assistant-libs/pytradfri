@@ -149,7 +149,6 @@ class APIFactory:
         if not self._psk:
             existing_psk_id = self._psk_id
 
-            self._psk_id = 'Client_identity'
             self._psk = security_key
 
             command = Gateway().generate_psk(self._psk_id)
