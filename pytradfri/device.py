@@ -195,42 +195,66 @@ class LightControl:
         values = {
             ATTR_LIGHT_DIMMER: dimmer
         }
+
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
 
         return self.set_values(values, index=index)
 
-    def set_color_temp(self, color_temp, *, index=0):
+    def set_color_temp(self, color_temp, *, index=0, transition_time=None):
         """Set color temp a light."""
-        return self.set_values({
+        values = {
             ATTR_LIGHT_MIREDS: color_temp
-        }, index=index)
+        }
 
-    def set_hex_color(self, color, *, index=0):
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+
+        return self.set_values(values, index=index)
+
+    def set_hex_color(self, color, *, index=0, transition_time=None):
         """Set xy color of the light."""
-        return self.set_values({
+        values = {
             ATTR_LIGHT_COLOR_HEX: color,
-        }, index=index)
+        }
 
-    def set_xy_color(self, color_x, color_y, *, index=0):
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+
+        return self.set_values(values, index=index)
+
+    def set_xy_color(self, color_x, color_y, *, index=0, transition_time=None):
         """Set xy color of the light."""
-        return self.set_values({
+        values = {
             ATTR_LIGHT_COLOR_X: color_x,
             ATTR_LIGHT_COLOR_Y: color_y
-        }, index=index)
+        }
 
-    def set_hsb(self, hue, saturation, brightness, *, index=0):
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+
+        return self.set_values(values, index=index)
+
+    def set_hsb(self, hue, saturation, brightness, *, index=0,
+                transition_time=None):
         """Set HSB color settings of the light."""
-        return self.set_values({
+        values = {
             ATTR_LIGHT_COLOR_SATURATION: hue,
             ATTR_LIGHT_COLOR_HUE: saturation,
             ATTR_LIGHT_DIMMER: brightness
-        }, index=index)
+        }
 
-    def set_predefined_color(self, colorname, *, index=0):
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+
+        return self.set_values(values, index=index)
+
+    def set_predefined_color(self, colorname, *, index=0,
+                             transition_time=None):
         try:
             color = COLORS[colorname.lower().replace(" ", "_")]
-            return self.set_hex_color(color, index=index)
+            return self.set_hex_color(color, index=index,
+                                      transition_time=transition_time)
         except KeyError:
             raise ColorError('Invalid color specified: %s',
                              colorname)
