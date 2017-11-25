@@ -76,8 +76,6 @@ class APIFactory:
 
         command.append(url)
 
-        print(kwargs)
-
         try:
             return_value = subprocess.check_output(command, **kwargs)
         except subprocess.TimeoutExpired:
@@ -157,6 +155,7 @@ class APIFactory:
             self._psk = self.request(command)
 
         return self._psk
+
 
 def _process_output(output, parse_json=True):
     """Process output."""
