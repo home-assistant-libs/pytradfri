@@ -76,6 +76,8 @@ class APIFactory:
 
         command.append(url)
 
+        print(kwargs)
+
         try:
             return_value = subprocess.check_output(command, **kwargs)
         except subprocess.TimeoutExpired:
@@ -148,16 +150,13 @@ class APIFactory:
         """
         if not self._psk:
             existing_psk_id = self._psk_id
-
             self._psk = security_key
+            self._psk_id = 'Client_identity'
 
-            command = Gateway().generate_psk(self._psk_id)
+            command = Gateway().generate_psk(existing_psk_id)
             self._psk = self.request(command)
 
-            self._psk_id = existing_psk_id
-
         return self._psk
-
 
 def _process_output(output, parse_json=True):
     """Process output."""
