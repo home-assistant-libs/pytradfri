@@ -76,6 +76,8 @@ def run():
             conf[args.host] = {'identity': identity,
                                'key': psk}
             save_json(CONFIG_FILE, conf)
+
+            api_factory = APIFactory(host=args.host, psk_id=identity, psk=psk)
         except AttributeError:
             raise PytradfriError("Please provide your Key")
 
