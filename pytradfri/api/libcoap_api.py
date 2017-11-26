@@ -148,8 +148,10 @@ class APIFactory:
         if not self._psk:
             # Backup the real identity.
             existing_psk_id = self._psk_id
-            self._psk = security_key
+
+            # Set the default identity and security key for generation.
             self._psk_id = 'Client_identity'
+            self._psk = security_key
 
             # Ask the Gateway to generate the psk for the identity.
             self._psk = self.request(Gateway().generate_psk(existing_psk_id))
