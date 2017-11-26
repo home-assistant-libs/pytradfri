@@ -153,8 +153,8 @@ class APIFactory:
             self._psk_id = 'Client_identity'
             self._psk = security_key
 
-            # Ask the Gateway to gsenerate the psk.
-            self._psk = self.request(Gateway().generate_psk(self._psk_id))
+            # Ask the Gateway to generate the psk for the identity.
+            self._psk = self.request(Gateway().generate_psk(existing_psk_id))
 
             # Restore the real identity.
             self._psk_id = existing_psk_id
