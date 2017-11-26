@@ -17,9 +17,8 @@ SERVER_ERROR_PREFIX = '5.'
 class APIFactory:
     def __init__(self, host, psk_id='pytradfri', psk=None):
         self._host = host
-        self._psk = psk
         self._psk_id = psk_id
-        self._security_code = None
+        self._psk = psk
 
     @property
     def psk(self):
@@ -36,7 +35,7 @@ class APIFactory:
             '-u',
             self._psk_id,
             '-k',
-            self._psk if self._psk else self._security_code,
+            self._psk,
             '-v',
             '0',
             '-m',
@@ -147,12 +146,16 @@ class APIFactory:
         Generate and set a psk from the security key.
         """
         if not self._psk:
+            # Backup the real identity.
             existing_psk_id = self._psk_id
             self._psk = security_key
             self._psk_id = 'Client_identity'
 
-            command = Gateway().generate_psk(existing_psk_id)
-            self._psk = self.request(command)
+            # Ask the Gateway to generate the psk for the identity.
+            self._psk = self.request(Gateway().generate_psk(existing_psk_id))
+
+            # Restore the real identity.
+            self._psk_id = existing_psk_id
 
         return self._psk
 

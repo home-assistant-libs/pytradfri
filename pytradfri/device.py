@@ -14,12 +14,20 @@ from .const import (
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_COLOR_X,
     ATTR_LIGHT_COLOR_Y,
-    ATTR_LIGHT_COLOR,
-    ATTR_TRANSITION_TIME
-)
-from .color import can_kelvin_to_xy, kelvin_to_xyY, xyY_to_kelvin, rgb_to_xyY,\
-    xy_brightness_to_rgb, COLORS, MIN_KELVIN, MAX_KELVIN,\
-    MIN_KELVIN_WS, MAX_KELVIN_WS
+    ATTR_LIGHT_COLOR_SATURATION,
+    ATTR_LIGHT_COLOR_HUE,
+    ATTR_LIGHT_COLOR_HEX,
+    ATTR_LIGHT_MIREDS,
+    ATTR_TRANSITION_TIME,
+    MIN_MIREDS,
+    MAX_MIREDS,
+    MIN_MIREDS_WS,
+    MAX_MIREDS_WS,
+    SUPPORT_BRIGHTNESS,
+    SUPPORT_COLOR_TEMP,
+    SUPPORT_HEX_COLOR,
+    SUPPORT_XY_COLOR)
+from .color import COLORS, supported_features
 from .resource import ApiResource
 from .error import ColorError
 
@@ -136,6 +144,29 @@ class LightControl:
     def __init__(self, device):
         self._device = device
 
+        self.can_set_mireds = None
+        self.can_set_color = None
+
+        if 'WS' in self._device.device_info.model_number:
+            self.can_set_mireds = True
+
+        if 'CWS' in self._device.device_info.model_number:
+            self.can_set_color = True
+
+        #  Define mireds range
+        if not self.can_set_mireds:
+            # White bulb
+            self._mireds_range = (None, None)
+        if not self.can_set_color:
+            # White spectrum bulb
+            self._mireds_range = (MIN_MIREDS_WS, MAX_MIREDS_WS)
+        if self.can_set_color:
+            # Color bulb
+            self._mireds_range = (MIN_MIREDS, MAX_MIREDS)
+
+        self.min_mireds = self._mireds_range[0]
+        self.max_mireds = self._mireds_range[1]
+
     @property
     def lights(self):
         """Return light objects of the light control."""
@@ -145,39 +176,6 @@ class LightControl:
     def raw(self):
         """Return raw data that it represents."""
         return self._device.raw[ATTR_LIGHT_CONTROL]
-
-    @property
-    def can_set_kelvin(self):
-        """Return whether controlled light supports color temperature.
-        The range of supported tempertures is defined by properties
-        min_kelvin and max_kelvin."""
-        return 'WS' in self._device.device_info.model_number
-
-    @property
-    def can_set_color(self):
-        """Return whether controlled light supports arbitrary color."""
-        return 'CWS' in self._device.device_info.model_number
-
-    @property
-    def _kelvin_range(self):
-        if not self.can_set_kelvin:
-            # White bulb
-            return (None, None)
-        if not self.can_set_color:
-            # White spectrum bulb
-            return (MIN_KELVIN_WS, MAX_KELVIN_WS)
-        # Color bulb
-        return (MIN_KELVIN, MAX_KELVIN)
-
-    @property
-    def min_kelvin(self):
-        """Return minimum supported color temperature."""
-        return self._kelvin_range[0]
-
-    @property
-    def max_kelvin(self):
-        """Return maximum supported color temperature."""
-        return self._kelvin_range[1]
 
     def set_state(self, state, *, index=0):
         """Set state of a light."""
@@ -197,37 +195,69 @@ class LightControl:
         values = {
             ATTR_LIGHT_DIMMER: dimmer
         }
+
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
 
         return self.set_values(values, index=index)
 
-    def set_hex_color(self, color, *, index=0):
-        """Set xy color of the light."""
-        return self.set_values({
-            ATTR_LIGHT_COLOR: color,
-        }, index=index)
+    def set_color_temp(self, color_temp, *, index=0, transition_time=None):
+        """Set color temp a light."""
+        values = {
+            ATTR_LIGHT_MIREDS: color_temp
+        }
 
-    def set_xy_color(self, color_x, color_y, *, index=0):
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+
+        return self.set_values(values, index=index)
+
+    def set_hex_color(self, color, *, index=0, transition_time=None):
         """Set xy color of the light."""
-        return self.set_values({
+        values = {
+            ATTR_LIGHT_COLOR_HEX: color,
+        }
+
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+
+        return self.set_values(values, index=index)
+
+    def set_xy_color(self, color_x, color_y, *, index=0, transition_time=None):
+        """Set xy color of the light."""
+        values = {
             ATTR_LIGHT_COLOR_X: color_x,
             ATTR_LIGHT_COLOR_Y: color_y
-        }, index=index)
+        }
 
-    def set_kelvin_color(self, kelvins, *, index=0):
-        return self.set_values(kelvin_to_xyY(kelvins), index=index)
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
 
-    def set_predefined_color(self, colorname, *, index=0):
+        return self.set_values(values, index=index)
+
+    def set_hsb(self, hue, saturation, brightness, *, index=0,
+                transition_time=None):
+        """Set HSB color settings of the light."""
+        values = {
+            ATTR_LIGHT_COLOR_SATURATION: hue,
+            ATTR_LIGHT_COLOR_HUE: saturation,
+            ATTR_LIGHT_DIMMER: brightness
+        }
+
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+
+        return self.set_values(values, index=index)
+
+    def set_predefined_color(self, colorname, *, index=0,
+                             transition_time=None):
         try:
             color = COLORS[colorname.lower().replace(" ", "_")]
-            return self.set_hex_color(color, index=index)
+            return self.set_hex_color(color, index=index,
+                                      transition_time=transition_time)
         except KeyError:
             raise ColorError('Invalid color specified: %s',
                              colorname)
-
-    def set_rgb_color(self, r, g, b, *, index=0):
-        return self.set_values(rgb_to_xyY(r, g, b), index=index)
 
     def set_values(self, values, *, index=0):
         """
@@ -260,56 +290,42 @@ class Light:
         self.index = index
 
     @property
+    def supported_features(self):
+        return supported_features(self.raw)
+
+    @property
     def state(self):
         return self.raw.get(ATTR_LIGHT_STATE) == 1
 
     @property
     def dimmer(self):
-        return self.raw.get(ATTR_LIGHT_DIMMER)
+        if self.supported_features & SUPPORT_BRIGHTNESS:
+            return self.raw.get(ATTR_LIGHT_DIMMER)
+
+    @property
+    def color_temp(self):
+        if self.supported_features & SUPPORT_COLOR_TEMP:
+            if self.raw.get(ATTR_LIGHT_MIREDS) != 0:
+                return self.raw.get(ATTR_LIGHT_MIREDS)
 
     @property
     def hex_color(self):
-        return self.raw.get(ATTR_LIGHT_COLOR)
-
-    @property
-    def hex_color_inferred(self):
-        raw_color = self.hex_color
-        if raw_color is not None and len(raw_color) == 6:
-            return raw_color
-        (x, y) = self.xy_color_inferred
-
-        def scale(val):
-            return float(val)/65535
-        return '{0:02x}{1:02x}{2:02x}'.format(
-                *xy_brightness_to_rgb(scale(x), scale(y), self.dimmer)
-        )
+        if self.supported_features & SUPPORT_HEX_COLOR:
+            return self.raw.get(ATTR_LIGHT_COLOR_HEX)
 
     @property
     def xy_color(self):
-        return (self.raw.get(ATTR_LIGHT_COLOR_X),
-                self.raw.get(ATTR_LIGHT_COLOR_Y))
-
-    @property
-    def xy_color_inferred(self):
-        (current_x, current_y) = self.xy_color
-        if current_x is not None and current_y is not None:
+        if self.supported_features & SUPPORT_XY_COLOR:
             return (self.raw.get(ATTR_LIGHT_COLOR_X),
                     self.raw.get(ATTR_LIGHT_COLOR_Y))
-        # White Tradfri has no x and y, but spec provide 2700K value
-        xy = kelvin_to_xyY(2700)
-        return (xy[ATTR_LIGHT_COLOR_X], xy[ATTR_LIGHT_COLOR_Y])
 
     @property
-    def kelvin_color_inferred(self):
-        current_x = self.raw.get(ATTR_LIGHT_COLOR_X)
-        current_y = self.raw.get(ATTR_LIGHT_COLOR_Y)
-        if current_x is not None and current_y is not None:
-            kelvin = xyY_to_kelvin(current_x, current_y)
-            # Only return a kelvin value if it is inside the range that the
-            # kelvin->xyY function supports
-            return kelvin if can_kelvin_to_xy(kelvin) else None
-        # White Tradfri has no x and y, but spec provide 2700K value
-        return 2700
+    def hsb_xy_color(self):
+        return (self.raw.get(ATTR_LIGHT_COLOR_SATURATION),
+                self.raw.get(ATTR_LIGHT_COLOR_HUE),
+                self.raw.get(ATTR_LIGHT_DIMMER),
+                self.raw.get(ATTR_LIGHT_COLOR_X),
+                self.raw.get(ATTR_LIGHT_COLOR_Y))
 
     @property
     def raw(self):
@@ -324,5 +340,8 @@ class Light:
                "dimmer: {}, "\
                "hex_color: {}, " \
                "xy_color: {}, " \
+               "hsb_xy_color: {}, "\
+               "supported features: {} " \
                ">".format(self.index, self.device.name, state, self.dimmer,
-                          self.hex_color, self.xy_color)
+                          self.hex_color, self.xy_color,
+                          self.hsb_xy_color, self.supported_features)

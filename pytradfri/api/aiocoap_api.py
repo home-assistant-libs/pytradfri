@@ -199,7 +199,7 @@ class APIFactory:
             PatchedDTLSSecurityStore.KEY = self._psk.encode('utf-8')
 
             # aiocoap has now cached our psk, so it must be reset.
-            # We also no longer need the protocol, so this will shutdown that.
+            # We also no longer need the protocol, so this will clean that up.
             yield from self._reset_protocol()
 
         return self._psk
