@@ -19,35 +19,78 @@ The gateway returns:
     Hex (for some colors)
 """
 
-import sys
+import asyncio
 
 from pytradfri import Gateway
-from pytradfri.api.libcoap_api import APIFactory
+from pytradfri.api.aiocoap_api import APIFactory
+from pytradfri.error import PytradfriError
+from pytradfri.util import load_json, save_json
 
 from colormath.color_conversions import convert_color
 from colormath.color_objects import sRGBColor, XYZColor
 
+from pathlib import Path
+import uuid
+import argparse
 
+CONFIG_FILE = 'tradfri_standalone_psk.conf'
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-H', '--hostname', dest='host', required=True,
+                    help='IP Address of your Tradfri gateway')
+parser.add_argument('-K', '--key', dest='key', required=False,
+                    help='Key found on your Tradfri gateway')
+args = parser.parse_args()
+
+
+if Path(CONFIG_FILE).is_file() is False and args.key is None:
+    raise PytradfriError("Please provide they key found on your "
+                         "Tradfri gateway using the -K flag to this script.")
+
+
+try:
+    # pylint: disable=ungrouped-imports
+    from asyncio import ensure_future
+except ImportError:
+    # Python 3.4.3 and earlier has this as async
+    # pylint: disable=unused-import
+    from asyncio import async
+    ensure_future = async
+
+
+@asyncio.coroutine
 def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
-    api_factory = APIFactory(sys.argv[1])
-    with open('gateway_psk.txt', 'a+') as file:
-        file.seek(0)
-        psk = file.read()
-        if psk:
-            api_factory.psk = psk.strip()
-        else:
-            psk = api_factory.generate_psk(sys.argv[2])
+    conf = load_json(CONFIG_FILE)
+
+    try:
+        identity = conf[args.host].get('identity')
+        psk = conf[args.host].get('key')
+        api_factory = APIFactory(host=args.host, psk_id=identity, psk=psk)
+    except KeyError:
+        identity = uuid.uuid4().hex
+        api_factory = APIFactory(host=args.host, psk_id=identity)
+
+        try:
+            psk = yield from api_factory.generate_psk(args.key)
             print('Generated PSK: ', psk)
-            file.write(psk)
+
+            conf[args.host] = {'identity': identity,
+                               'key': psk}
+            save_json(CONFIG_FILE, conf)
+        except AttributeError:
+            raise PytradfriError("Please provide your Key")
+
     api = api_factory.request
 
     gateway = Gateway()
 
     devices_command = gateway.get_devices()
-    devices_commands = api(devices_command)
-    devices = api(devices_commands)
+    devices_commands = yield from api(devices_command)
+    devices = yield from api(devices_commands)
+
     lights = [dev for dev in devices if dev.has_light_control]
 
     rgb = (0, 0, 102)
@@ -58,7 +101,8 @@ def run():
     xy = int(xyz.xyz_x), int(xyz.xyz_y)
 
     #  Assuming lights[3] is a RGB bulb
-    api(lights[3].light_control.set_xy_color(xy[0], xy[1]))
+    xy_command = lights[3].light_control.set_xy_color(xy[0], xy[1])
+    yield from api(xy_command)
 
     #  Assuming lights[3] is a RGB bulb
     xy = lights[3].light_control.lights[0].xy_color
@@ -71,5 +115,6 @@ def run():
     rgb = (int(rgb.rgb_r), int(rgb.rgb_g), int(rgb.rgb_b))
     print(rgb)
 
+    yield from asyncio.sleep(120)
 
-run()
+asyncio.get_event_loop().run_until_complete(run())
