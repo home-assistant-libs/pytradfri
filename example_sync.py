@@ -77,7 +77,6 @@ def run():
                                'key': psk}
             save_json(CONFIG_FILE, conf)
 
-            api_factory = APIFactory(host=args.host, psk_id=identity, psk=psk)
         except AttributeError:
             raise PytradfriError("Please provide your Key")
 
@@ -109,7 +108,7 @@ def run():
     print(light.name)
 
     # Example 4: Set the light level of the light
-    dim_command = light.light_control.set_dimmer(255)
+    dim_command = light.light_control.set_dimmer(254)
     api(dim_command)
 
     # Example 5: Change color of the light
