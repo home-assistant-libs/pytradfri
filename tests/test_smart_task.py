@@ -1,4 +1,4 @@
-from pytradfri.smart_task import SmartTask
+from pytradfri.smart_task import SmartTask, BitChoices
 from pytradfri.gateway import Gateway
 import datetime
 
@@ -19,6 +19,19 @@ TASK = {
         {'9046': 8, '9047': 15}
     ]
 }
+
+WEEKDAYS = BitChoices(
+    (
+        ('mon', 'Monday'),
+        ('tue', 'Tuesday'),
+        ('wed', 'Wednesday'),
+        ('thu', 'Thursday'),
+        ('fri', 'Friday'),
+        ('sat', 'Saturday'),
+        ('sun', 'Sunday')
+    )
+)
+
 
 
 def test_smart_task():
@@ -52,3 +65,7 @@ def test_smart_task_set_start_action_dimmer():
         {'5712': 18000, '5851': 30, '9003': 65537},
         {'5712': 18000, '5851': 254, '9003': 65538}],
         '5850': 1}}
+
+
+def test_smart_task_bit_choices():
+    assert WEEKDAYS.get_selected_values(3) == ['Monday', 'Tuesday']
