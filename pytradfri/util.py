@@ -87,4 +87,3 @@ class BitChoices(object):
     def get_selected_values(self, selection):
         """Return a list of values for the given selection."""
         return [v for b, v in self._choices if b & selection]
-
