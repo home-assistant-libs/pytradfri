@@ -33,7 +33,6 @@ WEEKDAYS = BitChoices(
 )
 
 
-
 def test_smart_task():
     gateway = Gateway()
     task = SmartTask(gateway, TASK)

@@ -34,7 +34,6 @@ from .resource import ApiResource
 from .util import BitChoices
 
 
-
 WEEKDAYS = BitChoices(
     (
         ('mon', 'Monday'),
