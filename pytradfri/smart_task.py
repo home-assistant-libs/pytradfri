@@ -80,7 +80,7 @@ class SmartTask(ApiResource):
             return "Wake Up"
         if self.is_not_at_home:
             return "Not At Home"
-        if self.if_lights_off:
+        if self.is_lights_off:
             return "Lights Off"
 
     @property
