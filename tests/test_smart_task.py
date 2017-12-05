@@ -91,7 +91,6 @@ def test_smart_task():
     assert task2.task_type_name == "Not At Home"
 
 
-
 def test_smart_task_info():
     gateway = Gateway()
 
