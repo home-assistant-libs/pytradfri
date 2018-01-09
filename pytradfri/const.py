@@ -10,7 +10,7 @@ ROOT_SWITCH = "15009"
 ATTR_ALEXA_PAIR_STATUS = "9093"
 ATTR_AUTH = "9063"
 ATTR_APPLICATION_TYPE = "5750"
-  
+
 ATTR_CERTIFICATE_PEM = "9096"
 ATTR_CERTIFICATE_PROV = "9092"
 ATTR_CLIENT_IDENTITY_PROPOSED = "9090"
@@ -106,6 +106,8 @@ ATTR_TRANSITION_TIME = "5712"
 
 ATTR_USE_CURRENT_LIGHT_SETTINGS = "9070"
 
+# URL to json-file containing links to all firmware updates
+URL_OTA_FW = "http://fw.ota.homesmart.ikea.net/feed/version_info.json"
 
 # Mireds range for which the conversion functions work
 # and that RGB bulbs can show
