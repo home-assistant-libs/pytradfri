@@ -19,10 +19,9 @@ from .const import (
     ATTR_LIGHT_COLOR_HEX,
     ATTR_LIGHT_MIREDS,
     ATTR_TRANSITION_TIME,
-    MIN_MIREDS,
-    MAX_MIREDS,
-    MIN_MIREDS_WS,
-    MAX_MIREDS_WS,
+    RANGE_MIREDS,
+    RANGE_MIREDS_WS,
+    RANGE_BRIGHTNESS,
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
     SUPPORT_HEX_COLOR,
@@ -159,10 +158,10 @@ class LightControl:
             self._mireds_range = (None, None)
         if not self.can_set_color:
             # White spectrum bulb
-            self._mireds_range = (MIN_MIREDS_WS, MAX_MIREDS_WS)
+            self._mireds_range = RANGE_MIREDS_WS
         if self.can_set_color:
             # Color bulb
-            self._mireds_range = (MIN_MIREDS, MAX_MIREDS)
+            self._mireds_range = RANGE_MIREDS
 
         self.min_mireds = self._mireds_range[0]
         self.max_mireds = self._mireds_range[1]
@@ -189,8 +188,9 @@ class LightControl:
         dimmer: Integer between 0..254
         transition_time: Integer representing tenth of a second (default None)
         """
-        if dimmer < 0 or dimmer > 254:
-            raise ValueError('Dimmer value must be between 0 and 254.')
+        if dimmer < RANGE_BRIGHTNESS[0] or dimmer > RANGE_BRIGHTNESS[1]:
+            raise ValueError('Dimmer value must be between %d and %d.'
+                             % (RANGE_BRIGHTNESS[0], RANGE_BRIGHTNESS[1]))
 
         values = {
             ATTR_LIGHT_DIMMER: dimmer
