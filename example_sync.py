@@ -36,8 +36,13 @@ args = parser.parse_args()
 
 
 if Path(CONFIG_FILE).is_file() is False and args.key is None:
-    raise PytradfriError("Please provide they key found on your "
-                         "Tradfri gateway using the -K flag to this script.")
+    print("Please provide the 'Security Code' on the back of your "
+          "Tradfri gateway:", end=" ")
+    key = input().strip()
+    if len(key) != 16:
+        raise PytradfriError("Invalid 'Security Code' provided.")
+    else:
+        args.key = key
 
 
 def observe(api, device):
