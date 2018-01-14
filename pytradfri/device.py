@@ -21,7 +21,11 @@ from .const import (
     ATTR_TRANSITION_TIME,
     RANGE_MIREDS,
     RANGE_MIREDS_WS,
+    RANGE_HUE,
+    RANGE_SATURATION,
     RANGE_BRIGHTNESS,
+    RANGE_X,
+    RANGE_Y,
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
     SUPPORT_HEX_COLOR,
@@ -184,13 +188,9 @@ class LightControl:
 
     def set_dimmer(self, dimmer, *, index=0, transition_time=None):
         """Set dimmer value of a light.
-
-        dimmer: Integer between 0..254
         transition_time: Integer representing tenth of a second (default None)
         """
-        if dimmer < RANGE_BRIGHTNESS[0] or dimmer > RANGE_BRIGHTNESS[1]:
-            raise ValueError('Dimmer value must be between %d and %d.'
-                             % (RANGE_BRIGHTNESS[0], RANGE_BRIGHTNESS[1]))
+        self._value_validate(dimmer, RANGE_BRIGHTNESS, "Dimmer")
 
         values = {
             ATTR_LIGHT_DIMMER: dimmer
@@ -203,6 +203,9 @@ class LightControl:
 
     def set_color_temp(self, color_temp, *, index=0, transition_time=None):
         """Set color temp a light."""
+        self._value_validate(color_temp, self._mireds_range,
+                             "Color temperature")
+
         values = {
             ATTR_LIGHT_MIREDS: color_temp
         }
@@ -213,7 +216,7 @@ class LightControl:
         return self.set_values(values, index=index)
 
     def set_hex_color(self, color, *, index=0, transition_time=None):
-        """Set xy color of the light."""
+        """Set hex color of the light."""
         values = {
             ATTR_LIGHT_COLOR_HEX: color,
         }
@@ -225,6 +228,9 @@ class LightControl:
 
     def set_xy_color(self, color_x, color_y, *, index=0, transition_time=None):
         """Set xy color of the light."""
+        self._value_validate(color_x, RANGE_X, "X color")
+        self._value_validate(color_y, RANGE_Y, "Y color")
+
         values = {
             ATTR_LIGHT_COLOR_X: color_x,
             ATTR_LIGHT_COLOR_Y: color_y
@@ -238,6 +244,10 @@ class LightControl:
     def set_hsb(self, hue, saturation, brightness, *, index=0,
                 transition_time=None):
         """Set HSB color settings of the light."""
+        self._value_validate(hue, RANGE_HUE, "Hue")
+        self._value_validate(saturation, RANGE_SATURATION, "Saturation")
+        self._value_validate(brightness, RANGE_BRIGHTNESS, "Brightness")
+
         values = {
             ATTR_LIGHT_COLOR_SATURATION: hue,
             ATTR_LIGHT_COLOR_HUE: saturation,
@@ -273,6 +283,14 @@ class LightControl:
                 values
             ]
         })
+
+    def _value_validate(self, value, rnge, identifier="Given"):
+        """
+        Make sure a value is within a given range
+        """
+        if value < rnge[0] or value > rnge[1]:
+            raise ValueError('%s value must be between %d and %d.'
+                             % (identifier, rnge[0], rnge[1]))
 
     def __repr__(self):
         return '<LightControl for {} ({} lights)>'.format(self._device.name,
