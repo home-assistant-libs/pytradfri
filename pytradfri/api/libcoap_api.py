@@ -109,7 +109,7 @@ class APIFactory:
         err_callback = api_command.err_callback
 
         command = (self._base_command('get')
-                   + ['-s', str(duration), '-B', str(duration) url])
+                   + ['-s', str(duration), '-B', str(duration), url])
 
         kwargs = {
             'stdout': subprocess.PIPE,
