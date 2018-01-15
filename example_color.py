@@ -4,11 +4,17 @@ This is a file to give examples on how to work with colors
 The gateway supports _some_ hex values, otherwise colors stored as XY
 A guess is that IKEA uses the CIE XYZ space
 
-You need to install colormath from pypi in order to this example:
-% pip install colormath
+You need to install colormath from pypi in order to make this example work:
+$ pip3 install colormath
 
-Alternatively, as 2.2 of colormath hasn't been released to pypi yet
-% pip install git+git://github.com/gtaylor/python-colormath
+To run the script, do the following:
+$ pip3 install pytradfri
+$ Download this file (example_color.py)
+$ python3 example_color.py -H <IP>
+
+Where <IP> is the address to your IKEA gateway. The first time
+running you will be asked to input the 'Security Code' found on
+the back of your IKEA gateway.
 
 The gateway returns:
     Hue (a guess)
@@ -44,9 +50,14 @@ parser.add_argument('-K', '--key', dest='key', required=False,
 args = parser.parse_args()
 
 
-if Path(CONFIG_FILE).is_file() is False and args.key is None:
-    raise PytradfriError("Please provide they key found on your "
-                         "Tradfri gateway using the -K flag to this script.")
+if args.host not in load_json(CONFIG_FILE) and args.key is None:
+    print("Please provide the 'Security Code' on the back of your "
+          "Tradfri gateway:", end=" ")
+    key = input().strip()
+    if len(key) != 16:
+        raise PytradfriError("Invalid 'Security Code' provided.")
+    else:
+        args.key = key
 
 
 try:
@@ -81,7 +92,9 @@ def run():
                                'key': psk}
             save_json(CONFIG_FILE, conf)
         except AttributeError:
-            raise PytradfriError("Please provide your Key")
+            raise PytradfriError("Please provide the 'Security Code' on the "
+                                 "back of your Tradfri gateway using the "
+                                 "-K flag.")
 
     api = api_factory.request
 
@@ -108,8 +121,8 @@ def run():
     xy = lights[3].light_control.lights[0].xy_color
 
     #  Normalize Z
-    Z = int(lights[3].light_control.lights[0].dimmer/254*65535)
-    xyZ = xy+(Z,)
+    Z = int(lights[3].light_control.lights[0].dimmer / 254 * 65535)
+    xyZ = xy + (Z,)
     rgb = convert_color(XYZColor(xyZ[0], xyZ[1], xyZ[2]), sRGBColor,
                         observer='2', target_illuminant='d65')
     rgb = (int(rgb.rgb_r), int(rgb.rgb_g), int(rgb.rgb_b))

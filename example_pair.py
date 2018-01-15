@@ -5,11 +5,12 @@ devices.
 
 To run the script, do the following:
 $ pip3 install pytradfri
-$ Download this file (example_sync.py)
-$ python3 example_pair.py <IP> <KEY>
+$ Download this file (example_pair.py)
+$ python3 example_pair.py -H <IP>
 
-Where <IP> is the address to your IKEA gateway and
-<KEY> is found on the back of your IKEA gateway.
+Where <IP> is the address to your IKEA gateway. The first time
+running you will be asked to input the 'Security Code' found on
+the back of your IKEA gateway.
 """
 
 import asyncio
@@ -39,9 +40,14 @@ parser.add_argument('-K', '--key', dest='key', required=False,
 args = parser.parse_args()
 
 
-if Path(CONFIG_FILE).is_file() is False and args.key is None:
-    raise PytradfriError("Please provide they key found on your "
-                         "Tradfri gateway using the -K flag to this script.")
+if args.host not in load_json(CONFIG_FILE) and args.key is None:
+    print("Please provide the 'Security Code' on the back of your "
+          "Tradfri gateway:", end=" ")
+    key = input().strip()
+    if len(key) != 16:
+        raise PytradfriError("Invalid 'Security Code' provided.")
+    else:
+        args.key = key
 
 
 @asyncio.coroutine
@@ -66,7 +72,9 @@ def run(shutdown):
                                'key': psk}
             save_json(CONFIG_FILE, conf)
         except AttributeError:
-            raise PytradfriError("Please provide your Key")
+            raise PytradfriError("Please provide the 'Security Code' on the "
+                                 "back of your Tradfri gateway using the "
+                                 "-K flag.")
 
     api = api_factory.request
 
