@@ -37,11 +37,11 @@ Security best practice is to *not* store the security code that is printed on th
 If you want to test this library stand-alone in a command-line interface:
 
 ```shell
-$ python3 -i -m pytradfri IP KEY
+$ python3 -i -m pytradfri <IP>
 ```
-Where the following variables are substituted:
-- **IP** is the IP-address to your gateway.
-- **KEY** is the 'Security Code' written on the back of your IKEA Tradfri Gateway.
+Where **<IP>** is substituted by the IP-address to your gateway.
+
+The first time running pytradfri you will be asked to input the 'Security Code' found on the back of your IKEA gateway.
 
 ### Examples of commands in the stand-alone prompt:
 
