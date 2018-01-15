@@ -5,7 +5,7 @@ This is an example of how the pytradfri-library can be used.
 To run the script, do the following:
 $ pip3 install pytradfri
 $ Download this file (example_sync.py)
-$ python3 example_sync.py -H <IP>
+$ python3 example_sync.py <IP>
 
 Where <IP> is the address to your IKEA gateway. The first time
 running you will be asked to input the 'Security Code' found on
@@ -28,7 +28,7 @@ CONFIG_FILE = 'tradfri_standalone_psk.conf'
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-H', '--hostname', dest='host', required=True,
+parser.add_argument('host', metavar='IP', type=str,
                     help='IP Address of your Tradfri gateway')
 parser.add_argument('-K', '--key', dest='key', required=False,
                     help='Security code found on your Tradfri gateway')
