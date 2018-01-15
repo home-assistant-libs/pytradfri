@@ -103,6 +103,8 @@ class APIFactory:
         """Observe an endpoint."""
         path = api_command.path
         duration = api_command.observe_duration
+        if duration <= 0:
+            duration = 1
         url = api_command.url(self._host)
         err_callback = api_command.err_callback
 
