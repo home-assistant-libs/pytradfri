@@ -20,7 +20,6 @@ from .const import (
     ATTR_LIGHT_MIREDS,
     ATTR_TRANSITION_TIME,
     RANGE_MIREDS,
-    RANGE_MIREDS_WS,
     RANGE_HUE,
     RANGE_SATURATION,
     RANGE_BRIGHTNESS,
@@ -28,6 +27,7 @@ from .const import (
     RANGE_Y,
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
+    SUPPORT_RGB_COLOR,
     SUPPORT_HEX_COLOR,
     SUPPORT_XY_COLOR)
 from .color import COLORS, supported_features
@@ -147,29 +147,6 @@ class LightControl:
     def __init__(self, device):
         self._device = device
 
-        self.can_set_mireds = None
-        self.can_set_color = None
-
-        if 'WS' in self._device.device_info.model_number:
-            self.can_set_mireds = True
-
-        if 'CWS' in self._device.device_info.model_number:
-            self.can_set_color = True
-
-        #  Define mireds range
-        if not self.can_set_mireds:
-            # White bulb
-            self._mireds_range = (None, None)
-        if not self.can_set_color:
-            # White spectrum bulb
-            self._mireds_range = RANGE_MIREDS_WS
-        if self.can_set_color:
-            # Color bulb
-            self._mireds_range = RANGE_MIREDS
-
-        self.min_mireds = self._mireds_range[0]
-        self.max_mireds = self._mireds_range[1]
-
     @property
     def lights(self):
         """Return light objects of the light control."""
@@ -203,8 +180,7 @@ class LightControl:
 
     def set_color_temp(self, color_temp, *, index=0, transition_time=None):
         """Set color temp a light."""
-        self._value_validate(color_temp, self._mireds_range,
-                             "Color temperature")
+        self._value_validate(color_temp, RANGE_MIREDS, "Color temperature")
 
         values = {
             ATTR_LIGHT_MIREDS: color_temp

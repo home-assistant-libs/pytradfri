@@ -110,11 +110,8 @@ ATTR_USE_CURRENT_LIGHT_SETTINGS = "9070"
 URL_OTA_FW = "http://fw.ota.homesmart.ikea.net/feed/version_info.json"
 
 
-# Mireds range for which the conversion functions work
-# and that RGB bulbs can show
-RANGE_MIREDS = (40, 600)
-# Mireds range that white-spectrum bulbs can actually show
-RANGE_MIREDS_WS = (250, 454)
+# Mireds range that white-spectrum bulbs can show
+RANGE_MIREDS = (250, 454)
 
 # Hue of a RGB bulb
 RANGE_HUE = (0, 65535)
