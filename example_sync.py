@@ -21,7 +21,6 @@ from pytradfri.api.libcoap_api import APIFactory
 from pytradfri.error import PytradfriError
 from pytradfri.util import load_json, save_json
 
-from pathlib import Path
 import uuid
 import argparse
 

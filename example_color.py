@@ -35,7 +35,6 @@ from pytradfri.util import load_json, save_json
 from colormath.color_conversions import convert_color
 from colormath.color_objects import sRGBColor, XYZColor
 
-from pathlib import Path
 import uuid
 import argparse
 
