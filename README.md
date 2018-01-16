@@ -29,7 +29,7 @@ To use the library in a synchronous application, you first need to install [libc
 
 For asynchronous applications you will need to install [DTLSSocket](https://pypi.python.org/pypi/DTLSSocket), for instance using the requirements file: ```shell pip install -r requirements.txt ```. Please note that install might take considerable time on slow devices. Use ```example_async.py``` when testing this.
 
-Security best practice is to not store the security code that is printed on the gateway permanently in your application. Please always use the PSK when communicating with the gateway.
+Security best practice is to *not* store the security code that is printed on the gateway permanently in your application. Please always use the PSK when communicating with the gateway.
 
 ## 2. Stand-alone use (command-line interface)
 ![Screenshot of command line interface](./docs/pytradfri_cli.png)
@@ -37,11 +37,11 @@ Security best practice is to not store the security code that is printed on the 
 If you want to test this library stand-alone in a command-line interface:
 
 ```shell
-$ python3 -i -m pytradfri IP KEY
+$ python3 -i -m pytradfri IP
 ```
-Where the following variables are substituted:
-- **IP** is the IP-address to your gateway.
-- **KEY** is written on the back of your IKEA Tradfri Gateway.
+Where **IP** is substituted by the IP-address to your gateway.
+
+The first time running pytradfri you will be asked to input the 'Security Code' found on the back of your IKEA gateway.
 
 ### Examples of commands in the stand-alone prompt:
 

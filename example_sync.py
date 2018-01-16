@@ -5,10 +5,11 @@ This is an example of how the pytradfri-library can be used.
 To run the script, do the following:
 $ pip3 install pytradfri
 $ Download this file (example_sync.py)
-$ python3 test_pytradfri.py <IP> <KEY>
+$ python3 example_sync.py <IP>
 
-Where <IP> is the address to your IKEA gateway and
-<KEY> is found on the back of your IKEA gateway.
+Where <IP> is the address to your IKEA gateway. The first time
+running you will be asked to input the 'Security Code' found on
+the back of your IKEA gateway.
 """
 
 import threading
@@ -20,7 +21,6 @@ from pytradfri.api.libcoap_api import APIFactory
 from pytradfri.error import PytradfriError
 from pytradfri.util import load_json, save_json
 
-from pathlib import Path
 import uuid
 import argparse
 
@@ -28,16 +28,21 @@ CONFIG_FILE = 'tradfri_standalone_psk.conf'
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-H', '--hostname', dest='host', required=True,
+parser.add_argument('host', metavar='IP', type=str,
                     help='IP Address of your Tradfri gateway')
 parser.add_argument('-K', '--key', dest='key', required=False,
-                    help='Key found on your Tradfri gateway')
+                    help='Security code found on your Tradfri gateway')
 args = parser.parse_args()
 
 
-if Path(CONFIG_FILE).is_file() is False and args.key is None:
-    raise PytradfriError("Please provide they key found on your "
-                         "Tradfri gateway using the -K flag to this script.")
+if args.host not in load_json(CONFIG_FILE) and args.key is None:
+    print("Please provide the 'Security Code' on the back of your "
+          "Tradfri gateway:", end=" ")
+    key = input().strip()
+    if len(key) != 16:
+        raise PytradfriError("Invalid 'Security Code' provided.")
+    else:
+        args.key = key
 
 
 def observe(api, device):
@@ -76,9 +81,10 @@ def run():
             conf[args.host] = {'identity': identity,
                                'key': psk}
             save_json(CONFIG_FILE, conf)
-
         except AttributeError:
-            raise PytradfriError("Please provide your Key")
+            raise PytradfriError("Please provide the 'Security Code' on the "
+                                 "back of your Tradfri gateway using the "
+                                 "-K flag.")
 
     api = api_factory.request
 
@@ -94,7 +100,7 @@ def run():
     print(lights)
 
     # Lights can be accessed by its index, so lights[1] is the second light
-    light = lights[0]
+    light = lights[3]
 
     observe(api, light)
 
@@ -113,7 +119,7 @@ def run():
 
     # Example 5: Change color of the light
     # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
-    color_command = light.light_control.set_hex_color('efd275')
+    color_command = light.light_control.set_color_temp(250)
     api(color_command)
 
     tasks_command = gateway.get_smart_tasks()
@@ -125,7 +131,7 @@ def run():
         print(tasks[0].task_control.tasks[0].transition_time)
 
         # Example 7: Set the dimmer stop value to 30 for light#1 in task#1
-        dim_command_2 = tasks[0].start_action.devices[0].item_controller\
+        dim_command_2 = tasks[0].start_action.devices[0].item_controller \
             .set_dimmer(30)
         api(dim_command_2)
 
