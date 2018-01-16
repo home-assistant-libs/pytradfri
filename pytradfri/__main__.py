@@ -1,7 +1,6 @@
 """Provide a CLI for Tradfri."""
 import logging
 from pprint import pprint
-import sys
 
 from .const import *  # noqa
 from pytradfri.api.libcoap_api import APIFactory
