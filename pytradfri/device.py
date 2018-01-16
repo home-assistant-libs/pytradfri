@@ -27,7 +27,6 @@ from .const import (
     RANGE_Y,
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
-    SUPPORT_RGB_COLOR,
     SUPPORT_HEX_COLOR,
     SUPPORT_XY_COLOR)
 from .color import COLORS, supported_features
