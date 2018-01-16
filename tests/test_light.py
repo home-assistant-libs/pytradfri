@@ -7,7 +7,7 @@ from devices import (
     LIGHT_WS_CUSTOM_COLOR,
     LIGHT_CWS,
     LIGHT_CWS_CUSTOM_COLOR
-    )
+)
 
 
 def light(raw):
@@ -52,20 +52,6 @@ def test_color_bulb_custom_color():
 
     assert bulb.hex_color == '0'
     #  assert bulb.xy_color == (23327, 33940) # temporarily disable
-
-
-def test_spectrum_device_control():
-    light_control = light_device_control(LIGHT_WS)
-
-    assert light_control.min_mireds == 250
-    assert light_control.max_mireds == 454
-
-
-def test_color_device_control():
-    light_control = light_device_control(LIGHT_CWS)
-
-    assert light_control.min_mireds == 40
-    assert light_control.max_mireds == 600
 
 
 def test_setters():
