@@ -104,7 +104,7 @@ class APIFactory:
         path = api_command.path
         duration = api_command.observe_duration
         if duration <= 0:
-            duration = 1
+            raise ValueError("Observation duration has to be greater than 0.")
         url = api_command.url(self._host)
         err_callback = api_command.err_callback
 
