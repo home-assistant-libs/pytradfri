@@ -4,11 +4,12 @@ This is an example of how the pytradfri-library can be used async.
 
 To run the script, do the following:
 $ pip3 install pytradfri
-$ Download this file (example_sync.py)
-$ python3 test_pytradfri.py <IP> <KEY>
+$ Download this file (example_async.py)
+$ python3 example_async.py <IP>
 
-Where <IP> is the address to your IKEA gateway and
-<KEY> is found on the back of your IKEA gateway.
+Where <IP> is the address to your IKEA gateway. The first time
+running you will be asked to input the 'Security Code' found on
+the back of your IKEA gateway.
 """
 
 import asyncio
@@ -18,7 +19,6 @@ from pytradfri.api.aiocoap_api import APIFactory
 from pytradfri.error import PytradfriError
 from pytradfri.util import load_json, save_json
 
-from pathlib import Path
 import uuid
 import argparse
 
@@ -26,16 +26,21 @@ CONFIG_FILE = 'tradfri_standalone_psk.conf'
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-H', '--hostname', dest='host', required=True,
+parser.add_argument('host', metavar='IP', type=str,
                     help='IP Address of your Tradfri gateway')
 parser.add_argument('-K', '--key', dest='key', required=False,
                     help='Key found on your Tradfri gateway')
 args = parser.parse_args()
 
 
-if Path(CONFIG_FILE).is_file() is False and args.key is None:
-    raise PytradfriError("Please provide they key found on your "
-                         "Tradfri gateway using the -K flag to this script.")
+if args.host not in load_json(CONFIG_FILE) and args.key is None:
+    print("Please provide the 'Security Code' on the back of your "
+          "Tradfri gateway:", end=" ")
+    key = input().strip()
+    if len(key) != 16:
+        raise PytradfriError("Invalid 'Security Code' provided.")
+    else:
+        args.key = key
 
 
 try:
@@ -70,7 +75,9 @@ def run():
                                'key': psk}
             save_json(CONFIG_FILE, conf)
         except AttributeError:
-            raise PytradfriError("Please provide your Key")
+            raise PytradfriError("Please provide the 'Security Code' on the "
+                                 "back of your Tradfri gateway using the "
+                                 "-K flag.")
 
     api = api_factory.request
 

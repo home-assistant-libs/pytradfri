@@ -109,14 +109,22 @@ ATTR_USE_CURRENT_LIGHT_SETTINGS = "9070"
 # URL to json-file containing links to all firmware updates
 URL_OTA_FW = "http://fw.ota.homesmart.ikea.net/feed/version_info.json"
 
-# Mireds range for which the conversion functions work
-# and that RGB bulbs can show
-MIN_MIREDS = 40
-MAX_MIREDS = 600
 
-# Mireds range that white-spectrum bulbs can actually show
-MIN_MIREDS_WS = 250
-MAX_MIREDS_WS = 454
+# Mireds range that white-spectrum bulbs can show
+RANGE_MIREDS = (250, 454)
+
+# Hue of a RGB bulb
+RANGE_HUE = (0, 65535)
+# Effecitive saturation range of a RGB bulb. The bulb will accept
+# slightly higher values, but it won't produce any light.
+RANGE_SATURATION = (0, 65279)
+# Brightness range of all bulbs. 0 will turn off the lamp
+RANGE_BRIGHTNESS = (1, 254)
+
+# XY color
+RANGE_X = (0, 65535)
+RANGE_Y = (0, 65535)
+
 
 SUPPORT_BRIGHTNESS = 1
 SUPPORT_COLOR_TEMP = 2
