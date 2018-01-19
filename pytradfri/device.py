@@ -144,7 +144,7 @@ class DeviceInfo:
 
 
 class DeviceControl:
-    """Superclass to control lights."""
+    """Superclass to control devices."""
 
     def __init__(self, device):
         self._device = device
