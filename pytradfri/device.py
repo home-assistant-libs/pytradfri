@@ -25,6 +25,7 @@ from .const import (
     RANGE_BRIGHTNESS,
     RANGE_X,
     RANGE_Y,
+    ROOT_SWITCH,
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
     SUPPORT_HEX_COLOR,
@@ -62,7 +63,9 @@ class Device(ApiResource):
     @property
     def has_light_control(self):
         return (self.raw is not None and
-                len(self.raw.get(ATTR_LIGHT_CONTROL, "")) > 0)
+                (len(self.raw.get(ATTR_LIGHT_CONTROL, "")) > 0 or
+                    len(self.raw.get(ROOT_SWITCH, "")) > 0)
+                )
 
     @property
     def light_control(self):
@@ -272,8 +275,37 @@ class LightControl:
                                                           len(self.raw))
 
 
+class Control(LightControl):
+    """Controls the GU10 lights that are
+    represented differently in the gateway."""
+
+    @property
+    def raw(self):
+        """Return raw data that it represents."""
+        return self._device.raw[ROOT_SWITCH]
+
+    def set_values(self, values, *, index=0):
+        """
+        Set values on light control.
+
+        Returns a Command.
+        """
+        assert len(self.raw) == 1, \
+            'Only devices with 1 light supported'
+
+        return Command('put', self._device.path, {
+            ROOT_SWITCH: [
+                values
+            ]
+        })
+
+    def __repr__(self):
+        return '<Control for {} ({} lights)>'.format(self._device.name,
+                                                     len(self.raw))
+
+
 class Light:
-    """Represent a light control.
+    """Represent a light.
 
     https://github.com/IPSO-Alliance/pub/blob/master/docs/IPSO-Smart-Objects.pdf
     """
