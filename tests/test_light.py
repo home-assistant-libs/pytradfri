@@ -15,10 +15,6 @@ def light(raw):
     return Device(raw).light_control.lights[0]
 
 
-def light_device_control(raw):
-    return Device(raw).light_control
-
-
 def test_gu10():
     bulb = light(LIGHT_GU10)
 

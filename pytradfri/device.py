@@ -152,11 +152,10 @@ class DeviceControl:
     @property
     def raw(self):
         """Return raw data that it represents."""
-        if len(self.raw.get(ATTR_LIGHT_CONTROL, "")) > 0:
-            return self._device.raw[ROOT_SWITCH]
-
-        if len(self.raw.get(ROOT_SWITCH, "")) > 0:
+        if ATTR_LIGHT_CONTROL in self._device.raw:
             return self._device.raw[ATTR_LIGHT_CONTROL]
+        elif ROOT_SWITCH in self._device.raw:
+            return self._device.raw[ROOT_SWITCH]
 
     @property
     def lights(self):
