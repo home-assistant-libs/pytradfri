@@ -150,6 +150,15 @@ class DeviceControl:
         self._device = device
 
     @property
+    def raw(self):
+        """Return raw data that it represents."""
+        if len(self._device.raw[ROOT_SWITCH]) > 0:
+            return self._device.raw[ROOT_SWITCH]
+
+        if len(self._device.raw[ATTR_LIGHT_CONTROL]) > 0:
+            return self._device.raw[ATTR_LIGHT_CONTROL]
+
+    @property
     def lights(self):
         """Return light objects of the light control."""
         return [Light(self._device, i) for i in range(len(self.raw))]
@@ -261,11 +270,6 @@ class LightControl(DeviceControl):
     def __init__(self, device):
         self._device = device
 
-    @property
-    def raw(self):
-        """Return raw data that it represents."""
-        return self._device.raw[ATTR_LIGHT_CONTROL]
-
     def set_values(self, values, *, index=0):
         """
         Set values on light control.
@@ -289,11 +293,6 @@ class LightControl(DeviceControl):
 class Control(DeviceControl):
     """Controls the GU10 lights that are
     represented differently in the gateway."""
-
-    @property
-    def raw(self):
-        """Return raw data that it represents."""
-        return self._device.raw[ROOT_SWITCH]
 
     def set_values(self, values, *, index=0):
         """
