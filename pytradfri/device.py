@@ -69,7 +69,7 @@ class Device(ApiResource):
 
     @property
     def light_control(self):
-        return LightControl(self)
+        return DeviceControl(self)
 
     def __repr__(self):
         return "<{} - {} ({})>".format(self.id, self.name,
@@ -143,8 +143,8 @@ class DeviceInfo:
         return self._device.raw[ATTR_DEVICE_INFO]
 
 
-class LightControl:
-    """Class to control the lights."""
+class DeviceControl:
+    """Superclass to control lights."""
 
     def __init__(self, device):
         self._device = device
@@ -153,11 +153,6 @@ class LightControl:
     def lights(self):
         """Return light objects of the light control."""
         return [Light(self._device, i) for i in range(len(self.raw))]
-
-    @property
-    def raw(self):
-        """Return raw data that it represents."""
-        return self._device.raw[ATTR_LIGHT_CONTROL]
 
     def set_state(self, state, *, index=0):
         """Set state of a light."""
@@ -247,6 +242,30 @@ class LightControl:
             raise ColorError('Invalid color specified: %s',
                              colorname)
 
+    def _value_validate(self, value, rnge, identifier="Given"):
+        """
+        Make sure a value is within a given range
+        """
+        if value is not None and (value < rnge[0] or value > rnge[1]):
+            raise ValueError('%s value must be between %d and %d.'
+                             % (identifier, rnge[0], rnge[1]))
+
+    def __repr__(self):
+        return '<DeviceControl for {} ({} lights)>'.format(self._device.name,
+                                                           len(self.raw))
+
+
+class LightControl(DeviceControl):
+    """Class to control the lights."""
+
+    def __init__(self, device):
+        self._device = device
+
+    @property
+    def raw(self):
+        """Return raw data that it represents."""
+        return self._device.raw[ATTR_LIGHT_CONTROL]
+
     def set_values(self, values, *, index=0):
         """
         Set values on light control.
@@ -262,20 +281,12 @@ class LightControl:
             ]
         })
 
-    def _value_validate(self, value, rnge, identifier="Given"):
-        """
-        Make sure a value is within a given range
-        """
-        if value is not None and (value < rnge[0] or value > rnge[1]):
-            raise ValueError('%s value must be between %d and %d.'
-                             % (identifier, rnge[0], rnge[1]))
-
     def __repr__(self):
         return '<LightControl for {} ({} lights)>'.format(self._device.name,
                                                           len(self.raw))
 
 
-class Control(LightControl):
+class Control(DeviceControl):
     """Controls the GU10 lights that are
     represented differently in the gateway."""
 
