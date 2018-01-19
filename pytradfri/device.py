@@ -364,7 +364,10 @@ class Light:
     @property
     def raw(self):
         """Return raw data that it represents."""
-        return self.device.raw[ATTR_LIGHT_CONTROL][self.index]
+        if ATTR_LIGHT_CONTROL in self.device.raw:
+            return self.device.raw[ATTR_LIGHT_CONTROL][self.index]
+        elif ROOT_SWITCH in self.device.raw:
+            return self.device.raw[ROOT_SWITCH][self.index]
 
     def __repr__(self):
         state = "on" if self.state else "off"
