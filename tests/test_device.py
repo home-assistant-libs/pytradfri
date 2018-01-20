@@ -80,6 +80,91 @@ def test_set_hsb():
     assert len(data) is 4
 
 
+def test_set_xy_color():
+    dev = Device(LIGHT_WS)
+
+    with pytest.raises(ValueError):
+        dev.light_control.set_xy_color(-300, 200)
+    with pytest.raises(ValueError):
+        dev.light_control.set_xy_color(300, -200)
+
+    with pytest.raises(ValueError):
+        dev.light_control.set_xy_color(99999, 200)
+    with pytest.raises(ValueError):
+        dev.light_control.set_xy_color(300, 99999)
+
+    command = dev.light_control.set_xy_color(300, 200)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+    command = dev.light_control.set_xy_color(300, None)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+    command = dev.light_control.set_xy_color(300, 200, transition_time=1)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 3
+
+
+def test_set_color_temp():
+    dev = Device(LIGHT_WS)
+
+    with pytest.raises(ValueError):
+        dev.light_control.set_color_temp(-300)
+
+    with pytest.raises(ValueError):
+        dev.light_control.set_color_temp(99999)
+
+    command = dev.light_control.set_color_temp(300)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+    command = dev.light_control.set_color_temp(None)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+    command = dev.light_control.set_color_temp(300, transition_time=1)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+
+def test_set_dimmer():
+    dev = Device(LIGHT_WS)
+
+    with pytest.raises(ValueError):
+        dev.light_control.set_dimmer(-300)
+
+    with pytest.raises(ValueError):
+        dev.light_control.set_dimmer(99999)
+
+    command = dev.light_control.set_dimmer(200)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+    command = dev.light_control.set_dimmer(None)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+    command = dev.light_control.set_dimmer(200, transition_time=1)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+
+def test_set_state():
+    dev = Device(LIGHT_WS)
+
+    with pytest.raises(TypeError):
+        dev.light_control.set_state(None)
+
+    command = dev.light_control.set_state(True)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+    command = dev.light_control.set_state(False)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+
 def test_value_validate():
     dev = Device(LIGHT_WS)
     rnge = (10, 100)
