@@ -216,7 +216,7 @@ class LightControl:
 
         return self.set_values(values, index=index)
 
-    def set_hsb(self, hue, saturation, brightness, *, index=0,
+    def set_hsb(self, hue, saturation, brightness=None, *, index=0,
                 transition_time=None):
         """Set HSB color settings of the light."""
         self._value_validate(hue, RANGE_HUE, "Hue")

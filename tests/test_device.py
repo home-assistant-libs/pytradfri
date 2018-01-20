@@ -1,7 +1,7 @@
 from datetime import datetime
 import pytest
 
-from pytradfri.const import ROOT_DEVICES, ATTR_NAME
+from pytradfri.const import ROOT_DEVICES, ATTR_NAME, ATTR_LIGHT_CONTROL
 from pytradfri.device import Device
 from devices import LIGHT_WS, LIGHT_CWS
 
@@ -44,6 +44,40 @@ def test_binary_division():
     assert dev_ws.color_temp == 400
     assert dev_color.hex_color == 'f1e0b5'
     assert dev_color.xy_color == (30015, 26870)
+
+
+def test_set_hsb():
+    dev = Device(LIGHT_WS)
+
+    with pytest.raises(ValueError):
+        dev.light_control.set_hsb(-300, 200, 100)
+    with pytest.raises(ValueError):
+        dev.light_control.set_hsb(300, -200, 100)
+    with pytest.raises(ValueError):
+        dev.light_control.set_hsb(300, 200, -100)
+
+    with pytest.raises(ValueError):
+        dev.light_control.set_hsb(99999, 200, 100)
+    with pytest.raises(ValueError):
+        dev.light_control.set_hsb(300, 99999, 100)
+    with pytest.raises(ValueError):
+        dev.light_control.set_hsb(300, 200, 99999)
+
+    command = dev.light_control.set_hsb(300, 200)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+    command = dev.light_control.set_hsb(300, 200, None)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+    command = dev.light_control.set_hsb(300, 200, 100)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 3
+
+    command = dev.light_control.set_hsb(300, 200, 100, transition_time=1)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 4
 
 
 def test_value_validate():
