@@ -258,59 +258,26 @@ class DeviceControl:
             raise ValueError('%s value must be between %d and %d.'
                              % (identifier, rnge[0], rnge[1]))
 
+    def set_values(self, values, *, index=0):
+        """
+        Set values on light control.
+
+        Returns a Command.
+        """
+        assert len(self.raw) == 1, \
+            'Only devices with 1 light supported'
+
+        """Return raw data that it represents."""
+        if ATTR_LIGHT_CONTROL in self._device.raw:
+            return_value = {ATTR_LIGHT_CONTROL: [values]}
+        elif ROOT_SWITCH in self._device.raw:
+            return_value = {ROOT_SWITCH: [values]}
+
+        return Command('put', self._device.path, return_value)
+
     def __repr__(self):
         return '<DeviceControl for {} ({} lights)>'.format(self._device.name,
                                                            len(self.raw))
-
-
-class LightControl(DeviceControl):
-    """Class to control the lights."""
-
-    def __init__(self, device):
-        self._device = device
-
-    def set_values(self, values, *, index=0):
-        """
-        Set values on light control.
-
-        Returns a Command.
-        """
-        assert len(self.raw) == 1, \
-            'Only devices with 1 light supported'
-
-        return Command('put', self._device.path, {
-            ATTR_LIGHT_CONTROL: [
-                values
-            ]
-        })
-
-    def __repr__(self):
-        return '<LightControl for {} ({} lights)>'.format(self._device.name,
-                                                          len(self.raw))
-
-
-class Control(DeviceControl):
-    """Controls the GU10 lights that are
-    represented differently in the gateway."""
-
-    def set_values(self, values, *, index=0):
-        """
-        Set values on light control.
-
-        Returns a Command.
-        """
-        assert len(self.raw) == 1, \
-            'Only devices with 1 light supported'
-
-        return Command('put', self._device.path, {
-            ROOT_SWITCH: [
-                values
-            ]
-        })
-
-    def __repr__(self):
-        return '<Control for {} ({} lights)>'.format(self._device.name,
-                                                     len(self.raw))
 
 
 class Light:
