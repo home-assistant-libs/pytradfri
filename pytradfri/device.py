@@ -216,18 +216,20 @@ class LightControl:
 
         return self.set_values(values, index=index)
 
-    def set_hsb(self, hue, saturation, brightness, *, index=0,
+    def set_hsb(self, hue, saturation, brightness=None, *, index=0,
                 transition_time=None):
         """Set HSB color settings of the light."""
         self._value_validate(hue, RANGE_HUE, "Hue")
         self._value_validate(saturation, RANGE_SATURATION, "Saturation")
-        self._value_validate(brightness, RANGE_BRIGHTNESS, "Brightness")
 
         values = {
-            ATTR_LIGHT_COLOR_SATURATION: hue,
-            ATTR_LIGHT_COLOR_HUE: saturation,
-            ATTR_LIGHT_DIMMER: brightness
+            ATTR_LIGHT_COLOR_SATURATION: saturation,
+            ATTR_LIGHT_COLOR_HUE: hue
         }
+
+        if brightness is not None:
+            values[ATTR_LIGHT_DIMMER] = brightness
+            self._value_validate(brightness, RANGE_BRIGHTNESS, "Brightness")
 
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
@@ -314,8 +316,8 @@ class Light:
 
     @property
     def hsb_xy_color(self):
-        return (self.raw.get(ATTR_LIGHT_COLOR_SATURATION),
-                self.raw.get(ATTR_LIGHT_COLOR_HUE),
+        return (self.raw.get(ATTR_LIGHT_COLOR_HUE),
+                self.raw.get(ATTR_LIGHT_COLOR_SATURATION),
                 self.raw.get(ATTR_LIGHT_DIMMER),
                 self.raw.get(ATTR_LIGHT_COLOR_X),
                 self.raw.get(ATTR_LIGHT_COLOR_Y))
