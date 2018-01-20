@@ -129,6 +129,22 @@ def test_set_state():
     assert len(data) is 1
 
 
+def test_set_hex_color():
+    dev = Device(LIGHT_WS)
+
+    command = dev.light_control.set_hex_color("4a418a")
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+    command = dev.light_control.set_hex_color("4a418a", transition_time=1)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+    command = dev.light_control.set_hex_color("RandomString")
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+
 def test_value_validate():
     dev = Device(LIGHT_WS)
     rnge = (10, 100)
