@@ -35,6 +35,14 @@ from .resource import ApiResource
 from .error import ColorError
 
 
+def device_type(data):
+    """If regular bulb=>ATTR_LIGHT_CONTROL If GU10 light=>ROOT_SWITCH."""
+    if ATTR_LIGHT_CONTROL in data:
+        return ATTR_LIGHT_CONTROL
+    elif ROOT_SWITCH in data:
+        return ROOT_SWITCH
+
+
 class Device(ApiResource):
     """Base class for devices."""
 
@@ -151,12 +159,8 @@ class DeviceControl:
 
     @property
     def raw(self):
-        """Return raw data that it represents.
-        If regular bulb=>ATTR_LIGHT_CONTROL If GU10 light=>ROOT_SWITCH."""
-        if ATTR_LIGHT_CONTROL in self._device.raw:
-            return self._device.raw[ATTR_LIGHT_CONTROL]
-        elif ROOT_SWITCH in self._device.raw:
-            return self._device.raw[ROOT_SWITCH]
+        """Return raw data that it represents."""
+        return self._device.raw[device_type(self._device.raw)]
 
     @property
     def lights(self):
@@ -262,18 +266,16 @@ class DeviceControl:
     def set_values(self, values, *, index=0):
         """
         Set values on light control.
-
         Returns a Command.
         """
         assert len(self.raw) == 1, \
             'Only devices with 1 light supported'
 
-        if ATTR_LIGHT_CONTROL in self._device.raw:
-            return_value = {ATTR_LIGHT_CONTROL: [values]}
-        elif ROOT_SWITCH in self._device.raw:
-            return_value = {ROOT_SWITCH: [values]}
-
-        return Command('put', self._device.path, return_value)
+        return Command('put', self._device.path, {
+            device_type(self._device.raw): [
+                values
+            ]
+        })
 
     def __repr__(self):
         return '<DeviceControl for {} ({} lights)>'.format(self._device.name,
@@ -332,9 +334,9 @@ class Light:
     def raw(self):
         """Return raw data that it represents."""
         if ATTR_LIGHT_CONTROL in self.device.raw:
-            return self.device.raw[ATTR_LIGHT_CONTROL][self.index]
+            return self.device.raw[device_type(self.device.raw)][self.index]
         elif ROOT_SWITCH in self.device.raw:
-            return self.device.raw[ROOT_SWITCH][self.index]
+            return self.device.raw[device_type(self.device.raw)][self.index]
 
     def __repr__(self):
         state = "on" if self.state else "off"
