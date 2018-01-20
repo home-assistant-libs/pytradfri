@@ -144,14 +144,15 @@ class DeviceInfo:
 
 
 class DeviceControl:
-    """Superclass to control devices."""
+    """Class to control devices."""
 
     def __init__(self, device):
         self._device = device
 
     @property
     def raw(self):
-        """Return raw data that it represents."""
+        """Return raw data that it represents.
+        If regular bulb=>ATTR_LIGHT_CONTROL If GU10 light=>ROOT_SWITCH."""
         if ATTR_LIGHT_CONTROL in self._device.raw:
             return self._device.raw[ATTR_LIGHT_CONTROL]
         elif ROOT_SWITCH in self._device.raw:
@@ -267,7 +268,6 @@ class DeviceControl:
         assert len(self.raw) == 1, \
             'Only devices with 1 light supported'
 
-        """Return raw data that it represents."""
         if ATTR_LIGHT_CONTROL in self._device.raw:
             return_value = {ATTR_LIGHT_CONTROL: [values]}
         elif ROOT_SWITCH in self._device.raw:
