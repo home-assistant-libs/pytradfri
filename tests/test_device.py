@@ -49,20 +49,6 @@ def test_binary_division():
 def test_set_hsb():
     dev = Device(LIGHT_WS)
 
-    with pytest.raises(ValueError):
-        dev.light_control.set_hsb(-300, 200, 100)
-    with pytest.raises(ValueError):
-        dev.light_control.set_hsb(300, -200, 100)
-    with pytest.raises(ValueError):
-        dev.light_control.set_hsb(300, 200, -100)
-
-    with pytest.raises(ValueError):
-        dev.light_control.set_hsb(99999, 200, 100)
-    with pytest.raises(ValueError):
-        dev.light_control.set_hsb(300, 99999, 100)
-    with pytest.raises(ValueError):
-        dev.light_control.set_hsb(300, 200, 99999)
-
     command = dev.light_control.set_hsb(300, 200)
     data = command.data[ATTR_LIGHT_CONTROL][0]
     assert len(data) is 2
@@ -83,16 +69,6 @@ def test_set_hsb():
 def test_set_xy_color():
     dev = Device(LIGHT_WS)
 
-    with pytest.raises(ValueError):
-        dev.light_control.set_xy_color(-300, 200)
-    with pytest.raises(ValueError):
-        dev.light_control.set_xy_color(300, -200)
-
-    with pytest.raises(ValueError):
-        dev.light_control.set_xy_color(99999, 200)
-    with pytest.raises(ValueError):
-        dev.light_control.set_xy_color(300, 99999)
-
     command = dev.light_control.set_xy_color(300, 200)
     data = command.data[ATTR_LIGHT_CONTROL][0]
     assert len(data) is 2
@@ -109,12 +85,6 @@ def test_set_xy_color():
 def test_set_color_temp():
     dev = Device(LIGHT_WS)
 
-    with pytest.raises(ValueError):
-        dev.light_control.set_color_temp(-300)
-
-    with pytest.raises(ValueError):
-        dev.light_control.set_color_temp(99999)
-
     command = dev.light_control.set_color_temp(300)
     data = command.data[ATTR_LIGHT_CONTROL][0]
     assert len(data) is 1
@@ -130,12 +100,6 @@ def test_set_color_temp():
 
 def test_set_dimmer():
     dev = Device(LIGHT_WS)
-
-    with pytest.raises(ValueError):
-        dev.light_control.set_dimmer(-300)
-
-    with pytest.raises(ValueError):
-        dev.light_control.set_dimmer(99999)
 
     command = dev.light_control.set_dimmer(200)
     data = command.data[ATTR_LIGHT_CONTROL][0]
