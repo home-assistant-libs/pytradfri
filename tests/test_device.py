@@ -1,4 +1,5 @@
 from datetime import datetime
+import pytest
 
 from pytradfri.const import ROOT_DEVICES, ATTR_NAME
 from pytradfri.device import Device
@@ -43,3 +44,20 @@ def test_binary_division():
     assert dev_ws.color_temp == 400
     assert dev_color.hex_color == 'f1e0b5'
     assert dev_color.xy_color == (30015, 26870)
+
+
+def test_value_validate():
+    dev = Device(LIGHT_WS)
+    rnge = (10, 100)
+
+    with pytest.raises(ValueError) as e_info:
+        dev.light_control._value_validate(9, rnge)
+    with pytest.raises(ValueError) as e_info:
+        dev.light_control._value_validate(-1, rnge)
+    with pytest.raises(ValueError) as e_info:
+        dev.light_control._value_validate(101, rnge)
+
+    assert dev.light_control._value_validate(10, rnge) is None
+    assert dev.light_control._value_validate(50, rnge) is None
+    assert dev.light_control._value_validate(100, rnge) is None
+    assert dev.light_control._value_validate(None, rnge) is None
