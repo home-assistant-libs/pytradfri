@@ -50,11 +50,11 @@ def test_value_validate():
     dev = Device(LIGHT_WS)
     rnge = (10, 100)
 
-    with pytest.raises(ValueError) as e_info:
+    with pytest.raises(ValueError):
         dev.light_control._value_validate(9, rnge)
-    with pytest.raises(ValueError) as e_info:
+    with pytest.raises(ValueError):
         dev.light_control._value_validate(-1, rnge)
-    with pytest.raises(ValueError) as e_info:
+    with pytest.raises(ValueError):
         dev.light_control._value_validate(101, rnge)
 
     assert dev.light_control._value_validate(10, rnge) is None
