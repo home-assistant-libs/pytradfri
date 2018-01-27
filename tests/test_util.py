@@ -1,5 +1,6 @@
 from pytradfri.util import load_json, save_json, BitChoices
-import shutil, tempfile
+import shutil
+import tempfile
 from os import path
 import unittest
 import json
@@ -14,6 +15,7 @@ class UtilTestsBitChoices(unittest.TestCase):
         )
 
         assert WEEKDAYS.get_selected_keys(1) == ['tue']
+
 
 class UtilTestsJSON(unittest.TestCase):
         def setUp(self):
@@ -38,5 +40,7 @@ class UtilTestsJSON(unittest.TestCase):
             f.write(data)
             f.close()
 
-            json_data = load_json(path.join(self.test_dir, 'sample_psk_file2.txt'))
-            self.assertEqual(json_data, {'identity': 'hashstring', 'key': 'secretkey'})
+            json_data = load_json(path.join(self.test_dir,
+                                            'sample_psk_file2.txt'))
+            self.assertEqual(json_data,
+                             {'identity': 'hashstring', 'key': 'secretkey'})
