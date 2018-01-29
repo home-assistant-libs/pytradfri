@@ -1,7 +1,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/ggravlingen/pytradfri/badge.svg?branch=master)](https://coveralls.io/github/ggravlingen/pytradfri?branch=master)
 [![PyPI version](https://badge.fury.io/py/pytradfri.svg)](https://badge.fury.io/py/pytradfri)
 
-**NB:** Latest Gateway version tested and working - 1.2.42.
+**NB:** Latest Gateway version tested and working - 1.3.14.
 
 Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. Using this library you can, by communicating with the gateway, control IKEA lights (including the RGB ones). Some of the features include:
 
@@ -25,9 +25,9 @@ Table of contents:
 ## 1. Installation
 You might have to use sudo for some commands to work when installing.
 
-To use the library in a synchronous application, you first need to install [libcoap](https://github.com/obgm/libcoap) using [this script.](script/install-coap-client.sh) Use ```example_sync.py``` when testing this.
+To use the library in a synchronous application, you first need to install [libcoap](https://github.com/obgm/libcoap) using [this script.](script/install-coap-client.sh) Use ```examples/example_sync.py``` when testing this.
 
-For asynchronous applications you will need to install [DTLSSocket](https://pypi.python.org/pypi/DTLSSocket), for instance using the requirements file: ```shell pip install -r requirements.txt ```. Please note that install might take considerable time on slow devices. Use ```example_async.py``` when testing this.
+For asynchronous applications you will need to install [DTLSSocket](https://pypi.python.org/pypi/DTLSSocket), for instance using the requirements file: ```shell pip install -r requirements.txt ```. Please note that install might take considerable time on slow devices. Use ```examples/example_async.py``` when testing this.
 
 Security best practice is to *not* store the security code that is printed on the gateway permanently in your application. Please always use the PSK when communicating with the gateway.
 
