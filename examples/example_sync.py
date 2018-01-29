@@ -12,9 +12,11 @@ running you will be asked to input the 'Security Code' found on
 the back of your IKEA gateway.
 """
 
-import threading
-
-import time
+# Hack to allow relative import above top level package
+import sys
+import os
+folder = os.path.dirname(os.path.abspath(__file__))  # noqa
+sys.path.insert(0, os.path.normpath("%s/.." % folder))  # noqa
 
 from pytradfri import Gateway
 from pytradfri.api.libcoap_api import APIFactory
@@ -23,6 +25,8 @@ from pytradfri.util import load_json, save_json
 
 import uuid
 import argparse
+import threading
+import time
 
 CONFIG_FILE = 'tradfri_standalone_psk.conf'
 
