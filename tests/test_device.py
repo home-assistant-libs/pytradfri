@@ -1,6 +1,7 @@
 from datetime import datetime
+import pytest
 
-from pytradfri.const import ROOT_DEVICES, ATTR_NAME
+from pytradfri.const import ROOT_DEVICES, ATTR_NAME, ATTR_LIGHT_CONTROL
 from pytradfri.device import Device
 from devices import LIGHT_WS, LIGHT_CWS
 
@@ -43,3 +44,119 @@ def test_binary_division():
     assert dev_ws.color_temp == 400
     assert dev_color.hex_color == 'f1e0b5'
     assert dev_color.xy_color == (30015, 26870)
+
+
+def test_set_hsb():
+    dev = Device(LIGHT_WS)
+
+    command = dev.light_control.set_hsb(300, 200)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+    command = dev.light_control.set_hsb(300, 200, None)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+    command = dev.light_control.set_hsb(300, 200, 100)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 3
+
+    command = dev.light_control.set_hsb(300, 200, 100, transition_time=1)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 4
+
+
+def test_set_xy_color():
+    dev = Device(LIGHT_WS)
+
+    command = dev.light_control.set_xy_color(300, 200)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+    command = dev.light_control.set_xy_color(300, None)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+    command = dev.light_control.set_xy_color(300, 200, transition_time=1)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 3
+
+
+def test_set_color_temp():
+    dev = Device(LIGHT_WS)
+
+    command = dev.light_control.set_color_temp(300)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+    command = dev.light_control.set_color_temp(None)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+    command = dev.light_control.set_color_temp(300, transition_time=1)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+
+def test_set_dimmer():
+    dev = Device(LIGHT_WS)
+
+    command = dev.light_control.set_dimmer(200)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+    command = dev.light_control.set_dimmer(None)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+    command = dev.light_control.set_dimmer(200, transition_time=1)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+
+def test_set_state():
+    dev = Device(LIGHT_WS)
+
+    with pytest.raises(TypeError):
+        dev.light_control.set_state(None)
+
+    command = dev.light_control.set_state(True)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+    command = dev.light_control.set_state(False)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+
+def test_set_hex_color():
+    dev = Device(LIGHT_WS)
+
+    command = dev.light_control.set_hex_color("4a418a")
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+    command = dev.light_control.set_hex_color("4a418a", transition_time=1)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 2
+
+    command = dev.light_control.set_hex_color("RandomString")
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert len(data) is 1
+
+
+def test_value_validate():
+    dev = Device(LIGHT_WS)
+    rnge = (10, 100)
+
+    with pytest.raises(ValueError):
+        dev.light_control._value_validate(9, rnge)
+    with pytest.raises(ValueError):
+        dev.light_control._value_validate(-1, rnge)
+    with pytest.raises(ValueError):
+        dev.light_control._value_validate(101, rnge)
+
+    assert dev.light_control._value_validate(10, rnge) is None
+    assert dev.light_control._value_validate(50, rnge) is None
+    assert dev.light_control._value_validate(100, rnge) is None
+    assert dev.light_control._value_validate(None, rnge) is None

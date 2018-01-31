@@ -1,40 +1,29 @@
 #!/usr/bin/env python3
 """
-This is a file to give examples on how to work with colors
-The gateway supports _some_ hex values, otherwise colors stored as XY
-A guess is that IKEA uses the CIE XYZ space
-
-You need to install colormath from pypi in order to make this example work:
-$ pip3 install colormath
+This is an example of how the pytradfri-library can be used async.
 
 To run the script, do the following:
 $ pip3 install pytradfri
-$ Download this file (example_color.py)
-$ python3 example_color.py <IP>
+$ Download this file (example_async.py)
+$ python3 example_async.py <IP>
 
 Where <IP> is the address to your IKEA gateway. The first time
 running you will be asked to input the 'Security Code' found on
 the back of your IKEA gateway.
-
-The gateway returns:
-    Hue (a guess)
-    Saturation (a guess)
-    Brignthess
-    X
-    Y
-    Hex (for some colors)
 """
 
-import asyncio
+# Hack to allow relative import above top level package
+import sys
+import os
+folder = os.path.dirname(os.path.abspath(__file__))  # noqa
+sys.path.insert(0, os.path.normpath("%s/.." % folder))  # noqa
 
 from pytradfri import Gateway
 from pytradfri.api.aiocoap_api import APIFactory
 from pytradfri.error import PytradfriError
 from pytradfri.util import load_json, save_json
 
-from colormath.color_conversions import convert_color
-from colormath.color_objects import sRGBColor, XYZColor
-
+import asyncio
 import uuid
 import argparse
 
@@ -105,28 +94,60 @@ def run():
 
     lights = [dev for dev in devices if dev.has_light_control]
 
-    rgb = (0, 0, 102)
+    # Print all lights
+    print(lights)
 
-    # Convert RGB to XYZ using a D50 illuminant.
-    xyz = convert_color(sRGBColor(rgb[0], rgb[1], rgb[2]), XYZColor,
-                        observer='2', target_illuminant='d65')
-    xy = int(xyz.xyz_x), int(xyz.xyz_y)
+    # Lights can be accessed by its index, so lights[1] is the second light
+    light = lights[0]
 
-    #  Assuming lights[3] is a RGB bulb
-    xy_command = lights[3].light_control.set_xy_color(xy[0], xy[1])
-    yield from api(xy_command)
+    def observe_callback(updated_device):
+        light = updated_device.light_control.lights[0]
+        print("Received message for: %s" % light)
 
-    #  Assuming lights[3] is a RGB bulb
-    xy = lights[3].light_control.lights[0].xy_color
+    def observe_err_callback(err):
+        print('observe error:', err)
 
-    #  Normalize Z
-    Z = int(lights[3].light_control.lights[0].dimmer / 254 * 65535)
-    xyZ = xy + (Z,)
-    rgb = convert_color(XYZColor(xyZ[0], xyZ[1], xyZ[2]), sRGBColor,
-                        observer='2', target_illuminant='d65')
-    rgb = (int(rgb.rgb_r), int(rgb.rgb_g), int(rgb.rgb_b))
-    print(rgb)
+    for light in lights:
+        observe_command = light.observe(observe_callback, observe_err_callback,
+                                        duration=120)
+        # Start observation as a second task on the loop.
+        ensure_future(api(observe_command))
+        # Yield to allow observing to start.
+        yield from asyncio.sleep(0)
 
+    # Example 1: checks state of the light (true=on)
+    print("Is on:", light.light_control.lights[0].state)
+
+    # Example 2: get dimmer level of the light
+    print("Dimmer:", light.light_control.lights[0].dimmer)
+
+    # Example 3: What is the name of the light
+    print("Name:", light.name)
+
+    # Example 4: Set the light level of the light
+    dim_command = light.light_control.set_dimmer(254)
+    yield from api(dim_command)
+
+    # Example 5: Change color of the light
+    # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
+    color_command = light.light_control.set_hex_color('efd275')
+    yield from api(color_command)
+
+    tasks_command = gateway.get_smart_tasks()
+    tasks_commands = yield from api(tasks_command)
+    tasks = yield from api(tasks_commands)
+
+    # Example 6: Return the transition time (in minutes) for task#1
+    if tasks:
+        print(tasks[0].task_control.tasks[0].transition_time)
+
+        # Example 7: Set the dimmer stop value to 30 for light#1 in task#1
+        dim_command_2 = tasks[0].start_action.devices[0].item_controller\
+            .set_dimmer(30)
+        yield from api(dim_command_2)
+
+    print("Waiting for observation to end (2 mins)")
+    print("Try altering any light in the app, and watch the events!")
     yield from asyncio.sleep(120)
 
 
