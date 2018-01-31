@@ -6,7 +6,7 @@ from devices import (
     LIGHT_WS,
     LIGHT_WS_CUSTOM_COLOR,
     LIGHT_CWS,
-    LIGHT_CWS_CUSTOM_COLOR,
+    LIGHT_CWS_CUSTOM_COLOR
 )
 
 
