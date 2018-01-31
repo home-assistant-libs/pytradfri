@@ -270,7 +270,7 @@ class LightControl:
 
     def __repr__(self):
         return '<LightControl for {} ({} lights)>'.format(self._device.name,
-                                                           len(self.raw))
+                                                          len(self.raw))
 
 
 class Light:
