@@ -170,7 +170,6 @@ def test_last_seen():
     assert dev.last_seen is None
 
 
-
 def test_value_validate():
     dev = Device(LIGHT_WS)
     rnge = (10, 100)
