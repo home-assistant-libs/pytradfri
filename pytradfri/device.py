@@ -25,7 +25,6 @@ from .const import (
     RANGE_BRIGHTNESS,
     RANGE_X,
     RANGE_Y,
-    ROOT_SWITCH,
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
     SUPPORT_HEX_COLOR,
@@ -33,14 +32,6 @@ from .const import (
 from .color import COLORS, supported_features
 from .resource import ApiResource
 from .error import ColorError
-
-
-def device_type(data):
-    """If regular bulb=>ATTR_LIGHT_CONTROL If GU10 light=>ROOT_SWITCH."""
-    if ATTR_LIGHT_CONTROL in data:
-        return ATTR_LIGHT_CONTROL
-    elif ROOT_SWITCH in data:
-        return ROOT_SWITCH
 
 
 class Device(ApiResource):
@@ -71,13 +62,11 @@ class Device(ApiResource):
     @property
     def has_light_control(self):
         return (self.raw is not None and
-                (len(self.raw.get(ATTR_LIGHT_CONTROL, "")) > 0 or
-                    len(self.raw.get(ROOT_SWITCH, "")) > 0)
-                )
+                len(self.raw.get(ATTR_LIGHT_CONTROL, "")) > 0)
 
     @property
     def light_control(self):
-        return DeviceControl(self)
+        return LightControl(self)
 
     def __repr__(self):
         return "<{} - {} ({})>".format(self.id, self.name,
@@ -151,8 +140,8 @@ class DeviceInfo:
         return self._device.raw[ATTR_DEVICE_INFO]
 
 
-class DeviceControl:
-    """Class to control devices."""
+class LightControl:
+    """Class to control the lights."""
 
     def __init__(self, device):
         self._device = device
@@ -160,7 +149,7 @@ class DeviceControl:
     @property
     def raw(self):
         """Return raw data that it represents."""
-        return self._device.raw[device_type(self._device.raw)]
+        return self._device.raw[ATTR_LIGHT_CONTROL]
 
     @property
     def lights(self):
@@ -274,14 +263,14 @@ class DeviceControl:
             'Only devices with 1 light supported'
 
         return Command('put', self._device.path, {
-            device_type(self._device.raw): [
+            ATTR_LIGHT_CONTROL: [
                 values
             ]
         })
 
     def __repr__(self):
-        return '<DeviceControl for {} ({} lights)>'.format(self._device.name,
-                                                           len(self.raw))
+        return '<LightControl for {} ({} lights)>'.format(self._device.name,
+                                                          len(self.raw))
 
 
 class Light:
@@ -335,10 +324,7 @@ class Light:
     @property
     def raw(self):
         """Return raw data that it represents."""
-        if ATTR_LIGHT_CONTROL in self.device.raw:
-            return self.device.raw[device_type(self.device.raw)][self.index]
-        elif ROOT_SWITCH in self.device.raw:
-            return self.device.raw[device_type(self.device.raw)][self.index]
+        return self.device.raw[ATTR_LIGHT_CONTROL][self.index]
 
     def __repr__(self):
         state = "on" if self.state else "off"
