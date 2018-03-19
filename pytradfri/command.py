@@ -4,14 +4,13 @@
 class Command(object):
     """The object for coap commands."""
 
-    def __init__(self, method, path, data=None, *, parse_json=True, timeout=10,
+    def __init__(self, method, path, data=None, *, parse_json=True,
                  observe=False, observe_duration=0, process_result=None,
                  err_callback=None):
         self._method = method
         self._path = path
         self._data = data
         self._parse_json = parse_json
-        self._timeout = timeout
         self._process_result = process_result
         self._err_callback = err_callback
         self._observe = observe
@@ -34,10 +33,6 @@ class Command(object):
     @property
     def parse_json(self):
         return self._parse_json
-
-    @property
-    def timeout(self):
-        return self._timeout
 
     @property
     def process_result(self):
