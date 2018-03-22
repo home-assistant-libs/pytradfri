@@ -146,6 +146,18 @@ class LightControl:
     def __init__(self, device):
         self._device = device
 
+        self.can_set_temp = None
+        self.can_set_color = None
+
+        if 'WS' in self._device.device_info.model_number:
+            self.can_set_temp = True
+
+        if 'CWS' in self._device.device_info.model_number:
+            self.can_set_color = True
+
+        self.min_mireds = RANGE_MIREDS[0]
+        self.max_mireds = RANGE_MIREDS[1]
+
     @property
     def raw(self):
         """Return raw data that it represents."""
