@@ -145,7 +145,7 @@ class LightControl:
 
     def __init__(self, device):
         self._device = device
-        
+
         self.can_set_temp = None
         self.can_set_color = None
 
