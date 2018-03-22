@@ -155,6 +155,9 @@ class LightControl:
         if 'CWS' in self._device.device_info.model_number:
             self.can_set_color = True
 
+        self.min_mireds = RANGE_MIREDS[0]
+        self.max_mireds = RANGE_MIREDS[1]
+
     @property
     def raw(self):
         """Return raw data that it represents."""
