@@ -119,7 +119,7 @@ RANGE_HUE = (0, 65535)
 # slightly higher values, but it won't produce any light.
 RANGE_SATURATION = (0, 65279)
 # Brightness range of all bulbs. 0 will turn off the lamp
-RANGE_BRIGHTNESS = (1, 254)
+RANGE_BRIGHTNESS = (0, 254)
 
 # XY color
 RANGE_X = (0, 65535)
