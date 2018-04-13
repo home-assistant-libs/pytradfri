@@ -125,8 +125,6 @@ class DeviceInfo:
     @property
     def power_source_str(self):
         """String representation of current power source."""
-        if DeviceInfo.ATTR_POWER_SOURCE not in self.raw:
-            return None
         return DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, 'Unknown')
 
     @property
