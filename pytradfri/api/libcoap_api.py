@@ -15,10 +15,11 @@ SERVER_ERROR_PREFIX = '5.'
 
 
 class APIFactory:
-    def __init__(self, host, psk_id='pytradfri', psk=None):
+    def __init__(self, host, psk_id='pytradfri', psk=None, timeout=10):
         self._host = host
         self._psk_id = psk_id
         self._psk = psk
+        self._timeout = timeout  # seconds
 
     @property
     def psk(self):
@@ -42,7 +43,7 @@ class APIFactory:
             method
         ]
 
-    def _execute(self, api_command):
+    def _execute(self, api_command, *, timeout=None):
         """Execute the command."""
 
         if api_command.observe:
@@ -53,14 +54,17 @@ class APIFactory:
         path = api_command.path
         data = api_command.data
         parse_json = api_command.parse_json
-        timeout = api_command.timeout
         url = api_command.url(self._host)
+
+        proc_timeout = self._timeout
+        if timeout is not None:
+            proc_timeout = timeout
 
         command = self._base_command(method)
 
         kwargs = {
             'stderr': subprocess.DEVNULL,
-            'timeout': timeout,
+            'timeout': proc_timeout,
             'universal_newlines': True,
         }
 
@@ -86,15 +90,15 @@ class APIFactory:
         api_command.result = _process_output(return_value, parse_json)
         return api_command.result
 
-    def request(self, api_commands):
-        """Make a request."""
+    def request(self, api_commands, *, timeout=None):
+        """Make a request. Timeout is in seconds."""
         if not isinstance(api_commands, list):
-            return self._execute(api_commands)
+            return self._execute(api_commands, timeout=timeout)
 
         command_results = []
 
         for api_command in api_commands:
-            result = self._execute(api_command)
+            result = self._execute(api_command, timeout=timeout)
             command_results.append(result)
 
         return command_results

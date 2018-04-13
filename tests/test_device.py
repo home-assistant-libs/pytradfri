@@ -1,9 +1,11 @@
 from datetime import datetime
 import pytest
 
-from pytradfri.const import ROOT_DEVICES, ATTR_NAME, ATTR_LIGHT_CONTROL
+from pytradfri.const import (
+    ROOT_DEVICES, ATTR_NAME, ATTR_LIGHT_CONTROL, ATTR_LAST_SEEN)
 from pytradfri.device import Device
-from devices import LIGHT_WS, LIGHT_CWS
+from devices import (
+    LIGHT_W, LIGHT_WS, LIGHT_CWS, REMOTE_CONTROL, MOTION_SENSOR)
 
 
 def test_device_properties():
@@ -143,6 +145,29 @@ def test_set_hex_color():
     command = dev.light_control.set_hex_color("RandomString")
     data = command.data[ATTR_LIGHT_CONTROL][0]
     assert len(data) is 1
+
+
+def test_has_light_control():
+    dev = Device(LIGHT_WS)
+    assert dev.has_light_control is True
+    dev = Device(LIGHT_CWS)
+    assert dev.has_light_control is True
+    dev = Device(LIGHT_W)
+    assert dev.has_light_control is True
+    dev = Device(REMOTE_CONTROL)
+    assert dev.has_light_control is False
+    dev = Device(MOTION_SENSOR)
+    assert dev.has_light_control is False
+
+
+def test_last_seen():
+    dev = Device(LIGHT_WS)
+    assert dev.last_seen is not None
+
+    tmp = LIGHT_WS
+    del tmp[ATTR_LAST_SEEN]
+    dev = Device(tmp)
+    assert dev.last_seen is None
 
 
 def test_value_validate():

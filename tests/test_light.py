@@ -6,20 +6,12 @@ from devices import (
     LIGHT_WS,
     LIGHT_WS_CUSTOM_COLOR,
     LIGHT_CWS,
-    LIGHT_CWS_CUSTOM_COLOR,
-    LIGHT_GU10
+    LIGHT_CWS_CUSTOM_COLOR
 )
 
 
 def light(raw):
     return Device(raw).light_control.lights[0]
-
-
-def test_gu10():
-    bulb = light(LIGHT_GU10)
-
-    assert bulb.hex_color == 'efd275'
-    assert bulb.xy_color == (30138, 26909)
 
 
 def test_white_bulb():
