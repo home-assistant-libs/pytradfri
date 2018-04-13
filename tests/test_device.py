@@ -1,6 +1,7 @@
 from datetime import datetime
 import pytest
 
+from pytradfri import error
 from pytradfri.const import (
     ROOT_DEVICES,
     ATTR_NAME,
@@ -31,19 +32,249 @@ def device_remote():
     return Device(REMOTE_CONTROL)
 
 
-def test_device_properties():
-    dev = Device(LIGHT_WS)
+lamp_value_setting_test_cases = (
+    ("function_name", "comment", "test_input", "expected_result"),
+    [
+        (
+            "set_hsb", "valid", {
+                'hue': 300,
+                'saturation': 200,
+                'brightness': 100
+            }, {
+                ATTR_LIGHT_COLOR_HUE: 300,
+                ATTR_LIGHT_COLOR_SATURATION: 200,
+                ATTR_LIGHT_DIMMER: 100
+            }
+        ),
+        (
+            "set_hsb", "without_setting_brightness", {
+                'hue': 300,
+                'saturation': 200
+            }, {
+                ATTR_LIGHT_COLOR_HUE: 300,
+                ATTR_LIGHT_COLOR_SATURATION: 200
+            },
+        ),
+        (
+            "set_hsb", "setting_brightness_none", {
+                'hue': 300,
+                'saturation': 200,
+                'brightness': None
+            }, {
+                ATTR_LIGHT_COLOR_HUE: 300,
+                ATTR_LIGHT_COLOR_SATURATION: 200
+            },
+        ),
+        (
+            "set_hsb", "setting_hue_none", {
+                'hue': None,
+                'saturation': 200
+            }, {
+                ATTR_LIGHT_COLOR_HUE: None,
+                ATTR_LIGHT_COLOR_SATURATION: 200
+            },
+        ),
+        (
+            "set_hsb", "with_transitiontime", {
+                'hue': 300,
+                'saturation': 200,
+                'brightness': 100,
+                'transition_time': 2
+            }, {
+                ATTR_LIGHT_COLOR_HUE: 300,
+                ATTR_LIGHT_COLOR_SATURATION: 200,
+                ATTR_LIGHT_DIMMER: 100,
+                ATTR_TRANSITION_TIME: 2
+            },
+        ),
+        (
+            "set_hsb", "with_faulty_transitiontime", {
+                'hue': 300,
+                'saturation': 200,
+                'transition_time': -2
+            }, {
+                ATTR_LIGHT_COLOR_HUE: 300,
+                ATTR_LIGHT_COLOR_SATURATION: 200,
+                ATTR_TRANSITION_TIME: -2
+            },
+        ),
 
-    assert dev.application_type == 2
-    assert dev.name == 'Löng name containing viking lättårs [letters]'
-    assert dev.id == 65539
-    assert dev.created_at == datetime.utcfromtimestamp(1509923713)
-    assert dev.reachable
-    assert dev.path == [ROOT_DEVICES, 65539]
+        (
+            "set_xy_color", "valid", {
+                'color_x': 300,
+                'color_y': 200,
+            }, {
+                ATTR_LIGHT_COLOR_X: 300,
+                ATTR_LIGHT_COLOR_Y: 200,
+            },
+        ),
+        (
+            "set_xy_color", "without_x", {
+                'color_x': None,
+                'color_y': 200,
+            }, {
+                ATTR_LIGHT_COLOR_X: None,
+                ATTR_LIGHT_COLOR_Y: 200,
+            },
+        ),
+        (
+            "set_xy_color", "without_xy", {
+                'color_x': None,
+                'color_y': None,
+            }, {
+                ATTR_LIGHT_COLOR_X: None,
+                ATTR_LIGHT_COLOR_Y: None,
+            },
+        ),
+        (
+            "set_xy_color", "with_transitiontime", {
+                'color_x': 300,
+                'color_y': 200,
+                'transition_time': 2
+            }, {
+                ATTR_LIGHT_COLOR_X: 300,
+                ATTR_LIGHT_COLOR_Y: 200,
+                ATTR_TRANSITION_TIME: 2
+            },
+        ),
+
+        (
+            "set_color_temp", "valid", {
+                'color_temp': 300,
+            }, {
+                ATTR_LIGHT_MIREDS: 300,
+            },
+        ),
+        (
+            "set_color_temp", "none", {
+                'color_temp': None,
+            }, {
+                ATTR_LIGHT_MIREDS: None,
+            },
+        ),
+        (
+            "set_color_temp", "with_transitiontime", {
+                'color_temp': 300,
+                'transition_time': 2
+            }, {
+                ATTR_LIGHT_MIREDS: 300,
+                ATTR_TRANSITION_TIME: 2
+            },
+        ),
+
+        (
+            "set_dimmer", "valid", {
+                'dimmer': 200,
+            }, {
+                ATTR_LIGHT_DIMMER: 200,
+            },
+        ),
+        (
+            "set_dimmer", "none", {
+                'dimmer': None,
+            }, {
+                ATTR_LIGHT_DIMMER: None,
+            },
+        ),
+        (
+            "set_dimmer", "with_transitiontime", {
+                'dimmer': 200,
+                'transition_time': 2
+            }, {
+                ATTR_LIGHT_DIMMER: 200,
+                ATTR_TRANSITION_TIME: 2
+            },
+        ),
+
+        (
+            "set_state", "true", {
+                'state': True,
+            }, {
+                ATTR_LIGHT_STATE: True,
+            },
+        ),
+        (
+            "set_state", "false", {
+                'state': False,
+            }, {
+                ATTR_LIGHT_STATE: False,
+            },
+        ),
+
+        (
+            "set_hex_color", "valid", {
+                'color': '4a418a',
+            }, {
+                ATTR_LIGHT_COLOR_HEX: '4a418a',
+            },
+        ),
+        (
+            "set_hex_color", "invalid", {
+                'color': 'RandomString',
+            }, {
+                ATTR_LIGHT_COLOR_HEX: 'RandomString',
+            },
+        ),
+        (
+            "set_hex_color", "with_transitiontime", {
+                'color': '4a418a',
+                'transition_time': 2
+            }, {
+                ATTR_LIGHT_COLOR_HEX: '4a418a',
+                ATTR_TRANSITION_TIME: 2
+            },
+        ),
+
+        (
+            "set_predefined_color", "valid", {
+                'colorname': 'Saturated Purple'
+            }, {
+                ATTR_LIGHT_COLOR_HEX: '8f2686',
+            },
+        ),
+        (
+            "set_predefined_color", "with_transitiontime", {
+                'colorname': 'Saturated Purple',
+                'transition_time': 2
+            }, {
+                ATTR_LIGHT_COLOR_HEX: '8f2686',
+                ATTR_TRANSITION_TIME: 2
+            },
+        ),
+    ]
+)
 
 
-def test_device_info_properties():
-    info = Device(LIGHT_WS).device_info
+@pytest.mark.parametrize(*lamp_value_setting_test_cases)
+def test_lamp_value_setting(function_name, comment,
+                            test_input, expected_result):
+    function = getattr(Device(LIGHT_WS).light_control, function_name)
+    command = function(**test_input)
+    data = command.data[ATTR_LIGHT_CONTROL][0]
+    assert data == expected_result
+
+
+def test_set_state_none(device):
+    with pytest.raises(TypeError):
+        device.light_control.set_state(None)
+
+
+def test_set_predefined_color_invalid(device):
+    with pytest.raises(error.ColorError):
+        device.light_control.set_predefined_color("RandomString")
+
+
+def test_device_properties(device):
+    assert device.application_type == 2
+    assert device.name == 'Löng name containing viking lättårs [letters]'
+    assert device.id == 65539
+    assert device.created_at == datetime.utcfromtimestamp(1509923713)
+    assert device.reachable
+    assert device.path == [ROOT_DEVICES, 65539]
+
+
+def test_device_info_properties(device):
+    info = device.device_info
 
     assert info.manufacturer == 'IKEA of Sweden'
     assert info.model_number == 'TRADFRI bulb E27 WS opal 980lm'
@@ -52,12 +283,11 @@ def test_device_info_properties():
     assert info.power_source_str == 'Internal Battery'
 
 
-def test_set_name():
-    dev = Device(LIGHT_WS)
-    command = dev.set_name('New name')
+def test_set_name(device):
+    command = device.set_name('New name')
 
     assert command.method == 'put'
-    assert command.path == dev.path
+    assert command.path == device.path
     assert command.data == {ATTR_NAME: 'New name'}
 
 
@@ -69,226 +299,6 @@ def test_binary_division():
     assert dev_ws.color_temp == 400
     assert dev_color.hex_color == 'f1e0b5'
     assert dev_color.xy_color == (30015, 26870)
-
-
-# Testing set_hsb function
-def test_set_hsb_valid(device):
-    expected = {
-        ATTR_LIGHT_COLOR_HUE: 300,
-        ATTR_LIGHT_COLOR_SATURATION: 200,
-        ATTR_LIGHT_DIMMER: 100
-    }
-    command = device.light_control.set_hsb(300, 200, 100)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_hsb_without_setting_brightness(device):
-    expected = {
-        ATTR_LIGHT_COLOR_HUE: 300,
-        ATTR_LIGHT_COLOR_SATURATION: 200
-    }
-    command = device.light_control.set_hsb(300, 200)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_hsb_setting_brightness_none(device):
-    expected = {
-        ATTR_LIGHT_COLOR_HUE: 300,
-        ATTR_LIGHT_COLOR_SATURATION: 200
-    }
-    command = device.light_control.set_hsb(300, 200, None)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_hsb_setting_hue_none(device):
-    expected = {
-        ATTR_LIGHT_COLOR_HUE: None,
-        ATTR_LIGHT_COLOR_SATURATION: 200
-    }
-    command = device.light_control.set_hsb(None, 200)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_hsb_with_transitiontime(device):
-    expected = {
-        ATTR_LIGHT_COLOR_HUE: 300,
-        ATTR_LIGHT_COLOR_SATURATION: 200,
-        ATTR_LIGHT_DIMMER: 100,
-        ATTR_TRANSITION_TIME: 2
-    }
-    command = device.light_control.set_hsb(300, 200, 100, transition_time=2)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_hsb_with_faulty_transitiontime(device):
-    expected = {
-        ATTR_LIGHT_COLOR_HUE: 300,
-        ATTR_LIGHT_COLOR_SATURATION: 200,
-        ATTR_LIGHT_DIMMER: 100,
-        ATTR_TRANSITION_TIME: -2
-    }
-    command = device.light_control.set_hsb(300, 200, 100, transition_time=-2)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-# Testing set_xy_color function
-def test_set_xy_color_with_xy_valid(device):
-    expected = {
-        ATTR_LIGHT_COLOR_X: 300,
-        ATTR_LIGHT_COLOR_Y: 200,
-    }
-    command = device.light_control.set_xy_color(300, 200)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_xy_color_without_x(device):
-    expected = {
-        ATTR_LIGHT_COLOR_X: None,
-        ATTR_LIGHT_COLOR_Y: 200,
-    }
-    command = device.light_control.set_xy_color(None, 200)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_xy_color_without_xy(device):
-    expected = {
-        ATTR_LIGHT_COLOR_X: None,
-        ATTR_LIGHT_COLOR_Y: None,
-    }
-    command = device.light_control.set_xy_color(None, None)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_xy_color_with_transitiontime(device):
-    expected = {
-        ATTR_LIGHT_COLOR_X: 300,
-        ATTR_LIGHT_COLOR_Y: 200,
-        ATTR_TRANSITION_TIME: 2
-    }
-    command = device.light_control.set_xy_color(300, 200, transition_time=2)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-# Testing set_color_temp function
-def test_set_color_temp_valid(device):
-    expected = {
-        ATTR_LIGHT_MIREDS: 300,
-    }
-    command = device.light_control.set_color_temp(300)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_color_temp_none(device):
-    expected = {
-        ATTR_LIGHT_MIREDS: None,
-    }
-    command = device.light_control.set_color_temp(None)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_color_temp_with_transitiontime(device):
-    expected = {
-        ATTR_LIGHT_MIREDS: 300,
-        ATTR_TRANSITION_TIME: 2
-    }
-    command = device.light_control.set_color_temp(300, transition_time=2)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-# Testing set_dimmer function
-def test_set_dimmer_valid(device):
-    expected = {
-        ATTR_LIGHT_DIMMER: 200,
-    }
-    command = device.light_control.set_dimmer(200)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_dimmer_none(device):
-    expected = {
-        ATTR_LIGHT_DIMMER: None,
-    }
-    command = device.light_control.set_dimmer(None)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_dimmer_with_transitiontime(device):
-    expected = {
-        ATTR_LIGHT_DIMMER: 200,
-        ATTR_TRANSITION_TIME: 2
-    }
-    command = device.light_control.set_dimmer(200, transition_time=2)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-# Test set_state function
-def test_set_state_true(device):
-    expected = {
-        ATTR_LIGHT_STATE: True,
-    }
-    command = device.light_control.set_state(True)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_state_false(device):
-    expected = {
-        ATTR_LIGHT_STATE: False,
-    }
-    command = device.light_control.set_state(False)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_state_none(device):
-    with pytest.raises(TypeError):
-        device.light_control.set_state(None)
-
-
-# Test set_hex_color function
-def test_set_hex_color_valid(device):
-    expected = {
-        ATTR_LIGHT_COLOR_HEX: "4a418a",
-    }
-    command = device.light_control.set_hex_color("4a418a")
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_hex_color_invalid(device):
-    expected = {
-        ATTR_LIGHT_COLOR_HEX: "RandomString",
-    }
-    command = device.light_control.set_hex_color("RandomString")
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
-
-
-def test_set_hex_color_with_transitiontime(device):
-    expected = {
-        ATTR_LIGHT_COLOR_HEX: "4a418a",
-        ATTR_TRANSITION_TIME: 2
-
-    }
-    command = device.light_control.set_hex_color("4a418a", transition_time=2)
-    data = command.data[ATTR_LIGHT_CONTROL][0]
-    assert data == expected
 
 
 # Test has_light_control function
