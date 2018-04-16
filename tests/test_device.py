@@ -19,12 +19,17 @@ from pytradfri.const import (
 )
 from pytradfri.device import Device
 from devices import (
-    LIGHT_WS, LIGHT_CWS, REMOTE_CONTROL)
+    LIGHT_W, LIGHT_WS, LIGHT_CWS, REMOTE_CONTROL)
 
 
 @pytest.fixture
 def device():
     return Device(LIGHT_WS)
+
+
+@pytest.fixture
+def device_limited():
+    return Device(LIGHT_W)
 
 
 @pytest.fixture
