@@ -392,6 +392,7 @@ def test_deviceinfo_serial(device):
 def test_deviceinfo_power_source_str_known(device):
     info = Device(device.raw.copy()).device_info
     assert info.power_source_str is not None
+    assert info.power_source_str is not 'Unknown'
 
 
 def test_deviceinfo_power_source_str_unknown(device):
