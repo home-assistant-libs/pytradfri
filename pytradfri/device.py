@@ -146,9 +146,13 @@ class LightControl:
     def __init__(self, device):
         self._device = device
 
+        self.can_set_dimmer = None
         self.can_set_temp = None
         self.can_set_xy = None
         self.can_set_color = None
+
+        if ATTR_LIGHT_DIMMER in self.raw[0]:
+            self.can_set_dimmer = True
 
         if ATTR_LIGHT_MIREDS in self.raw[0]:
             self.can_set_temp = True
