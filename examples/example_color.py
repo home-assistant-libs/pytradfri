@@ -117,15 +117,26 @@ def run():
                         observer='2', target_illuminant='d65')
     xy = int(xyz.xyz_x), int(xyz.xyz_y)
 
+    light = None
+    # Find a bulb that can set color
+    for dev in lights:
+        if dev.light_control.can_set_color:
+            light = dev
+            break
+
+    if not light:
+        print("No color bulbs found")
+        return
+
     #  Assuming lights[3] is a RGB bulb
-    xy_command = lights[3].light_control.set_xy_color(xy[0], xy[1])
+    xy_command = light.light_control.set_xy_color(xy[0], xy[1])
     yield from api(xy_command)
 
     #  Assuming lights[3] is a RGB bulb
-    xy = lights[3].light_control.lights[0].xy_color
+    xy = light.light_control.lights[0].xy_color
 
     #  Normalize Z
-    Z = int(lights[3].light_control.lights[0].dimmer / 254 * 65535)
+    Z = int(light.light_control.lights[0].dimmer / 254 * 65535)
     xyZ = xy + (Z,)
     rgb = convert_color(XYZColor(xyZ[0], xyZ[1], xyZ[2]), sRGBColor,
                         observer='2', target_illuminant='d65')
