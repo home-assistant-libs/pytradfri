@@ -145,7 +145,7 @@ def run():
         api(dim_command_2)
 
     if light:
-        print("Sleeping for 2 min to receive the rest of the observation events")
+        print("Sleeping for 2 min to listen for more observation events")
         print("Try altering the light (%s) in the app, and watch the events!" %
               light.name)
         time.sleep(120)
