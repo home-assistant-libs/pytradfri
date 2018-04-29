@@ -178,85 +178,41 @@ class LightControl:
         """Set dimmer value of a light.
         transition_time: Integer representing tenth of a second (default None)
         """
-        self._value_validate(dimmer, RANGE_BRIGHTNESS, "Dimmer")
-
-        values = {
-            ATTR_LIGHT_DIMMER: dimmer
-        }
-
-        if transition_time is not None:
-            values[ATTR_TRANSITION_TIME] = transition_time
-
-        return self.set_values(values, index=index)
+        return self.set_combined(dimmer=dimmer,
+                                 index=index,
+                                 transition_time=transition_time)
 
     def set_color_temp(self, color_temp, *, index=0, transition_time=None):
         """Set color temp a light."""
-        self._value_validate(color_temp, RANGE_MIREDS, "Color temperature")
-
-        values = {
-            ATTR_LIGHT_MIREDS: color_temp
-        }
-
-        if transition_time is not None:
-            values[ATTR_TRANSITION_TIME] = transition_time
-
-        return self.set_values(values, index=index)
+        return self.set_combined(color_temp=color_temp,
+                                 index=index,
+                                 transition_time=transition_time)
 
     def set_hex_color(self, color, *, index=0, transition_time=None):
         """Set hex color of the light."""
-        values = {
-            ATTR_LIGHT_COLOR_HEX: color,
-        }
-
-        if transition_time is not None:
-            values[ATTR_TRANSITION_TIME] = transition_time
-
-        return self.set_values(values, index=index)
+        return self.set_combined(hex_color=color,
+                                 index=index,
+                                 transition_time=transition_time)
 
     def set_xy_color(self, color_x, color_y, *, index=0, transition_time=None):
         """Set xy color of the light."""
-        self._value_validate(color_x, RANGE_X, "X color")
-        self._value_validate(color_y, RANGE_Y, "Y color")
-
-        values = {
-            ATTR_LIGHT_COLOR_X: color_x,
-            ATTR_LIGHT_COLOR_Y: color_y
-        }
-
-        if transition_time is not None:
-            values[ATTR_TRANSITION_TIME] = transition_time
-
-        return self.set_values(values, index=index)
+        return self.set_combined(xy_color=[color_x, color_y],
+                                 brightness=brightness,
+                                 index=index,
+                                 transition_time=transition_time)
 
     def set_hsb(self, hue, saturation, brightness=None, *, index=0,
                 transition_time=None):
         """Set HSB color settings of the light."""
-        self._value_validate(hue, RANGE_HUE, "Hue")
-        self._value_validate(saturation, RANGE_SATURATION, "Saturation")
-
-        values = {
-            ATTR_LIGHT_COLOR_SATURATION: saturation,
-            ATTR_LIGHT_COLOR_HUE: hue
-        }
-
-        if brightness is not None:
-            values[ATTR_LIGHT_DIMMER] = brightness
-            self._value_validate(brightness, RANGE_BRIGHTNESS, "Brightness")
-
-        if transition_time is not None:
-            values[ATTR_TRANSITION_TIME] = transition_time
-
-        return self.set_values(values, index=index)
+        return self.set_combined(hs_color=[hue, saturation],
+                                 brightness=brightness,
+                                 index=index,
+                                 transition_time=transition_time)
 
     def set_predefined_color(self, colorname, *, index=0,
                              transition_time=None):
-        try:
-            color = COLORS[colorname.lower().replace(" ", "_")]
-            return self.set_hex_color(color, index=index,
-                                      transition_time=transition_time)
-        except KeyError:
-            raise ColorError('Invalid color specified: %s',
-                             colorname)
+        return self.set_combined(color_name=colorname, index=index,
+                                 transition_time=transition_time)
 
     def set_combined(self, dimmer=None, hs_color=None, xy_color=None,
                      hex_color=None, color_name=None, color_temp=None, *,
