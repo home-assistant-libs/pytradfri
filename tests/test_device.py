@@ -160,6 +160,26 @@ def test_has_light_control():
     assert dev.has_light_control is False
 
 
+def test_supported_features():
+    dev = Device(LIGHT_WS)
+    assert dev.light_control.can_set_dimmer is True
+    assert dev.light_control.can_set_temp is True
+    assert dev.light_control.can_set_xy is True
+    assert dev.light_control.can_set_color is None
+
+    dev = Device(LIGHT_CWS)
+    assert dev.light_control.can_set_dimmer is True
+    assert dev.light_control.can_set_temp is None
+    assert dev.light_control.can_set_xy is True
+    assert dev.light_control.can_set_color is True
+
+    dev = Device(LIGHT_W)
+    assert dev.light_control.can_set_dimmer is True
+    assert dev.light_control.can_set_temp is None
+    assert dev.light_control.can_set_xy is None
+    assert dev.light_control.can_set_color is None
+
+
 def test_last_seen():
     dev = Device(LIGHT_WS)
     assert dev.last_seen is not None
