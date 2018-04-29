@@ -147,12 +147,16 @@ class LightControl:
         self._device = device
 
         self.can_set_temp = None
+        self.can_set_xy = None
         self.can_set_color = None
 
-        if 'WS' in self._device.device_info.model_number:
+        if ATTR_LIGHT_MIREDS in self.raw[0]:
             self.can_set_temp = True
 
-        if 'CWS' in self._device.device_info.model_number:
+        if ATTR_LIGHT_COLOR_X in self.raw[0]:
+            self.can_set_xy = True
+
+        if ATTR_LIGHT_COLOR_HUE in self.raw[0]:
             self.can_set_color = True
 
         self.min_mireds = RANGE_MIREDS[0]
