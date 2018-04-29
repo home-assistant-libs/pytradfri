@@ -128,11 +128,9 @@ def run():
         print("No color bulbs found")
         return
 
-    #  Assuming lights[3] is a RGB bulb
     xy_command = light.light_control.set_xy_color(xy[0], xy[1])
     yield from api(xy_command)
 
-    #  Assuming lights[3] is a RGB bulb
     xy = light.light_control.lights[0].xy_color
 
     #  Normalize Z
