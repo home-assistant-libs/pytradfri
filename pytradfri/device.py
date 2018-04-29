@@ -258,6 +258,42 @@ class LightControl:
             raise ColorError('Invalid color specified: %s',
                              colorname)
 
+    def set_combined(self, dimmer=None, hs_color=None, xy_color=None,
+                     hex_color=None, color_name=None, color_temp=None, *,
+                     index=0, transition_time=None):
+        values = {}
+        if dimmer is not None:
+            self._value_validate(dimmer, RANGE_BRIGHTNESS, "Dimmer")
+            values[ATTR_LIGHT_DIMMER] = dimmer
+
+        if hs_color is not None and len(hs_color) == 2:
+            self._value_validate(hs_color[0], RANGE_HUE, "Hue")
+            self._value_validate(hs_color[1], RANGE_SATURATION, "Saturation")
+            values[ATTR_LIGHT_COLOR_SATURATION] = hs_color[1],
+            values[ATTR_LIGHT_COLOR_HUE] = hs_color[0]
+        elif xy_color is not None and len(xy_color) == 2:
+            self._value_validate(xy_color[0], RANGE_X, "X color")
+            self._value_validate(xy_color[1], RANGE_Y, "Y color")
+            values[ATTR_LIGHT_COLOR_X] = color_x,
+            values[ATTR_LIGHT_COLOR_Y] = color_y
+        elif hex_color is not None:
+            values[ATTR_LIGHT_COLOR_HEX] = hex_color
+        elif color_name is not None:
+            try:
+                color = COLORS[color_name.lower().replace(" ", "_")]
+                values[ATTR_LIGHT_COLOR_HEX] = color
+            except KeyError:
+                raise ColorError('Invalid color specified: %s',
+                                 colorname)
+        elif color_temp is not None:
+            self._value_validate(color_temp, RANGE_MIREDS, "Color temperature")
+            values[ATTR_LIGHT_MIREDS] = color_temp
+
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+
+        return self.set_values(values, index=index)
+
     def _value_validate(self, value, rnge, identifier="Given"):
         """
         Make sure a value is within a given range
