@@ -148,12 +148,20 @@ class LightControl:
 
         self.can_set_temp = None
         self.can_set_color = None
+        self.can_set_combined = None
 
         if 'WS' in self._device.device_info.model_number:
             self.can_set_temp = True
 
         if 'CWS' in self._device.device_info.model_number:
             self.can_set_color = True
+
+        # Currently uncertain which bulbs are capable of setting
+        # multiple values simultaneously. As of gateway firmware
+        # 1.3.14 1st party bulbs do not seem to support this properly,
+        # but (at least some) hue bulbs do.
+        if 'Philips' in self._device.device_info.manufacturer:
+            self.can_set_combined = True
 
         self.min_mireds = RANGE_MIREDS[0]
         self.max_mireds = RANGE_MIREDS[1]
