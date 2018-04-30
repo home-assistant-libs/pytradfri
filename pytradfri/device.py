@@ -205,7 +205,6 @@ class LightControl:
     def set_xy_color(self, color_x, color_y, *, index=0, transition_time=None):
         """Set xy color of the light."""
         return self.set_combined(xy_color=[color_x, color_y],
-                                 brightness=brightness,
                                  index=index,
                                  transition_time=transition_time)
 
@@ -213,7 +212,7 @@ class LightControl:
                 transition_time=None):
         """Set HSB color settings of the light."""
         return self.set_combined(hs_color=[hue, saturation],
-                                 brightness=brightness,
+                                 dimmer=brightness,
                                  index=index,
                                  transition_time=transition_time)
 
