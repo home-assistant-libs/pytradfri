@@ -5,7 +5,7 @@ from pytradfri.const import (
     ROOT_DEVICES, ATTR_NAME, ATTR_LIGHT_CONTROL, ATTR_LAST_SEEN)
 from pytradfri.device import Device
 from devices import (
-    LIGHT_W, LIGHT_WS, LIGHT_CWS, REMOTE_CONTROL, MOTION_SENSOR)
+    LIGHT_W, LIGHT_WS, LIGHT_CWS, LIGHT_PHILIPS, REMOTE_CONTROL, MOTION_SENSOR)
 
 
 def test_device_properties():
@@ -158,6 +158,32 @@ def test_has_light_control():
     assert dev.has_light_control is False
     dev = Device(MOTION_SENSOR)
     assert dev.has_light_control is False
+
+
+def test_supported_features():
+    dev = Device(LIGHT_WS)
+    assert dev.light_control.can_set_dimmer is True
+    assert dev.light_control.can_set_temp is True
+    assert dev.light_control.can_set_xy is True
+    assert dev.light_control.can_set_color is None
+
+    dev = Device(LIGHT_CWS)
+    assert dev.light_control.can_set_dimmer is True
+    assert dev.light_control.can_set_temp is None
+    assert dev.light_control.can_set_xy is True
+    assert dev.light_control.can_set_color is True
+
+    dev = Device(LIGHT_W)
+    assert dev.light_control.can_set_dimmer is True
+    assert dev.light_control.can_set_temp is None
+    assert dev.light_control.can_set_xy is None
+    assert dev.light_control.can_set_color is None
+
+    dev = Device(LIGHT_PHILIPS)
+    assert dev.light_control.can_set_dimmer is True
+    assert dev.light_control.can_set_temp is True
+    assert dev.light_control.can_set_xy is True
+    assert dev.light_control.can_set_color is True
 
 
 def test_last_seen():
