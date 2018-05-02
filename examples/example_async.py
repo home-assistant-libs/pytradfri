@@ -98,7 +98,11 @@ def run():
     print(lights)
 
     # Lights can be accessed by its index, so lights[1] is the second light
-    light = lights[0]
+    if lights:
+        light = lights[0]
+    else:
+        print("No lights found!")
+        light = None
 
     def observe_callback(updated_device):
         light = updated_device.light_control.lights[0]
@@ -115,23 +119,24 @@ def run():
         # Yield to allow observing to start.
         yield from asyncio.sleep(0)
 
-    # Example 1: checks state of the light (true=on)
-    print("Is on:", light.light_control.lights[0].state)
+    if light:
+        # Example 1: checks state of the light (true=on)
+        print("Is on:", light.light_control.lights[0].state)
 
-    # Example 2: get dimmer level of the light
-    print("Dimmer:", light.light_control.lights[0].dimmer)
+        # Example 2: get dimmer level of the light
+        print("Dimmer:", light.light_control.lights[0].dimmer)
 
-    # Example 3: What is the name of the light
-    print("Name:", light.name)
+        # Example 3: What is the name of the light
+        print("Name:", light.name)
 
-    # Example 4: Set the light level of the light
-    dim_command = light.light_control.set_dimmer(254)
-    yield from api(dim_command)
+        # Example 4: Set the light level of the light
+        dim_command = light.light_control.set_dimmer(254)
+        yield from api(dim_command)
 
-    # Example 5: Change color of the light
-    # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
-    color_command = light.light_control.set_hex_color('efd275')
-    yield from api(color_command)
+        # Example 5: Change color of the light
+        # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
+        color_command = light.light_control.set_hex_color('efd275')
+        yield from api(color_command)
 
     tasks_command = gateway.get_smart_tasks()
     tasks_commands = yield from api(tasks_command)

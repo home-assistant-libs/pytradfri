@@ -19,7 +19,7 @@ from pytradfri.const import (
 )
 from pytradfri.device import Device
 from devices import (
-    LIGHT_W, LIGHT_WS, LIGHT_CWS, REMOTE_CONTROL, MOTION_SENSOR)
+    LIGHT_W, LIGHT_WS, LIGHT_CWS, LIGHT_PHILIPS, REMOTE_CONTROL, MOTION_SENSOR)
 
 
 @pytest.fixture
