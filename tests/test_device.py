@@ -46,6 +46,7 @@ output_devices = (
         ("White fixed color bulb", Device(LIGHT_W)),
         ("White spectrum bulb", Device(LIGHT_WS)),
         ("Full color bulb", Device(LIGHT_CWS)),
+        ("Philips Hue bulb", Device(LIGHT_PHILIPS))
     ]
 )
 
