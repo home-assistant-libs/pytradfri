@@ -249,16 +249,22 @@ class LightControl:
             self._value_validate(dimmer, RANGE_BRIGHTNESS, "Dimmer")
             values[ATTR_LIGHT_DIMMER] = dimmer
 
+        # Only allow changing color by one method at a time
+        # (hs / xy / hex / name / temp)
         if hs_color is not None and len(hs_color) == 2:
             self._value_validate(hs_color[0], RANGE_HUE, "Hue")
             self._value_validate(hs_color[1], RANGE_SATURATION, "Saturation")
-            values[ATTR_LIGHT_COLOR_SATURATION] = hs_color[1]
-            values[ATTR_LIGHT_COLOR_HUE] = hs_color[0]
+            if hs_color[0] is not None:
+                values[ATTR_LIGHT_COLOR_HUE] = hs_color[0]
+            if hs_color[1] is not None:
+                values[ATTR_LIGHT_COLOR_SATURATION] = hs_color[1]
         elif xy_color is not None and len(xy_color) == 2:
             self._value_validate(xy_color[0], RANGE_X, "X color")
             self._value_validate(xy_color[1], RANGE_Y, "Y color")
-            values[ATTR_LIGHT_COLOR_X] = xy_color[0]
-            values[ATTR_LIGHT_COLOR_Y] = xy_color[1]
+            if xy_color[0] is not None:
+                values[ATTR_LIGHT_COLOR_X] = xy_color[0]
+            if xy_color[1] is not None:
+                values[ATTR_LIGHT_COLOR_Y] = xy_color[1]
         elif hex_color is not None:
             values[ATTR_LIGHT_COLOR_HEX] = hex_color
         elif color_name is not None:
