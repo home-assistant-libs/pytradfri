@@ -221,12 +221,16 @@ class LightControl:
         return self.set_combined(color_name=colorname, index=index,
                                  transition_time=transition_time)
 
-    def set_combined(self, *, dimmer=None, hs_color=None, xy_color=None,
-                     hex_color=None, color_name=None, color_temp=None,
-                     index=0, transition_time=None):
+    def set_combined(self, *, state=None, dimmer=None, hs_color=None,
+                     xy_color=None, hex_color=None, color_name=None,
+                     color_temp=None, index=0, transition_time=None):
         """Set one or more attributes of the light in a single API call.
         Only works if the bulb supports this feature."""
         values = {}
+
+        if state is not None:
+            values[ATTR_LIGHT_STATE] = int(state)
+
         if dimmer is not None:
             self._value_validate(dimmer, RANGE_BRIGHTNESS, "Dimmer")
             values[ATTR_LIGHT_DIMMER] = dimmer
