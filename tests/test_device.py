@@ -88,7 +88,6 @@ lamp_value_setting_test_cases = [
                 'hue': None,
                 'saturation': 200
             }, {
-                ATTR_LIGHT_COLOR_HUE: None,
                 ATTR_LIGHT_COLOR_SATURATION: 200
             },
         ],
@@ -131,7 +130,6 @@ lamp_value_setting_test_cases = [
                 'color_x': None,
                 'color_y': 200,
             }, {
-                ATTR_LIGHT_COLOR_X: None,
                 ATTR_LIGHT_COLOR_Y: 200,
             },
         ],
@@ -140,8 +138,6 @@ lamp_value_setting_test_cases = [
                 'color_x': None,
                 'color_y': None,
             }, {
-                ATTR_LIGHT_COLOR_X: None,
-                ATTR_LIGHT_COLOR_Y: None,
             },
         ],
         [
@@ -167,7 +163,6 @@ lamp_value_setting_test_cases = [
             "set_color_temp", "none", {
                 'color_temp': None,
             }, {
-                ATTR_LIGHT_MIREDS: None,
             },
         ],
         [
@@ -191,7 +186,6 @@ lamp_value_setting_test_cases = [
             "set_dimmer", "none", {
                 'dimmer': None,
             }, {
-                ATTR_LIGHT_DIMMER: None,
             },
         ],
         [
@@ -257,6 +251,37 @@ lamp_value_setting_test_cases = [
             }, {
                 ATTR_LIGHT_COLOR_HEX: '8f2686',
                 ATTR_TRANSITION_TIME: 2
+            },
+        ],
+
+        [
+            "set_combined", "hs", {
+                'hs_color': [300, 200]
+            }, {
+                ATTR_LIGHT_COLOR_HUE: 300,
+                ATTR_LIGHT_COLOR_SATURATION: 200
+            },
+        ],
+        [
+            "set_combined", "hs+dimmer", {
+                'hs_color': [300, 200],
+                'dimmer': 100
+            }, {
+                ATTR_LIGHT_COLOR_HUE: 300,
+                ATTR_LIGHT_COLOR_SATURATION: 200,
+                ATTR_LIGHT_DIMMER: 100
+            }
+        ],
+        [
+            "set_combined", "hs+dimmer+transition", {
+                'hs_color': [300, 200],
+                'dimmer': 100,
+                'transition_time': 10
+            }, {
+                ATTR_LIGHT_COLOR_HUE: 300,
+                ATTR_LIGHT_COLOR_SATURATION: 200,
+                ATTR_LIGHT_DIMMER: 100,
+                ATTR_TRANSITION_TIME: 10
             },
         ],
     ]

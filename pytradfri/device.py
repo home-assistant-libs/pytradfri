@@ -150,6 +150,7 @@ class LightControl:
         self.can_set_temp = None
         self.can_set_xy = None
         self.can_set_color = None
+        self.can_set_combined = None
 
         if ATTR_LIGHT_DIMMER in self.raw[0]:
             self.can_set_dimmer = True
@@ -163,8 +164,21 @@ class LightControl:
         if ATTR_LIGHT_COLOR_HUE in self.raw[0]:
             self.can_set_color = True
 
+        # Currently uncertain which bulbs are capable of setting
+        # multiple values simultaneously. As of gateway firmware
+        # 1.3.14 1st party bulbs do not seem to support this properly,
+        # but (at least some) hue bulbs do.
+        if 'Philips' in self._device.device_info.manufacturer:
+            self.can_set_combined = True
+
         self.min_mireds = RANGE_MIREDS[0]
         self.max_mireds = RANGE_MIREDS[1]
+
+        self.min_hue = RANGE_HUE[0]
+        self.max_hue = RANGE_HUE[1]
+
+        self.min_saturation = RANGE_SATURATION[0]
+        self.max_saturation = RANGE_SATURATION[1]
 
     @property
     def raw(self):
@@ -186,85 +200,88 @@ class LightControl:
         """Set dimmer value of a light.
         transition_time: Integer representing tenth of a second (default None)
         """
-        self._value_validate(dimmer, RANGE_BRIGHTNESS, "Dimmer")
-
-        values = {
-            ATTR_LIGHT_DIMMER: dimmer
-        }
-
-        if transition_time is not None:
-            values[ATTR_TRANSITION_TIME] = transition_time
-
-        return self.set_values(values, index=index)
+        return self.set_combined(dimmer=dimmer,
+                                 index=index,
+                                 transition_time=transition_time)
 
     def set_color_temp(self, color_temp, *, index=0, transition_time=None):
         """Set color temp a light."""
-        self._value_validate(color_temp, RANGE_MIREDS, "Color temperature")
-
-        values = {
-            ATTR_LIGHT_MIREDS: color_temp
-        }
-
-        if transition_time is not None:
-            values[ATTR_TRANSITION_TIME] = transition_time
-
-        return self.set_values(values, index=index)
+        return self.set_combined(color_temp=color_temp,
+                                 index=index,
+                                 transition_time=transition_time)
 
     def set_hex_color(self, color, *, index=0, transition_time=None):
         """Set hex color of the light."""
-        values = {
-            ATTR_LIGHT_COLOR_HEX: color,
-        }
-
-        if transition_time is not None:
-            values[ATTR_TRANSITION_TIME] = transition_time
-
-        return self.set_values(values, index=index)
+        return self.set_combined(hex_color=color,
+                                 index=index,
+                                 transition_time=transition_time)
 
     def set_xy_color(self, color_x, color_y, *, index=0, transition_time=None):
         """Set xy color of the light."""
-        self._value_validate(color_x, RANGE_X, "X color")
-        self._value_validate(color_y, RANGE_Y, "Y color")
-
-        values = {
-            ATTR_LIGHT_COLOR_X: color_x,
-            ATTR_LIGHT_COLOR_Y: color_y
-        }
-
-        if transition_time is not None:
-            values[ATTR_TRANSITION_TIME] = transition_time
-
-        return self.set_values(values, index=index)
+        return self.set_combined(xy_color=[color_x, color_y],
+                                 index=index,
+                                 transition_time=transition_time)
 
     def set_hsb(self, hue, saturation, brightness=None, *, index=0,
                 transition_time=None):
         """Set HSB color settings of the light."""
-        self._value_validate(hue, RANGE_HUE, "Hue")
-        self._value_validate(saturation, RANGE_SATURATION, "Saturation")
+        return self.set_combined(hs_color=[hue, saturation],
+                                 dimmer=brightness,
+                                 index=index,
+                                 transition_time=transition_time)
 
-        values = {
-            ATTR_LIGHT_COLOR_SATURATION: saturation,
-            ATTR_LIGHT_COLOR_HUE: hue
-        }
+    def set_predefined_color(self, colorname, *, index=0,
+                             transition_time=None):
+        return self.set_combined(color_name=colorname, index=index,
+                                 transition_time=transition_time)
 
-        if brightness is not None:
-            values[ATTR_LIGHT_DIMMER] = brightness
-            self._value_validate(brightness, RANGE_BRIGHTNESS, "Brightness")
+    def set_combined(self, *, state=None, dimmer=None, hs_color=None,
+                     xy_color=None, hex_color=None, color_name=None,
+                     color_temp=None, index=0, transition_time=None):
+        """Set one or more attributes of the light in a single API call.
+        Only works if the bulb supports this feature."""
+        values = {}
+
+        if state is not None:
+            values[ATTR_LIGHT_STATE] = int(state)
+
+        if dimmer is not None:
+            self._value_validate(dimmer, RANGE_BRIGHTNESS, "Dimmer")
+            values[ATTR_LIGHT_DIMMER] = dimmer
+
+        # Only allow changing color by one method at a time
+        # (hs / xy / hex / name / temp)
+        if hs_color is not None and len(hs_color) == 2:
+            self._value_validate(hs_color[0], RANGE_HUE, "Hue")
+            self._value_validate(hs_color[1], RANGE_SATURATION, "Saturation")
+            if hs_color[0] is not None:
+                values[ATTR_LIGHT_COLOR_HUE] = hs_color[0]
+            if hs_color[1] is not None:
+                values[ATTR_LIGHT_COLOR_SATURATION] = hs_color[1]
+        elif xy_color is not None and len(xy_color) == 2:
+            self._value_validate(xy_color[0], RANGE_X, "X color")
+            self._value_validate(xy_color[1], RANGE_Y, "Y color")
+            if xy_color[0] is not None:
+                values[ATTR_LIGHT_COLOR_X] = xy_color[0]
+            if xy_color[1] is not None:
+                values[ATTR_LIGHT_COLOR_Y] = xy_color[1]
+        elif hex_color is not None:
+            values[ATTR_LIGHT_COLOR_HEX] = hex_color
+        elif color_name is not None:
+            try:
+                color = COLORS[color_name.lower().replace(" ", "_")]
+                values[ATTR_LIGHT_COLOR_HEX] = color
+            except KeyError:
+                raise ColorError('Invalid color specified: %s',
+                                 color_name)
+        elif color_temp is not None:
+            self._value_validate(color_temp, RANGE_MIREDS, "Color temperature")
+            values[ATTR_LIGHT_MIREDS] = color_temp
 
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
 
         return self.set_values(values, index=index)
-
-    def set_predefined_color(self, colorname, *, index=0,
-                             transition_time=None):
-        try:
-            color = COLORS[colorname.lower().replace(" ", "_")]
-            return self.set_hex_color(color, index=index,
-                                      transition_time=transition_time)
-        except KeyError:
-            raise ColorError('Invalid color specified: %s',
-                             colorname)
 
     def _value_validate(self, value, rnge, identifier="Given"):
         """
