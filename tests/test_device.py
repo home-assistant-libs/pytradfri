@@ -259,6 +259,37 @@ lamp_value_setting_test_cases = [
                 ATTR_TRANSITION_TIME: 2
             },
         ],
+
+        [
+            "set_combined", "hs", {
+                'hs_color': [300, 200]
+            }, {
+                ATTR_LIGHT_COLOR_HUE: 300,
+                ATTR_LIGHT_COLOR_SATURATION: 200
+            },
+        ],
+        [
+            "set_combined", "hs+dimmer", {
+                'hs_color': [300, 200],
+                'dimmer': 100
+            }, {
+                ATTR_LIGHT_COLOR_HUE: 300,
+                ATTR_LIGHT_COLOR_SATURATION: 200,
+                ATTR_LIGHT_DIMMER: 100
+            }
+        ],
+        [
+            "set_combined", "hs+dimmer+transition", {
+                'hs_color': [300, 200],
+                'dimmer': 100,
+                'transition_time': 10
+            }, {
+                ATTR_LIGHT_COLOR_HUE: 300,
+                ATTR_LIGHT_COLOR_SATURATION: 200,
+                ATTR_LIGHT_DIMMER: 100,
+                ATTR_TRANSITION_TIME: 10
+            },
+        ],
     ]
 ]
 
