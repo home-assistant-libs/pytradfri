@@ -166,6 +166,12 @@ class LightControl:
         self.min_mireds = RANGE_MIREDS[0]
         self.max_mireds = RANGE_MIREDS[1]
 
+        self.min_hue = RANGE_HUE[0]
+        self.max_hue = RANGE_HUE[1]
+
+        self.min_saturation = RANGE_SATURATION[0]
+        self.max_saturation = RANGE_SATURATION[1]
+
     @property
     def raw(self):
         """Return raw data that it represents."""
