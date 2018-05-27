@@ -1,7 +1,12 @@
+import pytest
 from datetime import datetime
 
-from pytradfri.const import ROOT_DEVICES
 from pytradfri.gateway import Gateway, GatewayInfo
+from pytradfri.const import (
+    ROOT_DEVICES,
+    ATTR_CLIENT_IDENTITY_PROPOSED,
+    ATTR_PSK
+)
 
 
 GATEWAY_INFO = {
@@ -35,8 +40,12 @@ GATEWAY_INFO = {
 GATEWAY_INFO_EMPTY = {}
 
 
-def test_get_device():
-    gateway = Gateway()
+@pytest.fixture
+def gateway():
+    return Gateway()
+
+
+def test_get_device(gateway):
     command = gateway.get_device(123)
 
     assert command.method == 'get'
@@ -58,3 +67,11 @@ def test_gateway_info():
 
     assert gateway_info_empty.current_time is None
     assert gateway_info_empty.first_setup is None
+
+
+def test_generate_psk(gateway):
+    command = gateway.generate_psk("identityString")
+
+    assert command.method == 'post'
+    assert command.data == {ATTR_CLIENT_IDENTITY_PROPOSED: "identityString"}
+    assert "PSKstring" in command.process_result({ATTR_PSK: "PSKstring"})

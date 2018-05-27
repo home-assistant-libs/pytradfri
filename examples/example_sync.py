@@ -104,27 +104,32 @@ def run():
     print(lights)
 
     # Lights can be accessed by its index, so lights[1] is the second light
-    light = lights[3]
+    if lights:
+        light = lights[0]
+    else:
+        print("No lights found!")
+        light = None
 
-    observe(api, light)
+    if light:
+        observe(api, light)
 
-    # Example 1: checks state of the light (true=on)
-    print(light.light_control.lights[0].state)
+        # Example 1: checks state of the light (true=on)
+        print("State: {}".format(light.light_control.lights[0].state))
 
-    # Example 2: get dimmer level of the light
-    print(light.light_control.lights[0].dimmer)
+        # Example 2: get dimmer level of the light
+        print("Dimmer: {}".format(light.light_control.lights[0].dimmer))
 
-    # Example 3: What is the name of the light
-    print(light.name)
+        # Example 3: What is the name of the light
+        print("Name: {}".format(light.name))
 
-    # Example 4: Set the light level of the light
-    dim_command = light.light_control.set_dimmer(254)
-    api(dim_command)
+        # Example 4: Set the light level of the light
+        dim_command = light.light_control.set_dimmer(254)
+        api(dim_command)
 
-    # Example 5: Change color of the light
-    # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
-    color_command = light.light_control.set_color_temp(250)
-    api(color_command)
+        # Example 5: Change color of the light
+        # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
+        color_command = light.light_control.set_color_temp(250)
+        api(color_command)
 
     tasks_command = gateway.get_smart_tasks()
     tasks_commands = api(tasks_command)
@@ -139,10 +144,11 @@ def run():
             .set_dimmer(30)
         api(dim_command_2)
 
-    print("Sleeping for 2 min to receive the rest of the observation events")
-    print("Try altering the light (%s) in the app, and watch the events!" %
-          light.name)
-    time.sleep(120)
+    if light:
+        print("Sleeping for 2 min to listen for more observation events")
+        print("Try altering the light (%s) in the app, and watch the events!" %
+              light.name)
+        time.sleep(120)
 
 
 run()
