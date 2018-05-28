@@ -72,6 +72,7 @@ def test_combining_dict_keys():
     DATA_EMPTY_DICT = {'key_dict': {}}
     DATA_DICT_INT = {'key_dict': {'key_int': 0}}
     DATA_DICT_STRING = {'key_dict': {'key_string': 'a'}}
+    DATA_DICT_STRING2 = {'key_dict': {'key_string': 'b'}}
     DATA_DICT_INTSTRING = {'key_dict': {'key_int': 0, 'key_string': 'a'}}
 
     command1 = Command('method', 'path', DATA_EMPTY_DICT)
@@ -82,6 +83,17 @@ def test_combining_dict_keys():
     command1 = Command('method', 'path', DATA_DICT_INT)
     command2 = Command('method', 'path', DATA_DICT_STRING)
     combined = command1 + command2
+    assert combined._data == DATA_DICT_INTSTRING
+
+    command1 = Command('method', 'path', DATA_DICT_STRING)
+    command2 = Command('method', 'path', DATA_DICT_STRING2)
+    combined = command1 + command2
+    assert combined._data == DATA_DICT_STRING2
+
+    command1 = Command('method', 'path', DATA_DICT_INT)
+    command2 = Command('method', 'path', DATA_DICT_STRING2)
+    command3 = Command('method', 'path', DATA_DICT_STRING)
+    combined = command1 + command2 + command3
     assert combined._data == DATA_DICT_INTSTRING
 
 
