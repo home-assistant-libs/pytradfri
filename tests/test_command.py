@@ -19,6 +19,7 @@ def test_combining_mutates():
     command1.combine_data(command2)
     assert command1._data == COMBINED_INT
 
+
 def test_combining_with_none():
     DATA_INT = {'key_int': 0}
 
