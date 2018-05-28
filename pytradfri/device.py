@@ -163,8 +163,21 @@ class LightControl:
         if ATTR_LIGHT_COLOR_HUE in self.raw[0]:
             self.can_set_color = True
 
+        # Currently uncertain which bulbs are capable of setting
+        # multiple values simultaneously. As of gateway firmware
+        # 1.3.14 1st party bulbs do not seem to support this properly,
+        # but (at least some) hue bulbs do.
+        if 'Philips' in self._device.device_info.manufacturer:
+            self.can_combine_commands = True
+
         self.min_mireds = RANGE_MIREDS[0]
         self.max_mireds = RANGE_MIREDS[1]
+
+        self.min_hue = RANGE_HUE[0]
+        self.max_hue = RANGE_HUE[1]
+
+        self.min_saturation = RANGE_SATURATION[0]
+        self.max_saturation = RANGE_SATURATION[1]
 
     @property
     def raw(self):

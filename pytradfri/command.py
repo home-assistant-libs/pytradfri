@@ -1,5 +1,7 @@
 """Command implementation."""
 
+from copy import deepcopy
+
 
 class Command(object):
     """The object for coap commands."""
@@ -71,3 +73,36 @@ class Command(object):
         """Generate url for coap client."""
         path = '/'.join(str(v) for v in self._path)
         return 'coaps://{}:5684/{}'.format(host, path)
+
+    def _merge(self, a, b):
+        """Merges a into b."""
+        for k, v in a.items():
+            if isinstance(v, dict):
+                item = b.setdefault(k, {})
+                self._merge(v, item)
+            elif isinstance(v, list):
+                item = b.setdefault(k, [{}])
+                if len(v) == 1 and isinstance(v[0], dict):
+                    self._merge(v[0], item[0])
+                else:
+                    b[k] = v
+            else:
+                b[k] = v
+        return b
+
+    def combine_data(self, command2):
+        """Combines the data for this command with another."""
+        if command2 is None:
+            return
+        self._data = self._merge(command2._data, self._data)
+
+    def __add__(self, other):
+        if other is None:
+            return deepcopy(self)
+        if isinstance(other, self.__class__):
+            newObj = deepcopy(self)
+            newObj.combine_data(other)
+            return newObj
+        else:
+            raise (TypeError("unsupported operand type(s) for +: "
+                   "'{}' and '{}'").format(self.__class__, type(other)))
