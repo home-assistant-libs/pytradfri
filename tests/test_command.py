@@ -19,6 +19,18 @@ def test_combining_mutates():
     command1.combine_data(command2)
     assert command1._data == COMBINED_INT
 
+def test_combining_with_none():
+    DATA_INT = {'key_int': 0}
+
+    command1 = Command('method', 'path', DATA_INT)
+    combined = command1 + None
+
+    assert combined._data == DATA_INT
+
+    # Combining should mutate the original command
+    command1.combine_data(None)
+    assert command1._data == DATA_INT
+
 
 def test_combining_integer_keys():
     DATA_INT = {'key_int': 0}
