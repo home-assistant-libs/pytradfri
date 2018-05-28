@@ -18,6 +18,7 @@ def test_combining_mutates():
     # Combining should mutate the original command
     command1.combine_data(command2)
     assert command1._data == COMBINED_INT
+    assert command2._data == DATA_INT2
 
 
 def test_combining_with_none():
