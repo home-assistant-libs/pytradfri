@@ -150,6 +150,7 @@ class LightControl:
         self.can_set_temp = None
         self.can_set_xy = None
         self.can_set_color = None
+        self.can_combine_commands = None
 
         if ATTR_LIGHT_DIMMER in self.raw[0]:
             self.can_set_dimmer = True
