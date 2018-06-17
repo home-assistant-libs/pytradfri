@@ -3,6 +3,54 @@ import pytest
 from pytradfri.command import Command
 
 
+def test_property_access():
+    def pr():
+        pass
+
+    def ec():
+        pass
+
+    command = Command(method='method',
+                      path='path',
+                      data='data',
+                      parse_json=True,
+                      observe=False,
+                      observe_duration=0,
+                      process_result=pr,
+                      err_callback=ec)
+
+    assert command.method == 'method'
+    assert command.path == 'path'
+    assert command.parse_json is True
+    assert command.observe is False
+    assert command.observe_duration == 0
+    assert command.process_result == pr
+    assert command.err_callback == ec
+
+
+def test_result():
+    def pr(value):
+        return value + 1
+
+    command = Command('method', 'path', {}, process_result=pr)
+    assert command.result is None
+    assert command.raw_result is None
+
+    command.result = 0
+    assert command.result == 1
+    assert command.raw_result == 0
+
+
+def test_url():
+    command = Command('method', ['path'], {})
+    url = command.url('host')
+    assert url == 'coaps://host:5684/path'
+
+    command2 = Command('method', ['path1', 'path2'], {})
+    url = command2.url('host')
+    assert url == 'coaps://host:5684/path1/path2'
+
+
 def test_combining_mutates():
     DATA_INT = {'key_int': 0}
     DATA_INT2 = {'key_int_2': 1}
@@ -133,6 +181,7 @@ def test_combining_listed_dict_keys():
     command2 = Command('method', 'path', DATA_DICT_STRING)
     combined = command1 + command2
     assert combined._data == DATA_DICT_INTSTRING
+
 
 def test_add_unsupported():
     command1 = Command('method', 'path', {})
