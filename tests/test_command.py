@@ -1,3 +1,5 @@
+import pytest
+
 from pytradfri.command import Command
 
 
@@ -131,3 +133,9 @@ def test_combining_listed_dict_keys():
     command2 = Command('method', 'path', DATA_DICT_STRING)
     combined = command1 + command2
     assert combined._data == DATA_DICT_INTSTRING
+
+def test_add_unsupported():
+    command1 = Command('method', 'path', {})
+    not_a_command = 0
+    with pytest.raises(TypeError) as e_info:
+        command1 + not_a_command
