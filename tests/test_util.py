@@ -4,7 +4,7 @@ import shutil
 import tempfile
 from os import path
 import unittest
-from unittest.mock import Mock, patch, mock_open
+from unittest.mock import patch
 import json
 import pytest
 
@@ -66,7 +66,7 @@ class UtilTestsJSON(unittest.TestCase):
             FILENAME = path.join(self.test_dir, 'should_not_save')
             conf = b'bytes are not serializable'
             with pytest.raises(PytradfriError):
-                written_file = save_json(FILENAME, conf)
+                save_json(FILENAME, conf)
 
         def test_os_error(self):
             with patch("builtins.open", side_effect=OSError(-1)):
