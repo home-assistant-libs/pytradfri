@@ -47,7 +47,6 @@ def save_json(filename: str, config: Union[List, Dict]):
         _LOGGER.exception('Saving JSON file failed: %s',
                           filename)
         raise PytradfriError(error)
-    return False
 
 
 class BitChoices(object):
