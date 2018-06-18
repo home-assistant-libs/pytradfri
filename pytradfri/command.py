@@ -104,5 +104,5 @@ class Command(object):
             newObj.combine_data(other)
             return newObj
         else:
-            raise TypeError("unsupported operand type(s) for +: "
-                   "'{}' and '{}'".format(self.__class__, type(other)))
+            raise (TypeError("unsupported operand type(s) for +: "
+                   "'{}' and '{}'".format(self.__class__, type(other))))
