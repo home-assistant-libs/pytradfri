@@ -186,5 +186,5 @@ def test_combining_listed_dict_keys():
 def test_add_unsupported():
     command1 = Command('method', 'path', {})
     not_a_command = 0
-    with pytest.raises(TypeError) as e_info:
+    with pytest.raises(TypeError):
         command1 + not_a_command
