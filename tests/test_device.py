@@ -420,6 +420,7 @@ def test_deviceinfo_power_source_str_unknown(device):
     info.raw['6'] = None
     assert info.power_source_str is 'Unknown'
 
+
 def test_deviceinfo_power_source_not_present(device):
     info = Device(device.raw.copy()).device_info
     del info.raw['6']
