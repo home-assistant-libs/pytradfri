@@ -70,8 +70,7 @@ class UtilTestsJSON(unittest.TestCase):
 
         def test_os_error(self):
             with patch("builtins.open", side_effect=OSError(-1)):
-                 with pytest.raises(PytradfriError):
-                     load_json('whatever')
-                 with pytest.raises(PytradfriError):
-                     save_json('whatever', {})
-
+                with pytest.raises(PytradfriError):
+                    load_json('whatever')
+                with pytest.raises(PytradfriError):
+                    save_json('whatever', {})
