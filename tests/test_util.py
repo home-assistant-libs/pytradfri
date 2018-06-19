@@ -1,9 +1,12 @@
+from pytradfri.error import PytradfriError
 from pytradfri.util import load_json, save_json, BitChoices
 import shutil
 import tempfile
 from os import path
 import unittest
+from unittest.mock import patch
 import json
+import pytest
 
 
 class UtilTestsBitChoices(unittest.TestCase):
@@ -15,6 +18,8 @@ class UtilTestsBitChoices(unittest.TestCase):
         )
 
         assert WEEKDAYS.get_selected_keys(1) == ['tue']
+        assert len(WEEKDAYS) == 1
+        assert [x for x in WEEKDAYS] == [(1, 'Tuesday')]
 
 
 class UtilTestsJSON(unittest.TestCase):
@@ -44,3 +49,28 @@ class UtilTestsJSON(unittest.TestCase):
                                             'sample_psk_file2.txt'))
             self.assertEqual(json_data,
                              {'identity': 'hashstring', 'key': 'secretkey'})
+
+        def test_load_file_not_found(self):
+            assert not load_json(path.join(self.test_dir, 'not_a_file'))
+
+        def test_load_not_json(self):
+            f = open(path.join(self.test_dir, 'sample_psk_file3.txt'), 'w')
+            data = '{not valid json'
+            f.write(data)
+            f.close()
+
+            with pytest.raises(PytradfriError):
+                load_json(path.join(self.test_dir, 'sample_psk_file3.txt'))
+
+        def test_save_not_serializable(self):
+            FILENAME = path.join(self.test_dir, 'should_not_save')
+            conf = b'bytes are not serializable'
+            with pytest.raises(PytradfriError):
+                save_json(FILENAME, conf)
+
+        def test_os_error(self):
+            with patch("builtins.open", side_effect=OSError(-1)):
+                with pytest.raises(PytradfriError):
+                    load_json('whatever')
+                with pytest.raises(PytradfriError):
+                    save_json('whatever', {})
