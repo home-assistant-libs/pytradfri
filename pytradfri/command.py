@@ -105,4 +105,4 @@ class Command(object):
             return newObj
         else:
             raise (TypeError("unsupported operand type(s) for +: "
-                   "'{}' and '{}'").format(self.__class__, type(other)))
+                   "'{}' and '{}'".format(self.__class__, type(other))))
