@@ -29,7 +29,8 @@ if __name__ == '__main__':
               "Tradfri gateway:", end=" ")
         key = input().strip()
         if len(key) != 16:
-            raise PytradfriError("Invalid 'Security Code' provided.")
+            raise PytradfriError("'Security Code' has to be exactly" +
+                                 "16 characters long.")
         else:
             args.key = key
 
