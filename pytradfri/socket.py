@@ -11,8 +11,6 @@ class SocketControl:
     def __init__(self, device):
         self._device = device
 
-        self.can_combine_commands = None
-
     @property
     def raw(self):
         """Return raw data that it represents."""
@@ -35,7 +33,7 @@ class SocketControl:
         Returns a Command.
         """
         assert len(self.raw) == 1, \
-            'Only devices with 1 light supported'
+            'Only devices with 1 socket supported'
 
         return Command('put', self._device.path, {
             ATTR_SWITCH_PLUG: [
@@ -49,18 +47,11 @@ class SocketControl:
 
 
 class Socket:
-    """Represent a light.
-
-    https://github.com/IPSO-Alliance/pub/blob/master/docs/IPSO-Smart-Objects.pdf
-    """
+    """Represent a socket."""
 
     def __init__(self, device, index):
         self.device = device
         self.index = index
-
-    @property
-    def supported_features(self):
-        return supported_features(self.raw)
 
     @property
     def state(self):
@@ -69,18 +60,11 @@ class Socket:
     @property
     def raw(self):
         """Return raw data that it represents."""
-        return self.device.raw[ATTR_LIGHT_CONTROL][self.index]
+        return self.device.raw[ATTR_SWITCH_PLUG][self.index]
 
     def __repr__(self):
         state = "on" if self.state else "off"
-        return "<Light #{} - " \
+        return "<Socket #{} - " \
                "name: {}, " \
-               "state: {}, " \
-               "dimmer: {}, "\
-               "hex_color: {}, " \
-               "xy_color: {}, " \
-               "hsb_xy_color: {}, "\
-               "supported features: {} " \
-               ">".format(self.index, self.device.name, state, self.dimmer,
-                          self.hex_color, self.xy_color,
-                          self.hsb_xy_color, self.supported_features)
+               "state: {}" \
+               ">".format(self.index, self.device.name, state)

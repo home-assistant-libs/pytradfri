@@ -31,7 +31,7 @@ from .const import (
     SUPPORT_HEX_COLOR,
     SUPPORT_XY_COLOR)
 from .color import COLORS, supported_features
-from .socket import SocketControl, Socket
+from .socket import SocketControl
 from .resource import ApiResource
 from .error import ColorError
 
