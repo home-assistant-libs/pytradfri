@@ -451,11 +451,13 @@ def test_deviceinfo_battery_level_unkown(comment, device):
     info.raw['9'] = None
     assert info.battery_level is None
 
+
 # Test socket state function
 def test_socket_state_on(device):
     socket = Device(device.raw.copy()).socket_control.sockets[0]
     socket.raw[ATTR_SWITCH_PLUG] = 1
     assert socket.state is True
+
 
 def test_socket_state_off(device):
     socket = Device(device.raw.copy()).socket_control.sockets[0]

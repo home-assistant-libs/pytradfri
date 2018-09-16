@@ -1,7 +1,6 @@
 """Control a socket device."""
 from .command import Command
 from .const import (
-    ATTR_LIGHT_STATE,
     ATTR_SWITCH_PLUG,
 )
 
