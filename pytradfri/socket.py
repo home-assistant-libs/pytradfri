@@ -5,6 +5,7 @@ from .const import (
     ATTR_SWITCH_PLUG,
 )
 
+
 class SocketControl:
     """Class to control the sockets."""
 
@@ -18,13 +19,13 @@ class SocketControl:
 
     @property
     def sockets(self):
-        """Return light objects of the light control."""
+        """Return socket objects of the socket control."""
         return [Socket(self._device, i) for i in range(len(self.raw))]
 
     def set_state(self, state, *, index=0):
         """Set state of a light."""
         return self.set_values({
-            ATTR_LIGHT_STATE: int(state)
+            ATTR_SWITCH_PLUG: int(state)
         }, index=index)
 
     def set_values(self, values, *, index=0):
@@ -55,7 +56,7 @@ class Socket:
 
     @property
     def state(self):
-        return self.raw.get(ATTR_LIGHT_STATE) == 1
+        return self.raw.get(ATTR_SWITCH_PLUG) == 1
 
     @property
     def raw(self):

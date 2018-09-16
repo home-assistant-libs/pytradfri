@@ -15,11 +15,13 @@ from pytradfri.const import (
     ATTR_LIGHT_COLOR_Y,
     ATTR_LIGHT_MIREDS,
     ATTR_LIGHT_STATE,
-    ATTR_LIGHT_COLOR_HEX
+    ATTR_LIGHT_COLOR_HEX,
+    ATTR_SWITCH_PLUG
 )
 from pytradfri.device import Device
 from devices import (
-    LIGHT_W, LIGHT_WS, LIGHT_CWS, LIGHT_PHILIPS, REMOTE_CONTROL, MOTION_SENSOR)
+    LIGHT_W, LIGHT_WS, LIGHT_CWS, LIGHT_PHILIPS, REMOTE_CONTROL,
+    MOTION_SENSOR, OUTLET)
 
 
 @pytest.fixture
@@ -41,7 +43,14 @@ output_devices = (
         ("White fixed color bulb", Device(LIGHT_W)),
         ("White spectrum bulb", Device(LIGHT_WS)),
         ("Full color bulb", Device(LIGHT_CWS)),
-        ("Philips Hue bulb", Device(LIGHT_PHILIPS))
+        ("Philips Hue bulb", Device(LIGHT_PHILIPS)),
+    ]
+)
+
+wall_plugs = (
+    ("comment", "device"),
+    [
+        ("Wall plug", Device(OUTLET))
     ]
 )
 
@@ -441,3 +450,14 @@ def test_deviceinfo_battery_level_unkown(comment, device):
     info = Device(device.raw.copy()).device_info
     info.raw['9'] = None
     assert info.battery_level is None
+
+# Test socket state function
+def test_socket_state_on(device):
+    socket = Device(device.raw.copy()).socket_control.sockets[0]
+    socket.raw[ATTR_SWITCH_PLUG] = 1
+    assert socket.state is True
+
+def test_socket_state_off(device):
+    socket = Device(device.raw.copy()).socket_control.sockets[0]
+    socket.raw[ATTR_SWITCH_PLUG] = 0
+    assert socket.state is False

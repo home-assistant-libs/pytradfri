@@ -1,14 +1,14 @@
 from pytradfri.device import Device
 from devices import (
-    SOCKET
+    OUTLET
 )
 
 
 def socket(raw):
-    return Device(raw).socket_control.lights[0]
+    return Device(raw).socket_control.sockets[0]
 
 
 def test_socket():
-    plug = socket(SOCKET)
+    plug = socket(OUTLET)
 
     assert plug.state == 0
