@@ -18,6 +18,7 @@ from .const import (
     ATTR_LIGHT_COLOR_HUE,
     ATTR_LIGHT_COLOR_HEX,
     ATTR_LIGHT_MIREDS,
+    ATTR_SWITCH_PLUG,
     ATTR_TRANSITION_TIME,
     RANGE_MIREDS,
     RANGE_HUE,
@@ -30,6 +31,7 @@ from .const import (
     SUPPORT_HEX_COLOR,
     SUPPORT_XY_COLOR)
 from .color import COLORS, supported_features
+from .socket import SocketControl, Socket
 from .resource import ApiResource
 from .error import ColorError
 
@@ -65,8 +67,17 @@ class Device(ApiResource):
                 len(self.raw.get(ATTR_LIGHT_CONTROL, "")) > 0)
 
     @property
+    def has_socket_control(self):
+        return (self.raw is not None and
+                len(self.raw.get(ATTR_SWITCH_PLUG, "")) > 0)
+
+    @property
     def light_control(self):
         return LightControl(self)
+
+    @property
+    def socket_control(self):
+        return SocketControl(self)
 
     def __repr__(self):
         return "<{} - {} ({})>".format(self.id, self.name,
