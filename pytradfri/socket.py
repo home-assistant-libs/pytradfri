@@ -2,6 +2,7 @@
 from .command import Command
 from .const import (
     ATTR_SWITCH_PLUG,
+    ATTR_LIGHT_STATE
 )
 
 
@@ -24,7 +25,7 @@ class SocketControl:
     def set_state(self, state, *, index=0):
         """Set state of a light."""
         return self.set_values({
-            ATTR_SWITCH_PLUG: int(state)
+            ATTR_LIGHT_STATE: int(state)
         }, index=index)
 
     def set_values(self, values, *, index=0):
