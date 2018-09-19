@@ -23,14 +23,14 @@ class SocketControl:
         return [Socket(self._device, i) for i in range(len(self.raw))]
 
     def set_state(self, state, *, index=0):
-        """Set state of a light."""
+        """Set state of a socket."""
         return self.set_values({
             ATTR_LIGHT_STATE: int(state)
         }, index=index)
 
     def set_values(self, values, *, index=0):
         """
-        Set values on light control.
+        Set values on socket control.
         Returns a Command.
         """
         assert len(self.raw) == 1, \
@@ -56,7 +56,7 @@ class Socket:
 
     @property
     def state(self):
-        return self.raw.get(ATTR_SWITCH_PLUG) == 1
+        return self.raw.get(ATTR_LIGHT_STATE) == 1
 
     @property
     def raw(self):
