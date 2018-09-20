@@ -15,8 +15,7 @@ from pytradfri.const import (
     ATTR_LIGHT_COLOR_Y,
     ATTR_LIGHT_MIREDS,
     ATTR_DEVICE_STATE,
-    ATTR_LIGHT_COLOR_HEX,
-    ATTR_SWITCH_PLUG
+    ATTR_LIGHT_COLOR_HEX
 )
 from pytradfri.device import Device
 from devices import (
@@ -453,13 +452,13 @@ def test_deviceinfo_battery_level_unkown(comment, device):
 
 
 # Test socket state function
-#def test_socket_state_on(device):
+#  def test_socket_state_on(device):
 #    socket = Device(device.raw.copy()).socket_control.sockets[0]
 #    socket.raw[ATTR_SWITCH_PLUG] = 1
 #    assert socket.state is True
 
 
-#def test_socket_state_off(device):
+#  def test_socket_state_off(device):
 #    socket = Device(device.raw.copy()).socket_control.sockets[0]
 #    socket.raw[ATTR_SWITCH_PLUG] = 0
 #    assert socket.state is False
