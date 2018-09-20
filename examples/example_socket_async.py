@@ -111,7 +111,8 @@ def run():
         print('observe error:', err)
 
     for socket in sockets:
-        observe_command = socket.observe(observe_callback, observe_err_callback,
+        observe_command = socket.observe(observe_callback,
+                                         observe_err_callback,
                                          duration=120)
         # Start observation as a second task on the loop.
         ensure_future(api(observe_command))
