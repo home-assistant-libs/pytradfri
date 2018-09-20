@@ -1,6 +1,6 @@
 from .const import (
     ROOT_GROUPS,
-    ATTR_LIGHT_STATE,
+    ATTR_DEVICE_STATE,
     ATTR_LIGHT_DIMMER,
     ATTR_ID,
     ATTR_TRANSITION_TIME
@@ -25,7 +25,7 @@ class Group(ApiResource):
     @property
     def state(self):
         """Boolean representing the light state of the group."""
-        return self.raw.get(ATTR_LIGHT_STATE) == 1
+        return self.raw.get(ATTR_DEVICE_STATE) == 1
 
     @property
     def dimmer(self):
@@ -64,7 +64,7 @@ class Group(ApiResource):
     def set_state(self, state):
         """Set state of a group."""
         return self.set_values({
-            ATTR_LIGHT_STATE: int(state)
+            ATTR_DEVICE_STATE: int(state)
         })
 
     def set_dimmer(self, dimmer, transition_time=None):

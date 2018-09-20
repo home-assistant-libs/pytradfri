@@ -10,7 +10,7 @@ from .const import (
     ATTR_REACHABLE_STATE,
     ATTR_LAST_SEEN,
     ATTR_LIGHT_CONTROL,
-    ATTR_LIGHT_STATE,
+    ATTR_DEVICE_STATE,
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_COLOR_X,
     ATTR_LIGHT_COLOR_Y,
@@ -205,7 +205,7 @@ class LightControl:
     def set_state(self, state, *, index=0):
         """Set state of a light."""
         return self.set_values({
-            ATTR_LIGHT_STATE: int(state)
+            ATTR_DEVICE_STATE: int(state)
         }, index=index)
 
     def set_dimmer(self, dimmer, *, index=0, transition_time=None):
@@ -335,7 +335,7 @@ class Light:
 
     @property
     def state(self):
-        return self.raw.get(ATTR_LIGHT_STATE) == 1
+        return self.raw.get(ATTR_DEVICE_STATE) == 1
 
     @property
     def dimmer(self):

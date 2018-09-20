@@ -14,7 +14,7 @@ from pytradfri.const import (
     ATTR_LIGHT_COLOR_X,
     ATTR_LIGHT_COLOR_Y,
     ATTR_LIGHT_MIREDS,
-    ATTR_LIGHT_STATE,
+    ATTR_DEVICE_STATE,
     ATTR_LIGHT_COLOR_HEX,
     ATTR_SWITCH_PLUG
 )
@@ -212,14 +212,14 @@ lamp_value_setting_test_cases = [
             "set_state", "true", {
                 'state': True,
             }, {
-                ATTR_LIGHT_STATE: True,
+                ATTR_DEVICE_STATE: True,
             },
         ],
         [
             "set_state", "false", {
                 'state': False,
             }, {
-                ATTR_LIGHT_STATE: False,
+                ATTR_DEVICE_STATE: False,
             },
         ],
 
@@ -351,19 +351,19 @@ def test_has_light_control_false(device):
 # Test light state function
 def test_light_state_on(device):
     light = Device(device.raw.copy()).light_control.lights[0]
-    light.raw[ATTR_LIGHT_STATE] = 1
+    light.raw[ATTR_DEVICE_STATE] = 1
     assert light.state is True
 
 
 def test_light_state_off(device):
     light = Device(device.raw.copy()).light_control.lights[0]
-    light.raw[ATTR_LIGHT_STATE] = 0
+    light.raw[ATTR_DEVICE_STATE] = 0
     assert light.state is False
 
 
 def test_light_state_mangled(device):
     light = Device(device.raw.copy()).light_control.lights[0]
-    light.raw[ATTR_LIGHT_STATE] = "RandomString"
+    light.raw[ATTR_DEVICE_STATE] = "RandomString"
     assert light.state is False
 
 
@@ -453,13 +453,13 @@ def test_deviceinfo_battery_level_unkown(comment, device):
 
 
 # Test socket state function
-def test_socket_state_on(device):
-    socket = Device(device.raw.copy()).socket_control.sockets[0]
-    socket.raw[ATTR_SWITCH_PLUG] = 1
-    assert socket.state is True
+#def test_socket_state_on(device):
+#    socket = Device(device.raw.copy()).socket_control.sockets[0]
+#    socket.raw[ATTR_SWITCH_PLUG] = 1
+#    assert socket.state is True
 
 
-def test_socket_state_off(device):
-    socket = Device(device.raw.copy()).socket_control.sockets[0]
-    socket.raw[ATTR_SWITCH_PLUG] = 0
-    assert socket.state is False
+#def test_socket_state_off(device):
+#    socket = Device(device.raw.copy()).socket_control.sockets[0]
+#    socket.raw[ATTR_SWITCH_PLUG] = 0
+#    assert socket.state is False

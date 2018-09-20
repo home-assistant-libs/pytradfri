@@ -2,7 +2,7 @@
 from .command import Command
 from .const import (
     ATTR_SWITCH_PLUG,
-    ATTR_LIGHT_STATE
+    ATTR_DEVICE_STATE
 )
 
 
@@ -25,7 +25,7 @@ class SocketControl:
     def set_state(self, state, *, index=0):
         """Set state of a socket."""
         return self.set_values({
-            ATTR_LIGHT_STATE: int(state)
+            ATTR_DEVICE_STATE: int(state)
         }, index=index)
 
     def set_values(self, values, *, index=0):
@@ -56,7 +56,7 @@ class Socket:
 
     @property
     def state(self):
-        return self.raw.get(ATTR_LIGHT_STATE) == 1
+        return self.raw.get(ATTR_DEVICE_STATE) == 1
 
     @property
     def raw(self):
