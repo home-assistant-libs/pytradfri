@@ -126,7 +126,7 @@ def run():
         print("Name:", socket.name)
 
         # Example 3: Turn socket on
-        state_command = socket.socket_control.set_state = True
+        state_command = socket.socket_control.set_state(True)
         yield from api(state_command)
 
     print("Waiting for observation to end (10 secs)")
