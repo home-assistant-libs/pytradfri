@@ -16,7 +16,7 @@ from .command import Command
 from .const import (
     ATTR_ID,
     ATTR_LIGHT_DIMMER,
-    ATTR_LIGHT_STATE,
+    ATTR_DEVICE_STATE,
     ATTR_SMART_TASK_LIGHTS_OFF,
     ATTR_SMART_TASK_NOT_AT_HOME,
     ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL,
@@ -63,7 +63,7 @@ class SmartTask(ApiResource):
     @property
     def state(self):
         """Boolean representing the light state of the transition."""
-        return self.raw.get(ATTR_LIGHT_STATE) == 1
+        return self.raw.get(ATTR_DEVICE_STATE) == 1
 
     @property
     def task_type_id(self):
@@ -205,7 +205,7 @@ class StartAction:
     @property
     def state(self):
         """Return state of start action task."""
-        return self.raw.get(ATTR_LIGHT_STATE)
+        return self.raw.get(ATTR_DEVICE_STATE)
 
     @property
     def devices(self):
@@ -300,7 +300,7 @@ class StartActionItemController:
         """Set final dimmer value for task."""
         command = {
             ATTR_START_ACTION: {
-                    ATTR_LIGHT_STATE: self.state,
+                    ATTR_DEVICE_STATE: self.state,
                     ROOT_START_ACTION: [{
                         ATTR_ID: self.raw[ATTR_ID],
                         ATTR_LIGHT_DIMMER: dimmer,
@@ -314,7 +314,7 @@ class StartActionItemController:
         """Set time (mins) for light transition."""
         command = {
             ATTR_START_ACTION: {
-                    ATTR_LIGHT_STATE: self.state,
+                    ATTR_DEVICE_STATE: self.state,
                     ROOT_START_ACTION: [{
                         ATTR_ID: self.raw[ATTR_ID],
                         ATTR_LIGHT_DIMMER: self.raw[ATTR_LIGHT_DIMMER],

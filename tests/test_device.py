@@ -14,12 +14,14 @@ from pytradfri.const import (
     ATTR_LIGHT_COLOR_X,
     ATTR_LIGHT_COLOR_Y,
     ATTR_LIGHT_MIREDS,
-    ATTR_LIGHT_STATE,
-    ATTR_LIGHT_COLOR_HEX
+    ATTR_DEVICE_STATE,
+    ATTR_LIGHT_COLOR_HEX,
+    ATTR_SWITCH_PLUG
 )
 from pytradfri.device import Device
 from devices import (
-    LIGHT_W, LIGHT_WS, LIGHT_CWS, LIGHT_PHILIPS, REMOTE_CONTROL, MOTION_SENSOR)
+    LIGHT_W, LIGHT_WS, LIGHT_CWS, LIGHT_PHILIPS, REMOTE_CONTROL,
+    MOTION_SENSOR, OUTLET)
 
 
 @pytest.fixture
@@ -41,7 +43,14 @@ output_devices = (
         ("White fixed color bulb", Device(LIGHT_W)),
         ("White spectrum bulb", Device(LIGHT_WS)),
         ("Full color bulb", Device(LIGHT_CWS)),
-        ("Philips Hue bulb", Device(LIGHT_PHILIPS))
+        ("Philips Hue bulb", Device(LIGHT_PHILIPS)),
+    ]
+)
+
+wall_plugs = (
+    ("comment", "device"),
+    [
+        ("Wall plug", Device(OUTLET))
     ]
 )
 
@@ -203,14 +212,14 @@ lamp_value_setting_test_cases = [
             "set_state", "true", {
                 'state': True,
             }, {
-                ATTR_LIGHT_STATE: True,
+                ATTR_DEVICE_STATE: True,
             },
         ],
         [
             "set_state", "false", {
                 'state': False,
             }, {
-                ATTR_LIGHT_STATE: False,
+                ATTR_DEVICE_STATE: False,
             },
         ],
 
@@ -257,6 +266,26 @@ lamp_value_setting_test_cases = [
     ]
 ]
 
+socket_value_setting_test_cases = [
+    ["function_name", "comment", "test_input", "expected_result"],
+    [
+        [
+            "set_state", "true", {
+                'state': True,
+            }, {
+                ATTR_DEVICE_STATE: True,
+            },
+        ],
+        [
+            "set_state", "false", {
+                'state': False,
+            }, {
+                ATTR_DEVICE_STATE: False,
+            },
+        ],
+    ]
+]
+
 # Combine lamp_value_setting_test_cases and output_devices where:
 # len(new) = len(a) * len(b)
 src = lamp_value_setting_test_cases[1] * len(output_devices[1])
@@ -277,6 +306,30 @@ def test_lamp_value_setting(function_name, comment,
     command = function(**test_input)
     data = command.data[ATTR_LIGHT_CONTROL][0]
     assert data == expected_result
+
+
+@pytest.mark.parametrize(*socket_value_setting_test_cases)
+def test_socket_value_setting(function_name, comment,
+                              test_input, expected_result, device):
+    if device.has_socket_control:
+        function = getattr(device[0].socket_control, function_name)
+        command = function(**test_input)
+        data = command.data[ATTR_SWITCH_PLUG][0]
+        assert data == expected_result
+
+
+def test_socket_state_off(device):
+    if device.has_socket_control:
+        socket = Device(device.raw.copy()).socket_control.socket[0]
+        socket.raw[ATTR_DEVICE_STATE] = 0
+        assert socket.state is False
+
+
+def test_socket_state_on(device):
+    if device.has_socket_control:
+        socket = Device(device.raw.copy()).socket_control.socket[0]
+        socket.raw[ATTR_DEVICE_STATE] = 1
+        assert socket.state is True
 
 
 def test_set_state_none(device):
@@ -342,19 +395,19 @@ def test_has_light_control_false(device):
 # Test light state function
 def test_light_state_on(device):
     light = Device(device.raw.copy()).light_control.lights[0]
-    light.raw[ATTR_LIGHT_STATE] = 1
+    light.raw[ATTR_DEVICE_STATE] = 1
     assert light.state is True
 
 
 def test_light_state_off(device):
     light = Device(device.raw.copy()).light_control.lights[0]
-    light.raw[ATTR_LIGHT_STATE] = 0
+    light.raw[ATTR_DEVICE_STATE] = 0
     assert light.state is False
 
 
 def test_light_state_mangled(device):
     light = Device(device.raw.copy()).light_control.lights[0]
-    light.raw[ATTR_LIGHT_STATE] = "RandomString"
+    light.raw[ATTR_DEVICE_STATE] = "RandomString"
     assert light.state is False
 
 
