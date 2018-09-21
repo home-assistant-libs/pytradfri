@@ -48,7 +48,7 @@ output_devices = (
 )
 
 wall_plugs = (
-    ("comment", "devics"),
+    ("comment", "device"),
     [
         ("Wall plug", Device(OUTLET))
     ]
@@ -306,6 +306,30 @@ def test_lamp_value_setting(function_name, comment,
     command = function(**test_input)
     data = command.data[ATTR_LIGHT_CONTROL][0]
     assert data == expected_result
+
+
+@pytest.mark.parametrize(*socket_value_setting_test_cases)
+def test_socket_value_setting(function_name, comment,
+                              test_input, expected_result, device):
+    if device.has_socket_control:
+        function = getattr(device[0].socket_control, function_name)
+        command = function(**test_input)
+        data = command.data[ATTR_SWITCH_PLUG][0]
+        assert data == expected_result
+
+
+def test_socket_state_off(device):
+    if device.has_socket_control:
+        socket = Device(device.raw.copy()).socket_control.socket[0]
+        socket.raw[ATTR_DEVICE_STATE] = 0
+        assert socket.state is False
+
+
+def test_socket_state_on(device):
+    if device.has_socket_control:
+        socket = Device(device.raw.copy()).socket_control.socket[0]
+        socket.raw[ATTR_DEVICE_STATE] = 1
+        assert socket.state is True
 
 
 def test_set_state_none(device):
