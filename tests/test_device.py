@@ -15,7 +15,8 @@ from pytradfri.const import (
     ATTR_LIGHT_COLOR_Y,
     ATTR_LIGHT_MIREDS,
     ATTR_DEVICE_STATE,
-    ATTR_LIGHT_COLOR_HEX
+    ATTR_LIGHT_COLOR_HEX,
+    ATTR_SWITCH_PLUG
 )
 from pytradfri.device import Device
 from devices import (
@@ -47,7 +48,7 @@ output_devices = (
 )
 
 wall_plugs = (
-    ("comment", "device"),
+    ("comment", "devics"),
     [
         ("Wall plug", Device(OUTLET))
     ]
@@ -265,6 +266,26 @@ lamp_value_setting_test_cases = [
     ]
 ]
 
+socket_value_setting_test_cases = [
+    ["function_name", "comment", "test_input", "expected_result"],
+    [
+        [
+            "set_state", "true", {
+                'state': True,
+            }, {
+                ATTR_DEVICE_STATE: True,
+            },
+        ],
+        [
+            "set_state", "false", {
+                'state': False,
+            }, {
+                ATTR_DEVICE_STATE: False,
+            },
+        ],
+    ]
+]
+
 # Combine lamp_value_setting_test_cases and output_devices where:
 # len(new) = len(a) * len(b)
 src = lamp_value_setting_test_cases[1] * len(output_devices[1])
@@ -449,16 +470,3 @@ def test_deviceinfo_battery_level_unkown(comment, device):
     info = Device(device.raw.copy()).device_info
     info.raw['9'] = None
     assert info.battery_level is None
-
-
-# Test socket state function
-#  def test_socket_state_on(device):
-#    socket = Device(device.raw.copy()).socket_control.sockets[0]
-#    socket.raw[ATTR_SWITCH_PLUG] = 1
-#    assert socket.state is True
-
-
-#  def test_socket_state_off(device):
-#    socket = Device(device.raw.copy()).socket_control.sockets[0]
-#    socket.raw[ATTR_SWITCH_PLUG] = 0
-#    assert socket.state is False
