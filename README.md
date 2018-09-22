@@ -1,12 +1,13 @@
 [![Coverage Status](https://coveralls.io/repos/github/ggravlingen/pytradfri/badge.svg?branch=master)](https://coveralls.io/github/ggravlingen/pytradfri?branch=master)
 [![PyPI version](https://badge.fury.io/py/pytradfri.svg)](https://badge.fury.io/py/pytradfri)
 
-**NB:** Latest Gateway version tested and working - 1.3.14.
+**NB:** Latest Gateway version tested and working - 1.4.15.
 
-Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. Using this library you can, by communicating with the gateway, control IKEA lights (including the RGB ones). Some of the features include:
+Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. Using this library you can, by communicating with the gateway, control IKEA's lights and wall plugs. Some of the features include:
 
 - Get information on the gateway
 - Observe lights, groups and other resources and get notified when they change
+- Control wall plugs
 - List all devices connected to gateway
 - List all lights and get attributes of lights (name, state, color temp, dimmer level etc)
 - Change attribute values of lights (name, state, color temp, dimmer level etc)
@@ -76,4 +77,4 @@ There is a Docker script available to bootstrap a dev environment. Run `./script
 ## 5. Acknowledgements
 This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/).
 
-A lot of work was also put in by Paulus Schoutsen ([@balloob](https://github.com/balloob)) who took the initial code concept into this library. Further work was done by Lewis Juggins ([@lwis](https://github.com/lwis)) to take the library to 2.0 with support for asyncio and 3.0 with more effective management of dependencies and consistency around return types. Lennart Buhl [@r41d](https://github.com/r41d) and Maciej Sokołowski [@matemaciek](https://github.com/matemaciek) made sure the library is supporting RGB bulbs.
+Paulus Schoutsen ([@balloob](https://github.com/balloob)) made a working Python library of the initial code concept. Lewis Juggins ([@lwis](https://github.com/lwis)) added support for asyncio and improved management of dependencies and consistency around return types. Many others have [contributed](https://github.com/ggravlingen/pytradfri/graphs/contributors) too.
