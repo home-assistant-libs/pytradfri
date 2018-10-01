@@ -33,8 +33,7 @@ class MockResponse:
 
 
 class MockProtocol:
-    @asyncio.coroutine
-    def mock_response(self):
+    async def mock_response(self):
         return MockResponse()
 
     @property
@@ -47,8 +46,7 @@ class MockContext:
         return MockProtocol()
 
 
-@asyncio.coroutine
-def mock_create_context(loop):
+async def mock_create_context(loop):
     return MockContext()
 
 
@@ -61,7 +59,7 @@ def test_request_returns_single(monkeypatch):
 
     command = Command('', '')
 
-    response = yield from api(command)
+    response = await api(command)
 
     assert type(response) != list
 
@@ -75,6 +73,6 @@ def test_request_returns_list(monkeypatch):
 
     command = Command('', '')
 
-    response = yield from api([command, command, command])
+    response = await api([command, command, command])
 
     assert type(response) == list

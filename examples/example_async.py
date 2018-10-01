@@ -144,9 +144,7 @@ async def run():
     print("Try altering any light in the app, and watch the events!")
     await asyncio.sleep(120)
 
-    await api.shutdown()
-
-    yield from api.shutdown()
+    await api_factory.shutdown()
 
 
 asyncio.get_event_loop().run_until_complete(run())

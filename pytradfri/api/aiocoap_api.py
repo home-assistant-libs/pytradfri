@@ -84,7 +84,7 @@ class APIFactory:
     async def shutdown(self, exc=None):
         """Shutdown the API events.
            This should be called before closing the event loop."""
-        yield from self._reset_protocol(exc)
+        await self._reset_protocol(exc)
 
     async def _get_response(self, msg):
         """Perform the request, get the response."""
