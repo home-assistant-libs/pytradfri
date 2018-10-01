@@ -9,8 +9,7 @@ from pytradfri.command import Command
 def async_test(f):
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
-        coro = f()
-        future = coro(*args, **kwargs)
+        future = f(*args, **kwargs)
         loop = asyncio.get_event_loop()
         loop.run_until_complete(future)
     return wrapper
