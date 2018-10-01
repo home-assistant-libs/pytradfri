@@ -15,7 +15,8 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class PatchedDTLSSecurityStore:
-    """Patched DTLS store in lieu of impl."""
+    """Patched DTLS store in lieu of a credentials framework.
+       https://github.com/chrysn/aiocoap/issues/97"""
 
     IDENTITY = None
     KEY = None
@@ -86,7 +87,7 @@ class APIFactory:
     def shutdown(self, exc=None):
         """Shutdown the API events.
            This should be called before closing the event loop."""
-        yield from self._reset_protocol()
+        yield from self._reset_protocol(exc)
 
     @asyncio.coroutine
     def _get_response(self, msg):
