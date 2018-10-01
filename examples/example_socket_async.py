@@ -57,8 +57,7 @@ except ImportError:
     ensure_future = async
 
 
-@asyncio.coroutine
-def run():
+async def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
     conf = load_json(CONFIG_FILE)
@@ -72,7 +71,7 @@ def run():
         api_factory = APIFactory(host=args.host, psk_id=identity)
 
         try:
-            psk = yield from api_factory.generate_psk(args.key)
+            psk = await api_factory.generate_psk(args.key)
             print('Generated PSK: ', psk)
 
             conf[args.host] = {'identity': identity,
@@ -88,8 +87,8 @@ def run():
     gateway = Gateway()
 
     devices_command = gateway.get_devices()
-    devices_commands = yield from api(devices_command)
-    devices = yield from api(devices_commands)
+    devices_commands = await api(devices_command)
+    devices = await api(devices_commands)
 
     sockets = [dev for dev in devices if dev.has_socket_control]
 
@@ -117,7 +116,7 @@ def run():
         # Start observation as a second task on the loop.
         ensure_future(api(observe_command))
         # Yield to allow observing to start.
-        yield from asyncio.sleep(0)
+        await asyncio.sleep(0)
 
     if socket:
         # Example 1: checks state of the socket (true=on)
@@ -128,10 +127,12 @@ def run():
 
         # Example 3: Turn socket on
         state_command = socket.socket_control.set_state(True)
-        yield from api(state_command)
+        await api(state_command)
 
     print("Waiting for observation to end (10 secs)")
-    yield from asyncio.sleep(10)
+    await asyncio.sleep(10)
+
+    await api.shutdown()
 
 
 asyncio.get_event_loop().run_until_complete(run())

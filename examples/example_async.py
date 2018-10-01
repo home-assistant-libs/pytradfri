@@ -48,18 +48,7 @@ if args.host not in load_json(CONFIG_FILE) and args.key is None:
         args.key = key
 
 
-try:
-    # pylint: disable=ungrouped-imports
-    from asyncio import ensure_future
-except ImportError:
-    # Python 3.4.3 and earlier has this as async
-    # pylint: disable=unused-import
-    from asyncio import async
-    ensure_future = async
-
-
-@asyncio.coroutine
-def run():
+async def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
     conf = load_json(CONFIG_FILE)
@@ -73,7 +62,7 @@ def run():
         api_factory = APIFactory(host=args.host, psk_id=identity)
 
         try:
-            psk = yield from api_factory.generate_psk(args.key)
+            psk = await api_factory.generate_psk(args.key)
             print('Generated PSK: ', psk)
 
             conf[args.host] = {'identity': identity,
@@ -89,8 +78,8 @@ def run():
     gateway = Gateway()
 
     devices_command = gateway.get_devices()
-    devices_commands = yield from api(devices_command)
-    devices = yield from api(devices_commands)
+    devices_commands = await api(devices_command)
+    devices = await api(devices_commands)
 
     lights = [dev for dev in devices if dev.has_light_control]
 
@@ -117,7 +106,7 @@ def run():
         # Start observation as a second task on the loop.
         ensure_future(api(observe_command))
         # Yield to allow observing to start.
-        yield from asyncio.sleep(0)
+        await asyncio.sleep(0)
 
     if light:
         # Example 1: checks state of the light (true=on)
@@ -131,16 +120,16 @@ def run():
 
         # Example 4: Set the light level of the light
         dim_command = light.light_control.set_dimmer(254)
-        yield from api(dim_command)
+        await api(dim_command)
 
         # Example 5: Change color of the light
         # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
         color_command = light.light_control.set_hex_color('efd275')
-        yield from api(color_command)
+        await api(color_command)
 
     tasks_command = gateway.get_smart_tasks()
-    tasks_commands = yield from api(tasks_command)
-    tasks = yield from api(tasks_commands)
+    tasks_commands = await api(tasks_command)
+    tasks = await api(tasks_commands)
 
     # Example 6: Return the transition time (in minutes) for task#1
     if tasks:
@@ -149,11 +138,13 @@ def run():
         # Example 7: Set the dimmer stop value to 30 for light#1 in task#1
         dim_command_2 = tasks[0].start_action.devices[0].item_controller\
             .set_dimmer(30)
-        yield from api(dim_command_2)
+        await api(dim_command_2)
 
     print("Waiting for observation to end (2 mins)")
     print("Try altering any light in the app, and watch the events!")
-    yield from asyncio.sleep(120)
+    await asyncio.sleep(120)
+
+    await api.shutdown()
 
 
 asyncio.get_event_loop().run_until_complete(run())
