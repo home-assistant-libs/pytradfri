@@ -9,7 +9,7 @@ from pytradfri.command import Command
 def async_test(f):
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
-        coro = asyncio.coroutine(f)
+        coro = f()
         future = coro(*args, **kwargs)
         loop = asyncio.get_event_loop()
         loop.run_until_complete(future)
@@ -51,7 +51,7 @@ async def mock_create_context(loop):
 
 
 @async_test
-def test_request_returns_single(monkeypatch):
+async def test_request_returns_single(monkeypatch):
     monkeypatch.setattr('aiocoap.Context.create_client_context',
                         mock_create_context)
 
@@ -65,7 +65,7 @@ def test_request_returns_single(monkeypatch):
 
 
 @async_test
-def test_request_returns_list(monkeypatch):
+async def test_request_returns_list(monkeypatch):
     monkeypatch.setattr('aiocoap.Context.create_client_context',
                         mock_create_context)
 
