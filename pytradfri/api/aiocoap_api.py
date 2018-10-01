@@ -1,4 +1,4 @@
-"""Coap implementation using aiocoap."""
+"""COAP implementation using aiocoap."""
 import asyncio
 import json
 import logging
@@ -15,7 +15,8 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class PatchedDTLSSecurityStore:
-    """Patched DTLS store in lieu of impl."""
+    """Patched DTLS store in lieu of a credentials framework.
+       https://github.com/chrysn/aiocoap/issues/97"""
 
     IDENTITY = None
     KEY = None
@@ -70,8 +71,7 @@ class APIFactory:
         return (await self._protocol)
 
     async def _reset_protocol(self, exc=None):
-        """Reset the protocol if an error occurs.
-           This can be removed when chrysn/aiocoap#79 is closed."""
+        """Reset the protocol if an error occurs."""
         # Be responsible and clean up.
         protocol = await self._get_protocol()
         await protocol.shutdown()
@@ -80,6 +80,11 @@ class APIFactory:
         for ob_error in self._observations_err_callbacks:
             ob_error(exc)
         self._observations_err_callbacks.clear()
+
+    async def shutdown(self, exc=None):
+        """Shutdown the API events.
+           This should be called before closing the event loop."""
+        yield from self._reset_protocol(exc)
 
     async def _get_response(self, msg):
         """Perform the request, get the response."""
@@ -177,9 +182,7 @@ class APIFactory:
         self._observations_err_callbacks.append(ob.error)
 
     async def generate_psk(self, security_key):
-        """
-        Generate and set a psk from the security key.
-        """
+        """Generate and set a psk from the security key."""
         if not self._psk:
             PatchedDTLSSecurityStore.IDENTITY = 'Client_identity'.encode(
                 'utf-8')

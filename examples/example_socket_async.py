@@ -134,5 +134,7 @@ async def run():
 
     await api.shutdown()
 
+    yield from api.shutdown()
+
 
 asyncio.get_event_loop().run_until_complete(run())
