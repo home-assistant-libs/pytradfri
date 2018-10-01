@@ -3,7 +3,8 @@
 
 **NB:** Latest Gateway version tested and working - 1.4.15.
 
-Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. Using this library you can, by communicating with the gateway, control IKEA's lights and wall plugs. Some of the features include:
+Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. By using this library you can communicate with the gateway and control IKEA's lights and wall plugs.
+ Some of the features include:
 
 - Get information on the gateway
 - Observe lights, groups and other resources and get notified when they change
@@ -11,7 +12,7 @@ Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/c
 - List all devices connected to gateway
 - List all lights and get attributes of lights (name, state, color temp, dimmer level etc)
 - Change attribute values of lights (name, state, color temp, dimmer level etc)
-- Restart and reset gateway
+- Restart and reset the gateway
 - List smart tasks (wake up, on/off and not home) and their attributes
 - Alter values in smart tasks (some of these features not available in app yet)
 
@@ -24,13 +25,13 @@ Table of contents:
 5. [Acknowledgements](#5-acknowledgements)
 
 ## 1. Installation
-You might have to use sudo for some commands to work when installing.
+You might have to use superuser privileges (sudo) for some commands to work when installing.
 
-To use the library in a synchronous application, you first need to install [libcoap](https://github.com/obgm/libcoap) using [this script.](script/install-coap-client.sh) Use ```examples/example_sync.py``` when testing this.
+To use the library in a synchronous application, you first need to install [libcoap](https://github.com/obgm/libcoap) using [this script](script/install-coap-client.sh). Use [examples/example_sync.py](https://github.com/ggravlingen/pytradfri/blob/master/examples/example_sync.py) when testing this.
 
-For asynchronous applications you will need to install [DTLSSocket](https://pypi.python.org/pypi/DTLSSocket), for instance using the requirements file: ```shell pip install -r requirements.txt ```. Please note that install might take considerable time on slow devices. Use ```examples/example_async.py``` when testing this.
+For asynchronous applications you will need to install [DTLSSocket](https://pypi.python.org/pypi/DTLSSocket), for instance using the requirements file: ```shell pip install -r requirements.txt ```. Please note that install might take considerable time on slow devices. Use [examples/example_async.py](https://github.com/ggravlingen/pytradfri/blob/master/examples/example_async.py) when testing this.
 
-Security best practice is to *not* store the security code that is printed on the gateway permanently in your application. Please always use the PSK when communicating with the gateway.
+Security best practice is to ***not*** store the security code that is printed on the gateway permanently in your application. Please always use the PSK when communicating with the gateway.
 
 ## 2. Stand-alone use (command-line interface)
 ![Screenshot of command line interface](./docs/pytradfri_cli.png)
@@ -52,7 +53,7 @@ List all lights:
 lights
 ```
 
-Set brightnes of item 1 to 50 in lights list:
+Set the brightness of item 1 to 50 in lights list:
 
 ```python
 api(lights[1].light_control.set_dimmer(50))
