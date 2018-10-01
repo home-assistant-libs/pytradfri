@@ -133,5 +133,7 @@ def run():
     print("Waiting for observation to end (10 secs)")
     yield from asyncio.sleep(10)
 
+    yield from api.shutdown()
+
 
 asyncio.get_event_loop().run_until_complete(run())
