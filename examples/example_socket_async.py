@@ -46,16 +46,6 @@ if args.host not in load_json(CONFIG_FILE) and args.key is None:
     else:
         args.key = key
 
-try:
-    # pylint: disable=ungrouped-imports
-    from asyncio import ensure_future
-except ImportError:
-    # Python 3.4.3 and earlier has this as async
-    # pylint: disable=unused-import
-    from asyncio import async
-
-    ensure_future = async
-
 
 async def run():
     # Assign configuration variables.
@@ -114,7 +104,7 @@ async def run():
                                          observe_err_callback,
                                          duration=120)
         # Start observation as a second task on the loop.
-        ensure_future(api(observe_command))
+        asyncio.ensure_future(api(observe_command))
         # Yield to allow observing to start.
         await asyncio.sleep(0)
 

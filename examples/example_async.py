@@ -104,7 +104,7 @@ async def run():
         observe_command = light.observe(observe_callback, observe_err_callback,
                                         duration=120)
         # Start observation as a second task on the loop.
-        ensure_future(api(observe_command))
+        asyncio.ensure_future(api(observe_command))
         # Yield to allow observing to start.
         await asyncio.sleep(0)
 

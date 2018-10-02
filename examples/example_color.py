@@ -64,16 +64,6 @@ if args.host not in load_json(CONFIG_FILE) and args.key is None:
         args.key = key
 
 
-try:
-    # pylint: disable=ungrouped-imports
-    from asyncio import ensure_future
-except ImportError:
-    # Python 3.4.3 and earlier has this as async
-    # pylint: disable=unused-import
-    from asyncio import async
-    ensure_future = async
-
-
 async def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
