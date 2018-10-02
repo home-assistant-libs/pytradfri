@@ -58,39 +58,14 @@ class APIFactory:
         data = api_command.data
         parse_json = api_command.parse_json
         url = api_command.url(self._host)
-
-        proc_timeout = self._timeout
-        if timeout is not None:
-            proc_timeout = timeout
-
-        command = self._base_command(method)
-
-        kwargs = {
-            'stderr': subprocess.DEVNULL,
-            'timeout': proc_timeout,
-            'universal_newlines': True,
-        }
-
-        if data is not None:
-            kwargs['input'] = json.dumps(data)
-            command.append('-f')
-            command.append('-')
-            _LOGGER.debug('Executing %s %s %s: %s', self._host, method, path,
-                          data)
-        else:
-            _LOGGER.debug('Executing %s %s %s', self._host, method, path)
-
-        command.append(url)
-
-        
+       
         try:        
-            pycoap.SetGateway("{0}:{1}".format(self._host, "5684"), self._psk_id,self._psk)
             targetPath = "/".join(str(i) for i in path)
             if method == "get":    
-                return_value = pycoap.Request(targetPath)
+                return_value = pycoap.DTLSRequest("{0}:{1}".format(self._host, "5684"), targetPath, self._psk_id,self._psk)
             elif method =="put":
                 if data is not None:
-                    return_value = pycoap.PutRequest(targetPath, json.dumps(data))
+                    return_value = pycoap.DTLSPutRequest("{0}:{1}".format(self._host, "5684"), targetPath, json.dumps(data), self._psk_id,self._psk)
 
         except:
            raise RequestError("Error executing request")
