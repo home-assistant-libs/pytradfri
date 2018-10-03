@@ -2,6 +2,7 @@
 import asyncio
 import json
 import logging
+import socket
 
 from aiocoap import Message, Context
 from aiocoap.error import RequestTimedOut, Error, ConstructionRenderableError
@@ -98,7 +99,9 @@ class APIFactory:
         except RequestTimedOut as e:
             await self._reset_protocol(e)
             raise RequestTimeout('Request timed out.', e)
-        except Error as e:
+        except (OSError, socket.gaierror, Error) as e:
+            # aiocoap sometimes raises an OSError/socket.gaierror too.
+            # aiocoap issue #124
             await self._reset_protocol(e)
             raise ServerError("There was an error with the request.", e)
         except asyncio.CancelledError as e:
