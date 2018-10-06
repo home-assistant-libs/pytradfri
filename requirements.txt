@@ -1,0 +1,4 @@
+cython
+aiocoap==0.4a1
+DTLSSocket==0.1.4
+typing>=3,<4
