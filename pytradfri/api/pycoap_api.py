@@ -16,6 +16,8 @@ _LOGGER = logging.getLogger(__name__)
 CLIENT_ERROR_PREFIX = '4.'
 SERVER_ERROR_PREFIX = '5.'
 
+class ObservationNotImplemented(Exception):
+    pass
 
 class APIFactory:
     def __init__(self, host, psk_id='pytradfri', psk=None, timeout=10):
@@ -50,7 +52,8 @@ class APIFactory:
         """Execute the command."""
 
         if api_command.observe:
-            self._observe(api_command)
+            raise ObservationNotImplemented
+            # self._observe(api_command)
             return
 
         method = api_command.method
@@ -70,14 +73,6 @@ class APIFactory:
         except:
            raise RequestError("Error executing request")
         
-        # try:
-        #     return_value = subprocess.check_output(command, **kwargs)
-        # except subprocess.TimeoutExpired:
-        #     raise RequestTimeout() from None
-        # except subprocess.CalledProcessError as err:
-        #     raise RequestError(
-        #         'Error executing request: {}'.format(err)) from None
-
         api_command.result = _process_output(return_value, parse_json)
         return api_command.result
 
@@ -95,6 +90,9 @@ class APIFactory:
         return command_results
 
     def _observe(self, api_command):
+        raise ObservationNotImplemented
+        return
+        
         """Observe an endpoint."""
         path = api_command.path
         duration = api_command.observe_duration
