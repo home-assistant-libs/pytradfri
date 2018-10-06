@@ -16,8 +16,10 @@ _LOGGER = logging.getLogger(__name__)
 CLIENT_ERROR_PREFIX = '4.'
 SERVER_ERROR_PREFIX = '5.'
 
+
 class ObservationNotImplemented(Exception):
     pass
+
 
 class APIFactory:
     def __init__(self, host, psk_id='pytradfri', psk=None, timeout=10):
@@ -60,19 +62,22 @@ class APIFactory:
         path = api_command.path
         data = api_command.data
         parse_json = api_command.parse_json
-        url = api_command.url(self._host)
-       
-        try:        
+
+        try:
             targetPath = "/".join(str(i) for i in path)
-            if method == "get":    
-                return_value = pycoap.DTLSRequest("{0}:{1}".format(self._host, "5684"), targetPath, self._psk_id,self._psk)
-            elif method =="put":
+            if method == "get":
+                return_value = pycoap.DTLSRequest(
+                    "{0}:{1}".format(self._host, "5684"),
+                    targetPath, self._psk_id, self._psk)
+            elif method == "put":
                 if data is not None:
-                    return_value = pycoap.DTLSPutRequest("{0}:{1}".format(self._host, "5684"), targetPath, json.dumps(data), self._psk_id,self._psk)
+                    return_value = pycoap.DTLSPutRequest(
+                        "{0}:{1}".format(self._host, "5684"),
+                        targetPath, json.dumps(data), self._psk_id, self._psk)
 
         except:
-           raise RequestError("Error executing request")
-        
+            raise RequestError("Error executing request")
+
         api_command.result = _process_output(return_value, parse_json)
         return api_command.result
 
@@ -92,7 +97,7 @@ class APIFactory:
     def _observe(self, api_command):
         raise ObservationNotImplemented
         return
-        
+
         """Observe an endpoint."""
         path = api_command.path
         duration = api_command.observe_duration
