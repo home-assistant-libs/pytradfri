@@ -2,14 +2,27 @@ sudo: false
 matrix:
   fast_finish: true
   include:
-    - python: "3.4.4"
-      env: TOXENV=py34
     - python: "3.5"
       env: TOXENV=py35
     - python: "3.6"
       env: TOXENV=py36
-    - python: "3.6-dev"
-      env: TOXENV=py36
+    - python: "3.7"
+      env: TOXENV=py37
+      dist: xenial
+      sudo: true
+    - python: "3.8-dev"
+      env: TOXENV=py38
+      dist: xenial
+      sudo: true
+  allow_failures:
+    - python: "3.7" #Cython doesn't support 3.7 yet.
+      env: TOXENV=py37
+      dist: xenial
+      sudo: true #workaround for #travis-ci/travis-ci#9815
+    - python: "3.8-dev"
+      env: TOXENV=py38
+      dist: xenial
+      sudo: true #workaround for travis-ci/travis-ci#9815
 cache:
   directories:
     - $HOME/.cache/pip

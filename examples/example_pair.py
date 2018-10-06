@@ -54,8 +54,7 @@ if args.host not in load_json(CONFIG_FILE) and args.key is None:
         args.key = key
 
 
-@asyncio.coroutine
-def run(shutdown):
+async def run(shutdown):
     # Assign configuration variables.
     # The configuration check takes care they are present.
     conf = load_json(CONFIG_FILE)
@@ -69,7 +68,7 @@ def run(shutdown):
         api_factory = APIFactory(host=args.host, psk_id=identity)
 
         try:
-            psk = yield from api_factory.generate_psk(args.key)
+            psk = await api_factory.generate_psk(args.key)
             print('Generated PSK: ', psk)
 
             conf[args.host] = {'identity': identity,
@@ -90,17 +89,16 @@ def run(shutdown):
     # set and regularly renew the commissioning timeout, remove when done
     #
 
-    @asyncio.coroutine
-    def keep_commissioning_alive(readiness):
+    async def keep_commissioning_alive(readiness):
         try:
             while True:
-                yield from api(gateway.set_commissioning_timeout(60))
+                await api(gateway.set_commissioning_timeout(60))
                 if readiness is not None:
                     readiness()
                 readiness = None
-                yield from asyncio.sleep(45)
+                await asyncio.sleep(45)
         finally:
-            yield from api(gateway.set_commissioning_timeout(00))
+            await api(gateway.set_commissioning_timeout(00))
 
     commissioning_ready = asyncio.Future()
     commissioning = asyncio.Task(keep_commissioning_alive(
@@ -124,14 +122,13 @@ def run(shutdown):
 
         last_devices = result
 
-    @asyncio.coroutine
-    def new_device(devno):
+    async def new_device(devno):
         nonlocal commissioning
 
         print("New device, fetching details...", end="", flush=True)
 
         device_command = gateway.get_device(devno)
-        device = yield from api(device_command)
+        device = await api(device_command)
 
         print()
 
@@ -162,8 +159,8 @@ def run(shutdown):
 
     observe_devices = Command('get', [ROOT_DEVICES], observe=True,
                               process_result=devices_updated)
-    yield from api(observe_devices)
-    yield from commissioning_ready
+    await api(observe_devices)
+    await commissioning_ready
 
     print("Ready to start: Gateway is in commissioning mode.")
     print("Pressing the pairing button on a switch, dimmer or motion detector"
@@ -175,7 +172,8 @@ def run(shutdown):
     # run until the outer loop says not to any more
     #
 
-    yield from shutdown
+    await api_factory.shutdown()
+    await shutdown
 
     if commissioning is not None:
         print("Please allow for the commissioning mode to be disabled")

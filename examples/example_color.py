@@ -64,18 +64,7 @@ if args.host not in load_json(CONFIG_FILE) and args.key is None:
         args.key = key
 
 
-try:
-    # pylint: disable=ungrouped-imports
-    from asyncio import ensure_future
-except ImportError:
-    # Python 3.4.3 and earlier has this as async
-    # pylint: disable=unused-import
-    from asyncio import async
-    ensure_future = async
-
-
-@asyncio.coroutine
-def run():
+async def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
     conf = load_json(CONFIG_FILE)
@@ -89,7 +78,7 @@ def run():
         api_factory = APIFactory(host=args.host, psk_id=identity)
 
         try:
-            psk = yield from api_factory.generate_psk(args.key)
+            psk = await api_factory.generate_psk(args.key)
             print('Generated PSK: ', psk)
 
             conf[args.host] = {'identity': identity,
@@ -105,8 +94,8 @@ def run():
     gateway = Gateway()
 
     devices_command = gateway.get_devices()
-    devices_commands = yield from api(devices_command)
-    devices = yield from api(devices_commands)
+    devices_commands = await api(devices_command)
+    devices = await api(devices_commands)
 
     lights = [dev for dev in devices if dev.has_light_control]
 
@@ -129,7 +118,7 @@ def run():
         return
 
     xy_command = light.light_control.set_xy_color(xy[0], xy[1])
-    yield from api(xy_command)
+    await api(xy_command)
 
     xy = light.light_control.lights[0].xy_color
 
@@ -141,7 +130,9 @@ def run():
     rgb = (int(rgb.rgb_r), int(rgb.rgb_g), int(rgb.rgb_b))
     print(rgb)
 
-    yield from asyncio.sleep(120)
+    await asyncio.sleep(120)
+
+    await api_factory.shutdown()
 
 
 asyncio.get_event_loop().run_until_complete(run())

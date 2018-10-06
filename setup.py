@@ -13,7 +13,7 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-VERSION = "5.6.1"
+VERSION = "6.0.1"
 DOWNLOAD_URL = \
     'https://github.com/ggravlingen/pytradfri/archive/{}.zip'.format(VERSION)
 
@@ -26,7 +26,7 @@ PACKAGES = find_packages(exclude=['tests', 'tests.*'])
 setup(
   name='pytradfri',
   packages=PACKAGES,
-  python_requires='>=3.4',
+  python_requires='>=3.5',
   version=VERSION,
   description='IKEA Trådfri/Tradfri API. Control and observe your '
               'lights from Python.',
