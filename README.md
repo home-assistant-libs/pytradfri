@@ -1,8 +1,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/ggravlingen/pytradfri/badge.svg?branch=master)](https://coveralls.io/github/ggravlingen/pytradfri?branch=master)
 [![PyPI version](https://badge.fury.io/py/pytradfri.svg)](https://badge.fury.io/py/pytradfri)
 
-**NB:** Latest Gateway version tested and working - 1.4.15.
-
 Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. By using this library you can communicate with the gateway and control IKEA's lights and wall plugs.
  Some of the features include:
 
@@ -18,13 +16,14 @@ Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/c
 
 Table of contents:
 
-1. [Installation](#1-installation)
-2. [Stand-alone use (command-line interface)](#2-stand-alone-use-command-line-interface)
-3. [Implement in your own Python platform](#3-implement-in-your-own-python-platform)
-4. [Docker support](#4-docker-support)
-5. [Acknowledgements](#5-acknowledgements)
+1. [Installation](#installation)
+2. [Verified Device Compatibility](#verified-device-compatibility)
+3. [Stand-alone use (command-line interface)](#stand-alone-use-command-line-interface)
+4. [Implement in your own Python platform](#implement-in-your-own-python-platform)
+5. [Docker support](#docker-support)
+6. [Acknowledgements](#acknowledgements)
 
-## 1. Installation
+## Installation
 You might have to use superuser privileges (sudo) for some commands to work when installing.
 
 To use the library in a synchronous application, you first need to install [libcoap](https://github.com/obgm/libcoap) using [this script](script/install-coap-client.sh). Use [examples/example_sync.py](https://github.com/ggravlingen/pytradfri/blob/master/examples/example_sync.py) when testing this.
@@ -33,7 +32,18 @@ For asynchronous applications you will need to install [DTLSSocket](https://pypi
 
 Security best practice is to ***not*** store the security code that is printed on the gateway permanently in your application. Please always use the PSK when communicating with the gateway.
 
-## 2. Stand-alone use (command-line interface)
+## Verified Device Compatibility
+
+|Device|Version|
+|---|---|
+|IKEA Gateway (E1526)|1.4.15|
+|TRADFRI bulb E14 WS opal 400lm|1.2.217|
+|TRADFRI bulb E27 WS opal 980lm|1.2.217|
+|TRADFRI bulb E27 W opal 1000lm|1.2.214|
+|TRADFRI remote control|1.2.214|
+|TRADFRI motion sensor|1.2.214|
+
+## Stand-alone use (command-line interface)
 ![Screenshot of command line interface](./docs/pytradfri_cli.png)
 
 If you want to test this library stand-alone in a command-line interface:
@@ -68,14 +78,14 @@ def change_listener(device):
 api(lights[0].observe(change_listener))
 ```
 
-## 3. Implement in your own Python platform
+## Implement in your own Python platform
 Please see the example files.
 
-## 4. Docker support
+## Docker support
 
 There is a Docker script available to bootstrap a dev environment. Run `./script/dev_docker` and you will build and launch a container that is ready to go for both sync and async. After launching, follow the above instructions to test the library stand-alone.
 
-## 5. Acknowledgements
+## Acknowledgements
 This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/).
 
 Paulus Schoutsen ([@balloob](https://github.com/balloob)) made a working Python library of the initial code concept. Lewis Juggins ([@lwis](https://github.com/lwis)) added support for asyncio and improved management of dependencies and consistency around return types. Many others have [contributed](https://github.com/ggravlingen/pytradfri/graphs/contributors) too.
