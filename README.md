@@ -1,8 +1,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/ggravlingen/pytradfri/badge.svg?branch=master)](https://coveralls.io/github/ggravlingen/pytradfri?branch=master)
 [![PyPI version](https://badge.fury.io/py/pytradfri.svg)](https://badge.fury.io/py/pytradfri)
 
-Python class to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee-based Gateway. By using this library you can communicate with the gateway and control IKEA's lights and wall plugs.
- Some of the features include:
+Python package to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee Gateway compatible with ZigBee Light Link products. By using this library you can communicate with the gateway and control IKEA's lights and wall plugs.
+
+Some of the features include:
 
 - Get information on the gateway
 - Observe lights, groups and other resources and get notified when they change
@@ -28,7 +29,7 @@ You might have to use superuser privileges (sudo) for some commands to work when
 
 To use the library in a synchronous application, you first need to install [libcoap](https://github.com/obgm/libcoap) using [this script](script/install-coap-client.sh). Use [examples/example_sync.py](https://github.com/ggravlingen/pytradfri/blob/master/examples/example_sync.py) when testing this.
 
-For asynchronous applications you will need to install [DTLSSocket](https://pypi.python.org/pypi/DTLSSocket), for instance using the requirements file: ```shell pip install -r requirements.txt ```. Please note that install might take considerable time on slow devices. Use [examples/example_async.py](https://github.com/ggravlingen/pytradfri/blob/master/examples/example_async.py) when testing this.
+For asynchronous applications you will need to install `pytradfri[async]`, for instance using the requirements file: ```shell pip install pytradfri[async]```. Please note that install might take considerable time on slow devices. Use [examples/example_async.py](https://github.com/ggravlingen/pytradfri/blob/master/examples/example_async.py) when testing this.
 
 Security best practice is to ***not*** store the security code that is printed on the gateway permanently in your application. Please always use the PSK when communicating with the gateway.
 
@@ -79,6 +80,7 @@ api(lights[0].observe(change_listener))
 ```
 
 ## Implement in your own Python platform
+
 Please see the example files.
 
 ## Docker support
