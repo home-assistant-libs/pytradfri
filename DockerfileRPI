@@ -12,4 +12,6 @@ WORKDIR /usr/src/app
 COPY ./script/install-coap-client.sh install-coap-client.sh
 RUN ./install-coap-client.sh
 
+RUN /usr/bin/pip3 install --upgrade typing
+
 CMD /bin/bash
