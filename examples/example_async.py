@@ -27,10 +27,13 @@ import asyncio
 import uuid
 import argparse
 
+
+
 CONFIG_FILE = 'tradfri_standalone_psk.conf'
 
 
 parser = argparse.ArgumentParser()
+
 parser.add_argument('host', metavar='IP', type=str,
                     help='IP Address of your Tradfri gateway')
 parser.add_argument('-K', '--key', dest='key', required=False,
@@ -41,7 +44,7 @@ args = parser.parse_args()
 if args.host not in load_json(CONFIG_FILE) and args.key is None:
     print("Please provide the 'Security Code' on the back of your "
           "Tradfri gateway:", end=" ")
-    key = input().strip()
+    key = (input().strip())
     if len(key) != 16:
         raise PytradfriError("Invalid 'Security Code' provided.")
     else:
