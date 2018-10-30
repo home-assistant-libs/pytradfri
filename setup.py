@@ -7,6 +7,7 @@ from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
+
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
@@ -18,7 +19,8 @@ DOWNLOAD_URL = \
     'https://github.com/ggravlingen/pytradfri/archive/{}.zip'.format(VERSION)
 
 EXTRAS_REQUIRE = {
-    'async': ['aiocoap >= 0.4a1', 'DTLSSocket >= 0.1.4']
+ 
+        'async': ['aiocoap >= 0.4a1', 'DTLSSocket >= 0.1.4']
 }
 
 PACKAGES = find_packages(exclude=['tests', 'tests.*'])
