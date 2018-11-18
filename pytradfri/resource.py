@@ -48,7 +48,6 @@ class ApiResource:
                 callback(self)
 
         def error_callback(value):
-            print(value)
             err_callback(self)
 
         self.observe_callback = observe_callback
