@@ -171,7 +171,7 @@ class APIFactory:
         # Note that this is necessary to start observing
         pr, r = await self._get_response(msg)
 
-        api_command.result = _process_output(r)
+        api_command.result = _process_output(r, api_command.parse_json)
 
         def success_callback(res):
             api_command.result = _process_output(res)

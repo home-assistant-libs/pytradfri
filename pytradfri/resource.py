@@ -14,6 +14,7 @@ class ApiResource:
     def __init__(self, raw):
         """Initialize base object."""
         self.raw = raw
+        self.observe_callback = None
 
     @property
     def id(self):
@@ -42,11 +43,17 @@ class ApiResource:
 
             Returns a Command.
             """
-            self.raw = value
-            callback(self)
+            if self.raw != value:
+                self.raw = value
+                callback(self)
 
+        def error_callback(value):
+            print(value)
+            err_callback(self)
+
+        self.observe_callback = observe_callback
         return Command('get', self.path, process_result=observe_callback,
-                       err_callback=err_callback,
+                       err_callback=error_callback,
                        observe=True,
                        observe_duration=duration)
 
@@ -72,4 +79,8 @@ class ApiResource:
         """
         def process_result(result):
             self.raw = result
+
+            if self.observe_callback is not None:
+                self.observe_callback()
+
         return Command('get', self.path, process_result=process_result)
