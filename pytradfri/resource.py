@@ -32,7 +32,7 @@ class ApiResource:
     @property
     def path(self):
         """Path to resource."""
-        raise NotImplemented('Path property needs to be implemented')
+        raise NotImplementedError('Path property needs to be implemented')
 
     def observe(self, callback, err_callback, duration=60):
         """Observe resource and call callback when updated."""
