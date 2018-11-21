@@ -8,7 +8,7 @@ class Command(object):
 
     def __init__(self, method, path, data=None, *, parse_json=True,
                  observe=False, observe_duration=0, process_result=None,
-                 err_callback=None):
+                 err_callback=None, observe_cancel=False):
         self._method = method
         self._path = path
         self._data = data
@@ -17,6 +17,7 @@ class Command(object):
         self._err_callback = err_callback
         self._observe = observe
         self._observe_duration = observe_duration
+        self._observe_cancel = observe_cancel
         self._raw_result = None
         self._result = None
 
@@ -52,6 +53,10 @@ class Command(object):
     @property
     def observe_duration(self):
         return self._observe_duration
+
+    @property
+    def observe_cancel(self):
+        return self._observe_cancel
 
     @property
     def raw_result(self):

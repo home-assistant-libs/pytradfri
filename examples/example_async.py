@@ -144,6 +144,11 @@ async def run():
     print("Try altering any light in the app, and watch the events!")
     await asyncio.sleep(120)
 
+    print('Force cancelling the controlling light as an example')
+    observe_cancel_command = light.observe_cancel()
+    asyncio.ensure_future(api(observe_cancel_command))
+    await asyncio.sleep(10)
+
     await api_factory.shutdown()
 
 

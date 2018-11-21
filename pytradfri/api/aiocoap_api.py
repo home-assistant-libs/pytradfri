@@ -35,7 +35,7 @@ class APIFactory:
         self._host = host
         self._psk_id = psk_id
         self._loop = loop
-        self._observations_err_callbacks = []
+        self._observations = {}
         self._protocol = None
 
         if self._loop is None:
@@ -78,9 +78,9 @@ class APIFactory:
         await protocol.shutdown()
         self._protocol = None
         # Let any observers know the protocol has been shutdown.
-        for ob_error in self._observations_err_callbacks:
-            ob_error(exc)
-        self._observations_err_callbacks.clear()
+        for k, ob in self._observations.items():
+            ob.cancel()
+        self._observations.clear()
 
     async def shutdown(self, exc=None):
         """Shutdown the API events.
@@ -112,6 +112,10 @@ class APIFactory:
         """Execute the command."""
         if api_command.observe:
             await self._observe(api_command)
+            return
+
+        if api_command.observe_cancel:
+            await self._observe_cancel(api_command)
             return
 
         method = api_command.method
@@ -164,6 +168,7 @@ class APIFactory:
         """Observe an endpoint."""
         duration = api_command.observe_duration
         url = api_command.url(self._host)
+        path = api_command.path
         err_callback = api_command.err_callback
 
         msg = Message(code=Code.GET, uri=url, observe=duration)
@@ -182,7 +187,26 @@ class APIFactory:
         ob = pr.observation
         ob.register_callback(success_callback)
         ob.register_errback(error_callback)
-        self._observations_err_callbacks.append(ob.error)
+
+        if path and len(path) > 1:
+            self._observations[path[1]] = ob
+
+    async def _observe_cancel(self, api_command):
+        if len(self._observations) == 0:
+            _LOGGER.warning('Cannot cancel %s, no known observations running',
+                            api_command.path)
+            return
+
+        if len(api_command.path) <= 1:
+            _LOGGER.debug('Cannot cancel observation with path %s',
+                          api_command.path)
+            return
+
+        id = api_command.path[1]
+
+        if id in self._observations:
+            self._observations[id].cancel()
+            del self._observations[id]
 
     async def generate_psk(self, security_key):
         """Generate and set a psk from the security key."""

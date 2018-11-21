@@ -56,6 +56,9 @@ class ApiResource:
                        observe=True,
                        observe_duration=duration)
 
+    def observe_cancel(self):
+        return Command('get', self.path, observe_cancel=True)
+
     def set_name(self, name):
         """Set group name."""
         return self.set_values({

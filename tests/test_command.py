@@ -16,6 +16,7 @@ def test_property_access():
                       parse_json=True,
                       observe=False,
                       observe_duration=0,
+                      observe_cancel=False,
                       process_result=pr,
                       err_callback=ec)
 
@@ -24,6 +25,7 @@ def test_property_access():
     assert command.parse_json is True
     assert command.observe is False
     assert command.observe_duration == 0
+    assert command.observe_cancel is False
     assert command.process_result == pr
     assert command.err_callback == ec
 
