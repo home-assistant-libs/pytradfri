@@ -145,7 +145,7 @@ class APIFactory:
 
         _, res = await self._get_response(msg)
 
-        api_command.result = _process_output(res, parse_json)
+        api_command.result, _ = _process_output(res, parse_json)
 
         return api_command.result
 
@@ -171,10 +171,12 @@ class APIFactory:
         # Note that this is necessary to start observing
         pr, r = await self._get_response(msg)
 
-        api_command.result = _process_output(r)
+        api_command.result, _ = _process_output(r)
 
         def success_callback(res):
-            api_command.result = _process_output(res)
+            api_command.result, code = _process_output(res)
+            if code == Code.CHANGED:
+                api_command.observe_reset()
 
         def error_callback(ex):
             err_callback(ex)
@@ -223,4 +225,4 @@ def _process_output(res, parse_json=True):
     if not parse_json:
         return output
 
-    return json.loads(output)
+    return json.loads(output), res.code

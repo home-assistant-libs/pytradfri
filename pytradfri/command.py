@@ -1,6 +1,7 @@
 """Command implementation."""
 
 from copy import deepcopy
+from .error import ObservationError
 
 
 class Command(object):
@@ -68,6 +69,9 @@ class Command(object):
             self._result = self._process_result(value)
 
         self._raw_result = value
+
+    def observe_reset(self):
+        self.err_callback(ObservationError())
 
     def url(self, host):
         """Generate url for coap client."""

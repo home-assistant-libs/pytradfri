@@ -35,3 +35,12 @@ class ServerError(RequestError):
     See section 5.9.3 of draft-ietf-core-coap-04.
     """
     pass
+
+
+class ObservationError():
+    """Error when the observation got stuck.
+
+    This can happen with indefinate observations which can get stuck after
+    some time.
+    """
+    pass
