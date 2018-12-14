@@ -299,6 +299,21 @@ class LightControl:
             raise ValueError('%s value must be between %d and %d.'
                              % (identifier, rnge[0], rnge[1]))
 
+    def _filter_duplicates(self, values=None):
+        """
+        Removes duplicate state changes from the input object.
+        """
+        if values is None:
+            return {}
+
+        commands = {}
+        for k, v in values.items():
+            if k not in self.raw[0] or \
+                    (k in self.raw[0] and self.raw[0][k] != v):
+                commands[k] = v
+
+        return commands
+
     def set_values(self, values, *, index=0):
         """
         Set values on light control.
@@ -307,11 +322,14 @@ class LightControl:
         assert len(self.raw) == 1, \
             'Only devices with 1 light supported'
 
-        return Command('put', self._device.path, {
-            ATTR_LIGHT_CONTROL: [
-                values
-            ]
-        })
+        values = self._filter_duplicates(values)
+
+        if values:
+            return Command('put', self._device.path, {
+                ATTR_LIGHT_CONTROL: [
+                    values
+                ]
+            })
 
     def __repr__(self):
         return '<LightControl for {} ({} lights)>'.format(self._device.name,
@@ -408,6 +426,21 @@ class SocketControl:
             ATTR_DEVICE_STATE: int(state)
         }, index=index)
 
+    def _filter_duplicates(self, values=None):
+        """
+        Removes duplicate state changes from the input object.
+        """
+        if values is None:
+            return {}
+
+        commands = {}
+        for k, v in values.items():
+            if k not in self.raw[0] or \
+                    (k in self.raw[0] and self.raw[0][k] != v):
+                commands[k] = v
+
+        return commands
+
     def set_values(self, values, *, index=0):
         """
         Set values on socket control.
@@ -416,11 +449,14 @@ class SocketControl:
         assert len(self.raw) == 1, \
             'Only devices with 1 socket supported'
 
-        return Command('put', self._device.path, {
-            ATTR_SWITCH_PLUG: [
-                values
-            ]
-        })
+        values = self._filter_duplicates(values)
+
+        if values:
+            return Command('put', self._device.path, {
+                ATTR_SWITCH_PLUG: [
+                    values
+                ]
+            })
 
     def __repr__(self):
         return '<SocketControl for {} ({} sockets)>'.format(self._device.name,
