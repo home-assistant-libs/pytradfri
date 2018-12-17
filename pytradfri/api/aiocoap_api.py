@@ -147,6 +147,8 @@ class APIFactory:
             api_method = Code.FETCH
         elif method == 'patch':
             api_method = Code.PATCH
+        elif method is None:
+            return
 
         msg = Message(code=api_method, uri=url, **kwargs)
 

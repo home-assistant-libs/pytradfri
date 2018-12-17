@@ -322,14 +322,15 @@ class LightControl:
         assert len(self.raw) == 1, \
             'Only devices with 1 light supported'
 
-        values = self._filter_duplicates(values)
+        method = None
+        if self._filter_duplicates(values):
+            method = 'put'
 
-        if values:
-            return Command('put', self._device.path, {
-                ATTR_LIGHT_CONTROL: [
-                    values
-                ]
-            })
+        return Command(method, self._device.path, {
+            ATTR_LIGHT_CONTROL: [
+                values
+            ]
+        })
 
     def __repr__(self):
         return '<LightControl for {} ({} lights)>'.format(self._device.name,
@@ -449,14 +450,15 @@ class SocketControl:
         assert len(self.raw) == 1, \
             'Only devices with 1 socket supported'
 
-        values = self._filter_duplicates(values)
+        method = None
+        if self._filter_duplicates(values):
+            method = 'put'
 
-        if values:
-            return Command('put', self._device.path, {
-                ATTR_SWITCH_PLUG: [
-                    values
-                ]
-            })
+        return Command(method, self._device.path, {
+            ATTR_SWITCH_PLUG: [
+                values
+            ]
+        })
 
     def __repr__(self):
         return '<SocketControl for {} ({} sockets)>'.format(self._device.name,
