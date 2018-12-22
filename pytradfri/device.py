@@ -304,15 +304,15 @@ class LightControl:
         Removes duplicate state changes from the input object.
         """
         if values is None:
-            return {}
+            return False
 
         commands = {}
         for k, v in values.items():
-            if k not in self.raw[0] or \
+            if k == ATTR_DEVICE_STATE or k not in self.raw[0] or \
                     (k in self.raw[0] and self.raw[0][k] != v):
                 commands[k] = v
 
-        return commands
+        return len(commands) > 0
 
     def set_values(self, values, *, index=0):
         """
@@ -432,7 +432,7 @@ class SocketControl:
         Removes duplicate state changes from the input object.
         """
         if values is None:
-            return {}
+            return False
 
         commands = {}
         for k, v in values.items():
@@ -440,7 +440,7 @@ class SocketControl:
                     (k in self.raw[0] and self.raw[0][k] != v):
                 commands[k] = v
 
-        return commands
+        return len(commands) > 0
 
     def set_values(self, values, *, index=0):
         """
