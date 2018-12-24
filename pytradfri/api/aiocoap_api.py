@@ -155,7 +155,7 @@ class APIFactory:
         _, res = await self._get_response(msg)
 
         api_command.result = _process_output(res, parse_json)
-        self._loop.create_task(self._check_observations())
+        self._loop.create_task(self._remove_timedout_observations())
 
         return api_command.result
 
@@ -198,7 +198,11 @@ class APIFactory:
         ob.register_errback(error_callback)
         self._observations.append(ob)
 
-    async def _check_observations(self):
+    async def _remove_timedout_observations(self):
+        """
+        Removes dead observations from the API. An observation is considered
+        dead when a timeout (defined in const) is reached.
+        """
         if self._is_checking:
             _LOGGER.debug("Already checking for observations...")
             return
@@ -218,10 +222,9 @@ class APIFactory:
 
             while self._observations:
                 ob = self._observations.pop()
-                # FIXME This is a workaround, because observation cancellation
-                #       will not restart observations. In the long term, this
-                #       can cause a stack overflow.
-                ob.error(None)
+                for c in ob.errbacks:
+                    c(None)
+                ob.cancel()
                 del ob
 
             APIFactory.update_last_changed()
