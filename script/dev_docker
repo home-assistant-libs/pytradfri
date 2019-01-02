@@ -19,6 +19,20 @@ case "$MACHINE" in
 esac
 
 docker build -t tradfri-dev -f "$PWD/$DOCKERFILE" .
-docker run -it --rm -v `pwd`:/usr/src/app -v /etc/localtime:/etc/localtime:ro \
-  --net=host tradfri-dev bash
 
+if [ $# -gt 0 ]
+then
+  docker run \
+    --net=host \
+    -e "TZ=$1" \
+    -v `pwd`:/usr/src/app \
+    --rm \
+    -t -i tradfri-dev bash
+else
+  docker run \
+    --net=host \
+    -v /etc/localtime:/etc/localtime:ro \
+    -v `pwd`:/usr/src/app \
+    --rm \
+    -t -i tradfri-dev bash
+fi
