@@ -3,14 +3,13 @@ import asyncio
 import json
 import logging
 import socket
-import time
 
 from aiocoap import Message, Context
 from aiocoap.error import RequestTimedOut, Error, ConstructionRenderableError
 from aiocoap.numbers.codes import Code
 from aiocoap.transports import tinydtls
 
-from ..const import OBSERVATION_SLEEP_TIME, OBSERVATION_TIMEOUT
+from ..const import OBSERVATION_TIMEOUT
 from ..error import ClientError, ServerError, RequestTimeout
 from ..gateway import Gateway
 
@@ -32,16 +31,13 @@ tinydtls.DTLSSecurityStore = PatchedDTLSSecurityStore
 
 
 class APIFactory:
-    last_changed = time.time()
-
     def __init__(self, host, psk_id='pytradfri', psk=None, loop=None):
         self._psk = psk
         self._host = host
         self._psk_id = psk_id
         self._loop = loop
-        self._is_checking = False
-        self._is_resetting = False
-        self._observations = []
+        self._observations = {}
+        self._observation_timeouts = {}
         self._protocol = None
 
         if self._loop is None:
@@ -83,10 +79,13 @@ class APIFactory:
         protocol = await self._get_protocol()
         await protocol.shutdown()
         self._protocol = None
+
+        self._observation_timeouts.clear()
+
         # Let any observers know the protocol has been shutdown.
-        while self._observations:
-            ob = self._observations.pop()
-            ob.cancel()
+        for path in self._observations.keys():
+            ob = self._observations[path]
+            ob.error(None)
             del ob
 
     async def shutdown(self, exc=None):
@@ -114,6 +113,25 @@ class APIFactory:
         except asyncio.CancelledError as e:
             await self._reset_protocol(e)
             raise e
+
+    async def _observation_health_check(self, path):
+        """Timeout observations if we don't hear back from the gateway."""
+        async def failure_timeout():
+            await asyncio.sleep(OBSERVATION_TIMEOUT, loop=self._loop)
+            await self._reset_protocol()
+
+        if path in self._observations:
+            ob = self._observations[path]
+            task = self._loop.create_task(failure_timeout())
+
+            def cancel_failure_timeout(exc=None):
+                task.cancel()
+                ob.callbacks.remove(self._observation_timeouts[path])
+                del self._observation_timeouts[path]
+
+            timeout = cancel_failure_timeout
+            self._observation_timeouts[path] = timeout
+            ob.register_callback(timeout)
 
     async def _execute(self, api_command):
         """Execute the command."""
@@ -154,8 +172,9 @@ class APIFactory:
 
         _, res = await self._get_response(msg)
 
+        self._observation_health_check(path)
+
         api_command.result = _process_output(res, parse_json)
-        self._loop.create_task(self._remove_timedout_observations())
 
         return api_command.result
 
@@ -177,7 +196,10 @@ class APIFactory:
         """Observe an endpoint."""
         duration = api_command.observe_duration
         url = api_command.url(self._host)
-        err_callback = api_command.err_callback
+        path = api_command.path
+
+        if path in self._observations:
+            return self._observations[path]
 
         msg = Message(code=Code.GET, uri=url, observe=duration)
 
@@ -188,49 +210,18 @@ class APIFactory:
 
         def success_callback(res):
             api_command.result = _process_output(res)
-            APIFactory.update_last_changed()
 
         def error_callback(ex):
-            err_callback(ex)
+            api_command.err_callback(ex)
+
+        def cancel_callback():
+            api_command.cancel_callback()
 
         ob = pr.observation
         ob.register_callback(success_callback)
         ob.register_errback(error_callback)
-        self._observations.append(ob)
-
-    async def _remove_timedout_observations(self):
-        """
-        Removes dead observations from the API. An observation is considered
-        dead when a timeout (defined in const) is reached.
-        """
-        if self._is_checking:
-            _LOGGER.debug("Already checking for observations...")
-            return
-
-        self._is_checking = True
-        current_time = time.time()
-        await asyncio.sleep(OBSERVATION_SLEEP_TIME, loop=self._loop)
-
-        if (current_time - APIFactory.get_last_changed()) > \
-                (OBSERVATION_TIMEOUT + OBSERVATION_SLEEP_TIME):
-            _LOGGER.warning('Resetting Tradfri observations...')
-
-            if self._is_resetting:
-                return
-
-            self._is_resetting = True
-
-            while self._observations:
-                ob = self._observations.pop()
-                for c in ob.errbacks:
-                    c(None)
-                ob.cancel()
-                del ob
-
-            APIFactory.update_last_changed()
-            self._is_resetting = False
-
-        self._is_checking = False
+        ob.on_cancel(cancel_callback)
+        self._observations[path] = ob
 
     async def generate_psk(self, security_key):
         """Generate and set a psk from the security key."""
@@ -250,14 +241,6 @@ class APIFactory:
             await self._reset_protocol()
 
         return self._psk
-
-    @classmethod
-    def update_last_changed(cls):
-        cls.last_changed = time.time()
-
-    @classmethod
-    def get_last_changed(cls):
-        return cls.last_changed
 
 
 def _process_output(res, parse_json=True):

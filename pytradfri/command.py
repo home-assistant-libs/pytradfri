@@ -8,13 +8,14 @@ class Command(object):
 
     def __init__(self, method, path, data=None, *, parse_json=True,
                  observe=False, observe_duration=0, process_result=None,
-                 err_callback=None):
+                 err_callback=None, cancel_callback=None):
         self._method = method
         self._path = path
         self._data = data
         self._parse_json = parse_json
         self._process_result = process_result
         self._err_callback = err_callback
+        self._cancel_callback = cancel_callback
         self._observe = observe
         self._observe_duration = observe_duration
         self._raw_result = None
@@ -44,6 +45,11 @@ class Command(object):
     def err_callback(self):
         """This will be fired when an observe request fails."""
         return self._err_callback
+
+    @property
+    def cancel_callback(self):
+        """This will be fired when an observe request fails."""
+        return self._cancel_callback
 
     @property
     def observe(self):
