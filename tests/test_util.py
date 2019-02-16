@@ -40,7 +40,7 @@ class UtilTestsJSON(unittest.TestCase):
     def test_json_load(self):
         f = open(path.join(self.test_dir, 'sample_psk_file2.txt'), 'w')
         config = {'identity': 'hashstring',
-                    'key': 'secretkey'}
+                  'key': 'secretkey'}
         data = json.dumps(config, sort_keys=True, indent=4)
         f.write(data)
         f.close()
@@ -48,7 +48,7 @@ class UtilTestsJSON(unittest.TestCase):
         json_data = load_json(path.join(self.test_dir,
                                         'sample_psk_file2.txt'))
         self.assertEqual(json_data,
-                            {'identity': 'hashstring', 'key': 'secretkey'})
+                         {'identity': 'hashstring', 'key': 'secretkey'})
 
     def test_load_file_not_found(self):
         assert not load_json(path.join(self.test_dir, 'not_a_file'))

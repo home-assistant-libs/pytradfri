@@ -61,9 +61,8 @@ def supported_features(data):
             + SUPPORT_XY_COLOR
 
     if ATTR_LIGHT_MIREDS not in data and X in data and Y in data and \
-        ATTR_LIGHT_COLOR_SATURATION in data and ATTR_LIGHT_COLOR_HUE\
-        in data:
-        SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES\
-            + SUPPORT_RGB_COLOR
+        ATTR_LIGHT_COLOR_SATURATION in data and ATTR_LIGHT_COLOR_HUE in data:
+            SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES\
+                + SUPPORT_RGB_COLOR
 
     return SUPPORTED_COLOR_FEATURES
