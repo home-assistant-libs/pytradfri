@@ -214,7 +214,7 @@ def _process_output(res, parse_json=True):
     if not output:
         return None
 
-    if not res.code.is_successful:
+    if not res.code.is_successful():
         if 128 <= res.code < 160:
             raise ClientError(output)
         elif 160 <= res.code < 192:
