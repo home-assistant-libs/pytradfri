@@ -16,7 +16,6 @@ def async_test(f):
 
 
 class MockCode:
-    @property
     def is_successful(self):
         return True
 
