@@ -23,7 +23,8 @@ Table of contents:
 3. [Stand-alone use (command-line interface)](#stand-alone-use-command-line-interface)
 4. [Implement in your own Python platform](#implement-in-your-own-python-platform)
 5. [Docker support](#docker-support)
-6. [Acknowledgements](#acknowledgements)
+6. [Known issues] (#known-issues)
+7. [Acknowledgements](#acknowledgements)
 
 ## Installation
 You might have to use superuser privileges (sudo) for some commands to work when installing.
@@ -90,7 +91,11 @@ There is a Docker script available to bootstrap a dev environment. Run `./script
 
 The working directory of the Docker image is `/usr/src/app`. The checked out version of this repo is added there and installed as a Python dependency for easy development and testing. When you want to use the latest stable version from pip, you only have to change to another working directory.
 
+## Known issues
+We are aware of issues some users face with their gateways. Anecdotal evicence suggests sending many requests (spamming) the gateway, or an unreliable network connection can be the culprit. As a first solution, try to limit the number of requests, and move the Gateway closer to the device running pytradfri on the nework. Other than that, there is unfortunately not anything this project can do to support or resolve these issues at this time. As this progresses, we will ensure the project is kept up-to-date.
+
 ## Acknowledgements
+
 This is an implementation based on analysis [I](https://github.com/ggravlingen/) found [here](https://bitsex.net/software/2017/coap-endpoints-on-ikea-tradfri/) by [vidarlo](https://bitsex.net/).
 
 Paulus Schoutsen ([@balloob](https://github.com/balloob)) made a working Python library of the initial code concept. Lewis Juggins ([@lwis](https://github.com/lwis)) added support for asyncio and improved management of dependencies and consistency around return types. Many others have [contributed](https://github.com/ggravlingen/pytradfri/graphs/contributors) too.
