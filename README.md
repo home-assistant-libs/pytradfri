@@ -92,7 +92,7 @@ There is a Docker script available to bootstrap a dev environment. Run `./script
 The working directory of the Docker image is `/usr/src/app`. The checked out version of this repo is added there and installed as a Python dependency for easy development and testing. When you want to use the latest stable version from pip, you only have to change to another working directory.
 
 ## Known issues
-We are aware of issues some users face with their gateways. Anecdotal evicence suggests sending many requests (spamming) the gateway is the culprit. As a first solution, try to limit the number of requests. Other than that, there is unfortunately not anything this project can do to support or resolve these issues at time time. As this progresses, we will ensure the project is kept up-to-date.
+We are aware of issues some users face with their gateways. Anecdotal evicence suggests sending many requests (spamming) the gateway, or an unreliable network connection can be the culprit. As a first solution, try to limit the number of requests, and move the Gateway closer to the device running pytradfri on the nework. Other than that, there is unfortunately not anything this project can do to support or resolve these issues at this time. As this progresses, we will ensure the project is kept up-to-date.
 
 ## Acknowledgements
 
