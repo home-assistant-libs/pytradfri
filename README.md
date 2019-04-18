@@ -39,12 +39,13 @@ Security best practice is to ***not*** store the security code that is printed o
 
 |Device|Version|
 |---|---|
-|IKEA Gateway (E1526)|1.4.15|
+|IKEA Gateway (E1526)|1.8.25|
 |TRADFRI bulb E14 WS opal 400lm|1.2.217|
 |TRADFRI bulb E27 WS opal 980lm|1.2.217|
 |TRADFRI bulb E27 W opal 1000lm|1.2.214|
 |TRADFRI remote control|1.2.214|
 |TRADFRI motion sensor|1.2.214|
+|TRADFRI wall plug|2.0.022|
 
 ## Stand-alone use (command-line interface)
 ![Screenshot of command line interface](./docs/pytradfri_cli.png)
