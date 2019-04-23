@@ -73,7 +73,7 @@ class APIFactory:
 
     def _clear_observation(self, path):
         """Silently remove from the tracked observations."""
-        self._observations.pop(path, None)
+        self._observations.pop(path, None).error(None)
 
     async def _reset_protocol(self, exc=None):
         """Reset the protocol if an error occurs."""
@@ -84,7 +84,6 @@ class APIFactory:
 
         # Let any observers know the protocol has been shutdown.
         for path in self._observations.keys():
-            self._observations[path].error(None)
             self._clear_observation(path)
 
     async def shutdown(self, exc=None):
