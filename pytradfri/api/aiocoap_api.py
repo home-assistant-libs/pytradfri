@@ -9,7 +9,6 @@ from aiocoap.error import RequestTimedOut, Error, ConstructionRenderableError
 from aiocoap.numbers.codes import Code
 from aiocoap.transports import tinydtls
 
-from ..const import OBSERVATION_TIMEOUT
 from ..error import ClientError, ServerError, RequestTimeout
 from ..gateway import Gateway
 

@@ -107,7 +107,6 @@ ATTR_USE_CURRENT_LIGHT_SETTINGS = "9070"
 # URL to json-file containing links to all firmware updates
 URL_OTA_FW = "http://fw.ota.homesmart.ikea.net/feed/version_info.json"
 
-
 # Mireds range that white-spectrum bulbs can show
 RANGE_MIREDS = (250, 454)
 
@@ -123,11 +122,8 @@ RANGE_BRIGHTNESS = (0, 254)
 RANGE_X = (0, 65535)
 RANGE_Y = (0, 65535)
 
-
 SUPPORT_BRIGHTNESS = 1
 SUPPORT_COLOR_TEMP = 2
 SUPPORT_HEX_COLOR = 4
 SUPPORT_RGB_COLOR = 8
 SUPPORT_XY_COLOR = 16
-
-OBSERVATION_TIMEOUT = 10
