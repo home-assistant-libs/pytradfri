@@ -37,7 +37,6 @@ class APIFactory:
         self._psk_id = psk_id
         self._loop = loop
         self._observations = {}
-        self._observation_timeouts = {}
         self._protocol = None
 
         if self._loop is None:
@@ -73,6 +72,10 @@ class APIFactory:
                 loop=self._loop))
         return (await self._protocol)
 
+    def _clear_observation(self, path):
+        """Silently remove from the tracked observations."""
+        self._observations.pop(path, None)
+
     async def _reset_protocol(self, exc=None):
         """Reset the protocol if an error occurs."""
         # Be responsible and clean up.
@@ -80,13 +83,10 @@ class APIFactory:
         await protocol.shutdown()
         self._protocol = None
 
-        self._observation_timeouts.clear()
-
         # Let any observers know the protocol has been shutdown.
         for path in self._observations.keys():
-            ob = self._observations[path]
-            ob.error(None)
-            del ob
+            self._observations[path].error(None)
+            self._clear_observation(path)
 
     async def shutdown(self, exc=None):
         """Shutdown the API events.
@@ -113,25 +113,6 @@ class APIFactory:
         except asyncio.CancelledError as e:
             await self._reset_protocol(e)
             raise e
-
-    async def _observation_health_check(self, path):
-        """Timeout observations if we don't hear back from the gateway."""
-        async def failure_timeout():
-            await asyncio.sleep(OBSERVATION_TIMEOUT, loop=self._loop)
-            await self._reset_protocol()
-
-        if path in self._observations:
-            ob = self._observations[path]
-            task = self._loop.create_task(failure_timeout())
-
-            def cancel_failure_timeout(exc=None):
-                task.cancel()
-                ob.callbacks.remove(self._observation_timeouts[path])
-                del self._observation_timeouts[path]
-
-            timeout = cancel_failure_timeout
-            self._observation_timeouts[path] = timeout
-            ob.register_callback(timeout)
 
     async def _execute(self, api_command):
         """Execute the command."""
@@ -172,8 +153,6 @@ class APIFactory:
 
         _, res = await self._get_response(msg)
 
-        self._observation_health_check(path)
-
         api_command.result = _process_output(res, parse_json)
 
         return api_command.result
@@ -212,9 +191,11 @@ class APIFactory:
             api_command.result = _process_output(res)
 
         def error_callback(ex):
+            self._clear_observation(path)
             api_command.err_callback(ex)
 
         def cancel_callback():
+            self._clear_observation(path)
             api_command.cancel_callback()
 
         ob = pr.observation
