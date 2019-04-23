@@ -73,7 +73,10 @@ class APIFactory:
 
     def _clear_observation(self, path):
         """Silently remove from the tracked observations."""
-        self._observations.pop(path, None).error(None)
+        obs = self._observations.pop(path, None)
+        if obs:
+            # Let aiocoap know that the observation is dead.
+            obs.error(None)
 
     async def _reset_protocol(self, exc=None):
         """Reset the protocol if an error occurs."""
