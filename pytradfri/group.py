@@ -2,10 +2,13 @@ from .const import (
     ROOT_GROUPS,
     ATTR_DEVICE_STATE,
     ATTR_LIGHT_DIMMER,
+    ATTR_LIGHT_COLOR_HEX,
     ATTR_ID,
     ATTR_TRANSITION_TIME
 )
+from .color import COLORS, supported_features
 from .resource import ApiResource
+from .error import ColorError
 
 ROOT_DEVICES2 = "15002"  # ??
 ATTR_MEMBERS = "9018"
@@ -31,6 +34,11 @@ class Group(ApiResource):
     def dimmer(self):
         """Dimmer value of the group."""
         return self.raw.get(ATTR_LIGHT_DIMMER)
+
+    @property
+    def hex_color(self):
+        if self.supported_features & SUPPORT_HEX_COLOR:
+            return self.raw.get(ATTR_LIGHT_COLOR_HEX)
 
     @property
     def member_ids(self):
@@ -79,6 +87,23 @@ class Group(ApiResource):
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
         return self.set_values(values)
+
+    def set_hex_color(self, color, transition_time=None):
+        """Set hex color of a group."""
+        values = {
+            ATTR_LIGHT_COLOR_HEX: color,
+        }
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+        return self.set_values(values)
+
+    def set_predefined_color(self, colorname, transition_time=None):
+        try:
+            color = COLORS[colorname.lower().replace(" ", "_")]
+            return self.set_hex_color(color, transition_time=transition_time)
+        except KeyError:
+            raise ColorError('Invalid color specified: %s',
+                             colorname)
 
     def __repr__(self):
         state = 'on' if self.state else 'off'
