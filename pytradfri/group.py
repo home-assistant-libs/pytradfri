@@ -6,7 +6,7 @@ from .const import (
     ATTR_ID,
     ATTR_TRANSITION_TIME
 )
-from .color import COLORS, supported_features
+from .color import COLORS
 from .resource import ApiResource
 from .error import ColorError
 
@@ -37,8 +37,7 @@ class Group(ApiResource):
 
     @property
     def hex_color(self):
-        if self.supported_features & SUPPORT_HEX_COLOR:
-            return self.raw.get(ATTR_LIGHT_COLOR_HEX)
+        return self.raw.get(ATTR_LIGHT_COLOR_HEX)
 
     @property
     def member_ids(self):
