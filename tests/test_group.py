@@ -1,4 +1,3 @@
-from datetime import datetime
 import pytest
 
 from pytradfri import error
@@ -9,6 +8,7 @@ from devices import (GROUP)
 @pytest.fixture
 def group():
     return Group(GROUP)
+
 
 def test_setters():
     cmd = Group('anygateway', GROUP) \
