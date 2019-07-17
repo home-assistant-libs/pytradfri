@@ -24,5 +24,5 @@ def test_setters():
     assert cmd.data == {'5706': 'c984bb'}
 
     cmd = Group('anygateway', GROUP) \
-        .set_predefined_color('Candlelight',100)
+        .set_predefined_color('Candlelight', 100)
     assert cmd.data == {'5712': 100, '5706': 'ebb63e'}
