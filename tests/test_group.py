@@ -22,4 +22,3 @@ def test_setters():
     cmd = Group('anygateway', GROUP) \
         .set_hex_color('c984bb')
     assert cmd.data == {'5706': 'c984bb'}
-
