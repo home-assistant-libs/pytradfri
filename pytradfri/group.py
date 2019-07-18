@@ -2,9 +2,13 @@ from .const import (
     ROOT_GROUPS,
     ATTR_DEVICE_STATE,
     ATTR_LIGHT_DIMMER,
+    ATTR_LIGHT_COLOR_X,
+    ATTR_LIGHT_COLOR_Y,
     ATTR_LIGHT_COLOR_HEX,
     ATTR_ID,
-    ATTR_TRANSITION_TIME
+    ATTR_TRANSITION_TIME,
+    RANGE_X,
+    RANGE_Y
 )
 from .color import COLORS
 from .resource import ApiResource
@@ -96,6 +100,21 @@ class Group(ApiResource):
             values[ATTR_TRANSITION_TIME] = transition_time
         return self.set_values(values)
 
+    def set_xy_color(self, color_x, color_y, transition_time=None):
+        """Set xy color of a group."""
+        self._value_validate(color_x, RANGE_X, "X color")
+        self._value_validate(color_y, RANGE_Y, "Y color")
+
+        values = {
+            ATTR_LIGHT_COLOR_X: color_x,
+            ATTR_LIGHT_COLOR_Y: color_y
+        }
+
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+
+        return self.set_values(values)
+
     def set_predefined_color(self, colorname, transition_time=None):
         try:
             color = COLORS[colorname.lower().replace(" ", "_")]
@@ -103,6 +122,14 @@ class Group(ApiResource):
         except KeyError:
             raise ColorError('Invalid color specified: %s',
                              colorname)
+
+    def _value_validate(self, value, rnge, identifier="Given"):
+        """
+        Make sure a value is within a given range
+        """
+        if value is not None and (value < rnge[0] or value > rnge[1]):
+            raise ValueError('%s value must be between %d and %d.'
+                             % (identifier, rnge[0], rnge[1]))
 
     def __repr__(self):
         state = 'on' if self.state else 'off'
