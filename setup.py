@@ -33,6 +33,7 @@ setup(
   long_description=long_description,
   author='balloob, lwis, ggravlingen',
   author_email='no@email.com',
+  long_description_content_type="text/markdown",
   url='https://github.com/ggravlingen/pytradfri',
   license='MIT',
   keywords='ikea tradfri api iot light homeautomation',
