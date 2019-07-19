@@ -1,3 +1,4 @@
+from .color import COLORS
 from .const import (
     ROOT_GROUPS,
     ATTR_DEVICE_STATE,
@@ -6,17 +7,15 @@ from .const import (
     ATTR_LIGHT_COLOR_Y,
     ATTR_LIGHT_COLOR_HEX,
     ATTR_ID,
+    ATTR_GROUP_MEMBERS,
+    ATTR_MOOD,
+    ATTR_HS_LINK,
     ATTR_TRANSITION_TIME,
     RANGE_X,
     RANGE_Y
 )
-from .color import COLORS
-from .resource import ApiResource
 from .error import ColorError
-
-ROOT_DEVICES2 = "15002"  # ??
-ATTR_MEMBERS = "9018"
-ATTR_MOOD = "9039"
+from .resource import ApiResource
 
 
 class Group(ApiResource):
@@ -46,12 +45,12 @@ class Group(ApiResource):
     @property
     def member_ids(self):
         """Members of this group."""
-        info = self.raw.get(ATTR_MEMBERS, {})
+        info = self.raw.get(ATTR_GROUP_MEMBERS, {})
 
-        if not info or ROOT_DEVICES2 not in info:
+        if not info or ATTR_HS_LINK not in info:
             return []
 
-        return info[ROOT_DEVICES2].get(ATTR_ID, [])
+        return info[ATTR_HS_LINK].get(ATTR_ID, [])
 
     @property
     def mood_id(self):
