@@ -12,8 +12,14 @@ from .const import (
     ATTR_HS_LINK,
     ATTR_TRANSITION_TIME,
     RANGE_X,
-    RANGE_Y
-)
+    RANGE_Y,
+    RANGE_MIREDS,
+    ATTR_LIGHT_MIREDS,
+    RANGE_HUE,
+    RANGE_SATURATION,
+    ATTR_LIGHT_COLOR_SATURATION,
+    ATTR_LIGHT_COLOR_HUE,
+    RANGE_BRIGHTNESS)
 from .error import ColorError
 from .resource import ApiResource
 
@@ -90,6 +96,19 @@ class Group(ApiResource):
             values[ATTR_TRANSITION_TIME] = transition_time
         return self.set_values(values)
 
+    def set_color_temp(self, color_temp, *, index=0, transition_time=None):
+        """Set color temp a light."""
+        self._value_validate(color_temp, RANGE_MIREDS, "Color temperature")
+
+        values = {
+            ATTR_LIGHT_MIREDS: color_temp
+        }
+
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+
+        return self.set_values(values)
+
     def set_hex_color(self, color, transition_time=None):
         """Set hex color of a group."""
         values = {
@@ -97,6 +116,26 @@ class Group(ApiResource):
         }
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
+        return self.set_values(values)
+
+    def set_hsb(self, hue, saturation, brightness=None, *, index=0,
+                transition_time=None):
+        """Set HSB color settings of the light."""
+        self._value_validate(hue, RANGE_HUE, "Hue")
+        self._value_validate(saturation, RANGE_SATURATION, "Saturation")
+
+        values = {
+            ATTR_LIGHT_COLOR_SATURATION: saturation,
+            ATTR_LIGHT_COLOR_HUE: hue
+        }
+
+        if brightness is not None:
+            values[ATTR_LIGHT_DIMMER] = brightness
+            self._value_validate(brightness, RANGE_BRIGHTNESS, "Brightness")
+
+        if transition_time is not None:
+            values[ATTR_TRANSITION_TIME] = transition_time
+
         return self.set_values(values)
 
     def set_xy_color(self, color_x, color_y, transition_time=None):
