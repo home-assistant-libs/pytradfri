@@ -1,8 +1,14 @@
 import pytest
+from devices import (GROUP)
 
 from pytradfri import error
+from pytradfri.const import (
+    ATTR_LIGHT_MIREDS,
+    ATTR_LIGHT_COLOR_HUE,
+    ATTR_LIGHT_COLOR_SATURATION,
+    ATTR_LIGHT_DIMMER
+)
 from pytradfri.group import Group
-from devices import (GROUP)
 
 
 @pytest.fixture
@@ -30,3 +36,15 @@ def test_setters():
     cmd = Group('anygateway', GROUP) \
         .set_xy_color(200, 45000)
     assert cmd.data == {'5709': 200, '5710': 45000}
+
+    cmd = Group('anygateway', GROUP) \
+        .set_color_temp(300)
+    assert cmd.data == {ATTR_LIGHT_MIREDS: 300}
+
+    cmd = Group('anygateway', GROUP) \
+        .set_hsb(300, 200, 100)
+    assert cmd.data == {
+        ATTR_LIGHT_COLOR_HUE: 300,
+        ATTR_LIGHT_COLOR_SATURATION: 200,
+        ATTR_LIGHT_DIMMER: 100,
+    }
