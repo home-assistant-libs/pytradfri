@@ -8,7 +8,7 @@ def socket(raw):
     return Device(raw).blind_control.blinds[0]
 
 
-def test_socket():
-    plug = socket(BLIND)
+def test_blind():
+    blind = socket(BLIND)
 
-    print(plug.raw)
+    print(blind.raw)
