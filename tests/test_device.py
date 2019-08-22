@@ -23,6 +23,8 @@ from devices import (
     LIGHT_W, LIGHT_WS, LIGHT_CWS, LIGHT_PHILIPS, REMOTE_CONTROL,
     MOTION_SENSOR, OUTLET)
 
+from tests.devices import BLIND
+
 
 @pytest.fixture
 def device():
@@ -51,6 +53,13 @@ wall_plugs = (
     ("comment", "device"),
     [
         ("Wall plug", Device(OUTLET))
+    ]
+)
+
+roller_blinds = (
+    ("comment", "device"),
+    [
+        ("Blind", Device(BLIND))
     ]
 )
 
