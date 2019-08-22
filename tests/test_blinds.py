@@ -1,7 +1,7 @@
 import pytest
 
 from pytradfri.device import Device
-from tests.devices import BLIND
+from devices import BLIND
 
 
 @pytest.fixture
@@ -17,4 +17,3 @@ def test_device_info_properties(device):
     assert info.firmware_version == '2.2.007'
     assert info.serial == ''
     assert info.battery_level == 77
-
