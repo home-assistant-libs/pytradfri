@@ -10,7 +10,7 @@ from .const import (
     ATTR_GATEWAY_REBOOT, ATTR_GATEWAY_FACTORY_DEFAULTS,
     ATTR_AUTH, ATTR_IDENTITY, ATTR_PSK, ATTR_HOMEKIT_ID,
     ATTR_COMMISSIONING_MODE)
-from .device import Device
+from pytradfri.device import Device
 from .group import Group
 from .mood import Mood
 from .smart_task import SmartTask
