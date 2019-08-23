@@ -79,7 +79,12 @@ devices = api(devices_commands)
 
 
 def jsonify(input):
-    return json.dumps(input, sort_keys=True, indent=4)
+    return json.dumps(
+        input,
+        sort_keys=True,
+        indent=4,
+        ensure_ascii=False,
+    ).encode('utf8')
 
 
 def bold(str):
