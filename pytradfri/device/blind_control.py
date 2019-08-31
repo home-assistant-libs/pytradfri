@@ -1,6 +1,7 @@
 """Class to control the sockets."""
 from pytradfri.command import Command
-from pytradfri.const import ATTR_BLIND_TRIGGER, RANGE_BLIND
+from pytradfri.const import RANGE_BLIND, \
+    ATTR_BLIND_CURRENT_POSITION
 from pytradfri.device.controller import Controller
 
 
@@ -26,14 +27,19 @@ class BlindControl(Controller):
         Returns a Command.
         """
 
-        # {"15015": [{"5536": 50}]}
         value = [
             {
-                ATTR_BLIND_TRIGGER: value
+                ATTR_BLIND_CURRENT_POSITION : value
             }
         ]
 
         print(self._device.path)
         print(value)
+
+        """
+        # {"15015": [{"5536": 50}]}
+        ['15001', 65538]
+        [{'5523': 50}]
+        """
 
         return Command('put', self._device.path, value)
