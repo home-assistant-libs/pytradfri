@@ -72,6 +72,8 @@ class Command(object):
     def url(self, host):
         """Generate url for coap client."""
         path = '/'.join(str(v) for v in self._path)
+        # TODO: remove this
+        print(path)
         return 'coaps://{}:5684/{}'.format(host, path)
 
     def _merge(self, a, b):

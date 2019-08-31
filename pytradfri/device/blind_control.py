@@ -26,6 +26,14 @@ class BlindControl(Controller):
         Returns a Command.
         """
 
-        return Command('put', self._device.path, [{
-            ATTR_BLIND_TRIGGER: value
-        }])
+        # {"15015": [{"5536": 50}]}
+        value = [
+            {
+                ATTR_BLIND_TRIGGER: value
+            }
+        ]
+
+        print(self._device.path)
+        print(value)
+
+        return Command('put', self._device.path, value)
