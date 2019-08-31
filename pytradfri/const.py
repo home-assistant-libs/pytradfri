@@ -134,6 +134,8 @@ RANGE_SATURATION = (0, 65279)
 # Brightness range of all bulbs. 0 will turn off the lamp
 RANGE_BRIGHTNESS = (0, 254)
 
+RANGE_BLIND = (0, 100)
+
 # XY color
 RANGE_X = (0, 65535)
 RANGE_Y = (0, 65535)
