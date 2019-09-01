@@ -79,7 +79,7 @@ def run():
     devices_commands = api(devices_command)
     devices = api(devices_commands)
 
-    blinds = [dev for dev in devices if dev.has_blind_control]
+    blinds = [dev for dev in devices if dev.has_light_control]
 
     # Print all blinds
     print(blinds)
