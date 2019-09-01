@@ -88,4 +88,5 @@ def run():
     blind_command = blinds[0].blind_control.set_state(50)
     api(blind_command)
 
+
 run()

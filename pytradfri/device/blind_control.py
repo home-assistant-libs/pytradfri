@@ -29,7 +29,7 @@ class BlindControl(Controller):
 
         value = [
             {
-                ATTR_BLIND_CURRENT_POSITION : value
+                ATTR_BLIND_CURRENT_POSITION: value
             }
         ]
 
