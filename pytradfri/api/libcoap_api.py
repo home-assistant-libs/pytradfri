@@ -66,6 +66,7 @@ class APIFactory:
             'stderr': subprocess.DEVNULL,
             'timeout': proc_timeout,
             'universal_newlines': True,
+            "encoding": "437",
         }
 
         if data is not None:
