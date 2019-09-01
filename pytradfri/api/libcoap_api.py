@@ -83,7 +83,9 @@ class APIFactory:
         print(command)
 
         try:
-            return_value = subprocess.check_output(command, **kwargs).decode(sys.stdout.encoding)
+            return_value = subprocess.check_output(command, **kwargs)
+        except UnicodeDecodeError:
+            pass
         except subprocess.TimeoutExpired:
             raise RequestTimeout() from None
         except subprocess.CalledProcessError as err:
