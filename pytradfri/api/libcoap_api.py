@@ -2,11 +2,12 @@
 import json
 import logging
 import subprocess
-from time import time
+import sys
 from functools import wraps
+from time import time
 
-from ..gateway import Gateway
 from ..error import RequestError, RequestTimeout, ClientError, ServerError
+from ..gateway import Gateway
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -66,7 +67,6 @@ class APIFactory:
             'stderr': subprocess.DEVNULL,
             'timeout': proc_timeout,
             'universal_newlines': True,
-            "encoding": "437",
         }
 
         if data is not None:
@@ -83,7 +83,7 @@ class APIFactory:
         print(command)
 
         try:
-            return_value = subprocess.check_output(command, **kwargs)
+            return_value = subprocess.check_output(command, **kwargs).decode(sys.stdout.encoding)
         except subprocess.TimeoutExpired:
             raise RequestTimeout() from None
         except subprocess.CalledProcessError as err:
