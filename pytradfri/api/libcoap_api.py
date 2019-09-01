@@ -15,6 +15,16 @@ CLIENT_ERROR_PREFIX = '4.'
 SERVER_ERROR_PREFIX = '5.'
 
 
+def robust_decode(bs):
+    '''Takes a byte string as param and convert it into a unicode one.
+First tries UTF8, and fallback to Latin1 if it fails'''
+    cr = None
+    try:
+        cr = bs.decode('utf8')
+    except UnicodeDecodeError:
+        cr = bs.decode('latin1')
+    return cr
+
 class APIFactory:
     def __init__(self, host, psk_id='pytradfri', psk=None, timeout=10):
         self._host = host
@@ -83,9 +93,8 @@ class APIFactory:
         print(command)
 
         try:
-            return_value = subprocess.check_output(command, **kwargs)
-        except UnicodeDecodeError:
-            pass
+            return_value = robust_decode(subprocess.check_output(command,
+            **kwargs))
         except subprocess.TimeoutExpired:
             raise RequestTimeout() from None
         except subprocess.CalledProcessError as err:
