@@ -81,6 +81,7 @@ class APIFactory:
         command.append(url)
         # TODO: remove debug
         print(" ".join(command))
+        print(kwargs['input'])
 
         try:
             return_value = subprocess.check_output(command, **kwargs)
