@@ -2,7 +2,6 @@
 import json
 import logging
 import subprocess
-import sys
 from functools import wraps
 from time import time
 
