@@ -65,8 +65,8 @@ class Device(ApiResource):
 
     @property
     def blind_control(self):
-        #if self.has_blind_control:
-        return BlindControl(self)
+        if self.has_blind_control:
+            return BlindControl(self)
 
     def __repr__(self):
         return "<{} - {} ({})>".format(self.id, self.name,
