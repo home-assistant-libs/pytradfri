@@ -3,7 +3,7 @@ from datetime import datetime
 
 from pytradfri.const import ATTR_APPLICATION_TYPE, ROOT_DEVICES, \
     ATTR_LAST_SEEN, ATTR_REACHABLE_STATE, \
-    ATTR_LIGHT_CONTROL, ATTR_SWITCH_PLUG, ATTR_DEVICE_INFO
+    ATTR_LIGHT_CONTROL, ATTR_SWITCH_PLUG, ATTR_DEVICE_INFO, ROOT_START_BLINDS
 from pytradfri.device.blind_control import BlindControl
 from pytradfri.device.light_control import LightControl
 from pytradfri.device.socket_control import SocketControl
@@ -19,7 +19,11 @@ class Device(ApiResource):
 
     @property
     def path(self):
-        return [ROOT_DEVICES, self.id]
+        # Blinds have their own root node
+        if not self.has_blind_control:
+            return [ROOT_START_BLINDS, self.id]
+        else:
+            return [ROOT_DEVICES, self.id]
 
     @property
     def device_info(self):
