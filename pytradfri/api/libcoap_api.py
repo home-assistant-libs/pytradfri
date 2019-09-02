@@ -80,7 +80,6 @@ class APIFactory:
 
         command.append(url)
         # TODO: remove debug
-        print(command)
         print(" ".join(command))
 
         try:
