@@ -20,10 +20,10 @@ class Device(ApiResource):
     @property
     def path(self):
         # Blinds have their own root node
-#        if not self.has_blind_control:
-        return [ROOT_START_BLINDS, self.id]
-#        else:
-#            return [ROOT_DEVICES, self.id]
+        if not self.has_blind_control:
+            return [ROOT_START_BLINDS, self.id]
+        else:
+            return [ROOT_DEVICES, self.id]
 
     @property
     def device_info(self):
