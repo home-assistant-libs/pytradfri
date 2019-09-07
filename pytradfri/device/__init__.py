@@ -19,11 +19,6 @@ class Device(ApiResource):
 
     @property
     def path(self):
-        # TODO: remove this
-        # Blinds have their own root node
-        #if self.has_blind_control:
-        #    return [ROOT_START_BLINDS, self.id]
-        #else:
         return [ROOT_DEVICES, self.id]
 
     @property

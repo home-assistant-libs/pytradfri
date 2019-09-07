@@ -127,6 +127,22 @@ async def run():
         color_command = light.light_control.set_hex_color('efd275')
         await api(color_command)
 
+    # Get all blinds
+    blinds = [dev for dev in devices if dev.has_blind_control]
+
+    # Print all blinds
+    print(blinds)
+
+    if blinds:
+        blind = blinds[0]
+    else:
+        print("No blinds found!")
+        blind = None
+
+    if blind:
+        blind_command = blinds[0].blind_control.set_state(50)
+        await api(blind_command)
+
     tasks_command = gateway.get_smart_tasks()
     tasks_commands = await api(tasks_command)
     tasks = await api(tasks_commands)
