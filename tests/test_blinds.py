@@ -21,7 +21,7 @@ def test_device_info_properties(device):
 
 def test_current_position(device):
 
-    state = device.blinds[0]
-    assert state.current_cover_position == 50
+    blind = device.blind_control.blinds[0]
+    assert blind.current_cover_position == 50
 
-    print(state.raw)
+    print(blind.raw)
