@@ -83,7 +83,7 @@ class APIFactory:
         print(kwargs)
 
         try:
-            return_value = subprocess.check_output(command, **kwargs)
+            return_value = subprocess.run(command, **kwargs)
         except subprocess.TimeoutExpired:
             raise RequestTimeout() from None
         except subprocess.CalledProcessError as err:
