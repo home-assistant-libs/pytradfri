@@ -23,5 +23,3 @@ def test_current_position(device):
 
     blind = device.blind_control.blinds[0]
     assert blind.current_cover_position == 50
-
-    print(blind.raw)

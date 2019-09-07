@@ -3,7 +3,7 @@ from datetime import datetime
 
 from pytradfri.const import ATTR_APPLICATION_TYPE, ROOT_DEVICES, \
     ATTR_LAST_SEEN, ATTR_REACHABLE_STATE, \
-    ATTR_LIGHT_CONTROL, ATTR_SWITCH_PLUG, ATTR_DEVICE_INFO
+    ATTR_LIGHT_CONTROL, ATTR_SWITCH_PLUG, ATTR_DEVICE_INFO, ATTR_START_BLINDS
 from pytradfri.device.blind_control import BlindControl
 from pytradfri.device.light_control import LightControl
 from pytradfri.device.socket_control import SocketControl
@@ -57,7 +57,7 @@ class Device(ApiResource):
     @property
     def has_blind_control(self):
         return (self.raw is not None and
-                self.raw.get(ATTR_APPLICATION_TYPE) == 7)
+                len(self.raw.get(ATTR_START_BLINDS, "")) > 0)
 
     @property
     def blind_control(self):
