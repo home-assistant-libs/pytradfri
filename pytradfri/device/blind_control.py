@@ -32,6 +32,7 @@ class BlindControl(Controller):
                 ATTR_BLIND_CURRENT_POSITION: value
             }
         ]
+        value = {"15015": [{"5536": 50}]}
 
         print(self._device.path)
         print(value)

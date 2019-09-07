@@ -79,7 +79,7 @@ def run():
     devices_commands = api(devices_command)
     devices = api(devices_commands)
 
-    blinds = [dev for dev in devices if dev.has_blind_control]
+    blinds = [dev for dev in devices if dev.has_light_control]
 
     # Example 4: Set the light level of the light
     blind_command = blinds[0].blind_control.set_state(50)
