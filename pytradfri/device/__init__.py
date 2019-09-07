@@ -19,6 +19,7 @@ class Device(ApiResource):
 
     @property
     def path(self):
+        # TODO: remove this
         # Blinds have their own root node
         #if self.has_blind_control:
         #    return [ROOT_START_BLINDS, self.id]
@@ -65,8 +66,8 @@ class Device(ApiResource):
 
     @property
     def blind_control(self):
-        #if self.has_blind_control:
-        return BlindControl(self)
+        if self.has_blind_control:
+            return BlindControl(self)
 
     def __repr__(self):
         return "<{} - {} ({})>".format(self.id, self.name,
