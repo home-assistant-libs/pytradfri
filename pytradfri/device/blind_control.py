@@ -1,4 +1,4 @@
-"""Class to control the sockets."""
+"""Class to control the blinds."""
 from pytradfri.command import Command
 from pytradfri.const import RANGE_BLIND, \
     ATTR_BLIND_CURRENT_POSITION, ATTR_START_BLINDS
@@ -12,7 +12,7 @@ class BlindControl(Controller):
         self._device = device
 
     def set_state(self, state):
-        """Set state of a socket."""
+        """Set state of a blind."""
 
         # Only allow values in the range 0, 100 (open, closed)
         self._value_validate(state, RANGE_BLIND, "Blind position")
