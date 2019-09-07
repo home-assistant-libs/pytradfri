@@ -236,6 +236,12 @@ GROUP = {
 
 # Retrieved from Gateway running on 1.x.x
 BLIND = {
+    "15015": [
+        {
+            "5536": 50.0,
+            "9003": 0
+        }
+    ],
     "3": {
         "0": "IKEA of Sweden",
         "1": "FYRTUR block-out roller blind",

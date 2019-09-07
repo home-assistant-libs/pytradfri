@@ -2,6 +2,7 @@
 from pytradfri.command import Command
 from pytradfri.const import RANGE_BLIND, \
     ATTR_BLIND_CURRENT_POSITION, ATTR_START_BLINDS
+from pytradfri.device.blind import Blind
 from pytradfri.device.controller import Controller
 
 
@@ -10,6 +11,16 @@ class BlindControl(Controller):
 
     def __init__(self, device):
         self._device = device
+
+    @property
+    def raw(self):
+        """Return raw data that it represents."""
+        return self._device.raw[ATTR_START_BLINDS]
+
+    @property
+    def blinds(self):
+        """Return light objects of the light control."""
+        return [Blind(self._device, i) for i in range(len(self.raw))]
 
     def set_state(self, state):
         """Set state of a blind."""
