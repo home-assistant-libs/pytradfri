@@ -7,7 +7,7 @@ from pytradfri.device.controller import Controller
 
 
 class BlindControl(Controller):
-    """Class to control the sockets."""
+    """Class to control the blinds."""
 
     def __init__(self, device):
         self._device = device
@@ -19,13 +19,11 @@ class BlindControl(Controller):
 
     @property
     def blinds(self):
-        """Return light objects of the light control."""
+        """Return blind objects of the blind control."""
         return [Blind(self._device, i) for i in range(len(self.raw))]
 
     def set_state(self, state):
         """Set state of a blind."""
-
-        # Only allow values in the range 0, 100 (open, closed)
         self._value_validate(state, RANGE_BLIND, "Blind position")
 
         return self.set_value(
