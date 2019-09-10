@@ -2,11 +2,11 @@
 import json
 import logging
 import subprocess
-from time import time
 from functools import wraps
+from time import time
 
-from ..gateway import Gateway
 from ..error import RequestError, RequestTimeout, ClientError, ServerError
+from ..gateway import Gateway
 
 _LOGGER = logging.getLogger(__name__)
 

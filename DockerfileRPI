@@ -1,4 +1,4 @@
-FROM armhf/debian:latest
+FROM python:3.6.9
 
 # https://community.home-assistant.io/t/ikea-tradfri-gateway-zigbee-very-basic-working-implementation/14788/19?u=balloob
 RUN apt-get update -y && \
