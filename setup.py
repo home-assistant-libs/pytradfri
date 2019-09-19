@@ -13,12 +13,12 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-VERSION = "6.3.0"
+VERSION = "6.3.1"
 DOWNLOAD_URL = \
     'https://github.com/ggravlingen/pytradfri/archive/{}.zip'.format(VERSION)
 
 EXTRAS_REQUIRE = {
-    'async': ['aiocoap >= 0.4a1', 'DTLSSocket >= 0.1.4']
+    'async': ['aiocoap==0.4a1', 'DTLSSocket==0.1.7']
 }
 
 PACKAGES = find_packages(exclude=['tests', 'tests.*'])
