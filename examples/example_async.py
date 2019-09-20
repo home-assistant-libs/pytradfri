@@ -81,83 +81,35 @@ async def run():
     devices_commands = await api(devices_command)
     devices = await api(devices_commands)
 
-    lights = [dev for dev in devices if dev.has_light_control]
-
-    # Print all lights
-    print(lights)
-
-    # Lights can be accessed by its index, so lights[1] is the second light
-    if lights:
-        light = lights[0]
-    else:
-        print("No lights found!")
-        light = None
-
-    def observe_callback(updated_device):
-        light = updated_device.light_control.lights[0]
-        print("Received message for: %s" % light)
-
-    def observe_err_callback(err):
-        print('observe error:', err)
-
-    for light in lights:
-        observe_command = light.observe(observe_callback, observe_err_callback,
-                                        duration=120)
-        # Start observation as a second task on the loop.
-        asyncio.ensure_future(api(observe_command))
-        # Yield to allow observing to start.
-        await asyncio.sleep(0)
-
-    if light:
-        # Example 1: checks state of the light (true=on)
-        print("Is on:", light.light_control.lights[0].state)
-
-        # Example 2: get dimmer level of the light
-        print("Dimmer:", light.light_control.lights[0].dimmer)
-
-        # Example 3: What is the name of the light
-        print("Name:", light.name)
-
-        # Example 4: Set the light level of the light
-        dim_command = light.light_control.set_dimmer(254)
-        await api(dim_command)
-
-        # Example 5: Change color of the light
-        # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
-        color_command = light.light_control.set_hex_color('efd275')
-        await api(color_command)
-
-    # Get all blinds
     blinds = [dev for dev in devices if dev.has_blind_control]
 
     # Print all blinds
     print(blinds)
 
+    # Blinds can be accessed by its index, so blinds[1] is the second blind
     if blinds:
         blind = blinds[0]
     else:
         print("No blinds found!")
         blind = None
 
-    if blind:
-        blind_command = blinds[0].blind_control.set_state(50)
-        await api(blind_command)
+    def observe_callback(updated_device):
+        blind = updated_device.blind_control.blinds[0]
+        print("Received message for: %s" % blind)
 
-    tasks_command = gateway.get_smart_tasks()
-    tasks_commands = await api(tasks_command)
-    tasks = await api(tasks_commands)
+    def observe_err_callback(err):
+        print('observe error:', err)
 
-    # Example 6: Return the transition time (in minutes) for task#1
-    if tasks:
-        print(tasks[0].task_control.tasks[0].transition_time)
-
-        # Example 7: Set the dimmer stop value to 30 for light#1 in task#1
-        dim_command_2 = tasks[0].start_action.devices[0].item_controller\
-            .set_dimmer(30)
-        await api(dim_command_2)
+    for blind in blinds:
+        observe_command = blind.observe(observe_callback, observe_err_callback,
+                                        duration=120)
+        # Start observation as a second task on the loop.
+        asyncio.ensure_future(api(observe_command))
+        # Yield to allow observing to start.
+        await asyncio.sleep(0)
 
     print("Waiting for observation to end (2 mins)")
-    print("Try altering any light in the app, and watch the events!")
+    print("Try altering any blind in the app, and watch the events!")
     await asyncio.sleep(120)
 
     await api_factory.shutdown()
