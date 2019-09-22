@@ -84,7 +84,7 @@ def jsonify(input):
         sort_keys=True,
         indent=4,
         ensure_ascii=False,
-    ).encode('utf8')
+    )
 
 
 def bold(str):
