@@ -16,7 +16,7 @@ class SignalRepeaterControl:
 
     @property
     def signal_repeaters(self):
-        """Return socket objects of the socket control."""
+        """Return signal repeater objects of the signal repeater control."""
         return [SignalRepeater(self._device, i) for i in range(len(self.raw))]
 
     def __repr__(self):
