@@ -22,8 +22,8 @@ class BlindControl(Controller):
         """Return blind objects of the blind control."""
         return [Blind(self._device, i) for i in range(len(self.raw))]
 
-    def stop_blind(self):
-        """Stop the blind's movement."""
+    def trigger_blind(self):
+        """Trigger the blind's movement."""
         return self.set_value(
             {
                 ATTR_BLIND_TRIGGER: True
