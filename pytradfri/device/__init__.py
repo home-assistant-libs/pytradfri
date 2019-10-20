@@ -3,7 +3,8 @@ from datetime import datetime
 
 from pytradfri.const import ATTR_APPLICATION_TYPE, ROOT_DEVICES, \
     ATTR_LAST_SEEN, ATTR_REACHABLE_STATE, \
-    ATTR_LIGHT_CONTROL, ATTR_SWITCH_PLUG, ATTR_DEVICE_INFO, ATTR_START_BLINDS, ROOT_SIGNAL_REPEATER
+    ATTR_LIGHT_CONTROL, ATTR_SWITCH_PLUG, ATTR_DEVICE_INFO,\
+    ATTR_START_BLINDS, ROOT_SIGNAL_REPEATER
 from pytradfri.device.blind_control import BlindControl
 from pytradfri.device.light_control import LightControl
 from pytradfri.device.signal_repeater_control import SignalRepeaterControl

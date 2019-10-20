@@ -120,6 +120,9 @@ async def run():
         # Example 2: checks current battery level of blind
         print("Battery (%):", blind.device_info.battery_level)
 
+        # Current level of the blind
+        print("Battery (%):", blinds[0].blind_control.blinds[0].current_cover_position)
+
         # Example 3: Set blind to 50% open
         state_command = blinds[0].blind_control.set_state(50)
         await api(state_command)
