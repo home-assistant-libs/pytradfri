@@ -87,7 +87,7 @@ async def run():
     print("All blinds")
     print(blinds)
 
-    print("All repeaters")
+    print("All repeatersK")
     print(repeaters)
 
     # Sockets can be accessed by its index, so sockets[1] is the second blind
