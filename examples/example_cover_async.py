@@ -87,7 +87,7 @@ async def run():
     print("All blinds")
     print(blinds)
 
-    print("All repeatersK")
+    print("All repeaters")
     print(repeaters)
 
     # Sockets can be accessed by its index, so sockets[1] is the second blind
@@ -99,7 +99,7 @@ async def run():
 
     def observe_callback(updated_device):
         blind = updated_device.blind_control.blinds[0]
-        print("Received message for: %s" % blind)
+        print("Received message for: %s" % blind.device)
 
     def observe_err_callback(err):
         print('observe error:', err)
@@ -120,17 +120,22 @@ async def run():
         # Example 2: checks current battery level of blind
         print("Battery (%):", blind.device_info.battery_level)
 
-        # Current level of the blind
-        print("Battery (%):", blinds[0].blind_control.blinds[0].
-              current_cover_position)
+        # Example 3: Current level of the blind
+        print("Current blind position (%):",
+            blind.blind_control.blinds[0].current_cover_position)
 
-        # Example 3: Set blind to 50% open
-        state_command = blinds[0].blind_control.set_state(50)
+        # Example 4: Set blind to 50% open
+        target_position = 50
+        state_command = blind.blind_control.set_state(target_position)
         await api(state_command)
 
-    print("Waiting for observation to end (30 secs)")
-    await asyncio.sleep(30)
+        # Wait for blinds to hit target position.
+        while blind.blind_control.blinds[0].current_cover_position != target_position:
+            print("Blind position (%):", blind.blind_control.blinds[0].current_cover_position)
+            print("Blind position target (%):", target_position)
+            await asyncio.sleep(1)
 
+        print("Blind is at taget position ({}%)".format(blind.blind_control.blinds[0].current_cover_position))
     await api_factory.shutdown()
 
 
