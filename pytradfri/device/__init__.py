@@ -3,9 +3,11 @@ from datetime import datetime
 
 from pytradfri.const import ATTR_APPLICATION_TYPE, ROOT_DEVICES, \
     ATTR_LAST_SEEN, ATTR_REACHABLE_STATE, \
-    ATTR_LIGHT_CONTROL, ATTR_SWITCH_PLUG, ATTR_DEVICE_INFO, ATTR_START_BLINDS
+    ATTR_LIGHT_CONTROL, ATTR_SWITCH_PLUG, ATTR_DEVICE_INFO,\
+    ATTR_START_BLINDS, ROOT_SIGNAL_REPEATER
 from pytradfri.device.blind_control import BlindControl
 from pytradfri.device.light_control import LightControl
+from pytradfri.device.signal_repeater_control import SignalRepeaterControl
 from pytradfri.device.socket_control import SocketControl
 from pytradfri.resource import ApiResource
 
@@ -63,6 +65,16 @@ class Device(ApiResource):
     def blind_control(self):
         if self.has_blind_control:
             return BlindControl(self)
+
+    @property
+    def has_signal_repeater_control(self):
+        return (self.raw is not None and
+                len(self.raw.get(ROOT_SIGNAL_REPEATER, "")) > 0)
+
+    @property
+    def signal_repeater_control(self):
+        if self.has_signal_repeater_control:
+            return SignalRepeaterControl(self)
 
     def __repr__(self):
         return "<{} - {} ({})>".format(self.id, self.name,
