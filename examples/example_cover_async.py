@@ -122,7 +122,7 @@ async def run():
 
         # Example 3: Current level of the blind
         print("Current blind position (%):",
-            blind.blind_control.blinds[0].current_cover_position)
+              blind.blind_control.blinds[0].current_cover_position)
 
         # Example 4: Set blind to 50% open
         target_position = 50
@@ -130,10 +130,10 @@ async def run():
         await api(state_command)
 
         # Wait for blinds to hit target position.
-        while (blind.blind_control.blinds[0].current_cover_position 
-            != target_position):
+        while (blind.blind_control.blinds[0].current_cover_position
+               != target_position):
             print("Blind position (%):",
-                blind.blind_control.blinds[0].current_cover_position)
+                  blind.blind_control.blinds[0].current_cover_position)
             print("Blind position target (%):", target_position)
             await asyncio.sleep(1)
 
