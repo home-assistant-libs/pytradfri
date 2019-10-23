@@ -259,3 +259,28 @@ BLIND = {
     "9054": 0,
     "9084": " 9d 58 b0 2 4 6a df be 77 e5 c1 e0 a2 26 2e 57"
 }
+
+# Retrieved from Gateway running on 1.x.x
+SIGNAL_REPEATER = {
+    '9001': 'TRADFRI Signal Repeater',
+    '9054': 0,
+    '9002': 1571834477,
+    '9020': 1571834683,
+    '9003': 65541,
+    '9019': 1,
+    '3': 
+    {
+        '6': 1,
+        '0': 'IKEA of Sweden',
+        '1': 'TRADFRI Signal Repeater',
+        '2': '',
+        '3': '2.2.005'
+    },
+    '5750': 6,
+    '15014':
+    [
+        {
+            '9003': 0
+        }
+    ]
+}
