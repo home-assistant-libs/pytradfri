@@ -23,7 +23,7 @@ Table of contents:
 3. [Stand-alone use (command-line interface)](#stand-alone-use-command-line-interface)
 4. [Implement in your own Python platform](#implement-in-your-own-python-platform)
 5. [Docker support](#docker-support)
-6. [Known issues] (#known-issues)
+6. [Known issues](#known-issues)
 7. [Acknowledgements](#acknowledgements)
 
 ## Installation
