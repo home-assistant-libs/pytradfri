@@ -109,13 +109,28 @@ class Gateway:
 
         Returns a Command.
         """
-        mood_parent = self._get_mood_parent()
 
         def process_result(result):
-            return [self.get_mood(mood, mood_parent=mood_parent) for mood in
+            return [self.get_group_moods(mood) for mood in
                     result]
 
-        return Command('get', [ROOT_MOODS, mood_parent],
+        return Command('get', [ROOT_MOODS],
+                       process_result=process_result)
+
+    def get_group_moods(self, group_id):
+        """
+        Return moods associated with given group.
+
+        Returns a Command.
+        """
+        #mood_parent = self._get_mood_parent()
+        #TODO check groupid
+
+        def process_result(result):
+            return [self.get_mood(mood, mood_parent=group_id) for mood in
+                    result]
+
+        return Command('get', [ROOT_MOODS, group_id],
                        process_result=process_result)
 
     def get_mood(self, mood_id, *, mood_parent=None):
@@ -124,25 +139,12 @@ class Gateway:
 
         Returns a Command.
         """
-        if mood_parent is None:
-            mood_parent = self._get_mood_parent()
 
         def process_result(result):
             return Mood(result, mood_parent)
 
         return Command('get', [ROOT_MOODS, mood_parent, mood_id],
                        mood_parent, process_result=process_result)
-
-    def _get_mood_parent(self):
-        """
-        Get the parent of all moods.
-
-        Returns a Command.
-        """
-        def process_result(result):
-            return result[0]
-
-        return Command('get', [ROOT_MOODS], process_result=process_result)
 
     def get_smart_tasks(self):
         """

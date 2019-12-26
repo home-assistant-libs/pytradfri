@@ -74,7 +74,8 @@ class Group(ApiResource):
     def activate_mood(self, mood_id):
         """Activate a mood."""
         return self.set_values({
-            ATTR_MOOD: mood_id
+            ATTR_MOOD: mood_id,
+            ATTR_DEVICE_STATE: int(self.state)
         })
 
     def set_state(self, state):
