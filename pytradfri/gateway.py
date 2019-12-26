@@ -109,8 +109,6 @@ class Gateway:
 
         Returns a Command.
         """
-        #mood_parent = self._get_mood_parent()
-        #TODO check groupid
 
         def process_result(result):
             return [self.get_mood(mood, mood_parent=group_id) for mood in
