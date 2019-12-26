@@ -103,23 +103,9 @@ class Gateway:
                        [ROOT_GATEWAY, ATTR_GATEWAY_INFO],
                        process_result=process_result)
 
-    def get_moods(self):
+    def get_moods(self, group_id):
         """
-        Return moods defined on the gateway.
-
-        Returns a Command.
-        """
-
-        def process_result(result):
-            return [self.get_group_moods(mood) for mood in
-                    result]
-
-        return Command('get', [ROOT_MOODS],
-                       process_result=process_result)
-
-    def get_group_moods(self, group_id):
-        """
-        Return moods associated with given group.
+        Return moods available in given group.
 
         Returns a Command.
         """

@@ -73,12 +73,6 @@ if __name__ == '__main__':
     else:
         print("No groups found!")
         group = None
-    moods = api(gateway.get_moods())
-    if moods:
-        mood = moods[0]
-    else:
-        print("No moods found!")
-        mood = None
     tasks = api(gateway.get_smart_tasks())
     homekit_id = api(gateway.get_gateway_info()).homekit_id
 
@@ -112,7 +106,6 @@ if __name__ == '__main__':
         print("> tasks[0].repeat_days_list")
     print("> api(gateway.reboot())")
     print("> groups")
-    print("> moods")
     print("> tasks")
     print("> dump_devices()")
     print("> dump_all()")
