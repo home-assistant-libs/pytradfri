@@ -17,6 +17,7 @@ from pytradfri.gateway import Gateway
 def gateway():
     return Gateway()
 
+
 @pytest.fixture
 def group(gateway):
     return Group(gateway, GROUP)
