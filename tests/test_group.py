@@ -56,6 +56,7 @@ def test_setters():
         ATTR_LIGHT_DIMMER: 100,
     }
 
+
 def test_moods(group):
     cmd = group.moods()
     assert cmd.path == [ROOT_MOODS, group.id]
