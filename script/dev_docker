@@ -28,6 +28,15 @@ then
     -v `pwd`:/usr/src/app \
     --rm \
     -t -i tradfri-dev bash
+elif [ "$(uname)" = "Darwin" ] && [ $# -eq 0 ]
+then
+  OSX_TZ=$(ls -la /etc/localtime | cut -d/ -f8-9)
+  docker run \
+    --net=host \
+    -e "TZ=$OSX_TZ" \
+    -v `pwd`:/usr/src/app \
+    --rm \
+    -t -i tradfri-dev bash
 else
   docker run \
     --net=host \
