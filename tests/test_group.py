@@ -12,6 +12,7 @@ from pytradfri.const import (
 from pytradfri.group import Group
 from pytradfri.gateway import Gateway
 
+
 @pytest.fixture
 def gateway():
     return Gateway()
