@@ -67,9 +67,15 @@ if __name__ == '__main__':
     else:
         print("No lights found!")
         light = None
-    groups = api(gateway.get_groups())
+    groups_commands = api(gateway.get_groups())
+    groups = api(groups_commands)
+    moods = []
     if groups:
         group = groups[0]
+        for group in groups:
+            moods_commands = api(group.moods())
+            group_moods = api(moods_commands)
+            moods.extend(group_moods)
     else:
         print("No groups found!")
         group = None
@@ -106,6 +112,7 @@ if __name__ == '__main__':
         print("> tasks[0].repeat_days_list")
     print("> api(gateway.reboot())")
     print("> groups")
+    print("> moods")
     print("> tasks")
     print("> dump_devices()")
     print("> dump_all()")
