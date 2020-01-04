@@ -6,14 +6,21 @@ from pytradfri.const import (
     ATTR_LIGHT_MIREDS,
     ATTR_LIGHT_COLOR_HUE,
     ATTR_LIGHT_COLOR_SATURATION,
-    ATTR_LIGHT_DIMMER
+    ATTR_LIGHT_DIMMER,
+    ROOT_MOODS
 )
 from pytradfri.group import Group
+from pytradfri.gateway import Gateway
 
 
 @pytest.fixture
-def group():
-    return Group(GROUP)
+def gateway():
+    return Gateway()
+
+
+@pytest.fixture
+def group(gateway):
+    return Group(gateway, GROUP)
 
 
 def test_setters():
@@ -48,3 +55,8 @@ def test_setters():
         ATTR_LIGHT_COLOR_SATURATION: 200,
         ATTR_LIGHT_DIMMER: 100,
     }
+
+
+def test_moods(group):
+    cmd = group.moods()
+    assert cmd.path == [ROOT_MOODS, group.id]

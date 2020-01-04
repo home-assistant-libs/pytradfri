@@ -67,18 +67,18 @@ if __name__ == '__main__':
     else:
         print("No lights found!")
         light = None
-    groups = api(gateway.get_groups())
+    groups_commands = api(gateway.get_groups())
+    groups = api(groups_commands)
+    moods = []
     if groups:
         group = groups[0]
+        for group in groups:
+            moods_commands = api(group.moods())
+            group_moods = api(moods_commands)
+            moods.extend(group_moods)
     else:
         print("No groups found!")
         group = None
-    moods = api(gateway.get_moods())
-    if moods:
-        mood = moods[0]
-    else:
-        print("No moods found!")
-        mood = None
     tasks = api(gateway.get_smart_tasks())
     homekit_id = api(gateway.get_gateway_info()).homekit_id
 

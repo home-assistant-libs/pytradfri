@@ -67,14 +67,19 @@ class Group(ApiResource):
         """Return device objects of members of this group."""
         return [self._gateway.get_device(dev) for dev in self.member_ids]
 
+    def moods(self):
+        """Return mood objects of moods in this group."""
+        return self._gateway.get_moods(self.id)
+
     def mood(self):
         """"Active mood."""
-        return self._gateway.get_mood(self.mood_id)
+        return self._gateway.get_mood(self.mood_id, mood_parent=self.id)
 
     def activate_mood(self, mood_id):
         """Activate a mood."""
         return self.set_values({
-            ATTR_MOOD: mood_id
+            ATTR_MOOD: mood_id,
+            ATTR_DEVICE_STATE: int(self.state)
         })
 
     def set_state(self, state):
