@@ -41,6 +41,8 @@ class APIFactory:
         if self._loop is None:
             self._loop = asyncio.get_event_loop()
 
+        self._reset_lock = asyncio.Lock(loop=self._loop)
+
         PatchedDTLSSecurityStore.IDENTITY = self._psk_id.encode('utf-8')
 
         if self._psk:
@@ -72,15 +74,16 @@ class APIFactory:
         return (await self._protocol)
 
     async def _reset_protocol(self, exc=None):
-        """Reset the protocol if an error occurs."""
-        # Be responsible and clean up.
-        protocol = await self._get_protocol()
-        await protocol.shutdown()
-        self._protocol = None
-        # Let any observers know the protocol has been shutdown.
-        for ob_error in self._observations_err_callbacks:
-            ob_error(exc)
-        self._observations_err_callbacks.clear()
+        async with self._reset_lock:
+            """Reset the protocol if an error occurs."""
+            # Be responsible and clean up.
+            protocol = await self._get_protocol()
+            await protocol.shutdown()
+            self._protocol = None
+            # Let any observers know the protocol has been shutdown.
+            for ob_error in self._observations_err_callbacks:
+                ob_error(exc)
+            self._observations_err_callbacks.clear()
 
     async def shutdown(self, exc=None):
         """Shutdown the API events.
