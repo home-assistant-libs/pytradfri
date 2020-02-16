@@ -8,6 +8,7 @@ from .const import (
     ATTR_LIGHT_COLOR_HEX,
     ATTR_ID,
     ATTR_GROUP_MEMBERS,
+    ATTR_GROUP_ID,
     ATTR_MOOD,
     ATTR_HS_LINK,
     ATTR_TRANSITION_TIME,
@@ -66,6 +67,20 @@ class Group(ApiResource):
     def members(self):
         """Return device objects of members of this group."""
         return [self._gateway.get_device(dev) for dev in self.member_ids]
+
+    def add_member(self, memberid):
+        """Adds a member to this group."""
+        return self._gateway.add_group_member({
+            ATTR_GROUP_ID: self.id,
+            ATTR_ID: [memberid]
+        })
+
+    def remove_member(self, memberid):
+        """Removes a member from this group."""
+        return self._gateway.remove_group_member({
+            ATTR_GROUP_ID: self.id,
+            ATTR_ID: [memberid]
+        })
 
     def moods(self):
         """Return mood objects of moods in this group."""
