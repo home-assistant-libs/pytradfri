@@ -74,8 +74,23 @@ class APIFactory:
         return (await self._protocol)
 
     async def _reset_protocol(self, exc=None):
+        """Reset the protocol if an error occurs."""
+
+        skip = self._reset_lock.locked()
         async with self._reset_lock:
-            """Reset the protocol if an error occurs."""
+            if skip:
+                # The lock was already acquired, so another task was already
+                # in the process of resetting the protocol, so we don't need
+                # to do it again.
+                #
+                # This is only here for performance reasons.  It should be
+                # safe if the protocol is reset multiple times.
+                _LOGGER.debug(
+                    'Skipping reset: protocol was already being reset')
+                return
+
+            _LOGGER.debug('Resetting protocol')
+
             # Be responsible and clean up.
             protocol = await self._get_protocol()
             await protocol.shutdown()
