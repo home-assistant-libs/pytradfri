@@ -41,7 +41,7 @@ class APIFactory:
         if self._loop is None:
             self._loop = asyncio.get_event_loop()
 
-        self._reset_lock = asyncio.Lock(loop=self._loop)
+        self._reset_lock = asyncio.Lock()
 
         PatchedDTLSSecurityStore.IDENTITY = self._psk_id.encode('utf-8')
 
