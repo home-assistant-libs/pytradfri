@@ -90,6 +90,16 @@ class Gateway:
         return Command('get', [ROOT_GROUPS, group_id],
                        process_result=process_result)
 
+    def add_group_member(self, values):
+        """Adds a device to a group."""
+
+        return Command('put', [ROOT_GROUPS, "add"], values)
+
+    def remove_group_member(self, values):
+        """Remove a device from a group."""
+
+        return Command('put', [ROOT_GROUPS, "remove"], values)
+
     def get_gateway_info(self):
         """
         Return the gateway info.

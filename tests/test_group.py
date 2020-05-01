@@ -3,6 +3,8 @@ from devices import (GROUP)
 
 from pytradfri import error
 from pytradfri.const import (
+    ATTR_ID,
+    ATTR_GROUP_ID,
     ATTR_LIGHT_MIREDS,
     ATTR_LIGHT_COLOR_HUE,
     ATTR_LIGHT_COLOR_SATURATION,
@@ -23,7 +25,7 @@ def group(gateway):
     return Group(gateway, GROUP)
 
 
-def test_setters():
+def test_setters(group):
     cmd = Group('anygateway', GROUP) \
         .set_predefined_color('Candlelight')
     assert cmd.data == {'5706': 'ebb63e'}
@@ -54,6 +56,18 @@ def test_setters():
         ATTR_LIGHT_COLOR_HUE: 300,
         ATTR_LIGHT_COLOR_SATURATION: 200,
         ATTR_LIGHT_DIMMER: 100,
+    }
+
+    cmd = group.add_member(65547)
+    assert cmd.data == {
+        ATTR_GROUP_ID: GROUP[ATTR_ID],
+        ATTR_ID: [65547]
+    }
+
+    cmd = group.remove_member(65547)
+    assert cmd.data == {
+        ATTR_GROUP_ID: GROUP[ATTR_ID],
+        ATTR_ID: [65547]
     }
 
 
