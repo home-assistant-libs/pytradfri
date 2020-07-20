@@ -31,7 +31,7 @@ You might have to use superuser privileges (sudo) for some commands to work when
 
 To use the library in a synchronous application, you first need to install [libcoap](https://github.com/obgm/libcoap) using [this script](script/install-coap-client.sh). Use [examples/example_sync.py](https://github.com/ggravlingen/pytradfri/blob/master/examples/example_sync.py) when testing this.
 
-For asynchronous applications you will need to install `pytradfri[async]`, for instance using the requirements file: ```shell pip install pytradfri[async]```. Please note that install might take considerable time on slow devices. Use [examples/example_async.py](https://github.com/ggravlingen/pytradfri/blob/master/examples/example_async.py) when testing this.
+For asynchronous applications you will need to install `pytradfri[async]`, for instance using the requirements file: `pip install pytradfri[async]`. Please note that install might take considerable time on slow devices. Use [examples/example_async.py](https://github.com/ggravlingen/pytradfri/blob/master/examples/example_async.py) when testing this.
 
 Security best practice is to ***not*** store the security code that is printed on the gateway permanently in your application. Please always use the PSK when communicating with the gateway.
 
