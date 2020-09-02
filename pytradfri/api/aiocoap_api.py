@@ -202,8 +202,9 @@ class APIFactory:
 
         return self._psk
 
-    async def _update_credentials(self, protocol):
+    async def _update_credentials(self):
         """Update credentials."""
+        protocol = await self._get_protocol()
         protocol.client_credentials.load_from_dict({
             f"coaps://{self._host}:5684/*": {
                 "dtls": {
