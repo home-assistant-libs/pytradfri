@@ -125,8 +125,8 @@ def print_lamps():
         exit(bold("No lamps paired"))
 
     container = []
-    for l in lights:
-        container.append(l.raw)
+    for light in lights:
+        container.append(light.raw)
     print(jsonify(container))
 
 
