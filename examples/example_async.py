@@ -56,10 +56,10 @@ async def run():
     try:
         identity = conf[args.host].get('identity')
         psk = conf[args.host].get('key')
-        api_factory = APIFactory(host=args.host, psk_id=identity, psk=psk)
+        api_factory = await APIFactory.init(host=args.host, psk_id=identity, psk=psk)
     except KeyError:
         identity = uuid.uuid4().hex
-        api_factory = APIFactory(host=args.host, psk_id=identity)
+        api_factory = await APIFactory.init(host=args.host, psk_id=identity)
 
         try:
             psk = await api_factory.generate_psk(args.key)

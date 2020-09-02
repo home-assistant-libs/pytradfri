@@ -18,7 +18,7 @@ DOWNLOAD_URL = \
     'https://github.com/ggravlingen/pytradfri/archive/{}.zip'.format(VERSION)
 
 EXTRAS_REQUIRE = {
-    'async': ['aiocoap==0.4a1', 'DTLSSocket==0.1.7']
+    'async': ['aiocoap==0.4b3', 'DTLSSocket==0.1.10']
 }
 
 PACKAGES = find_packages(exclude=['tests', 'tests.*'])

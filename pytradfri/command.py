@@ -69,10 +69,14 @@ class Command(object):
 
         self._raw_result = value
 
+    @property
+    def path(self) -> str:
+        """Return coap path."""
+        return '/'.join(str(v) for v in self._path)
+
     def url(self, host):
         """Generate url for coap client."""
-        path = '/'.join(str(v) for v in self._path)
-        return 'coaps://{}:5684/{}'.format(host, path)
+        return 'coaps://{}:5684/{}'.format(host, self.path)
 
     def _merge(self, a, b):
         """Merges a into b."""
