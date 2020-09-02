@@ -16,7 +16,8 @@ _SENTINEL = object()
 
 
 class APIFactory:
-    def __init__(self, host: str, psk_id='pytradfri', psk=None, internal_create=None):
+    def __init__(self, host: str, psk_id='pytradfri', psk=None,
+                 internal_create=None):
         if internal_create is not _SENTINEL:
             raise ValueError("Use APIFactory.init(…) to initialize APIFactory")
 
@@ -149,7 +150,7 @@ class APIFactory:
             return result
 
         commands = (self._execute(api_command) for api_command in api_commands)
-        command_results = await asyncio.gather(*commands, loop=self._loop)
+        command_results = await asyncio.gather(*commands)
 
         return command_results
 
@@ -184,7 +185,7 @@ class APIFactory:
             protocol = await self._get_protocol()
             command = Gateway().generate_psk(self._psk_id)
             protocol.client_credentials.load_from_dict({
-                f"coaps://{self._host}:5684/{command.path}": {
+                f"coaps://{self._host}:5684/{command.path_str}": {
                     "dtls": {
                         "psk": security_key.encode('utf-8'),
                         'client-identity': 'Client_identity'.encode('utf-8')

@@ -44,7 +44,7 @@ class MockContext:
         return MockProtocol()
 
 
-async def mock_create_context(loop):
+async def mock_create_context():
     return MockContext()
 
 
@@ -53,7 +53,7 @@ async def test_request_returns_single(monkeypatch):
     monkeypatch.setattr('aiocoap.Context.create_client_context',
                         mock_create_context)
 
-    api = APIFactory('127.0.0.1').request
+    api = (await APIFactory.init('127.0.0.1')).request
 
     command = Command('', '')
 
@@ -67,7 +67,7 @@ async def test_request_returns_list(monkeypatch):
     monkeypatch.setattr('aiocoap.Context.create_client_context',
                         mock_create_context)
 
-    api = APIFactory('127.0.0.1').request
+    api = (await APIFactory.init('127.0.0.1')).request
 
     command = Command('', '')
 
