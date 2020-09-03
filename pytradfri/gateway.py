@@ -3,13 +3,26 @@ from datetime import datetime
 
 from .command import Command
 from .const import (
-    ROOT_DEVICES, ROOT_GROUPS, ROOT_MOODS, ROOT_SMART_TASKS,
-    ROOT_GATEWAY, ATTR_NTP, ATTR_FIRMWARE_VERSION,
-    ATTR_CURRENT_TIME_UNIX, ATTR_CURRENT_TIME_ISO8601,
-    ATTR_FIRST_SETUP, ATTR_GATEWAY_INFO, ATTR_GATEWAY_ID,
-    ATTR_GATEWAY_REBOOT, ATTR_GATEWAY_FACTORY_DEFAULTS,
-    ATTR_AUTH, ATTR_IDENTITY, ATTR_PSK, ATTR_HOMEKIT_ID,
-    ATTR_COMMISSIONING_MODE)
+    ROOT_DEVICES,
+    ROOT_GROUPS,
+    ROOT_MOODS,
+    ROOT_SMART_TASKS,
+    ROOT_GATEWAY,
+    ATTR_NTP,
+    ATTR_FIRMWARE_VERSION,
+    ATTR_CURRENT_TIME_UNIX,
+    ATTR_CURRENT_TIME_ISO8601,
+    ATTR_FIRST_SETUP,
+    ATTR_GATEWAY_INFO,
+    ATTR_GATEWAY_ID,
+    ATTR_GATEWAY_REBOOT,
+    ATTR_GATEWAY_FACTORY_DEFAULTS,
+    ATTR_AUTH,
+    ATTR_IDENTITY,
+    ATTR_PSK,
+    ATTR_HOMEKIT_ID,
+    ATTR_COMMISSIONING_MODE,
+)
 from pytradfri.device import Device
 from .group import Group
 from .mood import Mood
@@ -25,12 +38,16 @@ class Gateway:
 
         Returns a Command.
         """
+
         def process_result(result):
             return result[ATTR_PSK]
 
-        return Command('post', [ROOT_GATEWAY, ATTR_AUTH], {
-            ATTR_IDENTITY: identity
-        }, process_result=process_result)
+        return Command(
+            "post",
+            [ROOT_GATEWAY, ATTR_AUTH],
+            {ATTR_IDENTITY: identity},
+            process_result=process_result,
+        )
 
     def get_endpoints(self):
         """
@@ -38,11 +55,16 @@ class Gateway:
 
         Returns a Command.
         """
-        def process_result(result):
-            return [line.split(';')[0][2:-1] for line in result.split(',')]
 
-        return Command('get', ['.well-known', 'core'], parse_json=False,
-                       process_result=process_result)
+        def process_result(result):
+            return [line.split(";")[0][2:-1] for line in result.split(",")]
+
+        return Command(
+            "get",
+            [".well-known", "core"],
+            parse_json=False,
+            process_result=process_result,
+        )
 
     def get_devices(self):
         """
@@ -50,10 +72,11 @@ class Gateway:
 
         Returns a Command.
         """
+
         def process_result(result):
             return [self.get_device(dev) for dev in result]
 
-        return Command('get', [ROOT_DEVICES], process_result=process_result)
+        return Command("get", [ROOT_DEVICES], process_result=process_result)
 
     def get_device(self, device_id):
         """
@@ -61,11 +84,11 @@ class Gateway:
 
         Returns a Command.
         """
+
         def process_result(result):
             return Device(result)
 
-        return Command('get', [ROOT_DEVICES, device_id],
-                       process_result=process_result)
+        return Command("get", [ROOT_DEVICES, device_id], process_result=process_result)
 
     def get_groups(self):
         """
@@ -73,10 +96,11 @@ class Gateway:
 
         Returns a Command.
         """
+
         def process_result(result):
             return [self.get_group(group) for group in result]
 
-        return Command('get', [ROOT_GROUPS], process_result=process_result)
+        return Command("get", [ROOT_GROUPS], process_result=process_result)
 
     def get_group(self, group_id):
         """
@@ -84,21 +108,21 @@ class Gateway:
 
         Returns a Command.
         """
+
         def process_result(result):
             return Group(self, result)
 
-        return Command('get', [ROOT_GROUPS, group_id],
-                       process_result=process_result)
+        return Command("get", [ROOT_GROUPS, group_id], process_result=process_result)
 
     def add_group_member(self, values):
         """Adds a device to a group."""
 
-        return Command('put', [ROOT_GROUPS, "add"], values)
+        return Command("put", [ROOT_GROUPS, "add"], values)
 
     def remove_group_member(self, values):
         """Remove a device from a group."""
 
-        return Command('put', [ROOT_GROUPS, "remove"], values)
+        return Command("put", [ROOT_GROUPS, "remove"], values)
 
     def get_gateway_info(self):
         """
@@ -106,12 +130,13 @@ class Gateway:
 
         Returns a Command.
         """
+
         def process_result(result):
             return GatewayInfo(result)
 
-        return Command('get',
-                       [ROOT_GATEWAY, ATTR_GATEWAY_INFO],
-                       process_result=process_result)
+        return Command(
+            "get", [ROOT_GATEWAY, ATTR_GATEWAY_INFO], process_result=process_result
+        )
 
     def get_moods(self, group_id):
         """
@@ -121,11 +146,9 @@ class Gateway:
         """
 
         def process_result(result):
-            return [self.get_mood(mood, mood_parent=group_id) for mood in
-                    result]
+            return [self.get_mood(mood, mood_parent=group_id) for mood in result]
 
-        return Command('get', [ROOT_MOODS, group_id],
-                       process_result=process_result)
+        return Command("get", [ROOT_MOODS, group_id], process_result=process_result)
 
     def get_mood(self, mood_id, *, mood_parent=None):
         """
@@ -137,8 +160,12 @@ class Gateway:
         def process_result(result):
             return Mood(result, mood_parent)
 
-        return Command('get', [ROOT_MOODS, mood_parent, mood_id],
-                       mood_parent, process_result=process_result)
+        return Command(
+            "get",
+            [ROOT_MOODS, mood_parent, mood_id],
+            mood_parent,
+            process_result=process_result,
+        )
 
     def get_smart_tasks(self):
         """
@@ -146,11 +173,11 @@ class Gateway:
 
         Returns a Command.
         """
+
         def process_result(result):
             return [self.get_smart_task(task) for task in result]
 
-        return Command('get', [ROOT_SMART_TASKS],
-                       process_result=process_result)
+        return Command("get", [ROOT_SMART_TASKS], process_result=process_result)
 
     def get_smart_task(self, task_id):
         """
@@ -158,11 +185,13 @@ class Gateway:
 
         Returns a Command.
         """
+
         def process_result(result):
             return SmartTask(self, result)
 
-        return Command('get', [ROOT_SMART_TASKS, task_id],
-                       process_result=process_result)
+        return Command(
+            "get", [ROOT_SMART_TASKS, task_id], process_result=process_result
+        )
 
     def reboot(self):
         """
@@ -171,8 +200,7 @@ class Gateway:
         Returns a Command.
         """
 
-        return Command('post',
-                       [ROOT_GATEWAY, ATTR_GATEWAY_REBOOT])
+        return Command("post", [ROOT_GATEWAY, ATTR_GATEWAY_REBOOT])
 
     def set_commissioning_timeout(self, timeout):
         """Put the gateway in a state in which it accepts pairings from
@@ -180,9 +208,9 @@ class Gateway:
 
         Returns a Command."""
 
-        return Command('put',
-                       [ROOT_GATEWAY, ATTR_GATEWAY_INFO],
-                       {ATTR_COMMISSIONING_MODE: timeout})
+        return Command(
+            "put", [ROOT_GATEWAY, ATTR_GATEWAY_INFO], {ATTR_COMMISSIONING_MODE: timeout}
+        )
 
     def factory_reset(self):
         """
@@ -192,8 +220,7 @@ class Gateway:
         Returns a Command.
         """
 
-        return Command('post',
-                       [ROOT_GATEWAY, ATTR_GATEWAY_FACTORY_DEFAULTS])
+        return Command("post", [ROOT_GATEWAY, ATTR_GATEWAY_FACTORY_DEFAULTS])
 
 
 class GatewayInfo:
@@ -248,7 +275,7 @@ class GatewayInfo:
 
         Returns a Command.
         """
-        return Command('put', self.path, values)
+        return Command("put", self.path, values)
 
     def update(self):
         """
@@ -256,10 +283,11 @@ class GatewayInfo:
 
         Returns a Command.
         """
+
         def process_result(result):
             self.raw = result
 
-        return Command('get', self.path, process_result=process_result)
+        return Command("get", self.path, process_result=process_result)
 
     def __repr__(self):
-        return '<GatewayInfo>'
+        return "<GatewayInfo>"

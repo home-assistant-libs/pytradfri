@@ -15,6 +15,7 @@ the back of your IKEA gateway.
 # Hack to allow relative import above top level package
 import sys
 import os
+
 folder = os.path.dirname(os.path.abspath(__file__))  # noqa
 sys.path.insert(0, os.path.normpath("%s/.." % folder))  # noqa
 
@@ -28,20 +29,28 @@ import argparse
 import threading
 import time
 
-CONFIG_FILE = 'tradfri_standalone_psk.conf'
+CONFIG_FILE = "tradfri_standalone_psk.conf"
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('host', metavar='IP', type=str,
-                    help='IP Address of your Tradfri gateway')
-parser.add_argument('-K', '--key', dest='key', required=False,
-                    help='Security code found on your Tradfri gateway')
+parser.add_argument(
+    "host", metavar="IP", type=str, help="IP Address of your Tradfri gateway"
+)
+parser.add_argument(
+    "-K",
+    "--key",
+    dest="key",
+    required=False,
+    help="Security code found on your Tradfri gateway",
+)
 args = parser.parse_args()
 
 
 if args.host not in load_json(CONFIG_FILE) and args.key is None:
-    print("Please provide the 'Security Code' on the back of your "
-          "Tradfri gateway:", end=" ")
+    print(
+        "Please provide the 'Security Code' on the back of your " "Tradfri gateway:",
+        end=" ",
+    )
     key = input().strip()
     if len(key) != 16:
         raise PytradfriError("Invalid 'Security Code' provided.")
@@ -61,7 +70,7 @@ def observe(api, device):
         api(device.observe(callback, err_callback, duration=120))
 
     threading.Thread(target=worker, daemon=True).start()
-    print('Sleeping to start observation task')
+    print("Sleeping to start observation task")
     time.sleep(1)
 
 
@@ -71,8 +80,8 @@ def run():
     conf = load_json(CONFIG_FILE)
 
     try:
-        identity = conf[args.host].get('identity')
-        psk = conf[args.host].get('key')
+        identity = conf[args.host].get("identity")
+        psk = conf[args.host].get("key")
         api_factory = APIFactory(host=args.host, psk_id=identity, psk=psk)
     except KeyError:
         identity = uuid.uuid4().hex
@@ -80,15 +89,16 @@ def run():
 
         try:
             psk = api_factory.generate_psk(args.key)
-            print('Generated PSK: ', psk)
+            print("Generated PSK: ", psk)
 
-            conf[args.host] = {'identity': identity,
-                               'key': psk}
+            conf[args.host] = {"identity": identity, "key": psk}
             save_json(CONFIG_FILE, conf)
         except AttributeError:
-            raise PytradfriError("Please provide the 'Security Code' on the "
-                                 "back of your Tradfri gateway using the "
-                                 "-K flag.")
+            raise PytradfriError(
+                "Please provide the 'Security Code' on the "
+                "back of your Tradfri gateway using the "
+                "-K flag."
+            )
 
     api = api_factory.request
 
@@ -156,14 +166,14 @@ def run():
         print(tasks[0].task_control.tasks[0].transition_time)
 
         # Example 7: Set the dimmer stop value to 30 for light#1 in task#1
-        dim_command_2 = tasks[0].start_action.devices[0].item_controller \
-            .set_dimmer(30)
+        dim_command_2 = tasks[0].start_action.devices[0].item_controller.set_dimmer(30)
         api(dim_command_2)
 
     if light:
         print("Sleeping for 2 min to listen for more observation events")
-        print("Try altering the light (%s) in the app, and watch the events!" %
-              light.name)
+        print(
+            "Try altering the light (%s) in the app, and watch the events!" % light.name
+        )
         time.sleep(120)
 
 

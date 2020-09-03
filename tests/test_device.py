@@ -16,12 +16,19 @@ from pytradfri.const import (
     ATTR_LIGHT_MIREDS,
     ATTR_DEVICE_STATE,
     ATTR_LIGHT_COLOR_HEX,
-    ATTR_SWITCH_PLUG
+    ATTR_SWITCH_PLUG,
 )
 from pytradfri.device import Device
 from devices import (
-    LIGHT_W, LIGHT_WS, LIGHT_CWS, LIGHT_PHILIPS, REMOTE_CONTROL,
-    MOTION_SENSOR, OUTLET, BLIND)
+    LIGHT_W,
+    LIGHT_WS,
+    LIGHT_CWS,
+    LIGHT_PHILIPS,
+    REMOTE_CONTROL,
+    MOTION_SENSOR,
+    OUTLET,
+    BLIND,
+)
 
 
 @pytest.fixture
@@ -34,7 +41,7 @@ input_devices = (
     [
         ("Remote control", Device(REMOTE_CONTROL)),
         ("Motion sensor", Device(MOTION_SENSOR)),
-    ]
+    ],
 )
 
 output_devices = (
@@ -44,253 +51,246 @@ output_devices = (
         ("White spectrum bulb", Device(LIGHT_WS)),
         ("Full color bulb", Device(LIGHT_CWS)),
         ("Philips Hue bulb", Device(LIGHT_PHILIPS)),
-    ]
+    ],
 )
 
-wall_plugs = (
-    ("comment", "device"),
-    [
-        ("Wall plug", Device(OUTLET))
-    ]
-)
+wall_plugs = (("comment", "device"), [("Wall plug", Device(OUTLET))])
 
-roller_blinds = (
-    ("comment", "device"),
-    [
-        ("Blind", Device(BLIND))
-    ]
-)
+roller_blinds = (("comment", "device"), [("Blind", Device(BLIND))])
 
 lamp_value_setting_test_cases = [
     ["function_name", "comment", "test_input", "expected_result"],
     [
         [
-            "set_hsb", "valid", {
-                'hue': 300,
-                'saturation': 200,
-                'brightness': 100
-            }, {
-                ATTR_LIGHT_COLOR_HUE: 300,
-                ATTR_LIGHT_COLOR_SATURATION: 200,
-                ATTR_LIGHT_DIMMER: 100
-            }
-        ],
-        [
-            "set_hsb", "without_setting_brightness", {
-                'hue': 300,
-                'saturation': 200
-            }, {
-                ATTR_LIGHT_COLOR_HUE: 300,
-                ATTR_LIGHT_COLOR_SATURATION: 200
-            },
-        ],
-        [
-            "set_hsb", "setting_brightness_none", {
-                'hue': 300,
-                'saturation': 200,
-                'brightness': None
-            }, {
-                ATTR_LIGHT_COLOR_HUE: 300,
-                ATTR_LIGHT_COLOR_SATURATION: 200
-            },
-        ],
-        [
-            "set_hsb", "setting_hue_none", {
-                'hue': None,
-                'saturation': 200
-            }, {
-                ATTR_LIGHT_COLOR_HUE: None,
-                ATTR_LIGHT_COLOR_SATURATION: 200
-            },
-        ],
-        [
-            "set_hsb", "with_transitiontime", {
-                'hue': 300,
-                'saturation': 200,
-                'brightness': 100,
-                'transition_time': 2
-            }, {
+            "set_hsb",
+            "valid",
+            {"hue": 300, "saturation": 200, "brightness": 100},
+            {
                 ATTR_LIGHT_COLOR_HUE: 300,
                 ATTR_LIGHT_COLOR_SATURATION: 200,
                 ATTR_LIGHT_DIMMER: 100,
-                ATTR_TRANSITION_TIME: 2
             },
         ],
         [
-            "set_hsb", "with_faulty_transitiontime", {
-                'hue': 300,
-                'saturation': 200,
-                'transition_time': -2
-            }, {
+            "set_hsb",
+            "without_setting_brightness",
+            {"hue": 300, "saturation": 200},
+            {ATTR_LIGHT_COLOR_HUE: 300, ATTR_LIGHT_COLOR_SATURATION: 200},
+        ],
+        [
+            "set_hsb",
+            "setting_brightness_none",
+            {"hue": 300, "saturation": 200, "brightness": None},
+            {ATTR_LIGHT_COLOR_HUE: 300, ATTR_LIGHT_COLOR_SATURATION: 200},
+        ],
+        [
+            "set_hsb",
+            "setting_hue_none",
+            {"hue": None, "saturation": 200},
+            {ATTR_LIGHT_COLOR_HUE: None, ATTR_LIGHT_COLOR_SATURATION: 200},
+        ],
+        [
+            "set_hsb",
+            "with_transitiontime",
+            {"hue": 300, "saturation": 200, "brightness": 100, "transition_time": 2},
+            {
                 ATTR_LIGHT_COLOR_HUE: 300,
                 ATTR_LIGHT_COLOR_SATURATION: 200,
-                ATTR_TRANSITION_TIME: -2
+                ATTR_LIGHT_DIMMER: 100,
+                ATTR_TRANSITION_TIME: 2,
             },
         ],
-
         [
-            "set_xy_color", "valid", {
-                'color_x': 300,
-                'color_y': 200,
-            }, {
+            "set_hsb",
+            "with_faulty_transitiontime",
+            {"hue": 300, "saturation": 200, "transition_time": -2},
+            {
+                ATTR_LIGHT_COLOR_HUE: 300,
+                ATTR_LIGHT_COLOR_SATURATION: 200,
+                ATTR_TRANSITION_TIME: -2,
+            },
+        ],
+        [
+            "set_xy_color",
+            "valid",
+            {
+                "color_x": 300,
+                "color_y": 200,
+            },
+            {
                 ATTR_LIGHT_COLOR_X: 300,
                 ATTR_LIGHT_COLOR_Y: 200,
             },
         ],
         [
-            "set_xy_color", "without_x", {
-                'color_x': None,
-                'color_y': 200,
-            }, {
+            "set_xy_color",
+            "without_x",
+            {
+                "color_x": None,
+                "color_y": 200,
+            },
+            {
                 ATTR_LIGHT_COLOR_X: None,
                 ATTR_LIGHT_COLOR_Y: 200,
             },
         ],
         [
-            "set_xy_color", "without_xy", {
-                'color_x': None,
-                'color_y': None,
-            }, {
+            "set_xy_color",
+            "without_xy",
+            {
+                "color_x": None,
+                "color_y": None,
+            },
+            {
                 ATTR_LIGHT_COLOR_X: None,
                 ATTR_LIGHT_COLOR_Y: None,
             },
         ],
         [
-            "set_xy_color", "with_transitiontime", {
-                'color_x': 300,
-                'color_y': 200,
-                'transition_time': 2
-            }, {
-                ATTR_LIGHT_COLOR_X: 300,
-                ATTR_LIGHT_COLOR_Y: 200,
-                ATTR_TRANSITION_TIME: 2
-            },
+            "set_xy_color",
+            "with_transitiontime",
+            {"color_x": 300, "color_y": 200, "transition_time": 2},
+            {ATTR_LIGHT_COLOR_X: 300, ATTR_LIGHT_COLOR_Y: 200, ATTR_TRANSITION_TIME: 2},
         ],
-
         [
-            "set_color_temp", "valid", {
-                'color_temp': 300,
-            }, {
+            "set_color_temp",
+            "valid",
+            {
+                "color_temp": 300,
+            },
+            {
                 ATTR_LIGHT_MIREDS: 300,
             },
         ],
         [
-            "set_color_temp", "none", {
-                'color_temp': None,
-            }, {
+            "set_color_temp",
+            "none",
+            {
+                "color_temp": None,
+            },
+            {
                 ATTR_LIGHT_MIREDS: None,
             },
         ],
         [
-            "set_color_temp", "with_transitiontime", {
-                'color_temp': 300,
-                'transition_time': 2
-            }, {
-                ATTR_LIGHT_MIREDS: 300,
-                ATTR_TRANSITION_TIME: 2
-            },
+            "set_color_temp",
+            "with_transitiontime",
+            {"color_temp": 300, "transition_time": 2},
+            {ATTR_LIGHT_MIREDS: 300, ATTR_TRANSITION_TIME: 2},
         ],
-
         [
-            "set_dimmer", "valid", {
-                'dimmer': 200,
-            }, {
+            "set_dimmer",
+            "valid",
+            {
+                "dimmer": 200,
+            },
+            {
                 ATTR_LIGHT_DIMMER: 200,
             },
         ],
         [
-            "set_dimmer", "none", {
-                'dimmer': None,
-            }, {
+            "set_dimmer",
+            "none",
+            {
+                "dimmer": None,
+            },
+            {
                 ATTR_LIGHT_DIMMER: None,
             },
         ],
         [
-            "set_dimmer", "with_transitiontime", {
-                'dimmer': 200,
-                'transition_time': 2
-            }, {
-                ATTR_LIGHT_DIMMER: 200,
-                ATTR_TRANSITION_TIME: 2
-            },
+            "set_dimmer",
+            "with_transitiontime",
+            {"dimmer": 200, "transition_time": 2},
+            {ATTR_LIGHT_DIMMER: 200, ATTR_TRANSITION_TIME: 2},
         ],
-
         [
-            "set_state", "true", {
-                'state': True,
-            }, {
+            "set_state",
+            "true",
+            {
+                "state": True,
+            },
+            {
                 ATTR_DEVICE_STATE: True,
             },
         ],
         [
-            "set_state", "false", {
-                'state': False,
-            }, {
+            "set_state",
+            "false",
+            {
+                "state": False,
+            },
+            {
                 ATTR_DEVICE_STATE: False,
             },
         ],
-
         [
-            "set_hex_color", "valid", {
-                'color': '4a418a',
-            }, {
-                ATTR_LIGHT_COLOR_HEX: '4a418a',
+            "set_hex_color",
+            "valid",
+            {
+                "color": "4a418a",
+            },
+            {
+                ATTR_LIGHT_COLOR_HEX: "4a418a",
             },
         ],
         [
-            "set_hex_color", "invalid", {
-                'color': 'RandomString',
-            }, {
-                ATTR_LIGHT_COLOR_HEX: 'RandomString',
+            "set_hex_color",
+            "invalid",
+            {
+                "color": "RandomString",
+            },
+            {
+                ATTR_LIGHT_COLOR_HEX: "RandomString",
             },
         ],
         [
-            "set_hex_color", "with_transitiontime", {
-                'color': '4a418a',
-                'transition_time': 2
-            }, {
-                ATTR_LIGHT_COLOR_HEX: '4a418a',
-                ATTR_TRANSITION_TIME: 2
-            },
+            "set_hex_color",
+            "with_transitiontime",
+            {"color": "4a418a", "transition_time": 2},
+            {ATTR_LIGHT_COLOR_HEX: "4a418a", ATTR_TRANSITION_TIME: 2},
         ],
-
         [
-            "set_predefined_color", "valid", {
-                'colorname': 'Saturated Purple'
-            }, {
-                ATTR_LIGHT_COLOR_HEX: '8f2686',
+            "set_predefined_color",
+            "valid",
+            {"colorname": "Saturated Purple"},
+            {
+                ATTR_LIGHT_COLOR_HEX: "8f2686",
             },
         ],
         [
-            "set_predefined_color", "with_transitiontime", {
-                'colorname': 'Saturated Purple',
-                'transition_time': 2
-            }, {
-                ATTR_LIGHT_COLOR_HEX: '8f2686',
-                ATTR_TRANSITION_TIME: 2
-            },
+            "set_predefined_color",
+            "with_transitiontime",
+            {"colorname": "Saturated Purple", "transition_time": 2},
+            {ATTR_LIGHT_COLOR_HEX: "8f2686", ATTR_TRANSITION_TIME: 2},
         ],
-    ]
+    ],
 ]
 
 socket_value_setting_test_cases = [
     ["function_name", "comment", "test_input", "expected_result"],
     [
         [
-            "set_state", "true", {
-                'state': True,
-            }, {
+            "set_state",
+            "true",
+            {
+                "state": True,
+            },
+            {
                 ATTR_DEVICE_STATE: True,
             },
         ],
         [
-            "set_state", "false", {
-                'state': False,
-            }, {
+            "set_state",
+            "false",
+            {
+                "state": False,
+            },
+            {
                 ATTR_DEVICE_STATE: False,
             },
         ],
-    ]
+    ],
 ]
 
 # Combine lamp_value_setting_test_cases and output_devices where:
@@ -299,16 +299,17 @@ src = lamp_value_setting_test_cases[1] * len(output_devices[1])
 newList = []
 for i in range(len(src)):
     index = int((i / len(src)) * len(output_devices[1]))
-    newList.append([
-        src[i][0], src[i][1], src[i][2], src[i][3], output_devices[1][index]
-    ])
+    newList.append(
+        [src[i][0], src[i][1], src[i][2], src[i][3], output_devices[1][index]]
+    )
 lamp_value_setting_test_cases[0].append("device")
 lamp_value_setting_test_cases[1] = newList
 
 
 @pytest.mark.parametrize(*lamp_value_setting_test_cases)
-def test_lamp_value_setting(function_name, comment,
-                            test_input, expected_result, device):
+def test_lamp_value_setting(
+    function_name, comment, test_input, expected_result, device
+):
     function = getattr(device[1].light_control, function_name)
     command = function(**test_input)
     data = command.data[ATTR_LIGHT_CONTROL][0]
@@ -316,8 +317,9 @@ def test_lamp_value_setting(function_name, comment,
 
 
 @pytest.mark.parametrize(*socket_value_setting_test_cases)
-def test_socket_value_setting(function_name, comment,
-                              test_input, expected_result, device):
+def test_socket_value_setting(
+    function_name, comment, test_input, expected_result, device
+):
     if device.has_socket_control:
         function = getattr(device[0].socket_control, function_name)
         command = function(**test_input)
@@ -351,7 +353,7 @@ def test_set_predefined_color_invalid(device):
 
 def test_device_properties(device):
     assert device.application_type == 2
-    assert device.name == 'Löng name containing viking lättårs [letters]'
+    assert device.name == "Löng name containing viking lättårs [letters]"
     assert device.id == 65539
     assert device.created_at == datetime.utcfromtimestamp(1509923713)
     assert device.reachable
@@ -361,19 +363,19 @@ def test_device_properties(device):
 def test_device_info_properties(device):
     info = device.device_info
 
-    assert info.manufacturer == 'IKEA of Sweden'
-    assert info.model_number == 'TRADFRI bulb E27 WS opal 980lm'
-    assert info.firmware_version == '1.2.217'
+    assert info.manufacturer == "IKEA of Sweden"
+    assert info.model_number == "TRADFRI bulb E27 WS opal 980lm"
+    assert info.firmware_version == "1.2.217"
     assert info.power_source == 1
-    assert info.power_source_str == 'Internal Battery'
+    assert info.power_source_str == "Internal Battery"
 
 
 def test_set_name(device):
-    command = device.set_name('New name')
+    command = device.set_name("New name")
 
-    assert command.method == 'put'
+    assert command.method == "put"
     assert command.path == device.path
-    assert command.data == {ATTR_NAME: 'New name'}
+    assert command.data == {ATTR_NAME: "New name"}
 
 
 def test_binary_division():
@@ -382,7 +384,7 @@ def test_binary_division():
 
     assert dev_ws.dimmer == 254
     assert dev_ws.color_temp == 400
-    assert dev_color.hex_color == 'f1e0b5'
+    assert dev_color.hex_color == "f1e0b5"
     assert dev_color.xy_color == (30015, 26870)
 
 
@@ -464,7 +466,7 @@ def test_value_validate_none(device):
 # Test deviceInfo serial function
 def test_deviceinfo_serial(device):
     info = Device(device.raw.copy()).device_info
-    info.raw['2'] = "SomeRandomSerial"
+    info.raw["2"] = "SomeRandomSerial"
     assert info.serial == "SomeRandomSerial"
 
 
@@ -472,18 +474,18 @@ def test_deviceinfo_serial(device):
 def test_deviceinfo_power_source_str_known(device):
     info = Device(device.raw.copy()).device_info
     assert info.power_source_str is not None
-    assert info.power_source_str != 'Unknown'
+    assert info.power_source_str != "Unknown"
 
 
 def test_deviceinfo_power_source_str_unknown(device):
     info = Device(device.raw.copy()).device_info
-    info.raw['6'] = None
-    assert info.power_source_str == 'Unknown'
+    info.raw["6"] = None
+    assert info.power_source_str == "Unknown"
 
 
 def test_deviceinfo_power_source_not_present(device):
     info = Device(device.raw.copy()).device_info
-    del info.raw['6']
+    del info.raw["6"]
     assert info.power_source_str is None
 
 
@@ -499,5 +501,5 @@ def test_deviceinfo_battery_level(comment, device):
 @pytest.mark.parametrize(*input_devices)
 def test_deviceinfo_battery_level_unkown(comment, device):
     info = Device(device.raw.copy()).device_info
-    info.raw['9'] = None
+    info.raw["9"] = None
     assert info.battery_level is None

@@ -16,6 +16,7 @@ the back of your IKEA gateway.
 # Hack to allow relative import above top level package
 import sys
 import os
+
 folder = os.path.dirname(os.path.abspath(__file__))  # noqa
 sys.path.insert(0, os.path.normpath("%s/.." % folder))  # noqa
 
@@ -33,20 +34,24 @@ import argparse
 
 logging.basicConfig(level=logging.INFO)
 
-CONFIG_FILE = 'tradfri_standalone_psk.conf'
+CONFIG_FILE = "tradfri_standalone_psk.conf"
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('host', metavar='IP', type=str,
-                    help='IP Address of your Tradfri gateway')
-parser.add_argument('-K', '--key', dest='key', required=False,
-                    help='Key found on your Tradfri gateway')
+parser.add_argument(
+    "host", metavar="IP", type=str, help="IP Address of your Tradfri gateway"
+)
+parser.add_argument(
+    "-K", "--key", dest="key", required=False, help="Key found on your Tradfri gateway"
+)
 args = parser.parse_args()
 
 
 if args.host not in load_json(CONFIG_FILE) and args.key is None:
-    print("Please provide the 'Security Code' on the back of your "
-          "Tradfri gateway:", end=" ")
+    print(
+        "Please provide the 'Security Code' on the back of your " "Tradfri gateway:",
+        end=" ",
+    )
     key = input().strip()
     if len(key) != 16:
         raise PytradfriError("Invalid 'Security Code' provided.")
@@ -60,25 +65,25 @@ async def run(shutdown):
     conf = load_json(CONFIG_FILE)
 
     try:
-        identity = conf[args.host].get('identity')
-        psk = conf[args.host].get('key')
-        api_factory = await APIFactory.init(host=args.host, psk_id=identity,
-                                            psk=psk)
+        identity = conf[args.host].get("identity")
+        psk = conf[args.host].get("key")
+        api_factory = await APIFactory.init(host=args.host, psk_id=identity, psk=psk)
     except KeyError:
         identity = uuid.uuid4().hex
         api_factory = await APIFactory.init(host=args.host, psk_id=identity)
 
         try:
             psk = await api_factory.generate_psk(args.key)
-            print('Generated PSK: ', psk)
+            print("Generated PSK: ", psk)
 
-            conf[args.host] = {'identity': identity,
-                               'key': psk}
+            conf[args.host] = {"identity": identity, "key": psk}
             save_json(CONFIG_FILE, conf)
         except AttributeError:
-            raise PytradfriError("Please provide the 'Security Code' on the "
-                                 "back of your Tradfri gateway using the "
-                                 "-K flag.")
+            raise PytradfriError(
+                "Please provide the 'Security Code' on the "
+                "back of your Tradfri gateway using the "
+                "-K flag."
+            )
 
     api = api_factory.request
 
@@ -102,8 +107,9 @@ async def run(shutdown):
             await api(gateway.set_commissioning_timeout(00))
 
     commissioning_ready = asyncio.Future()
-    commissioning = asyncio.Task(keep_commissioning_alive(
-        lambda: commissioning_ready.set_result(None)))
+    commissioning = asyncio.Task(
+        keep_commissioning_alive(lambda: commissioning_ready.set_result(None))
+    )
 
     #
     # monitor the device list and give instructions
@@ -137,13 +143,17 @@ async def run(shutdown):
 
         if commissioning:
             if device.has_light_control:
-                print("That was not in the expected sequence: This device was"
-                      " a light and not a controller. You can still pair"
-                      " another controller device.")
+                print(
+                    "That was not in the expected sequence: This device was"
+                    " a light and not a controller. You can still pair"
+                    " another controller device."
+                )
             else:
-                print("Found a controller. You can now go ahead and add light"
-                      " bulbs by pairing them to the switch as you would do"
-                      " without a gateway. Press Ctrl-C when done.")
+                print(
+                    "Found a controller. You can now go ahead and add light"
+                    " bulbs by pairing them to the switch as you would do"
+                    " without a gateway. Press Ctrl-C when done."
+                )
                 commissioning.cancel()
                 commissioning = None
                 # if you wanted to implemente infinite-commissioning mode, you
@@ -152,22 +162,26 @@ async def run(shutdown):
                 # to 0 the moment the device was added.
         else:
             if not device.has_light_control:
-                print("That was unexpected: A controller showed up even though"
-                      " the gateway was not in pairing mode any more.")
+                print(
+                    "That was unexpected: A controller showed up even though"
+                    " the gateway was not in pairing mode any more."
+                )
             else:
-                print("You can still add more light bulbs; press Ctrl-C when"
-                      " done.")
+                print("You can still add more light bulbs; press Ctrl-C when" " done.")
 
-    observe_devices = Command('get', [ROOT_DEVICES], observe=True,
-                              process_result=devices_updated)
+    observe_devices = Command(
+        "get", [ROOT_DEVICES], observe=True, process_result=devices_updated
+    )
     await api(observe_devices)
     await commissioning_ready
 
     print("Ready to start: Gateway is in commissioning mode.")
-    print("Pressing the pairing button on a switch, dimmer or motion detector"
-          " for 10s near the gateway until the gateway blinks fast. A few"
-          " seconds later, it the new device shows up here. You may need to"
-          " switch off light bulbs in the immediate vicinity (?).")
+    print(
+        "Pressing the pairing button on a switch, dimmer or motion detector"
+        " for 10s near the gateway until the gateway blinks fast. A few"
+        " seconds later, it the new device shows up here. You may need to"
+        " switch off light bulbs in the immediate vicinity (?)."
+    )
 
     #
     # run until the outer loop says not to any more

@@ -32,10 +32,11 @@ class ApiResource:
     @property
     def path(self):
         """Path to resource."""
-        raise NotImplementedError('Path property needs to be implemented')
+        raise NotImplementedError("Path property needs to be implemented")
 
     def observe(self, callback, err_callback, duration=60):
         """Observe resource and call callback when updated."""
+
         def observe_callback(value):
             """
             Called when end point is updated.
@@ -45,16 +46,18 @@ class ApiResource:
             self.raw = value
             callback(self)
 
-        return Command('get', self.path, process_result=observe_callback,
-                       err_callback=err_callback,
-                       observe=True,
-                       observe_duration=duration)
+        return Command(
+            "get",
+            self.path,
+            process_result=observe_callback,
+            err_callback=err_callback,
+            observe=True,
+            observe_duration=duration,
+        )
 
     def set_name(self, name):
         """Set group name."""
-        return self.set_values({
-            ATTR_NAME: name
-        })
+        return self.set_values({ATTR_NAME: name})
 
     def set_values(self, values):
         """
@@ -62,7 +65,7 @@ class ApiResource:
 
         Returns a Command.
         """
-        return Command('put', self.path, values)
+        return Command("put", self.path, values)
 
     def update(self):
         """
@@ -70,6 +73,8 @@ class ApiResource:
 
         Returns a Command.
         """
+
         def process_result(result):
             self.raw = result
-        return Command('get', self.path, process_result=process_result)
+
+        return Command("get", self.path, process_result=process_result)

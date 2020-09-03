@@ -1,10 +1,17 @@
 """Classes to interact with devices."""
 from datetime import datetime
 
-from pytradfri.const import ATTR_APPLICATION_TYPE, ROOT_DEVICES, \
-    ATTR_LAST_SEEN, ATTR_REACHABLE_STATE, \
-    ATTR_LIGHT_CONTROL, ATTR_SWITCH_PLUG, ATTR_DEVICE_INFO,\
-    ATTR_START_BLINDS, ROOT_SIGNAL_REPEATER
+from pytradfri.const import (
+    ATTR_APPLICATION_TYPE,
+    ROOT_DEVICES,
+    ATTR_LAST_SEEN,
+    ATTR_REACHABLE_STATE,
+    ATTR_LIGHT_CONTROL,
+    ATTR_SWITCH_PLUG,
+    ATTR_DEVICE_INFO,
+    ATTR_START_BLINDS,
+    ROOT_SIGNAL_REPEATER,
+)
 from pytradfri.device.blind_control import BlindControl
 from pytradfri.device.light_control import LightControl
 from pytradfri.device.signal_repeater_control import SignalRepeaterControl
@@ -39,8 +46,7 @@ class Device(ApiResource):
 
     @property
     def has_light_control(self):
-        return (self.raw is not None and
-                len(self.raw.get(ATTR_LIGHT_CONTROL, "")) > 0)
+        return self.raw is not None and len(self.raw.get(ATTR_LIGHT_CONTROL, "")) > 0
 
     @property
     def light_control(self):
@@ -48,8 +54,7 @@ class Device(ApiResource):
 
     @property
     def has_socket_control(self):
-        return (self.raw is not None and
-                len(self.raw.get(ATTR_SWITCH_PLUG, "")) > 0)
+        return self.raw is not None and len(self.raw.get(ATTR_SWITCH_PLUG, "")) > 0
 
     @property
     def socket_control(self):
@@ -58,8 +63,7 @@ class Device(ApiResource):
 
     @property
     def has_blind_control(self):
-        return (self.raw is not None and
-                len(self.raw.get(ATTR_START_BLINDS, "")) > 0)
+        return self.raw is not None and len(self.raw.get(ATTR_START_BLINDS, "")) > 0
 
     @property
     def blind_control(self):
@@ -68,8 +72,7 @@ class Device(ApiResource):
 
     @property
     def has_signal_repeater_control(self):
-        return (self.raw is not None and
-                len(self.raw.get(ROOT_SIGNAL_REPEATER, "")) > 0)
+        return self.raw is not None and len(self.raw.get(ROOT_SIGNAL_REPEATER, "")) > 0
 
     @property
     def signal_repeater_control(self):
@@ -77,8 +80,9 @@ class Device(ApiResource):
             return SignalRepeaterControl(self)
 
     def __repr__(self):
-        return "<{} - {} ({})>".format(self.id, self.name,
-                                       self.device_info.model_number)
+        return "<{} - {} ({})>".format(
+            self.id, self.name, self.device_info.model_number
+        )
 
 
 class DeviceInfo:
@@ -86,19 +90,20 @@ class DeviceInfo:
 
     http://www.openmobilealliance.org/tech/profiles/LWM2M_Device-v1_0.xml
     """
+
     ATTR_MANUFACTURER = "0"
     ATTR_MODEL_NUMBER = "1"
     ATTR_SERIAL = "2"
     ATTR_FIRMWARE_VERSION = "3"
     ATTR_POWER_SOURCE = "6"
     VALUE_POWER_SOURCES = {
-        1: 'Internal Battery',
-        2: 'External Battery',
-        3: 'Battery',  # Not in spec, used by remote
-        4: 'Power over Ethernet',
-        5: 'USB',
-        6: 'AC (Mains) power',
-        7: 'Solar'
+        1: "Internal Battery",
+        2: "External Battery",
+        3: "Battery",  # Not in spec, used by remote
+        4: "Power over Ethernet",
+        5: "USB",
+        6: "AC (Mains) power",
+        7: "Solar",
     }
     ATTR_BATTERY = "9"
 
@@ -135,7 +140,7 @@ class DeviceInfo:
         """String representation of current power source."""
         if DeviceInfo.ATTR_POWER_SOURCE not in self.raw:
             return None
-        return DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, 'Unknown')
+        return DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, "Unknown")
 
     @property
     def battery_level(self):

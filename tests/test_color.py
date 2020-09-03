@@ -4,16 +4,16 @@ from pytradfri.const import (
     SUPPORT_COLOR_TEMP,
     SUPPORT_HEX_COLOR,
     SUPPORT_RGB_COLOR,
-    SUPPORT_XY_COLOR
-    )
+    SUPPORT_XY_COLOR,
+)
 from pytradfri.color import supported_features
 from devices import (
     LIGHT_W,
     LIGHT_WS,
     LIGHT_WS_CUSTOM_COLOR,
     LIGHT_CWS,
-    LIGHT_CWS_CUSTOM_COLOR
-    )
+    LIGHT_CWS_CUSTOM_COLOR,
+)
 
 
 # Kelvin range for which the conversion functions work
@@ -27,20 +27,30 @@ MAX_KELVIN_WS = 4000
 
 
 def test_supported_colors():
-    assert supported_features(LIGHT_W[ATTR_LIGHT_CONTROL][0]) ==\
-        SUPPORT_BRIGHTNESS
+    assert supported_features(LIGHT_W[ATTR_LIGHT_CONTROL][0]) == SUPPORT_BRIGHTNESS
 
-    assert supported_features(LIGHT_WS['3311'][0]) == SUPPORT_BRIGHTNESS\
-        + SUPPORT_COLOR_TEMP + SUPPORT_HEX_COLOR + SUPPORT_XY_COLOR
+    assert (
+        supported_features(LIGHT_WS["3311"][0])
+        == SUPPORT_BRIGHTNESS
+        + SUPPORT_COLOR_TEMP
+        + SUPPORT_HEX_COLOR
+        + SUPPORT_XY_COLOR
+    )
 
-    assert supported_features(LIGHT_WS_CUSTOM_COLOR['3311'][0]) ==\
-        SUPPORT_BRIGHTNESS + SUPPORT_COLOR_TEMP + SUPPORT_HEX_COLOR + \
-        SUPPORT_XY_COLOR
+    assert (
+        supported_features(LIGHT_WS_CUSTOM_COLOR["3311"][0])
+        == SUPPORT_BRIGHTNESS
+        + SUPPORT_COLOR_TEMP
+        + SUPPORT_HEX_COLOR
+        + SUPPORT_XY_COLOR
+    )
 
-    assert supported_features(LIGHT_CWS['3311'][0]) ==\
-        SUPPORT_BRIGHTNESS + SUPPORT_RGB_COLOR + SUPPORT_HEX_COLOR + \
-        SUPPORT_XY_COLOR
+    assert (
+        supported_features(LIGHT_CWS["3311"][0])
+        == SUPPORT_BRIGHTNESS + SUPPORT_RGB_COLOR + SUPPORT_HEX_COLOR + SUPPORT_XY_COLOR
+    )
 
-    assert supported_features(LIGHT_CWS_CUSTOM_COLOR['3311'][0]) ==\
-        SUPPORT_BRIGHTNESS + SUPPORT_RGB_COLOR + SUPPORT_HEX_COLOR + \
-        SUPPORT_XY_COLOR
+    assert (
+        supported_features(LIGHT_CWS_CUSTOM_COLOR["3311"][0])
+        == SUPPORT_BRIGHTNESS + SUPPORT_RGB_COLOR + SUPPORT_HEX_COLOR + SUPPORT_XY_COLOR
+    )

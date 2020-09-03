@@ -9,7 +9,7 @@ SmartTask # return top level info
             StartActionItemController # change values for task
 """
 
-from datetime import (datetime as dt)
+from datetime import datetime as dt
 import datetime
 
 from .command import Command
@@ -28,7 +28,7 @@ from .const import (
     ATTR_REPEAT_DAYS,
     ATTR_START_ACTION,
     ROOT_START_ACTION,
-    ROOT_SMART_TASKS
+    ROOT_SMART_TASKS,
 )
 from .resource import ApiResource
 from .util import BitChoices
@@ -36,13 +36,13 @@ from .util import BitChoices
 
 WEEKDAYS = BitChoices(
     (
-        ('mon', 'Monday'),
-        ('tue', 'Tuesday'),
-        ('wed', 'Wednesday'),
-        ('thu', 'Thursday'),
-        ('fri', 'Friday'),
-        ('sat', 'Saturday'),
-        ('sun', 'Sunday')
+        ("mon", "Monday"),
+        ("tue", "Tuesday"),
+        ("wed", "Wednesday"),
+        ("thu", "Thursday"),
+        ("fri", "Friday"),
+        ("sat", "Saturday"),
+        ("sun", "Sunday"),
     )
 )
 
@@ -91,8 +91,7 @@ class SmartTask(ApiResource):
     @property
     def is_not_at_home(self):
         """Boolean representing if this is a not home task."""
-        return self.raw.get(
-            ATTR_SMART_TASK_TYPE) == ATTR_SMART_TASK_NOT_AT_HOME
+        return self.raw.get(ATTR_SMART_TASK_TYPE) == ATTR_SMART_TASK_NOT_AT_HOME
 
     @property
     def is_lights_off(self):
@@ -121,19 +120,14 @@ class SmartTask(ApiResource):
         Time is set according to iso8601.
         """
         return datetime.time(
-            self.task_start_parameters[
-                ATTR_SMART_TASK_TRIGGER_TIME_START_HOUR],
-            self.task_start_parameters[
-                ATTR_SMART_TASK_TRIGGER_TIME_START_MIN])
+            self.task_start_parameters[ATTR_SMART_TASK_TRIGGER_TIME_START_HOUR],
+            self.task_start_parameters[ATTR_SMART_TASK_TRIGGER_TIME_START_MIN],
+        )
 
     @property
     def task_control(self):
         """Method to control a task."""
-        return TaskControl(
-                        self,
-                        self.state,
-                        self.path,
-                        self._gateway)
+        return TaskControl(self, self.state, self.path, self._gateway)
 
     @property
     def start_action(self):
@@ -142,9 +136,8 @@ class SmartTask(ApiResource):
 
     def __repr__(self):
         """Return a readable name for smart task."""
-        state = 'on' if self.state else 'off'
-        return '<Task {} - {} - {}>'.format(
-            self.id, self.task_type_name, state)
+        state = "on" if self.state else "off"
+        return "<Task {} - {} - {}>".format(self.id, self.task_type_name, state)
 
 
 class TaskControl:
@@ -160,12 +153,10 @@ class TaskControl:
     @property
     def tasks(self):
         """Return task objects of the task control."""
-        return [StartActionItem(
-            self._task,
-            i,
-            self.state,
-            self.path,
-            self.raw) for i in range(len(self.raw))]
+        return [
+            StartActionItem(self._task, i, self.state, self.path, self.raw)
+            for i in range(len(self.raw))
+        ]
 
     def set_dimmer_start_time(self, hour, minute):
         """Set start time for task (hh:mm) in iso8601.
@@ -180,12 +171,13 @@ class TaskControl:
         newtime = dt(100, 1, 1, hour, minute, 00) - diff
 
         command = {
-            ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL:
-                [{
+            ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL: [
+                {
                     ATTR_SMART_TASK_TRIGGER_TIME_START_HOUR: newtime.hour,
-                    ATTR_SMART_TASK_TRIGGER_TIME_START_MIN: newtime.minute
-                }]
-            }
+                    ATTR_SMART_TASK_TRIGGER_TIME_START_MIN: newtime.minute,
+                }
+            ]
+        }
         return self._task.set_values(command)
 
     @property
@@ -210,13 +202,10 @@ class StartAction:
     @property
     def devices(self):
         """Return state of start action task."""
-        return [StartActionItem(
-            self.start_action,
-            i,
-            self.state,
-            self.path,
-            self.raw) for i in range(
-                len(self.raw[ROOT_START_ACTION]))]
+        return [
+            StartActionItem(self.start_action, i, self.state, self.path, self.raw)
+            for i in range(len(self.raw[ROOT_START_ACTION]))
+        ]
 
     @property
     def raw(self):
@@ -255,11 +244,8 @@ class StartActionItem:
     def item_controller(self):
         """Method to control a task."""
         return StartActionItemController(
-            self,
-            self.raw,
-            self.state,
-            self.path,
-            self.devices_dict)
+            self, self.raw, self.state, self.path, self.devices_dict
+        )
 
     @property
     def transition_time(self):
@@ -281,8 +267,9 @@ class StartActionItem:
 
     def __repr__(self):
         """Return a readable name for this class."""
-        return '<StartActionItem (Device: {} - Dimmer: {} - Time: {})>'\
-            .format(self.id, self.dimmer, self.transition_time)
+        return "<StartActionItem (Device: {} - Dimmer: {} - Time: {})>".format(
+            self.id, self.dimmer, self.transition_time
+        )
 
 
 class StartActionItemController:
@@ -300,28 +287,34 @@ class StartActionItemController:
         """Set final dimmer value for task."""
         command = {
             ATTR_START_ACTION: {
-                    ATTR_DEVICE_STATE: self.state,
-                    ROOT_START_ACTION: [{
+                ATTR_DEVICE_STATE: self.state,
+                ROOT_START_ACTION: [
+                    {
                         ATTR_ID: self.raw[ATTR_ID],
                         ATTR_LIGHT_DIMMER: dimmer,
-                        ATTR_TRANSITION_TIME: self.raw[ATTR_TRANSITION_TIME]
-                    }, self.devices_dict]
-                }
+                        ATTR_TRANSITION_TIME: self.raw[ATTR_TRANSITION_TIME],
+                    },
+                    self.devices_dict,
+                ],
             }
+        }
         return self.set_values(command)
 
     def set_transition_time(self, transition_time):
         """Set time (mins) for light transition."""
         command = {
             ATTR_START_ACTION: {
-                    ATTR_DEVICE_STATE: self.state,
-                    ROOT_START_ACTION: [{
+                ATTR_DEVICE_STATE: self.state,
+                ROOT_START_ACTION: [
+                    {
                         ATTR_ID: self.raw[ATTR_ID],
                         ATTR_LIGHT_DIMMER: self.raw[ATTR_LIGHT_DIMMER],
-                        ATTR_TRANSITION_TIME: transition_time * 10 * 60
-                    }, self.devices_dict]
-                }
+                        ATTR_TRANSITION_TIME: transition_time * 10 * 60,
+                    },
+                    self.devices_dict,
+                ],
             }
+        }
         return self.set_values(command)
 
     def set_values(self, command):
@@ -330,4 +323,4 @@ class StartActionItemController:
 
         Returns a Command.
         """
-        return Command('put', self._item.path, command)
+        return Command("put", self._item.path, command)

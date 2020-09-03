@@ -13,4 +13,4 @@ class Mood(ApiResource):
         return [ROOT_MOODS, self._parent, self.id]
 
     def __repr__(self):
-        return '<Mood {} {}>'.format(self._parent, self.name)
+        return "<Mood {} {}>".format(self._parent, self.name)

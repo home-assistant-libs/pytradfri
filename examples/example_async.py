@@ -15,6 +15,7 @@ the back of your IKEA gateway.
 # Hack to allow relative import above top level package
 import sys
 import os
+
 folder = os.path.dirname(os.path.abspath(__file__))  # noqa
 sys.path.insert(0, os.path.normpath("%s/.." % folder))  # noqa
 
@@ -27,20 +28,24 @@ import asyncio
 import uuid
 import argparse
 
-CONFIG_FILE = 'tradfri_standalone_psk.conf'
+CONFIG_FILE = "tradfri_standalone_psk.conf"
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('host', metavar='IP', type=str,
-                    help='IP Address of your Tradfri gateway')
-parser.add_argument('-K', '--key', dest='key', required=False,
-                    help='Key found on your Tradfri gateway')
+parser.add_argument(
+    "host", metavar="IP", type=str, help="IP Address of your Tradfri gateway"
+)
+parser.add_argument(
+    "-K", "--key", dest="key", required=False, help="Key found on your Tradfri gateway"
+)
 args = parser.parse_args()
 
 
 if args.host not in load_json(CONFIG_FILE) and args.key is None:
-    print("Please provide the 'Security Code' on the back of your "
-          "Tradfri gateway:", end=" ")
+    print(
+        "Please provide the 'Security Code' on the back of your " "Tradfri gateway:",
+        end=" ",
+    )
     key = input().strip()
     if len(key) != 16:
         raise PytradfriError("Invalid 'Security Code' provided.")
@@ -54,25 +59,25 @@ async def run():
     conf = load_json(CONFIG_FILE)
 
     try:
-        identity = conf[args.host].get('identity')
-        psk = conf[args.host].get('key')
-        api_factory = await APIFactory.init(host=args.host, psk_id=identity,
-                                            psk=psk)
+        identity = conf[args.host].get("identity")
+        psk = conf[args.host].get("key")
+        api_factory = await APIFactory.init(host=args.host, psk_id=identity, psk=psk)
     except KeyError:
         identity = uuid.uuid4().hex
         api_factory = await APIFactory.init(host=args.host, psk_id=identity)
 
         try:
             psk = await api_factory.generate_psk(args.key)
-            print('Generated PSK: ', psk)
+            print("Generated PSK: ", psk)
 
-            conf[args.host] = {'identity': identity,
-                               'key': psk}
+            conf[args.host] = {"identity": identity, "key": psk}
             save_json(CONFIG_FILE, conf)
         except AttributeError:
-            raise PytradfriError("Please provide the 'Security Code' on the "
-                                 "back of your Tradfri gateway using the "
-                                 "-K flag.")
+            raise PytradfriError(
+                "Please provide the 'Security Code' on the "
+                "back of your Tradfri gateway using the "
+                "-K flag."
+            )
 
     api = api_factory.request
 
@@ -99,11 +104,12 @@ async def run():
         print("Received message for: %s" % light)
 
     def observe_err_callback(err):
-        print('observe error:', err)
+        print("observe error:", err)
 
     for light in lights:
-        observe_command = light.observe(observe_callback, observe_err_callback,
-                                        duration=120)
+        observe_command = light.observe(
+            observe_callback, observe_err_callback, duration=120
+        )
         # Start observation as a second task on the loop.
         asyncio.ensure_future(api(observe_command))
         # Yield to allow observing to start.
@@ -125,7 +131,7 @@ async def run():
 
         # Example 5: Change color of the light
         # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
-        color_command = light.light_control.set_hex_color('efd275')
+        color_command = light.light_control.set_hex_color("efd275")
         await api(color_command)
 
     # Get all blinds
@@ -153,8 +159,7 @@ async def run():
         print(tasks[0].task_control.tasks[0].transition_time)
 
         # Example 7: Set the dimmer stop value to 30 for light#1 in task#1
-        dim_command_2 = tasks[0].start_action.devices[0].item_controller\
-            .set_dimmer(30)
+        dim_command_2 = tasks[0].start_action.devices[0].item_controller.set_dimmer(30)
         await api(dim_command_2)
 
     print("Waiting for observation to end (2 mins)")

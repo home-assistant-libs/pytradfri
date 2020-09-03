@@ -17,11 +17,11 @@ def test_retry_timeout_passes_args():
 
     retry_api = retry_timeout(api)
 
-    retry_api(1, 2, hello='world')
+    retry_api(1, 2, hello="world")
     assert len(calls) == 1
     args, kwargs = calls[0]
     assert args == (1, 2)
-    assert kwargs == {'hello': 'world'}
+    assert kwargs == {"hello": "world"}
 
 
 def test_retry_timeout_retries_timeouts():
@@ -37,7 +37,7 @@ def test_retry_timeout_retries_timeouts():
 
     retry_api = retry_timeout(api, retries=2)
 
-    retry_api(1, 2, hello='world')
+    retry_api(1, 2, hello="world")
     assert len(calls) == 2
 
 
@@ -54,7 +54,7 @@ def test_retry_timeout_raises_after_max_retries():
     retry_api = retry_timeout(api, retries=5)
 
     with pytest.raises(RequestTimeout):
-        retry_api(1, 2, hello='world')
+        retry_api(1, 2, hello="world")
 
     assert len(calls) == 5
 
@@ -69,7 +69,7 @@ def test_constructor_timeout_passed_to_subprocess(monkeypatch):
 
     monkeypatch.setattr("subprocess.check_output", capture_args)
 
-    api = APIFactory('anything', timeout=20)
+    api = APIFactory("anything", timeout=20)
     api.request(Gateway().get_devices())
     assert capture["timeout"] == 20
 
@@ -84,6 +84,6 @@ def test_custom_timeout_passed_to_subprocess(monkeypatch):
 
     monkeypatch.setattr("subprocess.check_output", capture_args)
 
-    api = APIFactory('anything')
+    api = APIFactory("anything")
     api.request(Gateway().get_devices(), timeout=1)
     assert capture["timeout"] == 1

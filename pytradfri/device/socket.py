@@ -20,7 +20,9 @@ class Socket:
 
     def __repr__(self):
         state = "on" if self.state else "off"
-        return "<Socket #{} - " \
-               "name: {}, " \
-               "state: {}" \
-               ">".format(self.index, self.device.name, state)
+        return (
+            "<Socket #{} - "
+            "name: {}, "
+            "state: {}"
+            ">".format(self.index, self.device.name, state)
+        )

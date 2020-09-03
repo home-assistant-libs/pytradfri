@@ -1,7 +1,11 @@
 """Class to control the blinds."""
 from pytradfri.command import Command
-from pytradfri.const import RANGE_BLIND, \
-    ATTR_BLIND_CURRENT_POSITION, ATTR_START_BLINDS, ATTR_BLIND_TRIGGER
+from pytradfri.const import (
+    RANGE_BLIND,
+    ATTR_BLIND_CURRENT_POSITION,
+    ATTR_START_BLINDS,
+    ATTR_BLIND_TRIGGER,
+)
 from pytradfri.device.blind import Blind
 from pytradfri.device.controller import Controller
 
@@ -24,30 +28,17 @@ class BlindControl(Controller):
 
     def trigger_blind(self):
         """Trigger the blind's movement."""
-        return self.set_value(
-            {
-                ATTR_BLIND_TRIGGER: True
-            }
-        )
+        return self.set_value({ATTR_BLIND_TRIGGER: True})
 
     def set_state(self, state):
         """Set state of a blind."""
         self._value_validate(state, RANGE_BLIND, "Blind position")
 
-        return self.set_value(
-            {
-                ATTR_BLIND_CURRENT_POSITION: state
-            }
-        )
+        return self.set_value({ATTR_BLIND_CURRENT_POSITION: state})
 
     def set_value(self, value):
         """
         Set values on blind control.
         Returns a Command.
         """
-        return Command('put', self._device.path, {
-            ATTR_START_BLINDS:
-                [
-                    value
-                ]
-        })
+        return Command("put", self._device.path, {ATTR_START_BLINDS: [value]})

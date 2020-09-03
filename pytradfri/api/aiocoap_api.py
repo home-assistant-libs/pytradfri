@@ -16,8 +16,7 @@ _SENTINEL = object()
 
 
 class APIFactory:
-    def __init__(self, host: str, psk_id='pytradfri', psk=None,
-                 internal_create=None):
+    def __init__(self, host: str, psk_id="pytradfri", psk=None, internal_create=None):
         if internal_create is not _SENTINEL:
             raise ValueError("Use APIFactory.init(…) to initialize APIFactory")
 
@@ -29,7 +28,7 @@ class APIFactory:
         self._reset_lock = asyncio.Lock()
 
     @classmethod
-    async def init(cls, host, psk_id='pytradfri', psk=None) -> "APIFactory":
+    async def init(cls, host, psk_id="pytradfri", psk=None) -> "APIFactory":
         """Initialize an APIFactory."""
         instance = cls(host, psk_id=psk_id, psk=psk, internal_create=_SENTINEL)
         if psk:
@@ -48,7 +47,7 @@ class APIFactory:
         """Get the protocol for the request."""
         if self._protocol is None:
             self._protocol = asyncio.create_task(Context.create_client_context())
-        return (await self._protocol)
+        return await self._protocol
 
     async def _reset_protocol(self, exc=None):
         """Reset the protocol if an error occurs."""
@@ -61,11 +60,10 @@ class APIFactory:
                 #
                 # This is only here for performance reasons.  It should be
                 # safe if the protocol is reset multiple times.
-                _LOGGER.debug(
-                    'Skipping reset: protocol was already being reset')
+                _LOGGER.debug("Skipping reset: protocol was already being reset")
                 return
 
-            _LOGGER.debug('Resetting protocol')
+            _LOGGER.debug("Resetting protocol")
 
             # Be responsible and clean up.
             protocol = await self._get_protocol()
@@ -78,7 +76,7 @@ class APIFactory:
 
     async def shutdown(self, exc=None):
         """Shutdown the API events.
-           This should be called before closing the event loop."""
+        This should be called before closing the event loop."""
         await self._reset_protocol(exc)
 
     async def _get_response(self, msg):
@@ -92,7 +90,7 @@ class APIFactory:
             raise ClientError("There was an error with the request.", e)
         except RequestTimedOut as e:
             await self._reset_protocol(e)
-            raise RequestTimeout('Request timed out.', e)
+            raise RequestTimeout("Request timed out.", e)
         except (OSError, socket.gaierror, Error) as e:
             # aiocoap sometimes raises an OSError/socket.gaierror too.
             # aiocoap issue #124
@@ -117,22 +115,21 @@ class APIFactory:
         kwargs = {}
 
         if data is not None:
-            kwargs['payload'] = json.dumps(data).encode('utf-8')
-            _LOGGER.debug('Executing %s %s %s: %s', self._host, method, path,
-                          data)
+            kwargs["payload"] = json.dumps(data).encode("utf-8")
+            _LOGGER.debug("Executing %s %s %s: %s", self._host, method, path, data)
         else:
-            _LOGGER.debug('Executing %s %s %s', self._host, method, path)
+            _LOGGER.debug("Executing %s %s %s", self._host, method, path)
 
         api_method = Code.GET
-        if method == 'put':
+        if method == "put":
             api_method = Code.PUT
-        elif method == 'post':
+        elif method == "post":
             api_method = Code.POST
-        elif method == 'delete':
+        elif method == "delete":
             api_method = Code.DELETE
-        elif method == 'fetch':
+        elif method == "fetch":
             api_method = Code.FETCH
-        elif method == 'patch':
+        elif method == "patch":
             api_method = Code.PATCH
 
         msg = Message(code=api_method, uri=url, **kwargs)
@@ -184,14 +181,16 @@ class APIFactory:
             # Set context once for generating key
             protocol = await self._get_protocol()
             command = Gateway().generate_psk(self._psk_id)
-            protocol.client_credentials.load_from_dict({
-                f"coaps://{self._host}:5684/{command.path_str}": {
-                    "dtls": {
-                        "psk": security_key.encode('utf-8'),
-                        'client-identity': 'Client_identity'.encode('utf-8')
+            protocol.client_credentials.load_from_dict(
+                {
+                    f"coaps://{self._host}:5684/{command.path_str}": {
+                        "dtls": {
+                            "psk": security_key.encode("utf-8"),
+                            "client-identity": "Client_identity".encode("utf-8"),
+                        }
                     }
                 }
-            })
+            )
 
             self._psk = await self.request(command)
 
@@ -205,22 +204,24 @@ class APIFactory:
     async def _update_credentials(self):
         """Update credentials."""
         protocol = await self._get_protocol()
-        protocol.client_credentials.load_from_dict({
-            f"coaps://{self._host}:5684/*": {
-                "dtls": {
-                    "psk": self._psk.encode('utf-8'),
-                    'client-identity': self._psk_id.encode('utf-8')
+        protocol.client_credentials.load_from_dict(
+            {
+                f"coaps://{self._host}:5684/*": {
+                    "dtls": {
+                        "psk": self._psk.encode("utf-8"),
+                        "client-identity": self._psk_id.encode("utf-8"),
+                    }
                 }
             }
-        })
+        )
 
 
 def _process_output(res, parse_json=True):
     """Process output."""
-    res_payload = res.payload.decode('utf-8')
+    res_payload = res.payload.decode("utf-8")
     output = res_payload.strip()
 
-    _LOGGER.debug('Status: %s, Received: %s', res.code, output)
+    _LOGGER.debug("Status: %s, Received: %s", res.code, output)
 
     if not output:
         return None
