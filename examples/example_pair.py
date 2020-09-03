@@ -156,7 +156,7 @@ async def run(shutdown):
                 )
                 commissioning.cancel()
                 commissioning = None
-                # if you wanted to implemente infinite-commissioning mode, you
+                # if you wanted to implement infinite-commissioning mode, you
                 # should cancel or restart keep_commissioning_alive in a way
                 # that resets the timeout, because the timeout will have gone
                 # to 0 the moment the device was added.

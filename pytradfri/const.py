@@ -129,7 +129,7 @@ RANGE_MIREDS = (250, 454)
 
 # Hue of a RGB bulb
 RANGE_HUE = (0, 65535)
-# Effecitive saturation range of a RGB bulb. The bulb will accept
+# Effective saturation range of a RGB bulb. The bulb will accept
 # slightly higher values, but it won't produce any light.
 RANGE_SATURATION = (0, 65279)
 # Brightness range of all bulbs. 0 will turn off the lamp

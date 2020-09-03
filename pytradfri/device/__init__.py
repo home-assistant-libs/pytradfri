@@ -117,7 +117,7 @@ class DeviceInfo:
 
     @property
     def model_number(self):
-        """A model identifier string (manufactuer specified string)."""
+        """A model identifier string (manufacturer specified string)."""
         return self.raw.get(DeviceInfo.ATTR_MODEL_NUMBER)
 
     @property
