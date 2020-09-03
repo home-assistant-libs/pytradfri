@@ -28,4 +28,4 @@ jobs:
           flake8 pytradfri
       - name: Check formatting with black
         run: |
-          black pytradfri --check
+          black pytradfri examples tests --check
