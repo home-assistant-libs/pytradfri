@@ -5,7 +5,12 @@ import logging
 import socket
 
 from aiocoap import Message, Context
-from aiocoap.error import RequestTimedOut, Error, ConstructionRenderableError
+from aiocoap.error import (
+    RequestTimedOut,
+    Error,
+    ConstructionRenderableError,
+    LibraryShutdown,
+)
 from aiocoap.numbers.codes import Code
 
 from ..error import ClientError, ServerError, RequestTimeout
@@ -69,9 +74,9 @@ class APIFactory:
             protocol = await self._get_protocol()
             await protocol.shutdown()
             self._protocol = None
-            # Let any observers know the protocol has been shutdown.
-            for ob_error in self._observations_err_callbacks:
-                ob_error(exc)
+
+            # The error callbacks are called when shutting down the protocol.
+            # Clear the saved callbacks
             self._observations_err_callbacks.clear()
 
     async def shutdown(self, exc=None):
@@ -168,6 +173,9 @@ class APIFactory:
             api_command.result = _process_output(res)
 
         def error_callback(ex):
+            if isinstance(ex, LibraryShutdown):
+                _LOGGER.debug("Protocol is shutdown, stopping observation")
+                return
             err_callback(ex)
 
         ob = pr.observation
