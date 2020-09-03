@@ -90,7 +90,8 @@ if __name__ == "__main__":
     else:
         print("No groups found!")
         group = None
-    tasks = api(gateway.get_smart_tasks())
+    tasks_commands = api(gateway.get_smart_tasks())
+    tasks = api(tasks_commands)
     homekit_id = api(gateway.get_gateway_info()).homekit_id
 
     def dump_all():

@@ -251,9 +251,9 @@ class StartActionItem:
     def transition_time(self):
         """A transition runs for this long from the time in task_start.
 
-        Value is in seconds x 10
+        Value is in seconds x 10. Default to 0 if transition is missing.
         """
-        return self.raw.get(ATTR_TRANSITION_TIME) / 60 / 10
+        return self.raw.get(ATTR_TRANSITION_TIME, 0) / 60 / 10
 
     @property
     def dimmer(self):
@@ -263,7 +263,7 @@ class StartActionItem:
     @property
     def raw(self):
         """Return raw data that it represents."""
-        return self.task.raw[ATTR_START_ACTION][ROOT_START_ACTION][self.index]
+        return self._raw[ROOT_START_ACTION][self.index]
 
     def __repr__(self):
         """Return a readable name for this class."""
@@ -292,7 +292,7 @@ class StartActionItemController:
                     {
                         ATTR_ID: self.raw[ATTR_ID],
                         ATTR_LIGHT_DIMMER: dimmer,
-                        ATTR_TRANSITION_TIME: self.raw[ATTR_TRANSITION_TIME],
+                        ATTR_TRANSITION_TIME: self.raw.get(ATTR_TRANSITION_TIME, 0),
                     },
                     self.devices_dict,
                 ],
