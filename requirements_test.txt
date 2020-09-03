@@ -3,3 +3,4 @@ flake8
 pytest-timeout>=1.2.0
 coveralls
 pytest-cov
+black==20.8b1
