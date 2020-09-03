@@ -2,6 +2,8 @@
 
 ### Version of pytradfri
 
+### Backend used (aiocoap, libcoap)
+
 ### Expected behaviour
 
 ### Actual behaviour
