@@ -10,12 +10,12 @@ from ..gateway import Gateway
 
 _LOGGER = logging.getLogger(__name__)
 
-CLIENT_ERROR_PREFIX = '4.'
-SERVER_ERROR_PREFIX = '5.'
+CLIENT_ERROR_PREFIX = "4."
+SERVER_ERROR_PREFIX = "5."
 
 
 class APIFactory:
-    def __init__(self, host, psk_id='pytradfri', psk=None, timeout=10):
+    def __init__(self, host, psk_id="pytradfri", psk=None, timeout=10):
         self._host = host
         self._psk_id = psk_id
         self._psk = psk
@@ -32,15 +32,15 @@ class APIFactory:
     def _base_command(self, method):
         """Return base command."""
         return [
-            'coap-client',
-            '-u',
+            "coap-client",
+            "-u",
             self._psk_id,
-            '-k',
+            "-k",
             self._psk,
-            '-v',
-            '0',
-            '-m',
-            method
+            "-v",
+            "0",
+            "-m",
+            method,
         ]
 
     def _execute(self, api_command, *, timeout=None):
@@ -63,19 +63,18 @@ class APIFactory:
         command = self._base_command(method)
 
         kwargs = {
-            'stderr': subprocess.DEVNULL,
-            'timeout': proc_timeout,
-            'universal_newlines': True,
+            "stderr": subprocess.DEVNULL,
+            "timeout": proc_timeout,
+            "universal_newlines": True,
         }
 
         if data is not None:
-            kwargs['input'] = json.dumps(data)
-            command.append('-f')
-            command.append('-')
-            _LOGGER.debug('Executing %s %s %s: %s', self._host, method, path,
-                          data)
+            kwargs["input"] = json.dumps(data)
+            command.append("-f")
+            command.append("-")
+            _LOGGER.debug("Executing %s %s %s: %s", self._host, method, path, data)
         else:
-            _LOGGER.debug('Executing %s %s %s', self._host, method, path)
+            _LOGGER.debug("Executing %s %s %s", self._host, method, path)
 
         command.append(url)
 
@@ -84,8 +83,7 @@ class APIFactory:
         except subprocess.TimeoutExpired:
             raise RequestTimeout() from None
         except subprocess.CalledProcessError as err:
-            raise RequestError(
-                'Error executing request: {}'.format(err)) from None
+            raise RequestError("Error executing request: {}".format(err)) from None
 
         api_command.result = _process_output(return_value, parse_json)
         return api_command.result
@@ -112,41 +110,46 @@ class APIFactory:
         url = api_command.url(self._host)
         err_callback = api_command.err_callback
 
-        command = (self._base_command('get')
-                   + ['-s', str(duration), '-B', str(duration), url])
+        command = self._base_command("get") + [
+            "-s",
+            str(duration),
+            "-B",
+            str(duration),
+            url,
+        ]
 
         kwargs = {
-            'stdout': subprocess.PIPE,
-            'stderr': subprocess.DEVNULL,
-            'universal_newlines': True
+            "stdout": subprocess.PIPE,
+            "stderr": subprocess.DEVNULL,
+            "universal_newlines": True,
         }
         try:
             proc = subprocess.Popen(command, **kwargs)
         except subprocess.CalledProcessError as err:
-            raise RequestError(
-                'Error executing request: {}'.format(err)) from None
+            raise RequestError("Error executing request: {}".format(err)) from None
 
-        output = ''
+        output = ""
         open_obj = 0
         start = time()
 
-        for data in iter(lambda: proc.stdout.read(1), ''):
-            if data == '\n':
-                _LOGGER.debug('Observing stopped for %s after %.1fs',
-                              path, time() - start)
+        for data in iter(lambda: proc.stdout.read(1), ""):
+            if data == "\n":
+                _LOGGER.debug(
+                    "Observing stopped for %s after %.1fs", path, time() - start
+                )
                 err_callback(RequestError("Observing stopped."))
                 break
 
-            if data == '{':
+            if data == "{":
                 open_obj += 1
-            elif data == '}':
+            elif data == "}":
                 open_obj -= 1
 
             output += data
 
             if open_obj == 0:
                 api_command.result = _process_output(output)
-                output = ''
+                output = ""
 
     def generate_psk(self, security_key):
         """
@@ -157,7 +160,7 @@ class APIFactory:
             existing_psk_id = self._psk_id
 
             # Set the default identity and security key for generation.
-            self._psk_id = 'Client_identity'
+            self._psk_id = "Client_identity"
             self._psk = security_key
 
             # Ask the Gateway to generate the psk for the identity.
@@ -172,16 +175,17 @@ class APIFactory:
 def _process_output(output, parse_json=True):
     """Process output."""
     output = output.strip()
-    _LOGGER.debug('Received: %s', output)
+    _LOGGER.debug("Received: %s", output)
 
     if not output:
         return None
 
-    elif 'decrypt_verify' in output:
+    elif "decrypt_verify" in output:
         raise RequestError(
-            'Please compile coap-client without debug output. See '
-            'instructions at '
-            'https://github.com/ggravlingen/pytradfri#installation')
+            "Please compile coap-client without debug output. See "
+            "instructions at "
+            "https://github.com/ggravlingen/pytradfri#installation"
+        )
 
     elif output.startswith(CLIENT_ERROR_PREFIX):
         raise ClientError(output)
@@ -197,6 +201,7 @@ def _process_output(output, parse_json=True):
 
 def retry_timeout(api, retries=3):
     """Retry API call when a timeout occurs."""
+
     @wraps(api)
     def retry_api(*args, **kwargs):
         """Retrying API."""

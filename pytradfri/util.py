@@ -15,16 +15,16 @@ def load_json(filename: str) -> Union[List, Dict]:
     Defaults to returning empty dict if file is not found.
     """
     try:
-        with open(filename, encoding='utf-8') as fdesc:
+        with open(filename, encoding="utf-8") as fdesc:
             return json.loads(fdesc.read())
     except FileNotFoundError:
         # This is not a fatal error
-        _LOGGER.debug('JSON file not found: %s', filename)
+        _LOGGER.debug("JSON file not found: %s", filename)
     except ValueError as error:
-        _LOGGER.exception('Could not parse JSON content: %s', filename)
+        _LOGGER.exception("Could not parse JSON content: %s", filename)
         raise PytradfriError(error)
     except OSError as error:
-        _LOGGER.exception('JSON file reading failed: %s', filename)
+        _LOGGER.exception("JSON file reading failed: %s", filename)
         raise PytradfriError(error)
     return {}  # (also evaluates to False)
 
@@ -36,16 +36,14 @@ def save_json(filename: str, config: Union[List, Dict]):
     """
     try:
         data = json.dumps(config, sort_keys=True, indent=4)
-        with open(filename, 'w', encoding='utf-8') as fdesc:
+        with open(filename, "w", encoding="utf-8") as fdesc:
             fdesc.write(data)
             return True
     except TypeError as error:
-        _LOGGER.exception('Failed to serialize to JSON: %s',
-                          filename)
+        _LOGGER.exception("Failed to serialize to JSON: %s", filename)
         raise PytradfriError(error)
     except OSError as error:
-        _LOGGER.exception('Saving JSON file failed: %s',
-                          filename)
+        _LOGGER.exception("Saving JSON file failed: %s", filename)
         raise PytradfriError(error)
 
 
@@ -60,7 +58,7 @@ class BitChoices(object):
         self._choices = []
         self._lookup = {}
         for index, (key, val) in enumerate(choices):
-            index = 2**index
+            index = 2 ** index
             self._choices.append((index, val))
             self._lookup[key] = index
 

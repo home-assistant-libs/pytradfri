@@ -1,10 +1,20 @@
 """Represent a light."""
 from pytradfri.color import supported_features
-from pytradfri.const import ATTR_DEVICE_STATE, SUPPORT_BRIGHTNESS, \
-    ATTR_LIGHT_DIMMER, SUPPORT_COLOR_TEMP, ATTR_LIGHT_MIREDS, \
-    SUPPORT_HEX_COLOR, ATTR_LIGHT_COLOR_HEX, SUPPORT_XY_COLOR, \
-    ATTR_LIGHT_COLOR_X, ATTR_LIGHT_COLOR_Y, ATTR_LIGHT_COLOR_HUE, \
-    ATTR_LIGHT_COLOR_SATURATION, ATTR_LIGHT_CONTROL
+from pytradfri.const import (
+    ATTR_DEVICE_STATE,
+    SUPPORT_BRIGHTNESS,
+    ATTR_LIGHT_DIMMER,
+    SUPPORT_COLOR_TEMP,
+    ATTR_LIGHT_MIREDS,
+    SUPPORT_HEX_COLOR,
+    ATTR_LIGHT_COLOR_HEX,
+    SUPPORT_XY_COLOR,
+    ATTR_LIGHT_COLOR_X,
+    ATTR_LIGHT_COLOR_Y,
+    ATTR_LIGHT_COLOR_HUE,
+    ATTR_LIGHT_COLOR_SATURATION,
+    ATTR_LIGHT_CONTROL,
+)
 
 
 class Light:
@@ -45,16 +55,17 @@ class Light:
     @property
     def xy_color(self):
         if self.supported_features & SUPPORT_XY_COLOR:
-            return (self.raw.get(ATTR_LIGHT_COLOR_X),
-                    self.raw.get(ATTR_LIGHT_COLOR_Y))
+            return (self.raw.get(ATTR_LIGHT_COLOR_X), self.raw.get(ATTR_LIGHT_COLOR_Y))
 
     @property
     def hsb_xy_color(self):
-        return (self.raw.get(ATTR_LIGHT_COLOR_HUE),
-                self.raw.get(ATTR_LIGHT_COLOR_SATURATION),
-                self.raw.get(ATTR_LIGHT_DIMMER),
-                self.raw.get(ATTR_LIGHT_COLOR_X),
-                self.raw.get(ATTR_LIGHT_COLOR_Y))
+        return (
+            self.raw.get(ATTR_LIGHT_COLOR_HUE),
+            self.raw.get(ATTR_LIGHT_COLOR_SATURATION),
+            self.raw.get(ATTR_LIGHT_DIMMER),
+            self.raw.get(ATTR_LIGHT_COLOR_X),
+            self.raw.get(ATTR_LIGHT_COLOR_Y),
+        )
 
     @property
     def raw(self):
@@ -63,14 +74,23 @@ class Light:
 
     def __repr__(self):
         state = "on" if self.state else "off"
-        return "<Light #{} - " \
-               "name: {}, " \
-               "state: {}, " \
-               "dimmer: {}, "\
-               "hex_color: {}, " \
-               "xy_color: {}, " \
-               "hsb_xy_color: {}, "\
-               "supported features: {} " \
-               ">".format(self.index, self.device.name, state, self.dimmer,
-                          self.hex_color, self.xy_color,
-                          self.hsb_xy_color, self.supported_features)
+        return (
+            "<Light #{} - "
+            "name: {}, "
+            "state: {}, "
+            "dimmer: {}, "
+            "hex_color: {}, "
+            "xy_color: {}, "
+            "hsb_xy_color: {}, "
+            "supported features: {} "
+            ">".format(
+                self.index,
+                self.device.name,
+                state,
+                self.dimmer,
+                self.hex_color,
+                self.xy_color,
+                self.hsb_xy_color,
+                self.supported_features,
+            )
+        )

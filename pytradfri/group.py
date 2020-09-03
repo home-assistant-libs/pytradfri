@@ -20,13 +20,15 @@ from .const import (
     RANGE_SATURATION,
     ATTR_LIGHT_COLOR_SATURATION,
     ATTR_LIGHT_COLOR_HUE,
-    RANGE_BRIGHTNESS)
+    RANGE_BRIGHTNESS,
+)
 from .error import ColorError
 from .resource import ApiResource
 
 
 class Group(ApiResource):
     """Represent a group."""
+
     def __init__(self, gateway, raw):
         super().__init__(raw)
         self._gateway = gateway
@@ -70,17 +72,15 @@ class Group(ApiResource):
 
     def add_member(self, memberid):
         """Adds a member to this group."""
-        return self._gateway.add_group_member({
-            ATTR_GROUP_ID: self.id,
-            ATTR_ID: [memberid]
-        })
+        return self._gateway.add_group_member(
+            {ATTR_GROUP_ID: self.id, ATTR_ID: [memberid]}
+        )
 
     def remove_member(self, memberid):
         """Removes a member from this group."""
-        return self._gateway.remove_group_member({
-            ATTR_GROUP_ID: self.id,
-            ATTR_ID: [memberid]
-        })
+        return self._gateway.remove_group_member(
+            {ATTR_GROUP_ID: self.id, ATTR_ID: [memberid]}
+        )
 
     def moods(self):
         """Return mood objects of moods in this group."""
@@ -92,16 +92,11 @@ class Group(ApiResource):
 
     def activate_mood(self, mood_id):
         """Activate a mood."""
-        return self.set_values({
-            ATTR_MOOD: mood_id,
-            ATTR_DEVICE_STATE: int(self.state)
-        })
+        return self.set_values({ATTR_MOOD: mood_id, ATTR_DEVICE_STATE: int(self.state)})
 
     def set_state(self, state):
         """Set state of a group."""
-        return self.set_values({
-            ATTR_DEVICE_STATE: int(state)
-        })
+        return self.set_values({ATTR_DEVICE_STATE: int(state)})
 
     def set_dimmer(self, dimmer, transition_time=None):
         """Set dimmer value of a group.
@@ -120,9 +115,7 @@ class Group(ApiResource):
         """Set color temp a light."""
         self._value_validate(color_temp, RANGE_MIREDS, "Color temperature")
 
-        values = {
-            ATTR_LIGHT_MIREDS: color_temp
-        }
+        values = {ATTR_LIGHT_MIREDS: color_temp}
 
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
@@ -138,16 +131,14 @@ class Group(ApiResource):
             values[ATTR_TRANSITION_TIME] = transition_time
         return self.set_values(values)
 
-    def set_hsb(self, hue, saturation, brightness=None, *, index=0,
-                transition_time=None):
+    def set_hsb(
+        self, hue, saturation, brightness=None, *, index=0, transition_time=None
+    ):
         """Set HSB color settings of the light."""
         self._value_validate(hue, RANGE_HUE, "Hue")
         self._value_validate(saturation, RANGE_SATURATION, "Saturation")
 
-        values = {
-            ATTR_LIGHT_COLOR_SATURATION: saturation,
-            ATTR_LIGHT_COLOR_HUE: hue
-        }
+        values = {ATTR_LIGHT_COLOR_SATURATION: saturation, ATTR_LIGHT_COLOR_HUE: hue}
 
         if brightness is not None:
             values[ATTR_LIGHT_DIMMER] = brightness
@@ -163,10 +154,7 @@ class Group(ApiResource):
         self._value_validate(color_x, RANGE_X, "X color")
         self._value_validate(color_y, RANGE_Y, "Y color")
 
-        values = {
-            ATTR_LIGHT_COLOR_X: color_x,
-            ATTR_LIGHT_COLOR_Y: color_y
-        }
+        values = {ATTR_LIGHT_COLOR_X: color_x, ATTR_LIGHT_COLOR_Y: color_y}
 
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
@@ -178,17 +166,17 @@ class Group(ApiResource):
             color = COLORS[colorname.lower().replace(" ", "_")]
             return self.set_hex_color(color, transition_time=transition_time)
         except KeyError:
-            raise ColorError('Invalid color specified: %s',
-                             colorname)
+            raise ColorError("Invalid color specified: %s", colorname)
 
     def _value_validate(self, value, rnge, identifier="Given"):
         """
         Make sure a value is within a given range
         """
         if value is not None and (value < rnge[0] or value > rnge[1]):
-            raise ValueError('%s value must be between %d and %d.'
-                             % (identifier, rnge[0], rnge[1]))
+            raise ValueError(
+                "%s value must be between %d and %d." % (identifier, rnge[0], rnge[1])
+            )
 
     def __repr__(self):
-        state = 'on' if self.state else 'off'
-        return '<Group {} - {}>'.format(self.name, state)
+        state = "on" if self.state else "off"
+        return "<Group {} - {}>".format(self.name, state)

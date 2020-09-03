@@ -20,7 +20,6 @@ class SignalRepeaterControl:
         return [SignalRepeater(self._device, i) for i in range(len(self.raw))]
 
     def __repr__(self):
-        return '<SignalRepeaterControl for {} ({} signal repeaters)>'.format(
-            self._device.name,
-            len(self.raw)
+        return "<SignalRepeaterControl for {} ({} signal repeaters)>".format(
+            self._device.name, len(self.raw)
         )

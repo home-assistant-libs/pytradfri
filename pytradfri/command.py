@@ -6,9 +6,18 @@ from copy import deepcopy
 class Command(object):
     """The object for coap commands."""
 
-    def __init__(self, method, path, data=None, *, parse_json=True,
-                 observe=False, observe_duration=0, process_result=None,
-                 err_callback=None):
+    def __init__(
+        self,
+        method,
+        path,
+        data=None,
+        *,
+        parse_json=True,
+        observe=False,
+        observe_duration=0,
+        process_result=None,
+        err_callback=None
+    ):
         self._method = method
         self._path = path
         self._data = data
@@ -72,11 +81,11 @@ class Command(object):
     @property
     def path_str(self) -> str:
         """Return coap path."""
-        return '/'.join(str(v) for v in self._path)
+        return "/".join(str(v) for v in self._path)
 
     def url(self, host):
         """Generate url for coap client."""
-        return 'coaps://{}:5684/{}'.format(host, self.path_str)
+        return "coaps://{}:5684/{}".format(host, self.path_str)
 
     def _merge(self, a, b):
         """Merges a into b."""
@@ -108,5 +117,9 @@ class Command(object):
             newObj.combine_data(other)
             return newObj
         else:
-            raise (TypeError("unsupported operand type(s) for +: "
-                   "'{}' and '{}'".format(self.__class__, type(other))))
+            raise (
+                TypeError(
+                    "unsupported operand type(s) for +: "
+                    "'{}' and '{}'".format(self.__class__, type(other))
+                )
+            )
