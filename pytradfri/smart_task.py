@@ -263,7 +263,7 @@ class StartActionItem:
     @property
     def raw(self):
         """Return raw data that it represents."""
-        return self.task.raw[ATTR_START_ACTION][ROOT_START_ACTION][self.index]
+        return self._raw[ROOT_START_ACTION][self.index]
 
     def __repr__(self):
         """Return a readable name for this class."""
