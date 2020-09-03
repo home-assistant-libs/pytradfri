@@ -2,6 +2,7 @@
 pip-selfcheck.json
 # Python stuff
 *.py[cod]
+venv
 
 # IDE stuff
 .idea/

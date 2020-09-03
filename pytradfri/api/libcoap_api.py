@@ -124,7 +124,7 @@ class APIFactory:
             proc = subprocess.Popen(command, **kwargs)
         except subprocess.CalledProcessError as err:
             raise RequestError(
-                'Error executing request: %s'.format(err)) from None
+                'Error executing request: {}'.format(err)) from None
 
         output = ''
         open_obj = 0
