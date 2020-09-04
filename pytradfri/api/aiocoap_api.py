@@ -5,6 +5,7 @@ import logging
 import socket
 
 from aiocoap import Message, Context
+from aiocoap.credentials import CredentialsMissingError
 from aiocoap.error import (
     RequestTimedOut,
     Error,
@@ -31,6 +32,7 @@ class APIFactory:
         self._observations_err_callbacks = []
         self._protocol = None
         self._reset_lock = asyncio.Lock()
+        self._shutdown = False
 
     @classmethod
     async def init(cls, host, psk_id="pytradfri", psk=None) -> "APIFactory":
@@ -58,6 +60,8 @@ class APIFactory:
         """Reset the protocol if an error occurs."""
         skip = self._reset_lock.locked()
         async with self._reset_lock:
+            if self._shutdown:
+                return
             if skip:
                 # The lock was already acquired, so another task was already
                 # in the process of resetting the protocol, so we don't need
@@ -83,6 +87,7 @@ class APIFactory:
         """Shutdown the API events.
         This should be called before closing the event loop."""
         await self._reset_protocol(exc)
+        self._shutdown = True
 
     async def _get_response(self, msg):
         """Perform the request, get the response."""
@@ -91,11 +96,16 @@ class APIFactory:
             pr = protocol.request(msg)
             r = await pr.response
             return pr, r
+        except CredentialsMissingError as e:
+            await self._reset_protocol(e)
+            raise ServerError("There was an error with the request.", e)
         except ConstructionRenderableError as e:
             raise ClientError("There was an error with the request.", e)
         except RequestTimedOut as e:
             await self._reset_protocol(e)
             raise RequestTimeout("Request timed out.", e)
+        except LibraryShutdown:
+            raise
         except (OSError, socket.gaierror, Error) as e:
             # aiocoap sometimes raises an OSError/socket.gaierror too.
             # aiocoap issue #124
@@ -109,10 +119,9 @@ class APIFactory:
         """Execute the command."""
         if api_command.observe:
             await self._observe(api_command)
-            return
+            return None
 
         method = api_command.method
-        path = api_command.path
         data = api_command.data
         parse_json = api_command.parse_json
         url = api_command.url(self._host)
@@ -121,9 +130,6 @@ class APIFactory:
 
         if data is not None:
             kwargs["payload"] = json.dumps(data).encode("utf-8")
-            _LOGGER.debug("Executing %s %s %s: %s", self._host, method, path, data)
-        else:
-            _LOGGER.debug("Executing %s %s %s", self._host, method, path)
 
         api_method = Code.GET
         if method == "put":
@@ -139,7 +145,17 @@ class APIFactory:
 
         msg = Message(code=api_method, uri=url, **kwargs)
 
-        _, res = await self._get_response(msg)
+        _LOGGER.debug("Executing %s %s", self._host, api_command)
+
+        try:
+            _, res = await self._get_response(msg)
+        except LibraryShutdown:
+            _LOGGER.warning(
+                "Protocol is shutdown, cancelling command: %s %s",
+                self._host,
+                api_command,
+            )
+            return None
 
         api_command.result = _process_output(res, parse_json)
 
