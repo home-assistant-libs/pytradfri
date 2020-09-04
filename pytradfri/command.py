@@ -123,3 +123,11 @@ class Command(object):
                     "'{}' and '{}'".format(self.__class__, type(other))
                 )
             )
+
+    def __repr__(self):
+        """Return the representation."""
+        if self.data is None:
+            template = "<Command {} {}{}>"
+        else:
+            template = "<Command {} {}: {}>"
+        return template.format(self.method, self.path, self.data or "")
