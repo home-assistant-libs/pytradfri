@@ -2,7 +2,6 @@
 import asyncio
 import json
 import logging
-import socket
 
 from aiocoap import Message, Context
 from aiocoap.credentials import CredentialsMissingError
