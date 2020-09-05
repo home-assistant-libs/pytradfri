@@ -106,9 +106,7 @@ class APIFactory:
             raise RequestTimeout("Request timed out.", e)
         except LibraryShutdown:
             raise
-        except (OSError, socket.gaierror, Error) as e:
-            # aiocoap sometimes raises an OSError/socket.gaierror too.
-            # aiocoap issue #124
+        except Error as e:
             await self._reset_protocol(e)
             raise ServerError("There was an error with the request.", e)
         except asyncio.CancelledError as e:
