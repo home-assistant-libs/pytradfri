@@ -26,7 +26,7 @@ PACKAGES = find_packages(exclude=['tests', 'tests.*'])
 setup(
   name='pytradfri',
   packages=PACKAGES,
-  python_requires='>=3.5',
+  python_requires='>=3.7',
   version=VERSION,
   description='IKEA Trådfri/Tradfri API. Control and observe your '
               'lights from Python.',
