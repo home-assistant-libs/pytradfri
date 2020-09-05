@@ -1,42 +1,36 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
+"""Set up pytradfri."""
+from pathlib import Path
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-# To use a consistent encoding
-from codecs import open
-from os import path
-
-here = path.abspath(path.dirname(__file__))
-
-# Get the long description from the README file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
+PROJECT_DIR = Path(__file__).parent.resolve()
+README_FILE = PROJECT_DIR / "README.md"
+LONG_DESCRIPTION = README_FILE.read_text(encoding="utf-8")
 
 VERSION = "7.0.1"
-DOWNLOAD_URL = \
-    'https://github.com/ggravlingen/pytradfri/archive/{}.zip'.format(VERSION)
 
-EXTRAS_REQUIRE = {
-    'async': ['aiocoap==0.4b3', 'DTLSSocket==0.1.10']
-}
+GITHUB_URL = "https://github.com/home-assistant-libs/pytradfri"
+DOWNLOAD_URL = f"{GITHUB_URL}/archive/{VERSION}.zip"
 
-PACKAGES = find_packages(exclude=['tests', 'tests.*'])
+EXTRAS_REQUIRE = {"async": ["aiocoap==0.4b3", "DTLSSocket==0.1.10"]}
+
+PACKAGES = find_packages(exclude=["tests", "tests.*"])
 
 setup(
-  name='pytradfri',
-  packages=PACKAGES,
-  python_requires='>=3.7',
-  version=VERSION,
-  description='IKEA Trådfri/Tradfri API. Control and observe your '
-              'lights from Python.',
-  long_description=long_description,
-  author='balloob, lwis, ggravlingen',
-  author_email='no@email.com',
-  long_description_content_type="text/markdown",
-  url='https://github.com/ggravlingen/pytradfri',
-  license='MIT',
-  keywords='ikea tradfri api iot light homeautomation',
-  download_url=DOWNLOAD_URL,
-  extras_require=EXTRAS_REQUIRE,
+    name="pytradfri",
+    packages=PACKAGES,
+    python_requires=">=3.7",
+    version=VERSION,
+    description="IKEA Trådfri/Tradfri API. Control and observe your "
+    "lights from Python.",
+    long_description=LONG_DESCRIPTION,
+    author="balloob, lwis, ggravlingen",
+    author_email="no@email.com",
+    long_description_content_type="text/markdown",
+    url=GITHUB_URL,
+    license="MIT",
+    keywords="ikea tradfri api iot light homeautomation",
+    download_url=DOWNLOAD_URL,
+    extras_require=EXTRAS_REQUIRE,
 )
