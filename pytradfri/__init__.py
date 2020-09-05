@@ -1,4 +1,5 @@
 """Implement an API wrapper around Ikea Tradfri."""
+from pathlib import Path
 
 from .error import (
     PytradfriError,
@@ -17,3 +18,5 @@ __all__ = [
     "ServerError",
     "RequestTimeout",
 ]
+
+__version__ = (Path(__file__).parent / "VERSION").read_text().strip()
