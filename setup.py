@@ -8,7 +8,7 @@ PROJECT_DIR = Path(__file__).parent.resolve()
 README_FILE = PROJECT_DIR / "README.md"
 LONG_DESCRIPTION = README_FILE.read_text(encoding="utf-8")
 
-VERSION = "7.0.1"
+VERSION = (PROJECT_DIR / "pytradfri" / "VERSION").read_text().strip()
 
 GITHUB_URL = "https://github.com/home-assistant-libs/pytradfri"
 DOWNLOAD_URL = f"{GITHUB_URL}/archive/{VERSION}.zip"
@@ -29,6 +29,7 @@ setup(
     author_email="no@email.com",
     long_description_content_type="text/markdown",
     url=GITHUB_URL,
+    include_package_data=True,
     license="MIT",
     keywords="ikea tradfri api iot light homeautomation",
     download_url=DOWNLOAD_URL,
