@@ -7,7 +7,7 @@ from pytradfri.const import (
     SUPPORT_XY_COLOR,
 )
 from pytradfri.color import supported_features
-from devices import (
+from .devices import (
     LIGHT_W,
     LIGHT_WS,
     LIGHT_WS_CUSTOM_COLOR,
