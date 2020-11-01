@@ -29,3 +29,6 @@ jobs:
       - name: Check formatting with black
         run: |
           black pytradfri examples tests --check
+      - name: Run unit tests
+        run: |
+          python -m unittest discover tests
