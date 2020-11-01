@@ -19,7 +19,7 @@ from pytradfri.const import (
     ATTR_SWITCH_PLUG,
 )
 from pytradfri.device import Device
-from devices import (
+from .devices import (
     LIGHT_W,
     LIGHT_WS,
     LIGHT_CWS,
