@@ -1,5 +1,5 @@
 import pytest
-from moods import MOOD
+from .moods import MOOD
 
 from pytradfri.const import ROOT_MOODS
 from pytradfri.mood import Mood
