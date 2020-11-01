@@ -1,5 +1,5 @@
 import pytest
-from devices import GROUP
+from .devices import GROUP
 
 from pytradfri import error
 from pytradfri.const import (
