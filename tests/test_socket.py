@@ -1,5 +1,5 @@
 from pytradfri.device import Device
-from devices import OUTLET
+from .devices import OUTLET
 
 
 def socket(raw):

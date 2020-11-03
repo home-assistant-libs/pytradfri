@@ -1,7 +1,7 @@
 import pytest
 
 from pytradfri.device import Device
-from devices import BLIND
+from .devices import BLIND
 
 
 @pytest.fixture
