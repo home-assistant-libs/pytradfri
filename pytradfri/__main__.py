@@ -118,7 +118,8 @@ if __name__ == "__main__":
         print("> light.light_control.lights")
         print("> api(light.light_control.set_dimmer(10))")
         print("> api(light.light_control.set_dimmer(254))")
-        print("> api(light.light_control.set_xy_color(254))")
+        print("> api(light.light_control.set_xy_color(30015, 26870))")
+        print("> api(light.light_control.set_predefined_color('Warm Amber'))")
         print("> api(lights[1].light_control.set_dimmer(20))")
     if tasks:
         print("> tasks[0].repeat_days_list")
