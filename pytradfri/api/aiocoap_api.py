@@ -97,19 +97,23 @@ class APIFactory:
             return pr, r
         except CredentialsMissingError as e:
             await self._reset_protocol(e)
+            await self._update_credentials()
             raise ServerError("There was an error with the request.", e)
         except ConstructionRenderableError as e:
             raise ClientError("There was an error with the request.", e)
         except RequestTimedOut as e:
             await self._reset_protocol(e)
+            await self._update_credentials()
             raise RequestTimeout("Request timed out.", e)
         except LibraryShutdown:
             raise
         except Error as e:
             await self._reset_protocol(e)
+            await self._update_credentials()
             raise ServerError("There was an error with the request.", e)
         except asyncio.CancelledError as e:
             await self._reset_protocol(e)
+            await self._update_credentials()
             raise e
 
     async def _execute(self, api_command):
