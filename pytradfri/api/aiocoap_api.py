@@ -228,6 +228,9 @@ class APIFactory:
 
     async def _update_credentials(self):
         """Update credentials."""
+        if not self._psk:
+            # No credentials to reset
+            return
         protocol = await self._get_protocol()
         protocol.client_credentials.load_from_dict(
             {
