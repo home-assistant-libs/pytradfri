@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-This is an example of how the pytradfri-library can be used.
+This is an example of how the pytradfri-library can be used sync.
 
 To run the script, do the following:
 $ pip3 install pytradfri
@@ -106,13 +106,13 @@ def run():
 
     if light:
         # Example 1: checks state of the light (true=on)
-        print("State: {}".format(light.light_control.lights[0].state))
+        print("Is on:", light.light_control.lights[0].state)
 
         # Example 2: get dimmer level of the light
-        print("Dimmer: {}".format(light.light_control.lights[0].dimmer))
+        print("Dimmer:", light.light_control.lights[0].dimmer)
 
         # Example 3: What is the name of the light
-        print("Name: {}".format(light.name))
+        print("Name:", light.name)
 
         # Example 4: Set the light level of the light
         dim_command = light.light_control.set_dimmer(254)
@@ -120,7 +120,7 @@ def run():
 
         # Example 5: Change color of the light
         # f5faf6 = cold | f1e0b5 = normal | efd275 = warm
-        color_command = light.light_control.set_color_temp(250)
+        color_command = light.light_control.set_hex_color("efd275")
         api(color_command)
 
     # Get all blinds
@@ -152,22 +152,21 @@ def run():
         api(dim_command_2)
 
     if light:
-        def callback(updated_device):
+        def observe_callback(updated_device):
             light = updated_device.light_control.lights[0]
             print("Received message for: %s" % light)
 
-        def err_callback(err):
-            print(err)
+        def observe_err_callback(err):
+            print("observe error:", err)
 
-        def worker():
-            api(light.observe(callback, err_callback, duration=120))
+        def worker(light):
+            api(light.observe(observe_callback, observe_err_callback, duration=120))
 
-        threading.Thread(target=worker, daemon=True).start()
+        for light in lights:
+            threading.Thread(target=worker, args=(light,), daemon=True).start()
 
         print("Sleeping for 2 min to listen for more observation events")
-        print(
-            "Try altering the light (%s) in the app, and watch the events!" % light.name
-        )
+        print("Try altering any light in the app, and watch the events!")
         time.sleep(120)
 
 

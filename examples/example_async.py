@@ -36,7 +36,11 @@ parser.add_argument(
     "host", metavar="IP", type=str, help="IP Address of your Tradfri gateway"
 )
 parser.add_argument(
-    "-K", "--key", dest="key", required=False, help="Key found on your Tradfri gateway"
+    "-K",
+    "--key",
+    dest="key",
+    required=False,
+    help="Security code found on your Tradfri gateway",
 )
 args = parser.parse_args()
 
@@ -155,13 +159,11 @@ async def run():
             print("observe error:", err)
 
         for light in lights:
-            observe_command = light.observe(
-                observe_callback, observe_err_callback, duration=120
-            )
+            observe_api_command = api(light.observe(observe_callback, observe_err_callback, duration=120))
             # Start observation as a second task on the loop.
-            asyncio.ensure_future(api(observe_command))
+            asyncio.ensure_future(observe_api_command)
 
-        print("Waiting for observation to end (2 mins)")
+        print("Sleeping for 2 min to listen for more observation events")
         print("Try altering any light in the app, and watch the events!")
         await asyncio.sleep(120)
 
