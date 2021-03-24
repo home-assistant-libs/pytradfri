@@ -99,22 +99,6 @@ async def run():
         print("No lights found!")
         light = None
 
-    def observe_callback(updated_device):
-        light = updated_device.light_control.lights[0]
-        print("Received message for: %s" % light)
-
-    def observe_err_callback(err):
-        print("observe error:", err)
-
-    for light in lights:
-        observe_command = light.observe(
-            observe_callback, observe_err_callback, duration=120
-        )
-        # Start observation as a second task on the loop.
-        asyncio.ensure_future(api(observe_command))
-        # Yield to allow observing to start.
-        await asyncio.sleep(0)
-
     if light:
         # Example 1: checks state of the light (true=on)
         print("Is on:", light.light_control.lights[0].state)
@@ -162,9 +146,24 @@ async def run():
         dim_command_2 = tasks[0].start_action.devices[0].item_controller.set_dimmer(30)
         await api(dim_command_2)
 
-    print("Waiting for observation to end (2 mins)")
-    print("Try altering any light in the app, and watch the events!")
-    await asyncio.sleep(120)
+    if light:
+        def observe_callback(updated_device):
+            light = updated_device.light_control.lights[0]
+            print("Received message for: %s" % light)
+
+        def observe_err_callback(err):
+            print("observe error:", err)
+
+        for light in lights:
+            observe_command = light.observe(
+                observe_callback, observe_err_callback, duration=120
+            )
+            # Start observation as a second task on the loop.
+            asyncio.ensure_future(api(observe_command))
+
+        print("Waiting for observation to end (2 mins)")
+        print("Try altering any light in the app, and watch the events!")
+        await asyncio.sleep(120)
 
     await api_factory.shutdown()
 

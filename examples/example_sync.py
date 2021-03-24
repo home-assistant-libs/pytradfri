@@ -58,22 +58,6 @@ if args.host not in load_json(CONFIG_FILE) and args.key is None:
         args.key = key
 
 
-def observe(api, device):
-    def callback(updated_device):
-        light = updated_device.light_control.lights[0]
-        print("Received message for: %s" % light)
-
-    def err_callback(err):
-        print(err)
-
-    def worker():
-        api(device.observe(callback, err_callback, duration=120))
-
-    threading.Thread(target=worker, daemon=True).start()
-    print("Sleeping to start observation task")
-    time.sleep(1)
-
-
 def run():
     # Assign configuration variables.
     # The configuration check takes care they are present.
@@ -121,8 +105,6 @@ def run():
         light = None
 
     if light:
-        observe(api, light)
-
         # Example 1: checks state of the light (true=on)
         print("State: {}".format(light.light_control.lights[0].state))
 
@@ -170,6 +152,18 @@ def run():
         api(dim_command_2)
 
     if light:
+        def callback(updated_device):
+            light = updated_device.light_control.lights[0]
+            print("Received message for: %s" % light)
+
+        def err_callback(err):
+            print(err)
+
+        def worker():
+            api(light.observe(callback, err_callback, duration=120))
+
+        threading.Thread(target=worker, daemon=True).start()
+
         print("Sleeping for 2 min to listen for more observation events")
         print(
             "Try altering the light (%s) in the app, and watch the events!" % light.name
