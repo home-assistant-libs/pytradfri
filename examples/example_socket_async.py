@@ -106,7 +106,8 @@ async def run():
 
     for socket in sockets:
         observe_command = socket.observe(
-            observe_callback, observe_err_callback, duration=120
+            observe_callback,
+            observe_err_callback,
         )
         # Start observation as a second task on the loop.
         asyncio.ensure_future(api(observe_command))

@@ -175,11 +175,10 @@ class APIFactory:
 
     async def _observe(self, api_command):
         """Observe an endpoint."""
-        duration = api_command.observe_duration
         url = api_command.url(self._host)
         err_callback = api_command.err_callback
 
-        msg = Message(code=Code.GET, uri=url, observe=duration)
+        msg = Message(code=Code.GET, uri=url, observe=0)
 
         # Note that this is necessary to start observing
         pr, r = await self._get_response(msg)
