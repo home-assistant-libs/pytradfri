@@ -28,7 +28,7 @@ class APIFactory:
         self._psk = psk
         self._host = host
         self._psk_id = psk_id
-        self._observations_err_callbacks = []
+        self._observations = set()
         self._protocol = None
         self._reset_lock = asyncio.Lock()
         self._shutdown = False
@@ -80,7 +80,7 @@ class APIFactory:
 
             # The error callbacks are called when shutting down the protocol.
             # Clear the saved callbacks
-            self._observations_err_callbacks.clear()
+            self._observations.clear()
 
     async def shutdown(self, exc=None):
         """Shutdown the API events.
@@ -197,7 +197,9 @@ class APIFactory:
         ob = pr.observation
         ob.register_callback(success_callback)
         ob.register_errback(error_callback)
-        self._observations_err_callbacks.append(ob.error)
+        # keep observations alive so they don't get garbage collected
+        self._observations.add(ob)
+        ob.on_cancel(lambda: self._observations.discard(ob))
 
     async def generate_psk(self, security_key):
         """Generate and set a psk from the security key."""
