@@ -13,7 +13,7 @@ VERSION = (PROJECT_DIR / "pytradfri" / "VERSION").read_text().strip()
 GITHUB_URL = "https://github.com/home-assistant-libs/pytradfri"
 DOWNLOAD_URL = f"{GITHUB_URL}/archive/{VERSION}.zip"
 
-EXTRAS_REQUIRE = {"async": ["aiocoap==0.4b3", "DTLSSocket==0.1.12"]}
+EXTRAS_REQUIRE = {"async": ["aiocoap==0.4.1", "DTLSSocket==0.1.12"]}
 
 PACKAGES = find_packages(exclude=["tests", "tests.*"])
 
