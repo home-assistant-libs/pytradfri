@@ -87,7 +87,7 @@ class Group(ApiResource):
         return self._gateway.get_moods(self.id)
 
     def mood(self):
-        """"Active mood."""
+        """Active mood."""
         return self._gateway.get_mood(self.mood_id, mood_parent=self.id)
 
     def activate_mood(self, mood_id):
