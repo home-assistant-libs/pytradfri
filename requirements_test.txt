@@ -3,4 +3,4 @@ flake8==3.9.2
 pytest-timeout==1.4.2
 coveralls==3.1.0
 pytest-cov==2.12.1
-black==21.5b2
+black==21.6b0
