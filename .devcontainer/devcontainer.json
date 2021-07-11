@@ -1,0 +1,9 @@
+{
+	"name": "Pytradfri dev",
+	"context": "..",
+	"dockerFile": "../Dockerfile",
+	"settings": {},
+	"extensions": [
+		"ms-python.vscode-pylance"
+	],
+}
