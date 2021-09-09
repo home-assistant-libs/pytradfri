@@ -52,8 +52,9 @@ class APIFactory:
     async def _get_protocol(self):
         """Get the protocol for the request."""
         if self._protocol is None:
-            self._protocol = asyncio.create_task(Context.create_client_context())
-        return await self._protocol
+            task = asyncio.create_task(Context.create_client_context())
+            self._protocol = await task
+        return self._protocol
 
     async def _reset_protocol(self, exc=None):
         """Reset the protocol if an error occurs."""
