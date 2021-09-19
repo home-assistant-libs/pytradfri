@@ -165,7 +165,10 @@ class TaskControl:
         """
         #  This is to calculate the difference between local time
         #  and the time in the gateway
-        d1 = self._gateway.get_gateway_info().current_time
+        gw = self._gateway.get_gateway_info()
+        if not gw:
+            return None
+        d1 = gw.current_time
         d2 = dt.utcnow()
         diff = d1 - d2
         newtime = dt(100, 1, 1, hour, minute, 00) - diff

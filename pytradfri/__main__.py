@@ -92,6 +92,11 @@ if __name__ == "__main__":
         group = None
     tasks_commands = api(gateway.get_smart_tasks())
     tasks = api(tasks_commands)
+    gw = gateway.get_gateway_info()
+    if not gw:
+        print("Gateway not foun!")
+        exit(-1)
+
     homekit_id = api(gateway.get_gateway_info()).homekit_id
 
     def dump_all():

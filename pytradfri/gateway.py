@@ -287,7 +287,8 @@ class GatewayInfo:
         def process_result(result):
             self.raw = result
 
-        return Command("get", self.path, process_result=process_result)
+        cmd = Command("get", self.path, process_result=process_result)
+        return cmd if self.raw else None
 
     def __repr__(self):
         return "<GatewayInfo>"
