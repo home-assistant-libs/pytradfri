@@ -1,7 +1,10 @@
 """COAP implementation using aiocoap."""
+from __future__ import annotations
+
 import asyncio
 import json
 import logging
+from typing import Callable
 
 from aiocoap import Message, Context
 from aiocoap.credentials import CredentialsMissingError
@@ -28,7 +31,7 @@ class APIFactory:
         self._psk = psk
         self._host = host
         self._psk_id = psk_id
-        self._observations_err_callbacks = []
+        self._observations_err_callbacks: list[Callable] = []
         self._protocol = None
         self._reset_lock = asyncio.Lock()
         self._shutdown = False
