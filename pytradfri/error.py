@@ -7,8 +7,8 @@ class PytradfriError(Exception):
     pass
 
 
-class GatewayInfoError(PytradfriError):
-    """An error happened while retrieving gateway info."""
+class RawError(PytradfriError):
+    """An error happened while retrieving raw."""
 
     pass
 

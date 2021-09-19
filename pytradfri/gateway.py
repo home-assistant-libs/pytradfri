@@ -23,7 +23,7 @@ from .const import (
     ATTR_HOMEKIT_ID,
     ATTR_COMMISSIONING_MODE,
 )
-from .error import GatewayInfoError
+from .error import RawError
 from pytradfri.device import Device
 from .group import Group
 from .mood import Mood
@@ -133,8 +133,6 @@ class Gateway:
         """
 
         def process_result(result):
-            if not result:
-                raise GatewayInfoError("Cannot get gateway info")
             return GatewayInfo(result)
 
         return Command(
@@ -230,6 +228,8 @@ class GatewayInfo:
     """This class contains Gateway information."""
 
     def __init__(self, raw):
+        if not raw:
+            raise RawError("Raw is None, cannot proceed.")
         self.raw = raw
 
     @property
@@ -288,12 +288,11 @@ class GatewayInfo:
         """
 
         def process_result(result):
+            if not result:
+                raise RawError("Raw is None, cannot proceed.")
             self.raw = result
 
-        cmd = Command("get", self.path, process_result=process_result)
-        if not self.raw:
-            raise GatewayInfoError("Cannot create raw device")
-        return cmd
+        return Command("get", self.path, process_result=process_result)
 
     def __repr__(self):
         return "<GatewayInfo>"
