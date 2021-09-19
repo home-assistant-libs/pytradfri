@@ -3,6 +3,7 @@ from pathlib import Path
 
 from .error import (
     PytradfriError,
+    GatewayInfoError,
     RequestError,
     ClientError,
     ServerError,

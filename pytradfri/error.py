@@ -7,6 +7,12 @@ class PytradfriError(Exception):
     pass
 
 
+class GatewayInfoError(PytradfriError):
+    """An error happened while retrieving gateway info."""
+
+    pass
+
+
 class RequestError(PytradfriError):
     """An error happened sending or receiving a command."""
 
