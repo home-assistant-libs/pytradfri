@@ -13,7 +13,6 @@ from datetime import datetime as dt
 import datetime
 
 from .command import Command
-from .error import GatewayInfoError
 from .const import (
     ATTR_ID,
     ATTR_LIGHT_DIMMER,
@@ -166,14 +165,9 @@ class TaskControl:
         """
         #  This is to calculate the difference between local time
         #  and the time in the gateway
-        try:
-            gw = self._gateway.get_gateway_info()
-        except GatewayInfoError as err:
-            diff = 0
-        else:
-            d1 = self._gateway.get_gateway_info().current_time
-            d2 = dt.utcnow()
-            diff = d1 - d2
+        d1 = self._gateway.get_gateway_info().current_time
+        d2 = dt.utcnow()
+        diff = d1 - d2
         newtime = dt(100, 1, 1, hour, minute, 00) - diff
 
         command = {

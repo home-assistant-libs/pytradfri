@@ -133,6 +133,8 @@ class Gateway:
         """
 
         def process_result(result):
+            if not result:
+                raise RawError("Raw is None, cannot proceed.")
             return GatewayInfo(result)
 
         return Command(
@@ -228,8 +230,6 @@ class GatewayInfo:
     """This class contains Gateway information."""
 
     def __init__(self, raw):
-        if not raw:
-            raise RawError("Raw is None, cannot proceed.")
         self.raw = raw
 
     @property
