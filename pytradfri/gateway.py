@@ -133,6 +133,8 @@ class Gateway:
         """
 
         def process_result(result):
+            if not result:
+                raise GatewayInfoError("Cannot get gateway info")
             return GatewayInfo(result)
 
         return Command(
