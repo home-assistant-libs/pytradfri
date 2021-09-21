@@ -6,7 +6,7 @@ class Controller:
     """Represent a controller."""
 
     def _value_validate(
-        self, value: int, rnge: list[int], identifier: str = "Given"
+        self, value: int, rnge: list[int] | tuple[int, int], identifier: str = "Given"
     ) -> None:
         """Make sure a value is within a given range."""
         if value is not None and (value < rnge[0] or value > rnge[1]):
