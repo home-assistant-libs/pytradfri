@@ -96,10 +96,8 @@ class Command(object):
         self, a: Optional[dict[str, Any]], b: Optional[dict[str, Any]]
     ) -> Optional[dict[str, Any]]:
         """Merges a into b."""
-        if a is None:
-            return b
-        if b is None:
-            return b
+        if a is None or b is None:
+            return None
         for k, v in a.items():
             if isinstance(v, dict):
                 item = b.setdefault(k, {})
