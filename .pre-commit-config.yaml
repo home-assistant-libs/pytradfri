@@ -1,0 +1,66 @@
+repos:
+  - repo: https://github.com/psf/black
+    rev: 21.7b0
+    hooks:
+      - id: black
+        name: black
+        args:
+          - --safe
+          - --quiet
+        files: ^((pytradfri|examples|tests)/.+)?[^/]+\.py$
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.9.2
+    hooks:
+      - id: flake8
+        name: flake8
+        stages: [manual]
+# DO NOT ACTIVATE until all files have been manually updated.
+        additional_dependencies:
+          - pycodestyle==2.7.0
+          - pyflakes==2.3.1
+          - flake8-docstrings==1.6.0
+          - pydocstyle==6.0.0
+          - flake8-comprehensions==3.5.0
+          - flake8-noqa==1.1.0
+          - mccabe==0.6.1
+        files: ^(pytradfri|examples|tests)/.+\.py$
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.9.3
+    hooks:
+      - id: isort
+        name: isort
+        stages: [manual]
+# DO NOT ACTIVATE until PR 340 have been merged.
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        stages: [manual]
+# DO NOT ACTIVATE until all files have been manually updated.
+        entry: pylint
+        language: system
+        types: [python]
+        files: ^(pytradfri|examples|tests)/.+\.py$
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        args:
+          - --timeout=30
+          - --cov=pytradfri
+          - --cov-report=html
+        entry: pytest
+        language: system
+        types: [python]
+        files: tests
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: ./script/run-pre-commit.sh mypy
+        language: script
+        types: [python]
+        require_serial: true
+#        files: ^(pytradfri|examples|tests)/.+\.py$
+# DO NOT ADD examples/tests until files have been updated.
+        files: ^(pytradfri)/.+\.py$
