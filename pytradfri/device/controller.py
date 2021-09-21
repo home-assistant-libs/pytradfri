@@ -1,10 +1,13 @@
 """Base class for a controller."""
 from __future__ import annotations
 
+
 class Controller:
     """Represent a controller."""
 
-    def _value_validate(self, value: int, rnge: list[int], identifier: str = "Given") -> None:
+    def _value_validate(
+        self, value: int, rnge: list[int], identifier: str = "Given"
+    ) -> None:
         """
         Make sure a value is within a given range
         """

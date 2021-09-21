@@ -7,6 +7,7 @@ from typing import Any, Optional, Callable
 TYPE_PROCESS_RESULT_CB = Optional[Callable[[Any], Optional[str]]]
 TYPE_ERR_CB = Optional[Callable[[str], str]]
 
+
 class Command(object):
     """The object for coap commands."""
 
@@ -42,7 +43,7 @@ class Command(object):
         return self._path
 
     @property
-    def data(self) -> Optional[dict[str,Any]]:
+    def data(self) -> Optional[dict[str, Any]]:
         return self._data
 
     @property
@@ -91,7 +92,9 @@ class Command(object):
         """Generate url for coap client."""
         return "coaps://{}:5684/{}".format(host, self.path_str)
 
-    def _merge(self, a: Optional[dict[str, Any]], b: Optional[dict[str, Any]]) -> Optional[dict[str, Any]]:
+    def _merge(
+        self, a: Optional[dict[str, Any]], b: Optional[dict[str, Any]]
+    ) -> Optional[dict[str, Any]]:
         """Merges a into b."""
         if a is None:
             return b
