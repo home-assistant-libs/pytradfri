@@ -1,6 +1,6 @@
 [tool.black]
 target-version = ["py38"]
-exclude = 'generated'
+exclude = 'generated,.tox'
 
 [tool.isort]
 # https://github.com/PyCQA/isort/wiki/isort-Settings
