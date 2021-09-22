@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Any, Optional, Callable
+from typing import Any, Callable, Optional
 
 TYPE_PROCESS_RESULT_CB = Optional[Callable[[Any], Optional[str]]]
 TYPE_ERR_CB = Optional[Callable[[str], str]]
@@ -15,7 +15,7 @@ class Command(object):
         self,
         method: str,
         path: list[str],
-        data: Optional[dict[str, Any]] = None,
+        data: dict[str, Any] | None = None,
         *,
         parse_json: bool = True,
         observe: bool = False,
@@ -31,8 +31,8 @@ class Command(object):
         self._err_callback = err_callback
         self._observe = observe
         self._observe_duration = observe_duration
-        self._raw_result: Optional[str] = None
-        self._result: Optional[str] = None
+        self._raw_result: str | None = None
+        self._result: str | None = None
 
     @property
     def method(self) -> str:
@@ -43,7 +43,7 @@ class Command(object):
         return self._path
 
     @property
-    def data(self) -> Optional[dict[str, Any]]:
+    def data(self) -> dict[str, Any] | None:
         return self._data
 
     @property
@@ -68,11 +68,11 @@ class Command(object):
         return self._observe_duration
 
     @property
-    def raw_result(self) -> Optional[str]:
+    def raw_result(self) -> str | None:
         return self._raw_result
 
     @property
-    def result(self) -> Optional[str]:
+    def result(self) -> str | None:
         return self._result
 
     @result.setter
@@ -93,8 +93,8 @@ class Command(object):
         return "coaps://{}:5684/{}".format(host, self.path_str)
 
     def _merge(
-        self, a: Optional[dict[str, Any]], b: Optional[dict[str, Any]]
-    ) -> Optional[dict[str, Any]]:
+        self, a: dict[str, Any] | None, b: dict[str, Any] | None
+    ) -> dict[str, Any] | None:
         """Merges a into b."""
         if a is None or b is None:
             return None
@@ -112,13 +112,13 @@ class Command(object):
                 b[k] = v
         return b
 
-    def combine_data(self, command2: Optional[Command]) -> None:
+    def combine_data(self, command2: Command | None) -> None:
         """Combines the data for this command with another."""
         if command2 is None:
             return
         self._data = self._merge(command2._data, self._data)
 
-    def __add__(self, other: Optional[Command]) -> Command:
+    def __add__(self, other: Command | None) -> Command:
         if other is None:
             return deepcopy(self)
         if isinstance(other, self.__class__):
