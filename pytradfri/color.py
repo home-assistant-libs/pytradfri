@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .const import (
     ATTR_LIGHT_COLOR_HEX,
     ATTR_LIGHT_COLOR_X as X,
@@ -41,7 +43,7 @@ COLOR_NAMES = {
 COLORS = {name.lower().replace(" ", "_"): hex for hex, name in COLOR_NAMES.items()}
 
 
-def supported_features(data):
+def supported_features(data: dict[str, str | int]) -> int:
     SUPPORTED_COLOR_FEATURES = 0
 
     if ATTR_LIGHT_DIMMER in data:
