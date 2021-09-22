@@ -49,6 +49,7 @@ repos:
           - --timeout=30
           - --cov=pytradfri
           - --cov-report=html
+        stages: [push,manual]
         entry: pytest
         language: system
         types: [python]
