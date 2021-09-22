@@ -1,6 +1,6 @@
 """Class to control the sockets."""
 from pytradfri.command import Command
-from pytradfri.const import ATTR_SWITCH_PLUG, ATTR_DEVICE_STATE
+from pytradfri.const import ATTR_DEVICE_STATE, ATTR_SWITCH_PLUG
 from pytradfri.device.socket import Socket
 
 

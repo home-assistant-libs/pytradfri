@@ -1,10 +1,10 @@
 """Class to control the blinds."""
 from pytradfri.command import Command
 from pytradfri.const import (
-    RANGE_BLIND,
     ATTR_BLIND_CURRENT_POSITION,
-    ATTR_START_BLINDS,
     ATTR_BLIND_TRIGGER,
+    ATTR_START_BLINDS,
+    RANGE_BLIND,
 )
 from pytradfri.device.blind import Blind
 from pytradfri.device.controller import Controller

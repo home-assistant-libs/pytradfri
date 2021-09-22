@@ -1,18 +1,19 @@
 import pytest
-from .devices import GROUP
 
 from pytradfri import error
 from pytradfri.const import (
-    ATTR_ID,
     ATTR_GROUP_ID,
-    ATTR_LIGHT_MIREDS,
+    ATTR_ID,
     ATTR_LIGHT_COLOR_HUE,
     ATTR_LIGHT_COLOR_SATURATION,
     ATTR_LIGHT_DIMMER,
+    ATTR_LIGHT_MIREDS,
     ROOT_MOODS,
 )
-from pytradfri.group import Group
 from pytradfri.gateway import Gateway
+from pytradfri.group import Group
+
+from .devices import GROUP
 
 
 @pytest.fixture

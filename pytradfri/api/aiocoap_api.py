@@ -6,17 +6,17 @@ import json
 import logging
 from typing import Callable
 
-from aiocoap import Message, Context
+from aiocoap import Context, Message
 from aiocoap.credentials import CredentialsMissingError
 from aiocoap.error import (
-    RequestTimedOut,
-    Error,
     ConstructionRenderableError,
+    Error,
     LibraryShutdown,
+    RequestTimedOut,
 )
 from aiocoap.numbers.codes import Code
 
-from ..error import ClientError, ServerError, RequestTimeout
+from ..error import ClientError, RequestTimeout, ServerError
 from ..gateway import Gateway
 
 _LOGGER = logging.getLogger(__name__)

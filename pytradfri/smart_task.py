@@ -9,14 +9,15 @@ SmartTask # return top level info
             StartActionItemController # change values for task
 """
 
-from datetime import datetime as dt
 import datetime
+from datetime import datetime as dt
 
 from .command import Command
 from .const import (
+    ATTR_DEVICE_STATE,
     ATTR_ID,
     ATTR_LIGHT_DIMMER,
-    ATTR_DEVICE_STATE,
+    ATTR_REPEAT_DAYS,
     ATTR_SMART_TASK_LIGHTS_OFF,
     ATTR_SMART_TASK_NOT_AT_HOME,
     ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL,
@@ -24,15 +25,13 @@ from .const import (
     ATTR_SMART_TASK_TRIGGER_TIME_START_MIN,
     ATTR_SMART_TASK_TYPE,
     ATTR_SMART_TASK_WAKE_UP,
-    ATTR_TRANSITION_TIME,
-    ATTR_REPEAT_DAYS,
     ATTR_START_ACTION,
-    ROOT_START_ACTION,
+    ATTR_TRANSITION_TIME,
     ROOT_SMART_TASKS,
+    ROOT_START_ACTION,
 )
 from .resource import ApiResource
 from .util import BitChoices
-
 
 WEEKDAYS = BitChoices(
     (

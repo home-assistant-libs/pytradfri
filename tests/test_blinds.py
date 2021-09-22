@@ -1,6 +1,7 @@
 import pytest
 
 from pytradfri.device import Device
+
 from .devices import BLIND
 
 

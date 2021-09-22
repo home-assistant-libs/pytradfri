@@ -1,3 +1,4 @@
+from pytradfri.color import supported_features
 from pytradfri.const import (
     ATTR_LIGHT_CONTROL,
     SUPPORT_BRIGHTNESS,
@@ -6,15 +7,14 @@ from pytradfri.const import (
     SUPPORT_RGB_COLOR,
     SUPPORT_XY_COLOR,
 )
-from pytradfri.color import supported_features
+
 from .devices import (
+    LIGHT_CWS,
+    LIGHT_CWS_CUSTOM_COLOR,
     LIGHT_W,
     LIGHT_WS,
     LIGHT_WS_CUSTOM_COLOR,
-    LIGHT_CWS,
-    LIGHT_CWS_CUSTOM_COLOR,
 )
-
 
 # Kelvin range for which the conversion functions work
 # and that RGB bulbs can show

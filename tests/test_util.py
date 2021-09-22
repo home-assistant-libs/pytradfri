@@ -1,12 +1,14 @@
-from pytradfri.error import PytradfriError
-from pytradfri.util import load_json, save_json, BitChoices
+import json
+from os import path
 import shutil
 import tempfile
-from os import path
 import unittest
 from unittest.mock import patch
-import json
+
 import pytest
+
+from pytradfri.error import PytradfriError
+from pytradfri.util import BitChoices, load_json, save_json
 
 
 class UtilTestsBitChoices(unittest.TestCase):
