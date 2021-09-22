@@ -1,6 +1,7 @@
 [tool.black]
 target-version = ["py38"]
 exclude = 'generated,.tox'
+include = '^((pytradfri|examples|tests)/.+)?[^/]+\.py$'
 
 [tool.isort]
 # https://github.com/PyCQA/isort/wiki/isort-Settings

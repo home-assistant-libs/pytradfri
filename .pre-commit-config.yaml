@@ -7,7 +7,6 @@ repos:
         args:
           - --safe
           - --quiet
-        files: ^((pytradfri|examples|tests)/.+)?[^/]+\.py$
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.9.2
     hooks:
