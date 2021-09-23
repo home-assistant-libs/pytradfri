@@ -20,7 +20,6 @@ combine_as_imports = true
 [tool.pylint.MASTER]
 py-version = "3.8"
 ignore = [
-    "tests",
 ]
 # Use a conservative default here; 2 should speed up most setups and not hurt
 # any too bad. Override on command line as appropriate.
@@ -30,24 +29,13 @@ load-plugins = [
     "pylint.extensions.code_style",
     "pylint.extensions.typing",
     "pylint_strict_informational",
-    "hass_constructor",
-    "hass_imports",
-    "hass_logger",
 ]
 persistent = false
-extension-pkg-allow-list = [
-    "av.audio.stream",
-    "av.stream",
-    "ciso8601",
-    "cv2",
-]
 
 [tool.pylint.BASIC]
 class-const-naming-style = "any"
 good-names = [
     "_",
-    "ev",
-    "ex",
     "fp",
     "i",
     "id",
@@ -78,16 +66,16 @@ good-names = [
 # consider-using-assignment-expr (Pylint CodeStyle extension)
 disable = [
     "format",
-    "abstract-class-little-used",
+#    "abstract-class-little-used",
     "abstract-method",
     "cyclic-import",
     "duplicate-code",
-    "inconsistent-return-statements",
-    "locally-disabled",
+#    "inconsistent-return-statements",
+#    "locally-disabled",
     "not-context-manager",
     "too-few-public-methods",
     "too-many-ancestors",
-    "too-many-arguments",
+#    "too-many-arguments",
     "too-many-branches",
     "too-many-instance-attributes",
     "too-many-lines",
@@ -98,9 +86,9 @@ disable = [
     "too-many-boolean-expressions",
     "unused-argument",
     "wrong-import-order",
-    "consider-using-f-string",
-    "consider-using-namedtuple-or-dataclass",
-    "consider-using-assignment-expr",
+#    "consider-using-f-string",
+#    "consider-using-namedtuple-or-dataclass",
+#    "consider-using-assignment-expr",
 ]
 enable = [
     #"useless-suppression",  # temporarily every now and then to clean them up
@@ -110,11 +98,6 @@ enable = [
 [tool.pylint.REPORTS]
 score = false
 
-[tool.pylint.TYPECHECK]
-ignored-classes = [
-    "_CountingAttr",  # for attrs
-]
-
 [tool.pylint.FORMAT]
 expected-line-ending-format = "LF"
 
@@ -122,7 +105,6 @@ expected-line-ending-format = "LF"
 overgeneral-exceptions = [
     "BaseException",
     "Exception",
-    "HomeAssistantError",
 ]
 
 [tool.pylint.TYPING]
