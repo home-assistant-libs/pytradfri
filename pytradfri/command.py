@@ -21,7 +21,7 @@ class Command(object):
         observe: bool = False,
         observe_duration: int = 0,
         process_result: TYPE_PROCESS_RESULT_CB = None,
-        err_callback: TYPE_ERR_CB = None
+        err_callback: TYPE_ERR_CB = None,
     ) -> None:
         self._method = method
         self._path = path
