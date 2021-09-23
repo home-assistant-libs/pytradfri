@@ -5,7 +5,7 @@ from pytradfri.command import Command
 
 
 def test_property_access():
-    """Test property access in Command"""
+    """Test property access in Command."""
 
     def pr():
         pass

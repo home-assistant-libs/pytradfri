@@ -2,7 +2,7 @@
 
 
 class PytradfriError(Exception):
-    """Base Error"""
+    """Base Error."""
 
     pass
 

@@ -8,7 +8,7 @@ class SocketControl:
     """Class to control the sockets."""
 
     def __init__(self, device):
-        """Setup object of class."""
+        """Create object of class."""
         self._device = device
 
     @property
@@ -26,8 +26,8 @@ class SocketControl:
         return self.set_values({ATTR_DEVICE_STATE: int(state)}, index=index)
 
     def set_values(self, values, *, index=0):
-        """
-        Set values on socket control.
+        """Set values on socket control.
+
         Returns a Command.
         """
         assert len(self.raw) == 1, "Only devices with 1 socket supported"

@@ -17,8 +17,8 @@ import os
 # Hack to allow relative import above top level package
 import sys
 
-folder = os.path.dirname(os.path.abspath(__file__))  # noqa
-sys.path.insert(0, os.path.normpath("%s/.." % folder))  # noqa
+folder = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.normpath("%s/.." % folder))
 
 import argparse
 import json
@@ -106,21 +106,21 @@ def bold(str):
 
 
 def print_gateway():
-    """Print gateway info as JSON"""
+    """Print gateway info as JSON."""
     print("Printing information about the Gateway")
     data = api(gateway.get_gateway_info()).raw
     print(jsonify(data))
 
 
 def print_gateway_endpoints():
-    """Print all gateway endpoints as JSON"""
+    """Print all gateway endpoints as JSON."""
     print("Printing information about endpoints in the Gateway")
     data = api(gateway.get_endpoints())
     print(jsonify(data))
 
 
 def print_all_devices():
-    """Print all devices as JSON"""
+    """Print all devices as JSON."""
     print("Printing information about all devices paired to the Gateway")
     if len(devices) == 0:
         exit(bold("No devices paired"))
@@ -132,7 +132,7 @@ def print_all_devices():
 
 
 def print_lamps():
-    """Print all lamp devices as JSON"""
+    """Print all lamp devices as JSON."""
     print("Printing information about all lamps paired to the Gateway")
     lights = [dev for dev in devices if dev.has_light_control]
     if len(lights) == 0:
@@ -145,7 +145,7 @@ def print_lamps():
 
 
 def print_smart_tasks():
-    """Print smart tasks as JSON"""
+    """Print smart tasks as JSON."""
     print("Printing information about smart tasks")
     tasks = api(gateway.get_smart_tasks())
     if len(tasks) == 0:
@@ -158,7 +158,7 @@ def print_smart_tasks():
 
 
 def print_groups():
-    """Print all groups as JSON"""
+    """Print all groups as JSON."""
     print("Printing information about all groups defined in the Gateway")
     groups = api(gateway.get_groups())
     if len(groups) == 0:

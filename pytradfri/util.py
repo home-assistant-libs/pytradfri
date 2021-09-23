@@ -64,7 +64,7 @@ class BitChoices(object):
             self._lookup[key] = index
 
     def __iter__(self):
-        """Iter."""
+        """Iterate over object."""
         return iter(self._choices)
 
     def __len__(self):

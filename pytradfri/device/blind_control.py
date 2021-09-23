@@ -14,7 +14,7 @@ class BlindControl(Controller):
     """Class to control the blinds."""
 
     def __init__(self, device):
-        """Setup object of class."""
+        """Create object of class."""
         self._device = device
 
     @property
@@ -38,8 +38,8 @@ class BlindControl(Controller):
         return self.set_value({ATTR_BLIND_CURRENT_POSITION: state})
 
     def set_value(self, value):
-        """
-        Set values on blind control.
+        """Set values on blind control.
+
         Returns a Command.
         """
         return Command("put", self._device.path, {ATTR_START_BLINDS: [value]})

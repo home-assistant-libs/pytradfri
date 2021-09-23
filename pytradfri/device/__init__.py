@@ -39,7 +39,7 @@ class Device(ApiResource):
 
     @property
     def last_seen(self):
-        """Return timestamp when last seen"""
+        """Return timestamp when last seen."""
         if ATTR_LAST_SEEN not in self.raw:
             return None
         return datetime.utcfromtimestamp(self.raw[ATTR_LAST_SEEN])
@@ -122,7 +122,7 @@ class DeviceInfo:
     ATTR_BATTERY = "9"
 
     def __init__(self, device):
-        """Setup object of class."""
+        """Create object of class."""
         self._device = device
 
     @property
@@ -132,17 +132,17 @@ class DeviceInfo:
 
     @property
     def model_number(self):
-        """A model identifier string (manufacturer specified string)."""
+        """Return model identifier string (manufacturer specified string)."""
         return self.raw.get(DeviceInfo.ATTR_MODEL_NUMBER)
 
     @property
     def serial(self):
-        """Serial number string."""
+        """Return serial string."""
         return self.raw.get(DeviceInfo.ATTR_SERIAL)
 
     @property
     def firmware_version(self):
-        """Current firmware version string of the device."""
+        """Return current firmware version of device."""
         return self.raw.get(DeviceInfo.ATTR_FIRMWARE_VERSION)
 
     @property
@@ -152,14 +152,14 @@ class DeviceInfo:
 
     @property
     def power_source_str(self):
-        """String representation of current power source."""
+        """Representat current power source."""
         if DeviceInfo.ATTR_POWER_SOURCE not in self.raw:
             return None
         return DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, "Unknown")
 
     @property
     def battery_level(self):
-        """Battery in 0..100"""
+        """Battery in 0..100."""
         return self.raw.get(DeviceInfo.ATTR_BATTERY)
 
     @property

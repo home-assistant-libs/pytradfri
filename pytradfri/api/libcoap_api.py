@@ -18,7 +18,7 @@ class APIFactory:
     """APIFactory."""
 
     def __init__(self, host, psk_id="pytradfri", psk=None, timeout=10):
-        """Setup object of class."""
+        """Create object of class."""
         self._host = host
         self._psk_id = psk_id
         self._psk = psk
@@ -157,9 +157,7 @@ class APIFactory:
                 output = ""
 
     def generate_psk(self, security_key):
-        """
-        Generate and set a psk from the security key.
-        """
+        """Generate and set a psk from the security key."""
         if not self._psk:
             # Backup the real identity.
             existing_psk_id = self._psk_id

@@ -7,7 +7,7 @@ class SignalRepeaterControl:
     """Class to control the signal repeaters."""
 
     def __init__(self, device):
-        """Setup object of class."""
+        """Create object of class."""
         self._device = device
 
     @property

@@ -27,7 +27,7 @@ class LightControl:
     """Class to control the lights."""
 
     def __init__(self, device):
-        """Setup object of class."""
+        """Create object of class."""
         self._device = device
 
         self.can_set_dimmer = None
@@ -80,6 +80,7 @@ class LightControl:
 
     def set_dimmer(self, dimmer, *, index=0, transition_time=None):
         """Set dimmer value of a light.
+
         transition_time: Integer representing tenth of a second (default None)
         """
         self._value_validate(dimmer, RANGE_BRIGHTNESS, "Dimmer")
@@ -154,17 +155,15 @@ class LightControl:
             raise ColorError("Invalid color specified: %s", colorname)
 
     def _value_validate(self, value, rnge, identifier="Given"):
-        """
-        Make sure a value is within a given range
-        """
+        """Make sure a value is within a given range."""
         if value is not None and (value < rnge[0] or value > rnge[1]):
             raise ValueError(
                 "%s value must be between %d and %d." % (identifier, rnge[0], rnge[1])
             )
 
     def set_values(self, values, *, index=0):
-        """
-        Set values on light control.
+        """Set values on light control.
+
         Returns a Command.
         """
         assert len(self.raw) == 1, "Only devices with 1 light supported"

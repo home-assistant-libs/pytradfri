@@ -6,7 +6,7 @@ class Blind:
     """Represent a blind."""
 
     def __init__(self, device, index):
-        """Setup object of class."""
+        """Crreate object of class."""
         self.device = device
         self.index = index
 

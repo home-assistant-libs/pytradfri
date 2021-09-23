@@ -1,4 +1,4 @@
-"""Mood definitions: retrieved from Gateway running on 1.9.27"""
+"""Mood definitions: retrieved from Gateway running on 1.9.27."""
 MOOD = {
     "9001": "FOCUS",
     "9002": 1577189497,
