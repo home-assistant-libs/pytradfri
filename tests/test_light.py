@@ -1,3 +1,4 @@
+"""Test Light."""
 import pytest
 
 from pytradfri import error
@@ -13,10 +14,12 @@ from .devices import (
 
 
 def light(raw):
+    """Return Light."""
     return Device(raw).light_control.lights[0]
 
 
 def test_white_bulb():
+    """Test white bulb."""
     bulb = light(LIGHT_W)
 
     assert bulb.hex_color is None
@@ -24,6 +27,7 @@ def test_white_bulb():
 
 
 def test_spectrum_bulb():
+    """Test sprectrum bulb."""
     bulb = light(LIGHT_WS)
 
     assert bulb.hex_color == "0"
@@ -32,6 +36,7 @@ def test_spectrum_bulb():
 
 
 def test_spectrum_bulb_custom_color():
+    """Test spectrum custom color."""
     bulb = light(LIGHT_WS_CUSTOM_COLOR)
 
     assert bulb.hex_color == "0"
@@ -39,6 +44,7 @@ def test_spectrum_bulb_custom_color():
 
 
 def test_color_bulb():
+    """Test color."""
     bulb = light(LIGHT_CWS)
 
     assert bulb.hex_color == "f1e0b5"
@@ -46,6 +52,7 @@ def test_color_bulb():
 
 
 def test_color_bulb_custom_color():
+    """Test custom color."""
     bulb = light(LIGHT_CWS_CUSTOM_COLOR)
 
     assert bulb.hex_color == "0"
@@ -53,6 +60,7 @@ def test_color_bulb_custom_color():
 
 
 def test_setters():
+    """Test light setters."""
     cmd = Device(LIGHT_CWS).light_control.set_predefined_color("Warm glow")
     assert cmd.data == {"3311": [{"5706": "efd275"}]}
 

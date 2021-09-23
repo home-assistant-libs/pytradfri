@@ -14,6 +14,7 @@ class BlindControl(Controller):
     """Class to control the blinds."""
 
     def __init__(self, device):
+        """Setup object of class."""
         self._device = device
 
     @property

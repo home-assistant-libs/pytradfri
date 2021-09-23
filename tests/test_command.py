@@ -1,9 +1,12 @@
+"""Test Command."""
 import pytest
 
 from pytradfri.command import Command
 
 
 def test_property_access():
+    """Test property access in Command"""
+
     def pr():
         pass
 
@@ -31,6 +34,8 @@ def test_property_access():
 
 
 def test_result():
+    """Test callback process_result."""
+
     def pr(value):
         return value + 1
 
@@ -44,6 +49,7 @@ def test_result():
 
 
 def test_url():
+    """Test url is recognized."""
     command = Command("method", ["path"], {})
     url = command.url("host")
     assert url == "coaps://host:5684/path"
@@ -54,6 +60,7 @@ def test_url():
 
 
 def test_combining_mutates():
+    """Test combining mutates."""
     DATA_INT = {"key_int": 0}
     DATA_INT2 = {"key_int_2": 1}
     COMBINED_INT = {"key_int": 0, "key_int_2": 1}
@@ -74,6 +81,7 @@ def test_combining_mutates():
 
 
 def test_combining_with_none():
+    """Test combining with nothing."""
     DATA_INT = {"key_int": 0}
 
     command1 = Command("method", "path", DATA_INT)
@@ -87,6 +95,7 @@ def test_combining_with_none():
 
 
 def test_combining_integer_keys():
+    """Test combining integer keys."""
     DATA_INT = {"key_int": 0}
     DATA_INT_SAME_KEY = {"key_int": 1}
     DATA_INT2 = {"key_int_2": 1}
@@ -105,6 +114,7 @@ def test_combining_integer_keys():
 
 
 def test_combining_string_keys():
+    """Test combining simple keys."""
     DATA_STRING = {"key_string": "a"}
     DATA_STRING_SAME_KEY = {"key_string": "same"}
     DATA_STRING2 = {"key_string_2": "b"}
@@ -123,6 +133,7 @@ def test_combining_string_keys():
 
 
 def test_combining_dict_keys():
+    """Test combining dict keys."""
     DATA_EMPTY_DICT = {"key_dict": {}}
     DATA_DICT_INT = {"key_dict": {"key_int": 0}}
     DATA_DICT_STRING = {"key_dict": {"key_string": "a"}}
@@ -152,6 +163,7 @@ def test_combining_dict_keys():
 
 
 def test_combining_list_keys():
+    """Test combining simple list keys."""
     DATA_EMPTY_LIST = {"key_list": []}
     DATA_INT_LIST1 = {"key_list": [0, 1, 2]}
     DATA_INT_LIST2 = {"key_list": [10, 11, 12]}
@@ -169,6 +181,7 @@ def test_combining_list_keys():
 
 
 def test_combining_listed_dict_keys():
+    """Test combining of listed dict keys."""
     DATA_EMPTY_DICT = {"key_ldict": [{}]}
     DATA_DICT_INT = {"key_ldict": [{"key_int": 0}]}
     DATA_DICT_STRING = {"key_ldict": [{"key_string": "a"}]}
@@ -186,6 +199,7 @@ def test_combining_listed_dict_keys():
 
 
 def test_add_unsupported():
+    """Test add unsupported causes error."""
     command1 = Command("method", "path", {})
     not_a_command = 0
     with pytest.raises(TypeError):

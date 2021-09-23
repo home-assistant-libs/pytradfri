@@ -15,7 +15,10 @@ SERVER_ERROR_PREFIX = "5."
 
 
 class APIFactory:
+    """APIFactory."""
+
     def __init__(self, host, psk_id="pytradfri", psk=None, timeout=10):
+        """Setup object of class."""
         self._host = host
         self._psk_id = psk_id
         self._psk = psk
@@ -23,10 +26,12 @@ class APIFactory:
 
     @property
     def psk(self):
+        """Return psk."""
         return self._psk
 
     @psk.setter
     def psk(self, value):
+        """Set psk."""
         self._psk = value
 
     def _base_command(self, method):

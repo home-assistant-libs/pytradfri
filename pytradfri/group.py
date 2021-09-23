@@ -1,3 +1,4 @@
+"""Group handling."""
 from .color import COLORS
 from .const import (
     ATTR_DEVICE_STATE,
@@ -30,11 +31,13 @@ class Group(ApiResource):
     """Represent a group."""
 
     def __init__(self, gateway, raw):
+        """Setup object of class."""
         super().__init__(raw)
         self._gateway = gateway
 
     @property
     def path(self):
+        """Path."""
         return [ROOT_GROUPS, self.id]
 
     @property
@@ -49,6 +52,7 @@ class Group(ApiResource):
 
     @property
     def hex_color(self):
+        """Return hex color."""
         return self.raw.get(ATTR_LIGHT_COLOR_HEX)
 
     @property
@@ -162,6 +166,7 @@ class Group(ApiResource):
         return self.set_values(values)
 
     def set_predefined_color(self, colorname, transition_time=None):
+        """Set predefined color for group."""
         try:
             color = COLORS[colorname.lower().replace(" ", "_")]
             return self.set_hex_color(color, transition_time=transition_time)
@@ -178,5 +183,6 @@ class Group(ApiResource):
             )
 
     def __repr__(self):
+        """Return representation of class object."""
         state = "on" if self.state else "off"
         return "<Group {} - {}>".format(self.name, state)

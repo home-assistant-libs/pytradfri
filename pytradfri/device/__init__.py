@@ -24,62 +24,76 @@ class Device(ApiResource):
 
     @property
     def application_type(self):
+        """Return application type."""
         return self.raw.get(ATTR_APPLICATION_TYPE)
 
     @property
     def path(self):
+        """Return path."""
         return [ROOT_DEVICES, self.id]
 
     @property
     def device_info(self):
+        """Return Device information."""
         return DeviceInfo(self)
 
     @property
     def last_seen(self):
+        """Return timestamp when last seen"""
         if ATTR_LAST_SEEN not in self.raw:
             return None
         return datetime.utcfromtimestamp(self.raw[ATTR_LAST_SEEN])
 
     @property
     def reachable(self):
+        """Check if gateway is reachable."""
         return self.raw.get(ATTR_REACHABLE_STATE) == 1
 
     @property
     def has_light_control(self):
+        """Check if light_control is present."""
         return self.raw is not None and len(self.raw.get(ATTR_LIGHT_CONTROL, "")) > 0
 
     @property
     def light_control(self):
+        """Return light_control."""
         return LightControl(self)
 
     @property
     def has_socket_control(self):
+        """Check if socket_control is present."""
         return self.raw is not None and len(self.raw.get(ATTR_SWITCH_PLUG, "")) > 0
 
     @property
     def socket_control(self):
+        """Return socket_control."""
         if self.has_socket_control:
             return SocketControl(self)
 
     @property
     def has_blind_control(self):
+        """Check if blind_control is present."""
         return self.raw is not None and len(self.raw.get(ATTR_START_BLINDS, "")) > 0
 
     @property
     def blind_control(self):
+        """Return blind_control."""
         if self.has_blind_control:
             return BlindControl(self)
 
     @property
     def has_signal_repeater_control(self):
+        """Check if signal_repeater_control is present."""
         return self.raw is not None and len(self.raw.get(ROOT_SIGNAL_REPEATER, "")) > 0
 
     @property
     def signal_repeater_control(self):
+        """Return signal_repeater control, if any."""
         if self.has_signal_repeater_control:
             return SignalRepeaterControl(self)
 
     def __repr__(self):
+        """Return representation of class object."""
         return "<{} - {} ({})>".format(
             self.id, self.name, self.device_info.model_number
         )
@@ -108,6 +122,7 @@ class DeviceInfo:
     ATTR_BATTERY = "9"
 
     def __init__(self, device):
+        """Setup object of class."""
         self._device = device
 
     @property

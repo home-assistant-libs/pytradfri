@@ -1,3 +1,4 @@
+"""Test Group."""
 import pytest
 
 from pytradfri import error
@@ -18,15 +19,18 @@ from .devices import GROUP
 
 @pytest.fixture
 def gateway():
+    """Return gateway."""
     return Gateway()
 
 
 @pytest.fixture
 def group(gateway):
+    """Return Group."""
     return Group(gateway, GROUP)
 
 
 def test_setters(group):
+    """Test setters in group."""
     cmd = Group("anygateway", GROUP).set_predefined_color("Candlelight")
     assert cmd.data == {"5706": "ebb63e"}
 
@@ -60,5 +64,6 @@ def test_setters(group):
 
 
 def test_moods(group):
+    """Test moods."""
     cmd = group.moods()
     assert cmd.path == [ROOT_MOODS, group.id]

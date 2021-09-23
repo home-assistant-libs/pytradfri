@@ -1,3 +1,4 @@
+"""Constants."""
 ROOT_DEVICES = "15001"
 ROOT_GATEWAY = "15011"
 ROOT_GROUPS = "15004"

@@ -1,3 +1,4 @@
+"""Test Blinds."""
 import pytest
 
 from pytradfri.device import Device
@@ -7,10 +8,12 @@ from .devices import BLIND
 
 @pytest.fixture
 def device():
+    """Return Device."""
     return Device(BLIND)
 
 
 def test_device_info_properties(device):
+    """Test device info properties."""
     info = device.device_info
 
     assert info.manufacturer == "IKEA of Sweden"
@@ -21,6 +24,7 @@ def test_device_info_properties(device):
 
 
 def test_current_position(device):
+    """Test blind position."""
 
     blind = device.blind_control.blinds[0]
     assert blind.current_cover_position == 50

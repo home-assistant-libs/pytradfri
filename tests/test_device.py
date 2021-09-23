@@ -1,3 +1,4 @@
+"""Test Device."""
 from datetime import datetime
 
 import pytest
@@ -35,6 +36,7 @@ from .devices import (
 
 @pytest.fixture
 def device():
+    """Return device."""
     return Device(LIGHT_WS)
 
 
@@ -312,6 +314,7 @@ lamp_value_setting_test_cases[1] = newList
 def test_lamp_value_setting(
     function_name, comment, test_input, expected_result, device
 ):
+    """Test lamp value."""
     function = getattr(device[1].light_control, function_name)
     command = function(**test_input)
     data = command.data[ATTR_LIGHT_CONTROL][0]
@@ -322,6 +325,7 @@ def test_lamp_value_setting(
 def test_socket_value_setting(
     function_name, comment, test_input, expected_result, device
 ):
+    """Test socket values."""
     if device.has_socket_control:
         function = getattr(device[0].socket_control, function_name)
         command = function(**test_input)
@@ -330,6 +334,7 @@ def test_socket_value_setting(
 
 
 def test_socket_state_off(device):
+    """Test socket off."""
     if device.has_socket_control:
         socket = Device(device.raw.copy()).socket_control.socket[0]
         socket.raw[ATTR_DEVICE_STATE] = 0
@@ -337,6 +342,7 @@ def test_socket_state_off(device):
 
 
 def test_socket_state_on(device):
+    """Test socket on."""
     if device.has_socket_control:
         socket = Device(device.raw.copy()).socket_control.socket[0]
         socket.raw[ATTR_DEVICE_STATE] = 1
@@ -344,16 +350,19 @@ def test_socket_state_on(device):
 
 
 def test_set_state_none(device):
+    """Set none state."""
     with pytest.raises(TypeError):
         device.light_control.set_state(None)
 
 
 def test_set_predefined_color_invalid(device):
+    """Test set invalid color."""
     with pytest.raises(error.ColorError):
         device.light_control.set_predefined_color("RandomString")
 
 
 def test_device_properties(device):
+    """Test device properties."""
     assert device.application_type == 2
     assert device.name == "Löng name containing viking lättårs [letters]"
     assert device.id == 65539
@@ -363,6 +372,7 @@ def test_device_properties(device):
 
 
 def test_device_info_properties(device):
+    """Test device info."""
     info = device.device_info
 
     assert info.manufacturer == "IKEA of Sweden"
@@ -373,6 +383,7 @@ def test_device_info_properties(device):
 
 
 def test_set_name(device):
+    """Test set name."""
     command = device.set_name("New name")
 
     assert command.method == "put"
@@ -381,6 +392,7 @@ def test_set_name(device):
 
 
 def test_binary_division():
+    """Test binary division."""
     dev_ws = Device(LIGHT_WS).light_control.lights[0]
     dev_color = Device(LIGHT_CWS).light_control.lights[0]
 
@@ -392,12 +404,14 @@ def test_binary_division():
 
 # Test has_light_control function
 def test_has_light_control_true(device):
+    """Test light has control."""
     dev = Device(device.raw.copy())
     dev.raw[ATTR_LIGHT_CONTROL] = {1: 2}
     assert dev.has_light_control is True
 
 
 def test_has_light_control_false(device):
+    """Test light do not have control."""
     dev = Device(device.raw.copy())
     dev.raw[ATTR_LIGHT_CONTROL] = {}
     assert dev.has_light_control is False
@@ -405,18 +419,21 @@ def test_has_light_control_false(device):
 
 # Test light state function
 def test_light_state_on(device):
+    """Test light on."""
     light = Device(device.raw.copy()).light_control.lights[0]
     light.raw[ATTR_DEVICE_STATE] = 1
     assert light.state is True
 
 
 def test_light_state_off(device):
+    """Test light off."""
     light = Device(device.raw.copy()).light_control.lights[0]
     light.raw[ATTR_DEVICE_STATE] = 0
     assert light.state is False
 
 
 def test_light_state_mangled(device):
+    """Test mangled light state."""
     light = Device(device.raw.copy()).light_control.lights[0]
     light.raw[ATTR_DEVICE_STATE] = "RandomString"
     assert light.state is False
@@ -433,10 +450,12 @@ def test_light_hsb_xy_color(device):
 
 # Test last_seen function
 def test_last_seen_valid(device):
+    """Test last seen."""
     assert device.last_seen is not None
 
 
 def test_last_seen_none():
+    """Test last seen none."""
     tmp = LIGHT_WS
     del tmp[ATTR_LAST_SEEN]
     dev = Device(tmp)
@@ -445,6 +464,7 @@ def test_last_seen_none():
 
 # Test _value_validate function
 def test_value_validate_lower_edge(device):
+    """Test value lower edge."""
     rnge = (10, 100)
     with pytest.raises(ValueError):
         device.light_control._value_validate(9, rnge)
@@ -453,6 +473,7 @@ def test_value_validate_lower_edge(device):
 
 
 def test_value_validate_upper_edge(device):
+    """Test value upper edge."""
     rnge = (10, 100)
     assert device.light_control._value_validate(99, rnge) is None
     assert device.light_control._value_validate(100, rnge) is None
@@ -461,12 +482,14 @@ def test_value_validate_upper_edge(device):
 
 
 def test_value_validate_none(device):
+    """Test value none."""
     rnge = (10, 100)
     assert device.light_control._value_validate(None, rnge) is None
 
 
 # Test deviceInfo serial function
 def test_deviceinfo_serial(device):
+    """Test serial number."""
     info = Device(device.raw.copy()).device_info
     info.raw["2"] = "SomeRandomSerial"
     assert info.serial == "SomeRandomSerial"
@@ -474,18 +497,21 @@ def test_deviceinfo_serial(device):
 
 # Test deviceInfo power_source_str function
 def test_deviceinfo_power_source_str_known(device):
+    """Test power source known."""
     info = Device(device.raw.copy()).device_info
     assert info.power_source_str is not None
     assert info.power_source_str != "Unknown"
 
 
 def test_deviceinfo_power_source_str_unknown(device):
+    """Test power source unknown."""
     info = Device(device.raw.copy()).device_info
     info.raw["6"] = None
     assert info.power_source_str == "Unknown"
 
 
 def test_deviceinfo_power_source_not_present(device):
+    """Test power source not present."""
     info = Device(device.raw.copy()).device_info
     del info.raw["6"]
     assert info.power_source_str is None
@@ -494,6 +520,7 @@ def test_deviceinfo_power_source_not_present(device):
 # Test deviceInfo battery_level function
 @pytest.mark.parametrize(*input_devices)
 def test_deviceinfo_battery_level(comment, device):
+    """Test battery level."""
     info = Device(device.raw.copy()).device_info
     assert type(info.battery_level) is int
     assert info.battery_level >= 0
@@ -502,6 +529,7 @@ def test_deviceinfo_battery_level(comment, device):
 
 @pytest.mark.parametrize(*input_devices)
 def test_deviceinfo_battery_level_unkown(comment, device):
+    """Rest battery level unknown."""
     info = Device(device.raw.copy()).device_info
     info.raw["9"] = None
     assert info.battery_level is None

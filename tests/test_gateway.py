@@ -1,3 +1,4 @@
+"""Test Gateway."""
 from datetime import datetime
 
 import pytest
@@ -38,10 +39,12 @@ GATEWAY_INFO_EMPTY = {}
 
 @pytest.fixture
 def gateway():
+    """Fixture that returns a gateway."""
     return Gateway()
 
 
 def test_get_device(gateway):
+    """Test get device."""
     command = gateway.get_device(123)
 
     assert command.method == "get"
@@ -49,6 +52,7 @@ def test_get_device(gateway):
 
 
 def test_gateway_info():
+    """Test retrival of gateway info."""
     gateway_info = GatewayInfo(GATEWAY_INFO)
     gateway_info_empty = GatewayInfo(GATEWAY_INFO_EMPTY)
 
@@ -66,6 +70,7 @@ def test_gateway_info():
 
 
 def test_generate_psk(gateway):
+    """Test psk generation."""
     command = gateway.generate_psk("identityString")
 
     assert command.method == "post"

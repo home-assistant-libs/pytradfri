@@ -7,6 +7,7 @@ class SignalRepeaterControl:
     """Class to control the signal repeaters."""
 
     def __init__(self, device):
+        """Setup object of class."""
         self._device = device
 
     @property
@@ -20,6 +21,7 @@ class SignalRepeaterControl:
         return [SignalRepeater(self._device, i) for i in range(len(self.raw))]
 
     def __repr__(self):
+        """Return representation of class object."""
         return "<SignalRepeaterControl for {} ({} signal repeaters)>".format(
             self._device.name, len(self.raw)
         )

@@ -1,3 +1,4 @@
+"""Test smart_task."""
 import datetime
 
 from pytradfri.gateway import Gateway
@@ -67,6 +68,7 @@ WEEKDAYS = BitChoices(
 
 
 def test_smart_task():
+    """Test smart task."""
     gateway = Gateway()
     task = SmartTask(gateway, TASK)
     task1 = SmartTask(gateway, TASK2)
@@ -87,6 +89,7 @@ def test_smart_task():
 
 
 def test_smart_task_info():
+    """Test gateway info."""
     gateway = Gateway()
 
     task = SmartTask(gateway, TASK).task_control.tasks[0]
@@ -95,6 +98,7 @@ def test_smart_task_info():
 
 
 def test_smart_task_set_start_action_dimmer():
+    """Test start dimmer."""
     gateway = Gateway()
 
     cmd = (
@@ -115,4 +119,5 @@ def test_smart_task_set_start_action_dimmer():
 
 
 def test_smart_task_bit_choices():
+    """Test smart task with bit choices."""
     assert WEEKDAYS.get_selected_values(3) == ["Monday", "Tuesday"]
