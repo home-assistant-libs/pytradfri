@@ -1,16 +1,16 @@
 """Provide a CLI for Tradfri."""
+import argparse
 import logging
 from pprint import pprint
-
-from .const import *  # noqa
-from pytradfri.api.libcoap_api import APIFactory
-from pytradfri.util import load_json, save_json
-from pytradfri.error import PytradfriError
-from .gateway import Gateway
-from .command import Command
-
-import argparse
 import uuid
+
+from pytradfri.api.libcoap_api import APIFactory
+from pytradfri.error import PytradfriError
+from pytradfri.util import load_json, save_json
+
+from .command import Command
+from .const import *  # noqa
+from .gateway import Gateway
 
 if __name__ == "__main__":
     CONFIG_FILE = "tradfri_standalone_psk.conf"

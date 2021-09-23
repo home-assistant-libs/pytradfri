@@ -25,24 +25,25 @@ The gateway returns:
     Hex (for some colors)
 """
 
+import os
+
 # Hack to allow relative import above top level package
 import sys
-import os
 
 folder = os.path.dirname(os.path.abspath(__file__))  # noqa
 sys.path.insert(0, os.path.normpath("%s/.." % folder))  # noqa
+
+import argparse
+import asyncio
+import uuid
+
+from colormath.color_conversions import convert_color
+from colormath.color_objects import XYZColor, sRGBColor
 
 from pytradfri import Gateway
 from pytradfri.api.aiocoap_api import APIFactory
 from pytradfri.error import PytradfriError
 from pytradfri.util import load_json, save_json
-
-from colormath.color_conversions import convert_color
-from colormath.color_objects import sRGBColor, XYZColor
-
-import asyncio
-import uuid
-import argparse
 
 CONFIG_FILE = "tradfri_standalone_psk.conf"
 

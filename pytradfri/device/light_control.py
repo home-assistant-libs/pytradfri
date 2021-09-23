@@ -2,22 +2,22 @@
 from pytradfri.color import COLORS
 from pytradfri.command import Command
 from pytradfri.const import (
+    ATTR_DEVICE_STATE,
+    ATTR_LIGHT_COLOR_HEX,
+    ATTR_LIGHT_COLOR_HUE,
+    ATTR_LIGHT_COLOR_SATURATION,
+    ATTR_LIGHT_COLOR_X,
+    ATTR_LIGHT_COLOR_Y,
+    ATTR_LIGHT_CONTROL,
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_MIREDS,
-    ATTR_LIGHT_COLOR_X,
-    ATTR_LIGHT_COLOR_HUE,
-    RANGE_MIREDS,
-    RANGE_HUE,
-    RANGE_SATURATION,
-    ATTR_LIGHT_CONTROL,
-    ATTR_DEVICE_STATE,
-    RANGE_BRIGHTNESS,
     ATTR_TRANSITION_TIME,
-    ATTR_LIGHT_COLOR_HEX,
+    RANGE_BRIGHTNESS,
+    RANGE_HUE,
+    RANGE_MIREDS,
+    RANGE_SATURATION,
     RANGE_X,
     RANGE_Y,
-    ATTR_LIGHT_COLOR_Y,
-    ATTR_LIGHT_COLOR_SATURATION,
 )
 from pytradfri.device.light import Light
 from pytradfri.error import ColorError

@@ -1,6 +1,7 @@
-from pytradfri.smart_task import SmartTask, BitChoices
-from pytradfri.gateway import Gateway
 import datetime
+
+from pytradfri.gateway import Gateway
+from pytradfri.smart_task import BitChoices, SmartTask
 
 TASK = {
     "5850": 1,

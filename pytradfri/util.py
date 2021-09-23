@@ -1,10 +1,11 @@
 """JSON utility functions."""
 #  https://github.com/home-assistant/home-assistant/blob/4e8723f345d526ffbcbea74444e1a140a7eec863/homeassistant/util/json.py
 
-import logging
-from typing import Union, List, Dict
-from .error import PytradfriError
 import json
+import logging
+from typing import Dict, List, Union
+
+from .error import PytradfriError
 
 _LOGGER = logging.getLogger(__name__)
 

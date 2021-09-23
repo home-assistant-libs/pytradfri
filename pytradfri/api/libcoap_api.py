@@ -1,11 +1,11 @@
 """Coap implementation."""
+from functools import wraps
 import json
 import logging
 import subprocess
-from functools import wraps
 from time import time
 
-from ..error import RequestError, RequestTimeout, ClientError, ServerError
+from ..error import ClientError, RequestError, RequestTimeout, ServerError
 from ..gateway import Gateway
 
 _LOGGER = logging.getLogger(__name__)

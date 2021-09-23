@@ -1,11 +1,7 @@
 from datetime import datetime
 
 from .command import Command
-from .const import (
-    ATTR_NAME,
-    ATTR_CREATED_AT,
-    ATTR_ID,
-)
+from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME
 
 
 class ApiResource:

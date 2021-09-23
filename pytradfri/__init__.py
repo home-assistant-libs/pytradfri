@@ -2,11 +2,11 @@
 from pathlib import Path
 
 from .error import (
+    ClientError,
     PytradfriError,
     RequestError,
-    ClientError,
-    ServerError,
     RequestTimeout,
+    ServerError,
 )
 from .gateway import Gateway
 

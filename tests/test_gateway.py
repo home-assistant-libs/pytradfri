@@ -1,9 +1,9 @@
-import pytest
 from datetime import datetime
 
-from pytradfri.gateway import Gateway, GatewayInfo
-from pytradfri.const import ROOT_DEVICES, ATTR_CLIENT_IDENTITY_PROPOSED, ATTR_PSK
+import pytest
 
+from pytradfri.const import ATTR_CLIENT_IDENTITY_PROPOSED, ATTR_PSK, ROOT_DEVICES
+from pytradfri.gateway import Gateway, GatewayInfo
 
 GATEWAY_INFO = {
     "9023": "xyz.pool.ntp.pool",

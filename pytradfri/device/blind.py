@@ -1,5 +1,5 @@
 """Represent a blind."""
-from pytradfri.const import ATTR_START_BLINDS, ATTR_BLIND_CURRENT_POSITION
+from pytradfri.const import ATTR_BLIND_CURRENT_POSITION, ATTR_START_BLINDS
 
 
 class Blind:

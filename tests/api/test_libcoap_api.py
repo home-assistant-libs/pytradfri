@@ -1,5 +1,6 @@
 """Test API utilities."""
 import json
+
 import pytest
 
 from pytradfri import RequestTimeout

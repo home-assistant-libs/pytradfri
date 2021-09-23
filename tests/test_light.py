@@ -1,12 +1,14 @@
-from pytradfri.device import Device
 import pytest
+
 from pytradfri import error
+from pytradfri.device import Device
+
 from .devices import (
+    LIGHT_CWS,
+    LIGHT_CWS_CUSTOM_COLOR,
     LIGHT_W,
     LIGHT_WS,
     LIGHT_WS_CUSTOM_COLOR,
-    LIGHT_CWS,
-    LIGHT_CWS_CUSTOM_COLOR,
 )
 
 

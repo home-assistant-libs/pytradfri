@@ -1,33 +1,35 @@
 from datetime import datetime
+
 import pytest
 
 from pytradfri import error
 from pytradfri.const import (
-    ROOT_DEVICES,
-    ATTR_NAME,
-    ATTR_LIGHT_CONTROL,
+    ATTR_DEVICE_STATE,
     ATTR_LAST_SEEN,
-    ATTR_LIGHT_COLOR_SATURATION,
+    ATTR_LIGHT_COLOR_HEX,
     ATTR_LIGHT_COLOR_HUE,
-    ATTR_LIGHT_DIMMER,
-    ATTR_TRANSITION_TIME,
+    ATTR_LIGHT_COLOR_SATURATION,
     ATTR_LIGHT_COLOR_X,
     ATTR_LIGHT_COLOR_Y,
+    ATTR_LIGHT_CONTROL,
+    ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_MIREDS,
-    ATTR_DEVICE_STATE,
-    ATTR_LIGHT_COLOR_HEX,
+    ATTR_NAME,
     ATTR_SWITCH_PLUG,
+    ATTR_TRANSITION_TIME,
+    ROOT_DEVICES,
 )
 from pytradfri.device import Device
+
 from .devices import (
-    LIGHT_W,
-    LIGHT_WS,
+    BLIND,
     LIGHT_CWS,
     LIGHT_PHILIPS,
-    REMOTE_CONTROL,
+    LIGHT_W,
+    LIGHT_WS,
     MOTION_SENSOR,
     OUTLET,
-    BLIND,
+    REMOTE_CONTROL,
 )
 
 

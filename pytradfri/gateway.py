@@ -1,29 +1,30 @@
 """Represent the gateway."""
 from datetime import datetime
 
+from pytradfri.device import Device
+
 from .command import Command
 from .const import (
+    ATTR_AUTH,
+    ATTR_COMMISSIONING_MODE,
+    ATTR_CURRENT_TIME_ISO8601,
+    ATTR_CURRENT_TIME_UNIX,
+    ATTR_FIRMWARE_VERSION,
+    ATTR_FIRST_SETUP,
+    ATTR_GATEWAY_FACTORY_DEFAULTS,
+    ATTR_GATEWAY_ID,
+    ATTR_GATEWAY_INFO,
+    ATTR_GATEWAY_REBOOT,
+    ATTR_HOMEKIT_ID,
+    ATTR_IDENTITY,
+    ATTR_NTP,
+    ATTR_PSK,
     ROOT_DEVICES,
+    ROOT_GATEWAY,
     ROOT_GROUPS,
     ROOT_MOODS,
     ROOT_SMART_TASKS,
-    ROOT_GATEWAY,
-    ATTR_NTP,
-    ATTR_FIRMWARE_VERSION,
-    ATTR_CURRENT_TIME_UNIX,
-    ATTR_CURRENT_TIME_ISO8601,
-    ATTR_FIRST_SETUP,
-    ATTR_GATEWAY_INFO,
-    ATTR_GATEWAY_ID,
-    ATTR_GATEWAY_REBOOT,
-    ATTR_GATEWAY_FACTORY_DEFAULTS,
-    ATTR_AUTH,
-    ATTR_IDENTITY,
-    ATTR_PSK,
-    ATTR_HOMEKIT_ID,
-    ATTR_COMMISSIONING_MODE,
 )
-from pytradfri.device import Device
 from .group import Group
 from .mood import Mood
 from .smart_task import SmartTask
