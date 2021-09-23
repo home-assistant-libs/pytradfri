@@ -1,3 +1,4 @@
+"""Test Color."""
 from pytradfri.color import supported_features
 from pytradfri.const import (
     ATTR_LIGHT_CONTROL,
@@ -27,6 +28,7 @@ MAX_KELVIN_WS = 4000
 
 
 def test_supported_colors():
+    """Test supported colors."""
     assert supported_features(LIGHT_W[ATTR_LIGHT_CONTROL][0]) == SUPPORT_BRIGHTNESS
 
     assert (

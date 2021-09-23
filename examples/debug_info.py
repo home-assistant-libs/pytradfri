@@ -91,6 +91,7 @@ devices = api(devices_commands)
 
 
 def jsonify(input):
+    """Convert to json."""
     return json.dumps(
         input,
         sort_keys=True,
@@ -100,6 +101,7 @@ def jsonify(input):
 
 
 def bold(str):
+    """Bold."""
     return "\033[1;30m%s\033[0;0m" % str
 
 

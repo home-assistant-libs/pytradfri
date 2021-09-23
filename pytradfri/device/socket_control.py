@@ -8,6 +8,7 @@ class SocketControl:
     """Class to control the sockets."""
 
     def __init__(self, device):
+        """Setup object of class."""
         self._device = device
 
     @property
@@ -34,6 +35,7 @@ class SocketControl:
         return Command("put", self._device.path, {ATTR_SWITCH_PLUG: [values]})
 
     def __repr__(self):
+        """Return representation of class object."""
         return "<SocketControl for {} ({} sockets)>".format(
             self._device.name, len(self.raw)
         )

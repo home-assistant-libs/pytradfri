@@ -27,6 +27,7 @@ class LightControl:
     """Class to control the lights."""
 
     def __init__(self, device):
+        """Setup object of class."""
         self._device = device
 
         self.can_set_dimmer = None
@@ -143,6 +144,7 @@ class LightControl:
         return self.set_values(values, index=index)
 
     def set_predefined_color(self, colorname, *, index=0, transition_time=None):
+        """Set predefined color."""
         try:
             color = COLORS[colorname.lower().replace(" ", "_")]
             return self.set_hex_color(
@@ -170,6 +172,7 @@ class LightControl:
         return Command("put", self._device.path, {ATTR_LIGHT_CONTROL: [values]})
 
     def __repr__(self):
+        """Return representation of class object."""
         return "<LightControl for {} ({} lights)>".format(
             self._device.name, len(self.raw)
         )

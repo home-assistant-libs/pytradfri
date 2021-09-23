@@ -228,6 +228,7 @@ class GatewayInfo:
     """This class contains Gateway information."""
 
     def __init__(self, raw):
+        """Setup object of class."""
         self.raw = raw
 
     @property
@@ -247,12 +248,14 @@ class GatewayInfo:
 
     @property
     def current_time(self):
+        """Return current time (normal timestamp)."""
         if ATTR_CURRENT_TIME_UNIX not in self.raw:
             return None
         return datetime.utcfromtimestamp(self.raw[ATTR_CURRENT_TIME_UNIX])
 
     @property
     def current_time_iso8601(self):
+        """Return current time in iso8601 format."""
         return self.raw.get(ATTR_CURRENT_TIME_ISO8601)
 
     @property
@@ -264,10 +267,12 @@ class GatewayInfo:
 
     @property
     def homekit_id(self):
+        """Return homekit id."""
         return self.raw.get(ATTR_HOMEKIT_ID)
 
     @property
     def path(self):
+        """Return path."""
         return [ROOT_GATEWAY, ATTR_GATEWAY_INFO]
 
     def set_values(self, values):
@@ -286,9 +291,11 @@ class GatewayInfo:
         """
 
         def process_result(result):
+            """Callback to process result."""
             self.raw = result
 
         return Command("get", self.path, process_result=process_result)
 
     def __repr__(self):
+        """Return representation of class object."""
         return "<GatewayInfo>"

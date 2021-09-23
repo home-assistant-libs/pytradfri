@@ -21,8 +21,9 @@ class Command(object):
         observe: bool = False,
         observe_duration: int = 0,
         process_result: TYPE_PROCESS_RESULT_CB = None,
-        err_callback: TYPE_ERR_CB = None
+        err_callback: TYPE_ERR_CB = None,
     ) -> None:
+        """Setup Command class."""
         self._method = method
         self._path = path
         self._data = data
@@ -36,22 +37,27 @@ class Command(object):
 
     @property
     def method(self) -> str:
+        """Return method."""
         return self._method
 
     @property
     def path(self) -> list[str]:
+        """Return path."""
         return self._path
 
     @property
     def data(self) -> dict[str, Any] | None:
+        """Return data."""
         return self._data
 
     @property
     def parse_json(self) -> bool:
+        """Result of json parsing."""
         return self._parse_json
 
     @property
     def process_result(self) -> TYPE_PROCESS_RESULT_CB:
+        """Callback definition to process result."""
         return self._process_result
 
     @property
@@ -61,18 +67,22 @@ class Command(object):
 
     @property
     def observe(self) -> bool:
+        """Observe function."""
         return self._observe
 
     @property
     def observe_duration(self) -> int:
+        """Return duration period of observations."""
         return self._observe_duration
 
     @property
     def raw_result(self) -> str | None:
+        """Return raw result."""
         return self._raw_result
 
     @property
     def result(self) -> str | None:
+        """Return result."""
         return self._result
 
     @result.setter
@@ -119,6 +129,7 @@ class Command(object):
         self._data = self._merge(command2._data, self._data)
 
     def __add__(self, other: Command | None) -> Command:
+        """Add Command to this Command."""
         if other is None:
             return deepcopy(self)
         if isinstance(other, self.__class__):

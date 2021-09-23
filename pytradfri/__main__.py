@@ -95,6 +95,7 @@ if __name__ == "__main__":
     homekit_id = api(gateway.get_gateway_info()).homekit_id
 
     def dump_all():
+        """Dump all endpoints."""
         endpoints = api(gateway.get_endpoints())
 
         for endpoint in endpoints:
@@ -108,6 +109,7 @@ if __name__ == "__main__":
             print()
 
     def dump_devices():
+        """Utility to dump devices."""
         pprint([d.raw for d in devices])
 
     print()

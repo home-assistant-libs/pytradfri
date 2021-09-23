@@ -71,7 +71,7 @@ disable = [
     "cyclic-import",
     "duplicate-code",
 #    "inconsistent-return-statements",
-#    "locally-disabled",
+    "locally-disabled",
     "not-context-manager",
     "too-few-public-methods",
     "too-many-ancestors",

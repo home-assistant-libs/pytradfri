@@ -1,3 +1,4 @@
+"""Resources for devices."""
 from datetime import datetime
 
 from .command import Command
@@ -13,14 +14,17 @@ class ApiResource:
 
     @property
     def id(self):
+        """Id."""
         return self.raw.get(ATTR_ID)
 
     @property
     def name(self):
+        """Name."""
         return self.raw.get(ATTR_NAME)
 
     @property
     def created_at(self):
+        """Return timestamp of creation."""
         if ATTR_CREATED_AT not in self.raw:
             return None
         return datetime.utcfromtimestamp(self.raw[ATTR_CREATED_AT])

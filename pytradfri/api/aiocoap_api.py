@@ -24,7 +24,10 @@ _SENTINEL = object()
 
 
 class APIFactory:
+    """ApiFactory."""
+
     def __init__(self, host: str, psk_id="pytradfri", psk=None, internal_create=None):
+        """Setup object of class."""
         if internal_create is not _SENTINEL:
             raise ValueError("Use APIFactory.init(…) to initialize APIFactory")
 
@@ -46,10 +49,12 @@ class APIFactory:
 
     @property
     def psk_id(self):
+        """Return psk id."""
         return self._psk_id
 
     @property
     def psk(self):
+        """Return psk."""
         return self._psk
 
     async def _get_protocol(self):

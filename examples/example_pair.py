@@ -61,6 +61,7 @@ if args.host not in load_json(CONFIG_FILE) and args.key is None:
 
 
 async def run(shutdown):
+    """Run."""
     # Assign configuration variables.
     # The configuration check takes care they are present.
     conf = load_json(CONFIG_FILE)

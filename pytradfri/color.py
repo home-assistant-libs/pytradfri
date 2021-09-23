@@ -1,3 +1,4 @@
+"""Test Color."""
 from __future__ import annotations
 
 from .const import (
@@ -44,6 +45,7 @@ COLORS = {name.lower().replace(" ", "_"): hex for hex, name in COLOR_NAMES.items
 
 
 def supported_features(data: dict[str, str | int]) -> int:
+    """Return supported features."""
     SUPPORTED_COLOR_FEATURES = 0
 
     if ATTR_LIGHT_DIMMER in data:
