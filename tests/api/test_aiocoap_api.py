@@ -23,7 +23,7 @@ class MockCode:
     """Mock Code."""
 
     def is_successful(self):
-        """Is succesful."""
+        """Is successful."""
         return True
 
 
