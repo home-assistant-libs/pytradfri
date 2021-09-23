@@ -529,7 +529,7 @@ def test_deviceinfo_battery_level(comment, device):
 
 @pytest.mark.parametrize(*input_devices)
 def test_deviceinfo_battery_level_unkown(comment, device):
-    """Rest battery level unknown."""
+    """Test battery level unknown."""
     info = Device(device.raw.copy()).device_info
     info.raw["9"] = None
     assert info.battery_level is None
