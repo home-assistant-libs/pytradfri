@@ -34,8 +34,7 @@ class Gateway:
     """This class connects to the IKEA Tradfri Gateway."""
 
     def generate_psk(self, identity):
-        """
-        Generates the PRE_SHARED_KEY from the gateway.
+        """Generate the PRE_SHARED_KEY from the gateway.
 
         Returns a Command.
         """
@@ -116,7 +115,7 @@ class Gateway:
         return Command("get", [ROOT_GROUPS, group_id], process_result=process_result)
 
     def add_group_member(self, values):
-        """Adds a device to a group."""
+        """Add a device to a group."""
 
         return Command("put", [ROOT_GROUPS, "add"], values)
 
@@ -195,8 +194,7 @@ class Gateway:
         )
 
     def reboot(self):
-        """
-        Reboot the Gateway
+        """Reboot the Gateway.
 
         Returns a Command.
         """
@@ -204,20 +202,21 @@ class Gateway:
         return Command("post", [ROOT_GATEWAY, ATTR_GATEWAY_REBOOT])
 
     def set_commissioning_timeout(self, timeout):
-        """Put the gateway in a state in which it accepts pairings from
-        switches, dimmers and motion sensors for up to timeout seconds.
+        """Put the gateway in pairing state.
 
-        Returns a Command."""
+        The pairing state is when the gateway accepts pairings from
+        switches, dimmers and motion sensors for up to timeout seconds.
+        Returns a Command.
+        """
 
         return Command(
             "put", [ROOT_GATEWAY, ATTR_GATEWAY_INFO], {ATTR_COMMISSIONING_MODE: timeout}
         )
 
     def factory_reset(self):
-        """
-        Resets the Gateway to factory defaults.
-        WARNING: All data in Gateway is lost (pairing, groups, etc)
+        """Reset Gateway to factory defaults.
 
+        WARNING: All data in Gateway is lost (pairing, groups, etc)
         Returns a Command.
         """
 
@@ -228,12 +227,12 @@ class GatewayInfo:
     """This class contains Gateway information."""
 
     def __init__(self, raw):
-        """Setup object of class."""
+        """Create object of class."""
         self.raw = raw
 
     @property
     def id(self):
-        """This looks like a value representing an id."""
+        """Return the gateway id."""
         return self.raw.get(ATTR_GATEWAY_ID)
 
     @property
@@ -260,7 +259,7 @@ class GatewayInfo:
 
     @property
     def first_setup(self):
-        """This is a guess of the meaning of this value."""
+        """Return the time when gateway was first set up."""
         if ATTR_FIRST_SETUP not in self.raw:
             return None
         return datetime.utcfromtimestamp(self.raw[ATTR_FIRST_SETUP])
@@ -276,8 +275,7 @@ class GatewayInfo:
         return [ROOT_GATEWAY, ATTR_GATEWAY_INFO]
 
     def set_values(self, values):
-        """
-        Helper to set values for mood.
+        """Help set values for mood.
 
         Returns a Command.
         """
@@ -291,7 +289,7 @@ class GatewayInfo:
         """
 
         def process_result(result):
-            """Callback to process result."""
+            """Define callback to process result."""
             self.raw = result
 
         return Command("get", self.path, process_result=process_result)

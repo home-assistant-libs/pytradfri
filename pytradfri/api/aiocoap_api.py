@@ -27,7 +27,7 @@ class APIFactory:
     """ApiFactory."""
 
     def __init__(self, host: str, psk_id="pytradfri", psk=None, internal_create=None):
-        """Setup object of class."""
+        """Create object of class."""
         if internal_create is not _SENTINEL:
             raise ValueError("Use APIFactory.init(…) to initialize APIFactory")
 
@@ -92,7 +92,9 @@ class APIFactory:
 
     async def shutdown(self, exc=None):
         """Shutdown the API events.
-        This should be called before closing the event loop."""
+
+        This should be called before closing the event loop.
+        """
         await self._reset_protocol(exc)
         self._shutdown = True
 

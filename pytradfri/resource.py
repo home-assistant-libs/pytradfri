@@ -38,8 +38,7 @@ class ApiResource:
         """Observe resource and call callback when updated."""
 
         def observe_callback(value):
-            """
-            Called when end point is updated.
+            """Call when end point is updated.
 
             Returns a Command.
             """
@@ -60,8 +59,7 @@ class ApiResource:
         return self.set_values({ATTR_NAME: name})
 
     def set_values(self, values):
-        """
-        Helper to set values for group.
+        """Help to set values for group.
 
         Returns a Command.
         """

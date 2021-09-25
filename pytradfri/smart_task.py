@@ -125,7 +125,7 @@ class SmartTask(ApiResource):
 
     @property
     def task_control(self):
-        """Method to control a task."""
+        """Control a task."""
         return TaskControl(self, self.state, self.path, self._gateway)
 
     @property
@@ -241,14 +241,14 @@ class StartActionItem:
 
     @property
     def item_controller(self):
-        """Method to control a task."""
+        """Control a task."""
         return StartActionItemController(
             self, self.raw, self.state, self.path, self.devices_dict
         )
 
     @property
     def transition_time(self):
-        """A transition runs for this long from the time in task_start.
+        """Transition runs for this long from the time in task_start.
 
         Value is in seconds x 10. Default to 0 if transition is missing.
         """

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""
+"""Example pairing.
+
 This is an example of how the pytradfri-library can be used to pair new
 devices.
 
@@ -18,8 +19,8 @@ import os
 # Hack to allow relative import above top level package
 import sys
 
-folder = os.path.dirname(os.path.abspath(__file__))  # noqa
-sys.path.insert(0, os.path.normpath("%s/.." % folder))  # noqa
+folder = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.normpath("%s/.." % folder))
 
 import argparse
 import asyncio

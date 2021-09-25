@@ -109,7 +109,7 @@ if __name__ == "__main__":
             print()
 
     def dump_devices():
-        """Utility to dump devices."""
+        """Dump devices."""
         pprint([d.raw for d in devices])
 
     print()

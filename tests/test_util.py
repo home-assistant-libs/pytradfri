@@ -21,14 +21,14 @@ class UtilTestsBitChoices(unittest.TestCase):
 
         assert WEEKDAYS.get_selected_keys(1) == ["tue"]
         assert len(WEEKDAYS) == 1
-        assert [x for x in WEEKDAYS] == [(1, "Tuesday")]
+        assert [x for x in WEEKDAYS] == [(1, "Tuesday")]  # noqa: C416
 
 
 class UtilTestsJSON(unittest.TestCase):
     """Utility JSON."""
 
     def setUp(self):
-        """Setup test suite."""
+        """Create test suite."""
         self.test_dir = tempfile.mkdtemp()
 
     def tearDown(self):

@@ -441,9 +441,7 @@ def test_light_state_mangled(device):
 
 # Test light hsb_xy_color function
 def test_light_hsb_xy_color(device):
-    """
-    Very basic test, just to touch it.
-    """
+    """Very basic test, just to touch it."""
     light = Device(device.raw.copy()).light_control.lights[0]
     assert len(light.hsb_xy_color) == 5
 

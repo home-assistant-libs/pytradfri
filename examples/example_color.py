@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""
+"""Color examples.
+
 This is a file to give examples on how to work with colors
 The gateway supports _some_ hex values, otherwise colors stored as XY
 A guess is that IKEA uses the CIE XYZ space
@@ -30,8 +31,8 @@ import os
 # Hack to allow relative import above top level package
 import sys
 
-folder = os.path.dirname(os.path.abspath(__file__))  # noqa
-sys.path.insert(0, os.path.normpath("%s/.." % folder))  # noqa
+folder = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.normpath("%s/.." % folder))
 
 import argparse
 import asyncio

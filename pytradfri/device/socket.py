@@ -6,7 +6,7 @@ class Socket:
     """Represent a socket."""
 
     def __init__(self, device, index):
-        """Setup object of class."""
+        """Create object of class."""
         self.device = device
         self.index = index
 

@@ -31,7 +31,7 @@ class Group(ApiResource):
     """Represent a group."""
 
     def __init__(self, gateway, raw):
-        """Setup object of class."""
+        """Create object of class."""
         super().__init__(raw)
         self._gateway = gateway
 
@@ -75,13 +75,13 @@ class Group(ApiResource):
         return [self._gateway.get_device(dev) for dev in self.member_ids]
 
     def add_member(self, memberid):
-        """Adds a member to this group."""
+        """Add a member to this group."""
         return self._gateway.add_group_member(
             {ATTR_GROUP_ID: self.id, ATTR_ID: [memberid]}
         )
 
     def remove_member(self, memberid):
-        """Removes a member from this group."""
+        """Remove a member from this group."""
         return self._gateway.remove_group_member(
             {ATTR_GROUP_ID: self.id, ATTR_ID: [memberid]}
         )
@@ -174,9 +174,7 @@ class Group(ApiResource):
             raise ColorError("Invalid color specified: %s", colorname)
 
     def _value_validate(self, value, rnge, identifier="Given"):
-        """
-        Make sure a value is within a given range
-        """
+        """Make sure a value is within a given range."""
         if value is not None and (value < rnge[0] or value > rnge[1]):
             raise ValueError(
                 "%s value must be between %d and %d." % (identifier, rnge[0], rnge[1])

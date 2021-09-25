@@ -7,7 +7,7 @@ class Mood(ApiResource):
     """Mood."""
 
     def __init__(self, raw, parent):
-        """Setup object of class."""
+        """Create object of class."""
         super().__init__(raw)
         self._parent = parent
 

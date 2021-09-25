@@ -13,7 +13,7 @@ def test_retry_timeout_passes_args():
     calls = []
 
     def api(*args, **kwargs):
-        """Mock api"""
+        """Mock api."""
         calls.append((args, kwargs))
 
     retry_api = retry_timeout(api)
@@ -30,7 +30,7 @@ def test_retry_timeout_retries_timeouts():
     calls = []
 
     def api(*args, **kwargs):
-        """Mock api"""
+        """Mock api."""
         calls.append((args, kwargs))
 
         if len(calls) == 1:
@@ -47,7 +47,7 @@ def test_retry_timeout_raises_after_max_retries():
     calls = []
 
     def api(*args, **kwargs):
-        """Mock api"""
+        """Mock api."""
         calls.append((args, kwargs))
 
         raise RequestTimeout()

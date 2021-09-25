@@ -23,7 +23,7 @@ class Command(object):
         process_result: TYPE_PROCESS_RESULT_CB = None,
         err_callback: TYPE_ERR_CB = None,
     ) -> None:
-        """Setup Command class."""
+        """Create object of class."""
         self._method = method
         self._path = path
         self._data = data
@@ -52,17 +52,17 @@ class Command(object):
 
     @property
     def parse_json(self) -> bool:
-        """Result of json parsing."""
+        """Json parsing result."""
         return self._parse_json
 
     @property
     def process_result(self) -> TYPE_PROCESS_RESULT_CB:
-        """Callback definition to process result."""
+        """Definition of callback to process result."""
         return self._process_result
 
     @property
     def err_callback(self) -> TYPE_ERR_CB:
-        """This will be fired when an observe request fails."""
+        """Will be fired when an observe request fails."""
         return self._err_callback
 
     @property
@@ -87,7 +87,7 @@ class Command(object):
 
     @result.setter
     def result(self, value: str) -> None:
-        """The result of the command."""
+        """Return command result."""
         if self._process_result:
             self._result = self._process_result(value)
 
@@ -105,7 +105,7 @@ class Command(object):
     def _merge(
         self, a: dict[str, Any] | None, b: dict[str, Any] | None
     ) -> dict[str, Any] | None:
-        """Merges a into b."""
+        """Merge a into b."""
         if a is None or b is None:
             return None
         for k, v in a.items():
@@ -123,7 +123,7 @@ class Command(object):
         return b
 
     def combine_data(self, command2: Command | None) -> None:
-        """Combines the data for this command with another."""
+        """Combine data for this command with another."""
         if command2 is None:
             return
         self._data = self._merge(command2._data, self._data)
