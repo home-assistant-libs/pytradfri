@@ -259,7 +259,7 @@ class GatewayInfo:
 
     @property
     def first_setup(self):
-        """Guess the meaning of this value."""
+        """Return the time when gateway was first set up."""
         if ATTR_FIRST_SETUP not in self.raw:
             return None
         return datetime.utcfromtimestamp(self.raw[ATTR_FIRST_SETUP])
