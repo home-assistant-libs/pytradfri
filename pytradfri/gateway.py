@@ -204,7 +204,7 @@ class Gateway:
     def set_commissioning_timeout(self, timeout):
         """Put the gateway in pairing state.
 
-        a state in which it accepts pairings from
+        The pairing state is when the gateway accepts pairings from
         switches, dimmers and motion sensors for up to timeout seconds.
         Returns a Command.
         """
