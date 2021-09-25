@@ -232,7 +232,7 @@ class GatewayInfo:
 
     @property
     def id(self):
-        """Look like a value representing an id."""
+        """Return the gateway id."""
         return self.raw.get(ATTR_GATEWAY_ID)
 
     @property
