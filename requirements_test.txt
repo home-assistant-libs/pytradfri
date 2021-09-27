@@ -5,7 +5,7 @@ coveralls==3.2.0
 pytest-cov==2.12.1
 black==21.9b0
 mypy==0.910
-pre-commit==2.14.1
+pre-commit==2.15.0
 pycodestyle==2.7.0
 pyflakes==2.3.1
 flake8-docstrings==1.6.0
