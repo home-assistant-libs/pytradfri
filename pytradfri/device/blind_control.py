@@ -3,16 +3,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
 
-from pytradfri.command import Command
-from pytradfri.const import (
+from ..command import Command
+from ..const import (
     ATTR_BLIND_CURRENT_POSITION,
     ATTR_BLIND_TRIGGER,
     ATTR_START_BLINDS,
     RANGE_BLIND,
 )
-from pytradfri.device.blind import Blind
-from pytradfri.device.controller import Controller
-from pytradfri.resource import TYPE_RAW
+from ..resource import TYPE_RAW
+from .blind import Blind
+from .controller import Controller
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.

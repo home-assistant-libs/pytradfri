@@ -1,5 +1,5 @@
 """Represent a socket."""
-from pytradfri.const import ATTR_DEVICE_STATE, ATTR_SWITCH_PLUG
+from ..const import ATTR_DEVICE_STATE, ATTR_SWITCH_PLUG
 
 
 class Socket:

@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
 
-from pytradfri.const import ATTR_BLIND_CURRENT_POSITION, ATTR_START_BLINDS
-from pytradfri.resource import TYPE_RAW, TYPE_RAW_LIST
+from ..const import ATTR_BLIND_CURRENT_POSITION, ATTR_START_BLINDS
+from ..resource import TYPE_RAW, TYPE_RAW_LIST
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.

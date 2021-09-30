@@ -1,12 +1,6 @@
 """Classes to interact with devices."""
 from datetime import datetime
 
-from pytradfri.device.blind_control import BlindControl
-from pytradfri.device.light_control import LightControl
-from pytradfri.device.signal_repeater_control import SignalRepeaterControl
-from pytradfri.device.socket_control import SocketControl
-from pytradfri.resource import ApiResource
-
 from ..const import (
     ATTR_APPLICATION_TYPE,
     ATTR_DEVICE_INFO,
@@ -18,6 +12,11 @@ from ..const import (
     ROOT_DEVICES,
     ROOT_SIGNAL_REPEATER,
 )
+from ..resource import ApiResource
+from .blind_control import BlindControl
+from .light_control import LightControl
+from .signal_repeater_control import SignalRepeaterControl
+from .socket_control import SocketControl
 
 
 class Device(ApiResource):

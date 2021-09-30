@@ -1,5 +1,5 @@
 """Represent a signal repeater."""
-from pytradfri.const import ROOT_SIGNAL_REPEATER
+from ..const import ROOT_SIGNAL_REPEATER
 
 
 class SignalRepeater:

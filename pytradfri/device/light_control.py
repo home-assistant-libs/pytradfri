@@ -1,7 +1,7 @@
 """Class to control the lights."""
-from pytradfri.color import COLORS
-from pytradfri.command import Command
-from pytradfri.const import (
+from ..color import COLORS
+from ..command import Command
+from ..const import (
     ATTR_DEVICE_STATE,
     ATTR_LIGHT_COLOR_HEX,
     ATTR_LIGHT_COLOR_HUE,
@@ -19,8 +19,8 @@ from pytradfri.const import (
     RANGE_X,
     RANGE_Y,
 )
-from pytradfri.device.light import Light
-from pytradfri.error import ColorError
+from ..error import ColorError
+from .light import Light
 
 
 class LightControl:
