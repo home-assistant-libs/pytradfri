@@ -1,7 +1,6 @@
 """Resources for devices."""
 from __future__ import annotations
 
-from abc import abstractmethod
 from datetime import datetime
 from typing import Any, Dict, List, Union, cast
 
@@ -40,7 +39,6 @@ class ApiResource:
             int(cast(TYPE_RAW_SIMPLE, self.raw)[ATTR_CREATED_AT])
         )
 
-    @abstractmethod
     @property
     def path(self) -> list[str]:
         """Path to resource."""

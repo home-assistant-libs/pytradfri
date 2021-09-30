@@ -1,11 +1,11 @@
 """Classes to interact with devices."""
 from datetime import datetime
 
-from pytradfri.blind_control import BlindControl
-from pytradfri.light_control import LightControl
+from pytradfri.device.blind_control import BlindControl
+from pytradfri.device.light_control import LightControl
+from pytradfri.device.signal_repeater_control import SignalRepeaterControl
+from pytradfri.device.socket_control import SocketControl
 from pytradfri.resource import ApiResource
-from pytradfri.signal_repeater_control import SignalRepeaterControl
-from pytradfri.socket_control import SocketControl
 
 from ..const import (
     ATTR_APPLICATION_TYPE,
