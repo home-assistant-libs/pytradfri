@@ -9,6 +9,8 @@ from ..resource import TYPE_RAW, TYPE_RAW_LIST
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
     from . import Device
+else:
+    Device = dict
 
 
 class Blind:

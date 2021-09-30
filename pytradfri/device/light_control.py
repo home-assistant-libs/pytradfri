@@ -1,4 +1,14 @@
 """Class to control the lights."""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, cast
+
+if TYPE_CHECKING:
+    # avoid cyclic import at runtime.
+    from . import Device
+else:
+    Device = dict
+
 from ..color import COLORS
 from ..command import Command
 from ..const import (
@@ -21,13 +31,14 @@ from ..const import (
 )
 from ..error import ColorError
 from .base_controller import BaseController
+from ..resource import TYPE_RAW
 from .light import Light
 
 
 class LightControl(BaseController):
     """Class to control the lights."""
 
-    def __init__(self, device):
+    def __init__(self, device: Device) -> None:
         """Create object of class."""
         super().__init__(device)
 
@@ -53,7 +64,10 @@ class LightControl(BaseController):
         # multiple values simultaneously. As of gateway firmware
         # 1.3.14 1st party bulbs do not seem to support this properly,
         # but (at least some) hue bulbs do.
-        if "Philips" in self._device.device_info.manufacturer:
+        if (
+            self._device.device_info.manufacturer
+            and "Philips" in self._device.device_info.manufacturer
+        ):
             self.can_combine_commands = True
 
         self.min_mireds = RANGE_MIREDS[0]
@@ -66,47 +80,53 @@ class LightControl(BaseController):
         self.max_saturation = RANGE_SATURATION[1]
 
     @property
-    def raw(self):
+    def raw(self) -> list:
         """Return raw data that it represents."""
-        return self._device.raw[ATTR_LIGHT_CONTROL]
+        return cast(TYPE_RAW_LIST, self._device.raw)[ATTR_LIGHT_CONTROL]
 
     @property
-    def lights(self):
+    def lights(self) -> list[Light]:
         """Return light objects of the light control."""
         return [Light(self._device, i) for i in range(len(self.raw))]
 
-    def set_state(self, state, *, index=0):
+    def set_state(self, state: int, *, index: int = 0) -> Command:
         """Set state of a light."""
         return self.set_values({ATTR_DEVICE_STATE: int(state)}, index=index)
 
-    def set_dimmer(self, dimmer, *, index=0, transition_time=None):
+    def set_dimmer(
+        self, dimmer: int, *, index: int = 0, transition_time: int | None = None
+    ) -> Command:
         """Set dimmer value of a light.
 
         transition_time: Integer representing tenth of a second (default None)
         """
         self._value_validate(dimmer, RANGE_BRIGHTNESS, "Dimmer")
 
-        values = {ATTR_LIGHT_DIMMER: dimmer}
+        values: dict[str, int | str] = {ATTR_LIGHT_DIMMER: dimmer}
 
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
 
         return self.set_values(values, index=index)
 
-    def set_color_temp(self, color_temp, *, index=0, transition_time=None):
+    def set_color_temp(
+        self, color_temp: int, *, index: int = 0, transition_time: int | None = None
+    ) -> Command:
         """Set color temp a light."""
         self._value_validate(color_temp, RANGE_MIREDS, "Color temperature")
 
-        values = {ATTR_LIGHT_MIREDS: color_temp}
+        values: dict[str, int | str] = {ATTR_LIGHT_MIREDS: color_temp}
 
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
 
         return self.set_values(values, index=index)
 
-    def set_hex_color(self, color, *, index=0, transition_time=None):
+    def set_hex_color(
+        self, color: str, *, index: int = 0, transition_time: int | None = None
+    ) -> Command:
         """Set hex color of the light."""
-        values = {
+        values: dict[str, int | str] = {
             ATTR_LIGHT_COLOR_HEX: color,
         }
 
@@ -115,12 +135,22 @@ class LightControl(BaseController):
 
         return self.set_values(values, index=index)
 
-    def set_xy_color(self, color_x, color_y, *, index=0, transition_time=None):
+    def set_xy_color(
+        self,
+        color_x: int,
+        color_y: int,
+        *,
+        index: int = 0,
+        transition_time: int | None = None,
+    ) -> Command:
         """Set xy color of the light."""
         self._value_validate(color_x, RANGE_X, "X color")
         self._value_validate(color_y, RANGE_Y, "Y color")
 
-        values = {ATTR_LIGHT_COLOR_X: color_x, ATTR_LIGHT_COLOR_Y: color_y}
+        values: dict[str, int | str] = {
+            ATTR_LIGHT_COLOR_X: color_x,
+            ATTR_LIGHT_COLOR_Y: color_y,
+        }
 
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
@@ -128,13 +158,22 @@ class LightControl(BaseController):
         return self.set_values(values, index=index)
 
     def set_hsb(
-        self, hue, saturation, brightness=None, *, index=0, transition_time=None
-    ):
+        self,
+        hue: int,
+        saturation: int,
+        brightness: int | None = None,
+        *,
+        index: int = 0,
+        transition_time: int | None = None,
+    ) -> Command:
         """Set HSB color settings of the light."""
         self._value_validate(hue, RANGE_HUE, "Hue")
         self._value_validate(saturation, RANGE_SATURATION, "Saturation")
 
-        values = {ATTR_LIGHT_COLOR_SATURATION: saturation, ATTR_LIGHT_COLOR_HUE: hue}
+        values: dict[str, int | str] = {
+            ATTR_LIGHT_COLOR_SATURATION: saturation,
+            ATTR_LIGHT_COLOR_HUE: hue,
+        }
 
         if brightness is not None:
             values[ATTR_LIGHT_DIMMER] = brightness
@@ -145,17 +184,28 @@ class LightControl(BaseController):
 
         return self.set_values(values, index=index)
 
-    def set_predefined_color(self, colorname, *, index=0, transition_time=None):
+    def set_predefined_color(
+        self, colorname: str, *, index: int = 0, transition_time: int | None = None
+    ) -> Command:
         """Set predefined color."""
         try:
-            color = COLORS[colorname.lower().replace(" ", "_")]
+            color: str = COLORS[colorname.lower().replace(" ", "_")]
             return self.set_hex_color(
                 color, index=index, transition_time=transition_time
             )
         except KeyError:
             raise ColorError(f"Invalid color specified: {colorname}") from KeyError
 
-    def set_values(self, values, *, index=0):
+    def _value_validate(
+        self, value: int, rnge: list[int] | tuple[int, int], identifier: str = "Given"
+    ) -> None:
+        """Make sure a value is within a given range."""
+        if value is not None and (value < rnge[0] or value > rnge[1]):
+            raise ValueError(
+                "%s value must be between %d and %d." % (identifier, rnge[0], rnge[1])
+            )
+
+    def set_values(self, values: dict[str, str | int], *, index: int = 0) -> Command:
         """Set values on light control.
 
         Returns a Command.
