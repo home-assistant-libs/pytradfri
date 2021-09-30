@@ -1,16 +1,12 @@
 """Resources for devices."""
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Union, cast, Callable, Any, Dict, List
 from abc import abstractmethod
+from datetime import datetime
+from typing import Any, Dict, List, Union, cast
 
-from .command import Command, TYPE_PROCESS_RESULT_CB, TYPE_ERR_CB
-from .const import (
-    ATTR_NAME,
-    ATTR_CREATED_AT,
-    ATTR_ID,
-)
+from .command import TYPE_ERR_CB, TYPE_PROCESS_RESULT_CB, Command
+from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME
 
 # type alias
 TYPE_RAW = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
@@ -26,14 +22,14 @@ class ApiResource:
         self.raw = raw
 
     @property
-    def id(self) -> str:
+    def id(self) -> str | None:
         """Id."""
-        return str(self.raw.get(ATTR_ID))
+        return cast(Union[str, None], self.raw.get(ATTR_ID))
 
     @property
-    def name(self) -> str:
+    def name(self) -> str | None:
         """Name."""
-        return str(self.raw.get(ATTR_NAME))
+        return cast(Union[str, None], self.raw.get(ATTR_NAME))
 
     @property
     def created_at(self) -> datetime | None:
