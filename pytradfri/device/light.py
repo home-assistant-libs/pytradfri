@@ -1,6 +1,6 @@
 """Represent a light."""
-from pytradfri.color import supported_features
-from pytradfri.const import (
+from ..color import supported_features
+from ..const import (
     ATTR_DEVICE_STATE,
     ATTR_LIGHT_COLOR_HEX,
     ATTR_LIGHT_COLOR_HUE,

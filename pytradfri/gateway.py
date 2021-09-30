@@ -1,8 +1,6 @@
 """Represent the gateway."""
 from datetime import datetime
 
-from pytradfri.device import Device
-
 from .command import Command
 from .const import (
     ATTR_AUTH,
@@ -25,6 +23,7 @@ from .const import (
     ROOT_MOODS,
     ROOT_SMART_TASKS,
 )
+from .device import Device
 from .group import Group
 from .mood import Mood
 from .smart_task import SmartTask

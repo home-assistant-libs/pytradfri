@@ -1,6 +1,6 @@
 """Class to control the signal repeater."""
-from pytradfri.const import ROOT_SIGNAL_REPEATER
-from pytradfri.device.signal_repeater import SignalRepeater
+from ..const import ROOT_SIGNAL_REPEATER
+from .signal_repeater import SignalRepeater
 
 
 class SignalRepeaterControl:
