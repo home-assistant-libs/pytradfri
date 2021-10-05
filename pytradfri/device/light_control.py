@@ -20,15 +20,16 @@ from ..const import (
     RANGE_Y,
 )
 from ..error import ColorError
+from .base_controller import BaseController
 from .light import Light
 
 
-class LightControl:
+class LightControl(BaseController):
     """Class to control the lights."""
 
     def __init__(self, device):
         """Create object of class."""
-        self._device = device
+        super().__init__(device)
 
         self.can_set_dimmer = None
         self.can_set_temp = None
@@ -154,13 +155,6 @@ class LightControl:
         except KeyError:
             raise ColorError("Invalid color specified: %s", colorname)
 
-    def _value_validate(self, value, rnge, identifier="Given"):
-        """Make sure a value is within a given range."""
-        if value is not None and (value < rnge[0] or value > rnge[1]):
-            raise ValueError(
-                "%s value must be between %d and %d." % (identifier, rnge[0], rnge[1])
-            )
-
     def set_values(self, values, *, index=0):
         """Set values on light control.
 
@@ -169,9 +163,3 @@ class LightControl:
         assert len(self.raw) == 1, "Only devices with 1 light supported"
 
         return Command("put", self._device.path, {ATTR_LIGHT_CONTROL: [values]})
-
-    def __repr__(self):
-        """Return representation of class object."""
-        return "<LightControl for {} ({} lights)>".format(
-            self._device.name, len(self.raw)
-        )
