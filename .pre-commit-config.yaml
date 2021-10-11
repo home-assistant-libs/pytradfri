@@ -15,13 +15,9 @@ repos:
         name: flake8
         entry: flake8
         additional_dependencies:
-          - pycodestyle==2.7.0
-          - pyflakes==2.3.1
           - flake8-docstrings==1.6.0
-          - pydocstyle==6.0.0
           - flake8-comprehensions==3.5.0
           - flake8-noqa==1.1.0
-          - mccabe==0.6.1
         files: ^(pytradfri|examples|tests)/.+\.py$
   - repo: https://github.com/PyCQA/isort
     rev: 5.9.3

@@ -6,11 +6,7 @@ pytest-cov==3.0.0
 black==21.9b0
 mypy==0.910
 pre-commit==2.15.0
-pycodestyle==2.7.0
-pyflakes==2.3.1
 flake8-docstrings==1.6.0
-pydocstyle==6.1.1
 flake8-comprehensions==3.6.1
 flake8-noqa==1.1.0
-mccabe==0.6.1
 
