@@ -1,5 +1,5 @@
 pytest==6.2.5
-flake8==4.0.0
+flake8==3.9.2
 pytest-timeout==2.0.0
 coveralls==3.2.0
 pytest-cov==3.0.0
