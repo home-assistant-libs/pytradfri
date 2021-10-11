@@ -31,6 +31,6 @@ class BaseController:
 
     def __repr__(self):
         """Return representation of class object."""
-        return "<{} for {} ({} lights)>".format(
+        return "<{} for {} ({} devices)>".format(
             type(self).__name__, self._device.name, len(self.raw)
         )
