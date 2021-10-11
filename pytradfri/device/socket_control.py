@@ -1,15 +1,12 @@
 """Class to control the sockets."""
 from ..command import Command
 from ..const import ATTR_DEVICE_STATE, ATTR_SWITCH_PLUG
+from .base_controller import BaseController
 from .socket import Socket
 
 
-class SocketControl:
+class SocketControl(BaseController):
     """Class to control the sockets."""
-
-    def __init__(self, device):
-        """Create object of class."""
-        self._device = device
 
     @property
     def raw(self):
@@ -33,9 +30,3 @@ class SocketControl:
         assert len(self.raw) == 1, "Only devices with 1 socket supported"
 
         return Command("put", self._device.path, {ATTR_SWITCH_PLUG: [values]})
-
-    def __repr__(self):
-        """Return representation of class object."""
-        return "<SocketControl for {} ({} sockets)>".format(
-            self._device.name, len(self.raw)
-        )

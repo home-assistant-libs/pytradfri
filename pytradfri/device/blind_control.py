@@ -1,7 +1,7 @@
 """Class to control the blinds."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import cast
 
 from ..command import Command
 from ..const import (
@@ -11,20 +11,12 @@ from ..const import (
     RANGE_BLIND,
 )
 from ..resource import TYPE_RAW
+from .base_controller import BaseController
 from .blind import Blind
-from .controller import Controller
-
-if TYPE_CHECKING:
-    # avoid cyclic import at runtime.
-    from . import Device
 
 
-class BlindControl(Controller):
+class BlindControl(BaseController):
     """Class to control the blinds."""
-
-    def __init__(self, device: Device) -> None:
-        """Create object of class."""
-        self._device = device
 
     @property
     def raw(self) -> TYPE_RAW:
