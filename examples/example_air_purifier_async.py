@@ -96,7 +96,7 @@ async def run():
         control = air_purifier.air_purifier_control
         print(control.air_purifiers[0].air_quality)
         # Set mode auto
-        command = control.set_state(True)
+        command = control.set_mode(1)
         await api(command)
 
     await api_factory.shutdown()

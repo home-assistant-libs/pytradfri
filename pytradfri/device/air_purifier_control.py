@@ -6,7 +6,7 @@ from typing import cast
 from ..command import Command
 from ..const import (
     ROOT_AIR_PURIFIER,
-    ATTR_AIR_PURIFIER_STATE,
+    ATTR_AIR_PURIFIER_MODE,
     ATTR_AIR_PURIFIER_CONTROLS_LOCKED,
     ATTR_AIR_PURIFIER_LEDS_OFF,
     RANGE_AIR_PURIFIER,
@@ -29,11 +29,6 @@ class AirPurifierControl(BaseController):
         """Return air purifier objects of the air purifier control."""
         return [AirPurifier(self._device, i) for i in range(len(self.raw))]
 
-    def set_state(self, state: bool, *, index=0):
-        """Set state of a air purifier."""
-
-        return self.set_value({ATTR_AIR_PURIFIER_STATE: int(state)}, index=index)
-
     def set_mode(self, mode: int, *, index=0) -> Command:
         """Set mode of a air purifier.
 
@@ -46,7 +41,7 @@ class AirPurifierControl(BaseController):
         50: Fan level 5
         """
         self._value_validate(mode, RANGE_AIR_PURIFIER, "Air Purifier mode")
-        return self.set_value({ATTR_AIR_PURIFIER_STATE: mode}, index=index)
+        return self.set_value({ATTR_AIR_PURIFIER_MODE: mode}, index=index)
 
     def set_controls_locked(self, locked: bool, *, index=0) -> Command:
         """Set physical controls locked of the air purifier."""

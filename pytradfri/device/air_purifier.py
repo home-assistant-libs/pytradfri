@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, cast
 
 from ..const import (
     ROOT_AIR_PURIFIER,
-    ATTR_AIR_PURIFIER_STATE,
+    ATTR_AIR_PURIFIER_MODE,
     ATTR_AIR_PURIFIER_FAN_SPEED,
     ATTR_AIR_PURIFIER_CONTROLS_LOCKED,
     ATTR_AIR_PURIFIER_LEDS_OFF,
@@ -35,11 +35,6 @@ class AirPurifier:
         )
 
     @property
-    def state(self) -> bool:
-        """Return True if air purifier is on, False otherwise."""
-        return cast(int, self.raw[ATTR_AIR_PURIFIER_STATE]) > 0
-
-    @property
     def mode(self) -> int:
         """Return the current mode of the air purifier.
 
@@ -51,7 +46,7 @@ class AirPurifier:
         40: Fan level 4
         50: Fan level 5
         """
-        return cast(int, self.raw[ATTR_AIR_PURIFIER_STATE])
+        return cast(int, self.raw[ATTR_AIR_PURIFIER_MODE])
 
     @property
     def fan_speed(self) -> int:
