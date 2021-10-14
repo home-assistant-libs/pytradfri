@@ -31,6 +31,7 @@ class AirPurifierControl(BaseController):
 
     def set_state(self, state: int) -> Command:
         """Set state of a air purifier.
+
         0: off
         1: Fan level auto
         10: Fan level 1
@@ -43,12 +44,12 @@ class AirPurifierControl(BaseController):
         return self.set_value({ATTR_AIR_PURIFIER_STATE: state})
 
     def set_controls_locked(self, locked: bool) -> Command:
-        """Set physical controls locked of the air purifier"""
+        """Set physical controls locked of the air purifier."""
 
         return self.set_value({ATTR_AIR_PURIFIER_CONTROLS_LOCKED: 1 if locked else 0})
 
     def set_leds_off(self, leds_off: bool) -> Command:
-        """Set led's off/on of the air purifier"""
+        """Set led's off/on of the air purifier."""
 
         return self.set_value({ATTR_AIR_PURIFIER_LEDS_OFF: 1 if leds_off else 0})
 

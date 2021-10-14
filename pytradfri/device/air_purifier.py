@@ -36,7 +36,16 @@ class AirPurifier:
 
     @property
     def current_state(self) -> int:
-        """Get the current state of the air purifier."""
+        """Get the current state of the air purifier.
+
+        0: off
+        1: Fan level auto
+        10: Fan level 1
+        20: Fan level 2
+        30: Fan level 3
+        40: Fan level 4
+        50: Fan level 5
+        """
         return cast(int, self.raw.get(ATTR_AIR_PURIFIER_STATE))
 
     @property
@@ -51,12 +60,13 @@ class AirPurifier:
 
     @property
     def leds_off(self) -> bool:
-        """Get True if led's on the air purifier are turned off."""
+        """Return True if led's on the air purifier are turned off."""
         return cast(int, self.raw.get(ATTR_AIR_PURIFIER_LEDS_OFF)) == 1
 
     @property
     def air_quality(self) -> int:
-        """Get the current air quality measured by the air purifier:
+        """Get the current air quality measured by the air purifier.
+
         0..35: Good
         36..85: OK
         86..: Not good
