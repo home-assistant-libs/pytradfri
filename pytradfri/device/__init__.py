@@ -104,6 +104,7 @@ class Device(ApiResource):
         """Return air_purifier control, if any."""
         if self.has_air_purifier_control:
             return AirPurifierControl(self)
+        return None
 
     def __repr__(self):
         """Return representation of class object."""

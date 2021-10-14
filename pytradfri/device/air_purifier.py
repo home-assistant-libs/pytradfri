@@ -46,7 +46,7 @@ class AirPurifier:
 
     @property
     def controls_locked(self) -> bool:
-        """Get True if physical controls on the air purifier are locked."""
+        """Return True if physical controls on the air purifier are locked."""
         return cast(int, self.raw.get(ATTR_AIR_PURIFIER_CONTROLS_LOCKED)) == 1
 
     @property
