@@ -36,8 +36,8 @@ class AirPurifier:
 
     @property
     def state(self) -> bool:
-        """Return True if air purifier is on, False otherwise"""
-        return self.raw[ATTR_AIR_PURIFIER_STATE] > 0
+        """Return True if air purifier is on, False otherwise."""
+        return cast(int, self.raw[ATTR_AIR_PURIFIER_STATE]) > 0
 
     @property
     def mode(self) -> int:
