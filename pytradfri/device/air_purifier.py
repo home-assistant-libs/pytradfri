@@ -41,7 +41,7 @@ class AirPurifier:
 
     @property
     def mode(self) -> int:
-        """Get the current state of the air purifier.
+        """Return the current mode of the air purifier.
 
         0: off
         1: Fan level auto
