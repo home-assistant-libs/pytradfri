@@ -35,7 +35,12 @@ class AirPurifier:
         )
 
     @property
-    def current_state(self) -> int:
+    def state(self) -> bool:
+        """Return True if air purifier is on, False otherwise"""
+        return self.raw[ATTR_AIR_PURIFIER_STATE] > 0
+
+    @property
+    def mode(self) -> int:
         """Get the current state of the air purifier.
 
         0: off
@@ -46,22 +51,22 @@ class AirPurifier:
         40: Fan level 4
         50: Fan level 5
         """
-        return cast(int, self.raw.get(ATTR_AIR_PURIFIER_STATE))
+        return cast(int, self.raw[ATTR_AIR_PURIFIER_STATE])
 
     @property
     def fan_speed(self) -> int:
         """Get the current fan speed of the air purifier."""
-        return cast(int, self.raw.get(ATTR_AIR_PURIFIER_FAN_SPEED))
+        return cast(int, self.raw[ATTR_AIR_PURIFIER_FAN_SPEED])
 
     @property
     def controls_locked(self) -> bool:
         """Return True if physical controls on the air purifier are locked."""
-        return cast(int, self.raw.get(ATTR_AIR_PURIFIER_CONTROLS_LOCKED)) == 1
+        return self.raw[ATTR_AIR_PURIFIER_CONTROLS_LOCKED] == 1
 
     @property
     def leds_off(self) -> bool:
         """Return True if led's on the air purifier are turned off."""
-        return cast(int, self.raw.get(ATTR_AIR_PURIFIER_LEDS_OFF)) == 1
+        return self.raw[ATTR_AIR_PURIFIER_LEDS_OFF] == 1
 
     @property
     def air_quality(self) -> int:
@@ -72,4 +77,4 @@ class AirPurifier:
         86..: Not good
         65535: If the fan is off or during measuring time after turning on
         """
-        return cast(int, self.raw.get(ATTR_AIR_PURIFIER_AIR_QUALITY))
+        return cast(int, self.raw[ATTR_AIR_PURIFIER_AIR_QUALITY])

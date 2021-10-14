@@ -22,11 +22,18 @@ def test_device_info_properties(device):
     assert info.serial == ""
 
 
-def test_current_state(device):
+def test_state(device):
     """Test air purifier state."""
 
     air_purifier = device.air_purifier_control.air_purifiers[0]
-    assert air_purifier.current_state == 1
+    assert air_purifier.state
+
+
+def test_mode(device):
+    """Test air purifier mode."""
+
+    air_purifier = device.air_purifier_control.air_purifiers[0]
+    assert air_purifier.mode == 1
 
 
 def test_air_quality(device):

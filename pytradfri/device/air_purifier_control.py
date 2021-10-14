@@ -29,8 +29,13 @@ class AirPurifierControl(BaseController):
         """Return air purifier objects of the air purifier control."""
         return [AirPurifier(self._device, i) for i in range(len(self.raw))]
 
-    def set_state(self, state: int) -> Command:
-        """Set state of a air purifier.
+    def set_state(self, state: bool, *, index=0):
+        """Set state of a air purifier."""
+
+        return self.set_value({ATTR_AIR_PURIFIER_STATE: int(state)}, index=index)
+
+    def set_mode(self, mode: int, *, index=0) -> Command:
+        """Set mode of a air purifier.
 
         0: off
         1: Fan level auto
@@ -40,22 +45,24 @@ class AirPurifierControl(BaseController):
         40: Fan level 4
         50: Fan level 5
         """
-        self._value_validate(state, RANGE_AIR_PURIFIER, "Air Purifier mode")
-        return self.set_value({ATTR_AIR_PURIFIER_STATE: state})
+        self._value_validate(mode, RANGE_AIR_PURIFIER, "Air Purifier mode")
+        return self.set_value({ATTR_AIR_PURIFIER_STATE: mode}, index=index)
 
-    def set_controls_locked(self, locked: bool) -> Command:
+    def set_controls_locked(self, locked: bool, *, index=0) -> Command:
         """Set physical controls locked of the air purifier."""
 
-        return self.set_value({ATTR_AIR_PURIFIER_CONTROLS_LOCKED: 1 if locked else 0})
+        return self.set_value({ATTR_AIR_PURIFIER_CONTROLS_LOCKED: 1 if locked else 0}, index=index)
 
-    def set_leds_off(self, leds_off: bool) -> Command:
+    def set_leds_off(self, leds_off: bool, *, index=0) -> Command:
         """Set led's off/on of the air purifier."""
 
-        return self.set_value({ATTR_AIR_PURIFIER_LEDS_OFF: 1 if leds_off else 0})
+        return self.set_value({ATTR_AIR_PURIFIER_LEDS_OFF: 1 if leds_off else 0}, index=index)
 
-    def set_value(self, value: dict[str, bool | int]) -> Command:
+    def set_value(self, value: dict[str, bool | int], *, index=0) -> Command:
         """Set values on air purifier control.
 
         Returns a Command.
         """
+        assert len(self.raw) == 1, "Only devices with 1 air purifier supported"
+
         return Command("put", self._device.path, {ROOT_AIR_PURIFIER: [value]})
