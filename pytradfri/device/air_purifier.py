@@ -50,7 +50,11 @@ class AirPurifier:
 
     @property
     def fan_speed(self) -> int:
-        """Get the current fan speed of the air purifier."""
+        """Get the current fan speed of the air purifier.
+
+        0: Device is off
+        10..50: Fan speed with a step size of 5
+        """
         return cast(int, self.raw[ATTR_AIR_PURIFIER_FAN_SPEED])
 
     @property
