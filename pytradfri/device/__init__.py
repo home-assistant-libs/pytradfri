@@ -11,12 +11,14 @@ from ..const import (
     ATTR_SWITCH_PLUG,
     ROOT_DEVICES,
     ROOT_SIGNAL_REPEATER,
+    ROOT_AIR_PURIFIER,
 )
 from ..resource import ApiResource
 from .blind_control import BlindControl
 from .light_control import LightControl
 from .signal_repeater_control import SignalRepeaterControl
 from .socket_control import SocketControl
+from .air_purifier_control import AirPurifierControl
 
 
 class Device(ApiResource):
@@ -91,6 +93,18 @@ class Device(ApiResource):
         """Return signal_repeater control, if any."""
         if self.has_signal_repeater_control:
             return SignalRepeaterControl(self)
+
+    @property
+    def has_air_purifier_control(self):
+        """Check if air_purifier_control is present."""
+        return self.raw is not None and len(self.raw.get(ROOT_AIR_PURIFIER, "")) > 0
+
+    @property
+    def air_purifier_control(self):
+        """Return air_purifier control, if any."""
+        if self.has_air_purifier_control:
+            return AirPurifierControl(self)
+        return None
 
     def __repr__(self):
         """Return representation of class object."""

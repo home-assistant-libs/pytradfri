@@ -45,6 +45,7 @@ Security best practice is to ***not*** store the security code that is printed o
 |TRADFRI remote control|1.2.214|
 |TRADFRI motion sensor|1.2.214|
 |TRADFRI wall plug|2.0.022|
+|Starkvind air purifier|1.0.033|
 
 ## Stand-alone use (command-line interface)
 ![Screenshot of command line interface](./docs/pytradfri_cli.png)
