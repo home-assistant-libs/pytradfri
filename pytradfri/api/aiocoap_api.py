@@ -174,13 +174,17 @@ class APIFactory:
 
     async def request(self, api_commands):
         """Make a request."""
+        msg = f"SIMULATE call: {self._host} <<<{api_commands}>>>"
+        _LOGGER.debug(msg)
         if not isinstance(api_commands, list):
             result = await self._execute(api_commands)
+            msg = f"SIMULATE single return: <<<{api_commands}>>>"
             return result
 
         commands = (self._execute(api_command) for api_command in api_commands)
         command_results = await asyncio.gather(*commands)
 
+        msg = f"SIMULATE multiple return: <<<{api_commands}>>>"
         return command_results
 
     async def _observe(self, api_command):
