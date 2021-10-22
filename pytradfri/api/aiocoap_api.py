@@ -172,15 +172,33 @@ class APIFactory:
 
         return api_command.result
 
+    def debug_comm(self, call_type, api_commands):
+        """Log request/return."""
+        if not isinstance(api_commands, list):
+            api_msg = "single: "
+            api_commands = [api_commands]
+        else:
+            api_msg = "multiple: "
+        for api_command in api_commands:
+            if hasattr(api_command, "__dict__"):
+                api_msg += f"<<<{vars(api_command)}>>>"
+            else:
+                api_msg += f"+++{api_commands}+++"
+        msg = f"REQUEST {call_type}: {self._host} {api_msg}"
+        _LOGGER.debug(msg)
+
     async def request(self, api_commands):
         """Make a request."""
+        self.debug_comm("call", api_commands)
         if not isinstance(api_commands, list):
             result = await self._execute(api_commands)
+            self.debug_comm("return", result)
             return result
 
         commands = (self._execute(api_command) for api_command in api_commands)
         command_results = await asyncio.gather(*commands)
 
+        self.debug_comm("return", command_results)
         return command_results
 
     async def _observe(self, api_command):
