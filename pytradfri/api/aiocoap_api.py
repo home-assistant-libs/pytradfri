@@ -184,7 +184,7 @@ class APIFactory:
                 api_msg += f"<<<{vars(api_command)}>>>"
             else:
                 api_msg += f"+++{api_commands}+++"
-        msg = f"DUMP-REQUEST{call_type}: {self._host} {api_msg}"
+        msg = f"REQUEST {call_type}: {self._host} {api_msg}"
         _LOGGER.debug(msg)
 
     async def request(self, api_commands):
