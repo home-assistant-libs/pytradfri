@@ -53,7 +53,7 @@ class APIFactory:
 
         if api_command.observe:
             self._observe(api_command)
-            return
+            return None
 
         method = api_command.method
         path = api_command.path
@@ -88,7 +88,8 @@ class APIFactory:
         except subprocess.TimeoutExpired:
             raise RequestTimeout() from None
         except subprocess.CalledProcessError as err:
-            raise RequestError("Error executing request: {}".format(err)) from None
+            msg = f"Error executing request: {err}"
+            raise RequestError(msg) from None
 
         api_command.result = _process_output(return_value, parse_json)
         return api_command.result
@@ -110,7 +111,7 @@ class APIFactory:
         """Observe an endpoint."""
         path = api_command.path
         duration = api_command.observe_duration
-        if duration <= 0:
+        if duration <= 0:  # pylint: disable=consider-using-assignment-expr
             raise ValueError("Observation duration has to be greater than 0.")
         url = api_command.url(self._host)
         err_callback = api_command.err_callback
@@ -129,9 +130,12 @@ class APIFactory:
             "universal_newlines": True,
         }
         try:
-            proc = subprocess.Popen(command, **kwargs)
+            proc = subprocess.Popen(  # pylint: disable=consider-using-with
+                command, **kwargs
+            )
         except subprocess.CalledProcessError as err:
-            raise RequestError("Error executing request: {}".format(err)) from None
+            msg = f"Error executing request: {err}"
+            raise RequestError(msg) from None
 
         output = ""
         open_obj = 0
@@ -182,23 +186,18 @@ def _process_output(output, parse_json=True):
 
     if not output:
         return None
-
-    elif "decrypt_verify" in output:
+    if "decrypt_verify" in output:
         raise RequestError(
             "Please compile coap-client without debug output. See "
             "instructions at "
             "https://github.com/ggravlingen/pytradfri#installation"
         )
-
-    elif output.startswith(CLIENT_ERROR_PREFIX):
+    if output.startswith(CLIENT_ERROR_PREFIX):
         raise ClientError(output)
-
-    elif output.startswith(SERVER_ERROR_PREFIX):
+    if output.startswith(SERVER_ERROR_PREFIX):
         raise ServerError(output)
-
-    elif not parse_json:
+    if not parse_json:
         return output
-
     return json.loads(output)
 
 
@@ -214,5 +213,6 @@ def retry_timeout(api, retries=3):
             except RequestTimeout:
                 if i == retries:
                     raise
+        return None
 
     return retry_api
