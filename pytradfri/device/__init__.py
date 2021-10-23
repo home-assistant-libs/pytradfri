@@ -9,16 +9,16 @@ from ..const import (
     ATTR_REACHABLE_STATE,
     ATTR_START_BLINDS,
     ATTR_SWITCH_PLUG,
+    ROOT_AIR_PURIFIER,
     ROOT_DEVICES,
     ROOT_SIGNAL_REPEATER,
-    ROOT_AIR_PURIFIER,
 )
 from ..resource import ApiResource
+from .air_purifier_control import AirPurifierControl
 from .blind_control import BlindControl
 from .light_control import LightControl
 from .signal_repeater_control import SignalRepeaterControl
 from .socket_control import SocketControl
-from .air_purifier_control import AirPurifierControl
 
 
 class Device(ApiResource):
@@ -71,6 +71,7 @@ class Device(ApiResource):
         """Return socket_control."""
         if self.has_socket_control:
             return SocketControl(self)
+        return None
 
     @property
     def has_blind_control(self):
@@ -82,6 +83,7 @@ class Device(ApiResource):
         """Return blind_control."""
         if self.has_blind_control:
             return BlindControl(self)
+        return None
 
     @property
     def has_signal_repeater_control(self):
@@ -93,6 +95,7 @@ class Device(ApiResource):
         """Return signal_repeater control, if any."""
         if self.has_signal_repeater_control:
             return SignalRepeaterControl(self)
+        return None
 
     @property
     def has_air_purifier_control(self):
@@ -108,9 +111,7 @@ class Device(ApiResource):
 
     def __repr__(self):
         """Return representation of class object."""
-        return "<{} - {} ({})>".format(
-            self.id, self.name, self.device_info.model_number
-        )
+        return f"<{self.id} - {self.name} ({self.device_info.model_number})>"
 
 
 class DeviceInfo:

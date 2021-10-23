@@ -153,7 +153,7 @@ class LightControl(BaseController):
                 color, index=index, transition_time=transition_time
             )
         except KeyError:
-            raise ColorError("Invalid color specified: %s", colorname)
+            raise ColorError(f"Invalid color specified: {colorname}") from KeyError
 
     def set_values(self, values, *, index=0):
         """Set values on light control.
