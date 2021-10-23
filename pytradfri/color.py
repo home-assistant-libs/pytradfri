@@ -46,19 +46,19 @@ COLORS = {name.lower().replace(" ", "_"): hex for hex, name in COLOR_NAMES.items
 
 def supported_features(data: dict[str, str | int]) -> int:
     """Return supported features."""
-    SUPPORTED_COLOR_FEATURES = 0
+    supported_color_features = 0
 
     if ATTR_LIGHT_DIMMER in data:
-        SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES + SUPPORT_BRIGHTNESS
+        supported_color_features = supported_color_features + SUPPORT_BRIGHTNESS
 
     if ATTR_LIGHT_COLOR_HEX in data:
-        SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES + SUPPORT_HEX_COLOR
+        supported_color_features = supported_color_features + SUPPORT_HEX_COLOR
 
     if ATTR_LIGHT_MIREDS in data:
-        SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES + SUPPORT_COLOR_TEMP
+        supported_color_features = supported_color_features + SUPPORT_COLOR_TEMP
 
     if X in data and Y in data:
-        SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES + SUPPORT_XY_COLOR
+        supported_color_features = supported_color_features + SUPPORT_XY_COLOR
 
     if (
         ATTR_LIGHT_MIREDS not in data
@@ -67,6 +67,6 @@ def supported_features(data: dict[str, str | int]) -> int:
         and ATTR_LIGHT_COLOR_SATURATION in data
         and ATTR_LIGHT_COLOR_HUE in data
     ):
-        SUPPORTED_COLOR_FEATURES = SUPPORTED_COLOR_FEATURES + SUPPORT_RGB_COLOR
+        supported_color_features = supported_color_features + SUPPORT_RGB_COLOR
 
-    return SUPPORTED_COLOR_FEATURES
+    return supported_color_features
