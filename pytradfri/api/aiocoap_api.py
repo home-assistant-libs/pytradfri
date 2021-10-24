@@ -103,7 +103,7 @@ class APIFactory:
         try:
             protocol = await self._get_protocol()
             pr = protocol.request(msg)
-            r = await pr.response
+            r = await asyncio.wait_for(pr.response, timeout=5.0)
             return pr, r
         except CredentialsMissingError as e:
             await self._reset_protocol(e)
@@ -111,6 +111,10 @@ class APIFactory:
             raise ServerError("There was an error with the request.", e)
         except ConstructionRenderableError as e:
             raise ClientError("There was an error with the request.", e)
+        except asyncio.TimeoutError as e:
+            await self._reset_protocol(e)
+            await self._update_credentials()
+            raise RequestTimeout("Request timed out.", e)
         except RequestTimedOut as e:
             await self._reset_protocol(e)
             await self._update_credentials()
