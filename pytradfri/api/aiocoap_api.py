@@ -114,7 +114,7 @@ class APIFactory:
         except asyncio.TimeoutError as e:
             await self._reset_protocol(e)
             await self._update_credentials()
-            raise RequestTimeout("Request was timed out.", e)
+            raise RequestTimeout("Request timed out.", e)
         except RequestTimedOut as e:
             await self._reset_protocol(e)
             await self._update_credentials()
