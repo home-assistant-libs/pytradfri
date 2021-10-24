@@ -102,33 +102,33 @@ class APIFactory:
         """Perform the request, get the response."""
         try:
             protocol = await self._get_protocol()
-            pr = protocol.request(msg)
-            r = await asyncio.wait_for(pr.response, timeout=5.0)
-            return pr, r
-        except CredentialsMissingError as e:
-            await self._reset_protocol(e)
+            pr_req = protocol.request(msg)
+            pr_resp = await pr_req.response
+            return pr_req, pr_resp
+        except CredentialsMissingError as exc:
+            await self._reset_protocol(exc)
             await self._update_credentials()
-            raise ServerError("There was an error with the request.", e)
-        except ConstructionRenderableError as e:
-            raise ClientError("There was an error with the request.", e)
-        except asyncio.TimeoutError as e:
-            await self._reset_protocol(e)
+            raise ServerError("There was an error with the request.", exc) from exc
+        except ConstructionRenderableError as exc:
+            raise ClientError("There was an error with the request.", exc) from exc
+        except asyncio.TimeoutError as exc:
+            await self._reset_protocol(exc)
             await self._update_credentials()
-            raise RequestTimeout("Request timed out.", e)
-        except RequestTimedOut as e:
-            await self._reset_protocol(e)
+            raise RequestTimeout("Request timed out.", exc)
+        except RequestTimedOut as exc:
+            await self._reset_protocol(exc)
             await self._update_credentials()
-            raise RequestTimeout("Request timed out.", e)
+            raise RequestTimeout("Request timed out.", exc) from exc
         except LibraryShutdown:
             raise
-        except Error as e:
-            await self._reset_protocol(e)
+        except Error as exc:
+            await self._reset_protocol(exc)
             await self._update_credentials()
-            raise ServerError("There was an error with the request.", e)
-        except asyncio.CancelledError as e:
-            await self._reset_protocol(e)
+            raise ServerError("There was an error with the request.", exc) from exc
+        except asyncio.CancelledError as exc:
+            await self._reset_protocol(exc)
             await self._update_credentials()
-            raise e
+            raise exc
 
     async def _execute(self, api_command):
         """Execute the command."""
@@ -214,23 +214,23 @@ class APIFactory:
         msg = Message(code=Code.GET, uri=url, observe=duration)
 
         # Note that this is necessary to start observing
-        pr, r = await self._get_response(msg)
+        pr_req, pr_rsp = await self._get_response(msg)
 
-        api_command.result = _process_output(r)
+        api_command.result = _process_output(pr_rsp)
 
         def success_callback(res):
             api_command.result = _process_output(res)
 
-        def error_callback(ex):
-            if isinstance(ex, LibraryShutdown):
+        def error_callback(exc):
+            if isinstance(exc, LibraryShutdown):
                 _LOGGER.debug("Protocol is shutdown, stopping observation")
                 return
-            err_callback(ex)
+            err_callback(exc)
 
-        ob = pr.observation
-        ob.register_callback(success_callback)
-        ob.register_errback(error_callback)
-        self._observations_err_callbacks.append(ob.error)
+        observation = pr_req.observation
+        observation.register_callback(success_callback)
+        observation.register_errback(error_callback)
+        self._observations_err_callbacks.append(observation.error)
 
     async def generate_psk(self, security_key):
         """Generate and set a psk from the security key."""
@@ -289,7 +289,7 @@ def _process_output(res, parse_json=True):
     if not res.code.is_successful():
         if 128 <= res.code < 160:
             raise ClientError(output)
-        elif 160 <= res.code < 192:
+        if 160 <= res.code < 192:
             raise ServerError(output)
 
     if not parse_json:
