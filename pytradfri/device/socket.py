@@ -23,9 +23,4 @@ class Socket:
     def __repr__(self):
         """Return representation of class object."""
         state = "on" if self.state else "off"
-        return (
-            "<Socket #{} - "
-            "name: {}, "
-            "state: {}"
-            ">".format(self.index, self.device.name, state)
-        )
+        return f"<Socket #{self.index} - name: {self.device.name}, state: {state}>"

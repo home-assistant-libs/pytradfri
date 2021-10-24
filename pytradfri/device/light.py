@@ -44,6 +44,7 @@ class Light:
         """Return dimmer if present."""
         if self.supported_features & SUPPORT_BRIGHTNESS:
             return self.raw.get(ATTR_LIGHT_DIMMER)
+        return None
 
     @property
     def color_temp(self):
@@ -51,18 +52,21 @@ class Light:
         if self.supported_features & SUPPORT_COLOR_TEMP:
             if self.raw.get(ATTR_LIGHT_MIREDS) != 0:
                 return self.raw.get(ATTR_LIGHT_MIREDS)
+        return None
 
     @property
     def hex_color(self):
         """Return hex color."""
         if self.supported_features & SUPPORT_HEX_COLOR:
             return self.raw.get(ATTR_LIGHT_COLOR_HEX)
+        return None
 
     @property
     def xy_color(self):
         """Return xy color."""
         if self.supported_features & SUPPORT_XY_COLOR:
             return (self.raw.get(ATTR_LIGHT_COLOR_X), self.raw.get(ATTR_LIGHT_COLOR_Y))
+        return None
 
     @property
     def hsb_xy_color(self):
@@ -84,22 +88,11 @@ class Light:
         """Return representation of class object."""
         state = "on" if self.state else "off"
         return (
-            "<Light #{} - "
-            "name: {}, "
-            "state: {}, "
-            "dimmer: {}, "
-            "hex_color: {}, "
-            "xy_color: {}, "
-            "hsb_xy_color: {}, "
-            "supported features: {} "
-            ">".format(
-                self.index,
-                self.device.name,
-                state,
-                self.dimmer,
-                self.hex_color,
-                self.xy_color,
-                self.hsb_xy_color,
-                self.supported_features,
-            )
+            f"<Light #{self.index} - name: {self.device.name}, state: {state}, "
+            "dimmer: {self.dimmer}, "
+            "hex_color: {self.hex_color}, "
+            "xy_color: {self.xy_color}, "
+            "hsb_xy_color: {self.hsb_xy_color}, "
+            "supported features: {self.supported_features} "
+            ">"
         )
