@@ -87,8 +87,8 @@ class APIFactory:
             return_value = subprocess.check_output(command, **kwargs)
         except subprocess.TimeoutExpired:
             raise RequestTimeout() from None
-        except subprocess.CalledProcessError as err:
-            msg = f"Error executing request: {err}"
+        except subprocess.CalledProcessError as exc:
+            msg = f"Error executing request: {exc}"
             raise RequestError(msg) from None
 
         api_command.result = _process_output(return_value, parse_json)
@@ -133,8 +133,8 @@ class APIFactory:
             proc = subprocess.Popen(  # pylint: disable=consider-using-with
                 command, **kwargs
             )
-        except subprocess.CalledProcessError as err:
-            msg = f"Error executing request: {err}"
+        except subprocess.CalledProcessError as exc:
+            msg = f"Error executing request: {exc}"
             raise RequestError(msg) from None
 
         output = ""

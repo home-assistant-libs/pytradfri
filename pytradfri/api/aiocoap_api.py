@@ -105,30 +105,30 @@ class APIFactory:
             pr_req = protocol.request(msg)
             pr_resp = await pr_req.response
             return pr_req, pr_resp
-        except CredentialsMissingError as exp:
-            await self._reset_protocol(exp)
+        except CredentialsMissingError as exc:
+            await self._reset_protocol(exc)
             await self._update_credentials()
-            raise ServerError("There was an error with the request.", exp) from exp
-        except ConstructionRenderableError as exp:
-            raise ClientError("There was an error with the request.", exp) from exp
-        except asyncio.TimeoutError as exp:
-            await self._reset_protocol(exp)
+            raise ServerError("There was an error with the request.", exc) from exc
+        except ConstructionRenderableError as exc:
+            raise ClientError("There was an error with the request.", exc) from exc
+        except asyncio.TimeoutError as exc:
+            await self._reset_protocol(exc)
             await self._update_credentials()
-            raise RequestTimeout("Request timed out.", exp)
-        except RequestTimedOut as exp:
-            await self._reset_protocol(exp)
+            raise RequestTimeout("Request timed out.", exc)
+        except RequestTimedOut as exc:
+            await self._reset_protocol(exc)
             await self._update_credentials()
-            raise RequestTimeout("Request timed out.", exp) from exp
+            raise RequestTimeout("Request timed out.", exc) from exc
         except LibraryShutdown:
             raise
-        except Error as exp:
-            await self._reset_protocol(exp)
+        except Error as exc:
+            await self._reset_protocol(exc)
             await self._update_credentials()
-            raise ServerError("There was an error with the request.", exp) from exp
-        except asyncio.CancelledError as exp:
-            await self._reset_protocol(exp)
+            raise ServerError("There was an error with the request.", exc) from exc
+        except asyncio.CancelledError as exc:
+            await self._reset_protocol(exc)
             await self._update_credentials()
-            raise exp
+            raise exc
 
     async def _execute(self, api_command):
         """Execute the command."""
@@ -221,11 +221,11 @@ class APIFactory:
         def success_callback(res):
             api_command.result = _process_output(res)
 
-        def error_callback(exp):
-            if isinstance(exp, LibraryShutdown):
+        def error_callback(exc):
+            if isinstance(exc, LibraryShutdown):
                 _LOGGER.debug("Protocol is shutdown, stopping observation")
                 return
-            err_callback(exp)
+            err_callback(exc)
 
         observation = pr_req.observation
         observation.register_callback(success_callback)
