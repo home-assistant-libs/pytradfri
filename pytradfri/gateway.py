@@ -32,7 +32,8 @@ from .smart_task import SmartTask
 class Gateway:
     """This class connects to the IKEA Tradfri Gateway."""
 
-    def generate_psk(self, identity):
+    @classmethod
+    def generate_psk(cls, identity):
         """Generate the PRE_SHARED_KEY from the gateway.
 
         Returns a Command.
@@ -48,7 +49,8 @@ class Gateway:
             process_result=process_result,
         )
 
-    def get_endpoints(self):
+    @classmethod
+    def get_endpoints(cls):
         """
         Return all available endpoints on the gateway.
 
@@ -77,7 +79,8 @@ class Gateway:
 
         return Command("get", [ROOT_DEVICES], process_result=process_result)
 
-    def get_device(self, device_id):
+    @classmethod
+    def get_device(cls, device_id):
         """
         Return specified device.
 
@@ -113,17 +116,20 @@ class Gateway:
 
         return Command("get", [ROOT_GROUPS, group_id], process_result=process_result)
 
-    def add_group_member(self, values):
+    @classmethod
+    def add_group_member(cls, values):
         """Add a device to a group."""
 
         return Command("put", [ROOT_GROUPS, "add"], values)
 
-    def remove_group_member(self, values):
+    @classmethod
+    def remove_group_member(cls, values):
         """Remove a device from a group."""
 
         return Command("put", [ROOT_GROUPS, "remove"], values)
 
-    def get_gateway_info(self):
+    @classmethod
+    def get_gateway_info(cls):
         """
         Return the gateway info.
 
@@ -149,7 +155,8 @@ class Gateway:
 
         return Command("get", [ROOT_MOODS, group_id], process_result=process_result)
 
-    def get_mood(self, mood_id, *, mood_parent=None):
+    @classmethod
+    def get_mood(cls, mood_id, *, mood_parent=None):
         """
         Return a mood.
 
@@ -192,7 +199,8 @@ class Gateway:
             "get", [ROOT_SMART_TASKS, task_id], process_result=process_result
         )
 
-    def reboot(self):
+    @classmethod
+    def reboot(cls):
         """Reboot the Gateway.
 
         Returns a Command.
@@ -200,7 +208,8 @@ class Gateway:
 
         return Command("post", [ROOT_GATEWAY, ATTR_GATEWAY_REBOOT])
 
-    def set_commissioning_timeout(self, timeout):
+    @classmethod
+    def set_commissioning_timeout(cls, timeout):
         """Put the gateway in pairing state.
 
         The pairing state is when the gateway accepts pairings from
@@ -212,7 +221,8 @@ class Gateway:
             "put", [ROOT_GATEWAY, ATTR_GATEWAY_INFO], {ATTR_COMMISSIONING_MODE: timeout}
         )
 
-    def factory_reset(self):
+    @classmethod
+    def factory_reset(cls):
         """Reset Gateway to factory defaults.
 
         WARNING: All data in Gateway is lost (pairing, groups, etc)

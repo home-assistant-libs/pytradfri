@@ -18,4 +18,5 @@ class Mood(ApiResource):
 
     def __repr__(self):
         """Return representation of class object."""
-        return "<Mood {} {}>".format(self._parent, self.name)
+        msg = f"<Mood {self._parent} {self.name}>"
+        return msg
