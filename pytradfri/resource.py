@@ -8,9 +8,13 @@ from .command import TYPE_ERR_CB, TYPE_PROCESS_RESULT_CB, Command
 from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME
 
 # type alias
-TYPE_RAW = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
-TYPE_RAW_SIMPLE = Dict[str, Union[str, int]]
-TYPE_RAW_LIST = Dict[str, List[Dict[str, Union[str, int]]]]
+TYPE_RAW = Dict[  # pylint: disable=invalid-name
+    str, Union[str, int, List[Dict[str, Union[str, int]]]]
+]
+TYPE_RAW_SIMPLE = Dict[str, Union[str, int]]  # pylint: disable=invalid-name
+TYPE_RAW_LIST = Dict[  # pylint: disable=invalid-name
+    str, List[Dict[str, Union[str, int]]]
+]
 
 
 class ApiResource:

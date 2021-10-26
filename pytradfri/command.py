@@ -4,11 +4,13 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Callable, Optional
 
-TYPE_PROCESS_RESULT_CB = Optional[Callable[[Any], Optional[str]]]
-TYPE_ERR_CB = Optional[Callable[[str], str]]
+TYPE_PROCESS_RESULT_CB = Optional[  # pylint: disable=invalid-name
+    Callable[[Any], Optional[str]]
+]
+TYPE_ERR_CB = Optional[Callable[[str], str]]  # pylint: disable=invalid-name
 
 
-class Command(object):
+class Command:
     """The object for coap commands."""
 
     def __init__(
@@ -100,49 +102,46 @@ class Command(object):
 
     def url(self, host: str) -> str:
         """Generate url for coap client."""
-        return "coaps://{}:5684/{}".format(host, self.path_str)
+        return f"coaps://{host}:5684/{self.path_str}"
 
     def _merge(
-        self, a: dict[str, Any] | None, b: dict[str, Any] | None
+        self, a_dict: dict[str, Any] | None, b_dict: dict[str, Any] | None
     ) -> dict[str, Any] | None:
         """Merge a into b."""
-        if a is None or b is None:
+        if a_dict is None or b_dict is None:
             return None
-        for k, v in a.items():
-            if isinstance(v, dict):
-                item = b.setdefault(k, {})
-                self._merge(v, item)
-            elif isinstance(v, list):
-                item = b.setdefault(k, [{}])
-                if len(v) == 1 and isinstance(v[0], dict):
-                    self._merge(v[0], item[0])
+        for key, value in a_dict.items():
+            if isinstance(value, dict):
+                item = b_dict.setdefault(key, {})
+                self._merge(value, item)
+            elif isinstance(value, list):
+                item = b_dict.setdefault(key, [{}])
+                if len(value) == 1 and isinstance(value[0], dict):
+                    self._merge(value[0], item[0])
                 else:
-                    b[k] = v
+                    b_dict[key] = value
             else:
-                b[k] = v
-        return b
+                b_dict[key] = value
+        return b_dict
 
     def combine_data(self, command2: Command | None) -> None:
         """Combine data for this command with another."""
         if command2 is None:
             return
-        self._data = self._merge(command2._data, self._data)
+        self._data = self._merge(
+            command2._data, self._data  # pylint: disable=protected-access
+        )
 
     def __add__(self, other: Command | None) -> Command:
         """Add Command to this Command."""
         if other is None:
             return deepcopy(self)
         if isinstance(other, self.__class__):
-            newObj = deepcopy(self)
-            newObj.combine_data(other)
-            return newObj
-        else:
-            raise (
-                TypeError(
-                    "unsupported operand type(s) for +: "
-                    "'{}' and '{}'".format(self.__class__, type(other))
-                )
-            )
+            new_obj = deepcopy(self)
+            new_obj.combine_data(other)
+            return new_obj
+        msg = f"unsupported operand type(s) for '{self.__class__}' and '{type(other)}'"
+        raise (TypeError(msg))
 
     def __repr__(self) -> str:
         """Return the representation."""

@@ -9,7 +9,6 @@ from pytradfri.error import PytradfriError
 from pytradfri.util import load_json, save_json
 
 from .command import Command
-from .const import *  # noqa
 from .gateway import Gateway
 
 if __name__ == "__main__":
@@ -41,8 +40,7 @@ if __name__ == "__main__":
             raise PytradfriError(
                 "'Security Code' has to be exactly" + "16 characters long."
             )
-        else:
-            args.key = key
+        args.key = key
 
     conf = load_json(CONFIG_FILE)
 
@@ -51,7 +49,7 @@ if __name__ == "__main__":
         psk = conf[args.host].get("key")
         api_factory = APIFactory(host=args.host, psk_id=identity, psk=psk)
     except KeyError:
-        identity = uuid.uuid4().hex
+        identity = uuid.uuid4().hex  # pylint: disable=invalid-name
         api_factory = APIFactory(host=args.host, psk_id=identity)
 
         try:
@@ -60,12 +58,12 @@ if __name__ == "__main__":
 
             conf[args.host] = {"identity": identity, "key": psk}
             save_json(CONFIG_FILE, conf)
-        except AttributeError:
+        except AttributeError as exc:
             raise PytradfriError(
                 "Please provide the 'Security Code' on the "
                 "back of your Tradfri gateway using the "
                 "-K flag."
-            )
+            ) from exc
 
     api = api_factory.request
 
@@ -73,11 +71,11 @@ if __name__ == "__main__":
     devices_commands = api(gateway.get_devices())
     devices = api(devices_commands)
     lights = [dev for dev in devices if dev.has_light_control]
-    if lights:
+    if lights:  # pylint: disable=consider-using-assignment-expr
         light = lights[0]
     else:
         print("No lights found!")
-        light = None
+        light = None  # pylint: disable=invalid-name
     groups_commands = api(gateway.get_groups())
     groups = api(groups_commands)
     moods = []
@@ -89,7 +87,7 @@ if __name__ == "__main__":
             moods.extend(group_moods)
     else:
         print("No groups found!")
-        group = None
+        group = None  # pylint: disable=invalid-name
     tasks_commands = api(gateway.get_smart_tasks())
     tasks = api(tasks_commands)
     homekit_id = api(gateway.get_gateway_info()).homekit_id

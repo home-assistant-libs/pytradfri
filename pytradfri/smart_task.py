@@ -81,6 +81,7 @@ class SmartTask(ApiResource):
             return "Not At Home"
         if self.is_lights_off:
             return "Lights Off"
+        return None
 
     @property
     def is_wake_up(self):
@@ -136,7 +137,7 @@ class SmartTask(ApiResource):
     def __repr__(self):
         """Return a readable name for smart task."""
         state = "on" if self.state else "off"
-        return "<Task {} - {} - {}>".format(self.id, self.task_type_name, state)
+        return f"<Task {self.id} - {self.task_type_name} - {state}>"
 
 
 class TaskControl:
@@ -153,7 +154,7 @@ class TaskControl:
     def tasks(self):
         """Return task objects of the task control."""
         return [
-            StartActionItem(self._task, i, self.state, self.path, self.raw)
+            StartActionItem((self._task, i, self.state, self.path, self.raw))
             for i in range(len(self.raw))
         ]
 
@@ -164,9 +165,9 @@ class TaskControl:
         """
         #  This is to calculate the difference between local time
         #  and the time in the gateway
-        d1 = self._gateway.get_gateway_info().current_time
-        d2 = dt.utcnow()
-        diff = d1 - d2
+        d_now = self._gateway.get_gateway_info().current_time
+        d_utcnow = dt.utcnow()
+        diff = d_now - d_utcnow
         newtime = dt(100, 1, 1, hour, minute, 00) - diff
 
         command = {
@@ -202,7 +203,7 @@ class StartAction:
     def devices(self):
         """Return state of start action task."""
         return [
-            StartActionItem(self.start_action, i, self.state, self.path, self.raw)
+            StartActionItem((self.start_action, i, self.state, self.path, self.raw))
             for i in range(len(self.raw[ROOT_START_ACTION]))
         ]
 
@@ -215,23 +216,23 @@ class StartAction:
 class StartActionItem:
     """Class to show settings for a task."""
 
-    def __init__(self, task, index, state, path, raw):
+    def __init__(self, init_args):
         """Initialize TaskInfo."""
-        self.task = task
-        self.index = index
-        self.state = state
-        self.path = path
-        self._raw = raw
+        self.task = init_args[0]  # task
+        self.index = init_args[1]  # index
+        self.state = init_args[2]  # state
+        self.path = init_args[3]  # path
+        self._raw = init_args[4]  # raw
 
     @property
     def devices_dict(self):
         """Return state of start action task."""
         json_list = {}
-        z = 0
-        for x in self._raw[ROOT_START_ACTION]:
-            if z != self.index:
-                json_list.update(x)
-            z = z + 1
+        index = 0
+        for x_entry in self._raw[ROOT_START_ACTION]:
+            if index != self.index:
+                json_list.update(x_entry)
+            index = index + 1
         return json_list
 
     @property
@@ -243,7 +244,7 @@ class StartActionItem:
     def item_controller(self):
         """Control a task."""
         return StartActionItemController(
-            self, self.raw, self.state, self.path, self.devices_dict
+            (self, self.raw, self.state, self.path, self.devices_dict)
         )
 
     @property
@@ -266,21 +267,19 @@ class StartActionItem:
 
     def __repr__(self):
         """Return a readable name for this class."""
-        return "<StartActionItem (Device: {} - Dimmer: {} - Time: {})>".format(
-            self.id, self.dimmer, self.transition_time
-        )
+        return f"<StartActionItem (Device: {self.id} - Dimmer: {self.dimmer} - Time: {self.transition_time})>"
 
 
 class StartActionItemController:
     """Class to edit settings for a task."""
 
-    def __init__(self, item, raw, state, path, devices_dict):
+    def __init__(self, init_args):
         """Initialize TaskControl."""
-        self._item = item
-        self.raw = raw
-        self.state = state
-        self.path = path
-        self.devices_dict = devices_dict
+        self._item = init_args[0]  # item
+        self.raw = init_args[1]  # raw
+        self.state = init_args[2]  # state
+        self.path = init_args[3]  # path
+        self.devices_dict = init_args[4]  # devices_dict
 
     def set_dimmer(self, dimmer):
         """Set final dimmer value for task."""
