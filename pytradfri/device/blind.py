@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast
 
 from ..const import ATTR_BLIND_CURRENT_POSITION, ATTR_START_BLINDS
-from ..resource import TYPE_RAW, TYPE_RAW_LIST
+from ..resource import TypeRaw, TypeRawList
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
@@ -20,11 +20,11 @@ class Blind:
         self.index = index
 
     @property
-    def raw(self) -> TYPE_RAW:
+    def raw(self) -> TypeRaw:
         """Return raw data that it represents."""
         return cast(
-            TYPE_RAW,
-            cast(TYPE_RAW_LIST, self.device.raw)[ATTR_START_BLINDS][self.index],
+            TypeRaw,
+            cast(TypeRawList, self.device.raw)[ATTR_START_BLINDS][self.index],
         )
 
     @property
