@@ -11,23 +11,12 @@ from pytradfri.util import load_json, save_json
 from .command import Command
 from .gateway import Gateway
 
-if __name__ == "__main__":
-    CONFIG_FILE = "tradfri_standalone_psk.conf"
+CONFIG_FILE = "tradfri_standalone_psk.conf"
 
-    logging.basicConfig(level=logging.DEBUG)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "host", metavar="IP", type=str, help="IP Address of your Tradfri gateway"
-    )
-    parser.add_argument(
-        "-K",
-        "--key",
-        dest="key",
-        required=False,
-        help="Security code found on your Tradfri gateway",
-    )
-    args = parser.parse_args()
+def main(args):
+    """Run main."""
+    global devices, homekit_id, light, api, lights, gateway, groups, moods, tasks, dump_devices, dump_all
 
     if args.host not in load_json(CONFIG_FILE) and args.key is None:
         print(
@@ -129,3 +118,21 @@ if __name__ == "__main__":
     print("> tasks")
     print("> dump_devices()")
     print("> dump_all()")
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "host", metavar="IP", type=str, help="IP Address of your Tradfri gateway"
+    )
+    parser.add_argument(
+        "-K",
+        "--key",
+        dest="key",
+        required=False,
+        help="Security code found on your Tradfri gateway",
+    )
+    args = parser.parse_args()
+    main(args)

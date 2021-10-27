@@ -4,7 +4,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Dict, List, Union, cast
 
-from .command import TYPE_ERR_CB, TYPE_PROCESS_RESULT_CB, Command
+from .command import Command, TypeErrCb, TypeProcessResultCb
 from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME
 
 # type alias
@@ -50,8 +50,8 @@ class ApiResource:
 
     def observe(
         self,
-        callback: TYPE_PROCESS_RESULT_CB,
-        err_callback: TYPE_ERR_CB | None,
+        callback: TypeProcessResultCb,
+        err_callback: TypeErrCb | None,
         duration: int = 60,
     ) -> Command:
         """Observe resource and call callback when updated."""

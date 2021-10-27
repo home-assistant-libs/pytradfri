@@ -4,10 +4,8 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Callable, Optional
 
-TYPE_PROCESS_RESULT_CB = Optional[  # pylint: disable=invalid-name
-    Callable[[Any], Optional[str]]
-]
-TYPE_ERR_CB = Optional[Callable[[str], str]]  # pylint: disable=invalid-name
+TypeProcessResultCb = Optional[Callable[[Any], Optional[str]]]
+TypeErrCb = Optional[Callable[[str], str]]
 
 
 class Command:
@@ -22,8 +20,8 @@ class Command:
         parse_json: bool = True,
         observe: bool = False,
         observe_duration: int = 0,
-        process_result: TYPE_PROCESS_RESULT_CB = None,
-        err_callback: TYPE_ERR_CB = None,
+        process_result: TypeProcessResultCb = None,
+        err_callback: TypeErrCb = None,
     ) -> None:
         """Create object of class."""
         self._method = method
@@ -58,12 +56,12 @@ class Command:
         return self._parse_json
 
     @property
-    def process_result(self) -> TYPE_PROCESS_RESULT_CB:
+    def process_result(self) -> TypeProcessResultCb:
         """Definition of callback to process result."""
         return self._process_result
 
     @property
-    def err_callback(self) -> TYPE_ERR_CB:
+    def err_callback(self) -> TypeErrCb:
         """Will be fired when an observe request fails."""
         return self._err_callback
 
