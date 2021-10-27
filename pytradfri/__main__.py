@@ -71,7 +71,7 @@ if __name__ == "__main__":
     devices_commands = api(gateway.get_devices())
     devices = api(devices_commands)
     lights = [dev for dev in devices if dev.has_light_control]
-    if lights:  # pylint: disable=consider-using-assignment-expr
+    if lights:
         light = lights[0]
     else:
         print("No lights found!")

@@ -154,7 +154,7 @@ class TaskControl:
     def tasks(self):
         """Return task objects of the task control."""
         return [
-            StartActionItem((self._task, i, self.state, self.path, self.raw))
+            StartActionItem(self._task, i, self.state, self.path, self.raw)
             for i in range(len(self.raw))
         ]
 
@@ -203,7 +203,7 @@ class StartAction:
     def devices(self):
         """Return state of start action task."""
         return [
-            StartActionItem((self.start_action, i, self.state, self.path, self.raw))
+            StartActionItem(self.start_action, i, self.state, self.path, self.raw)
             for i in range(len(self.raw[ROOT_START_ACTION]))
         ]
 
@@ -216,13 +216,13 @@ class StartAction:
 class StartActionItem:
     """Class to show settings for a task."""
 
-    def __init__(self, init_args):
+    def __init__(self, task, index, state, path, raw):
         """Initialize TaskInfo."""
-        self.task = init_args[0]  # task
-        self.index = init_args[1]  # index
-        self.state = init_args[2]  # state
-        self.path = init_args[3]  # path
-        self._raw = init_args[4]  # raw
+        self.task = task
+        self.index = index
+        self.state = state
+        self.path = path
+        self._raw = raw
 
     @property
     def devices_dict(self):
@@ -244,7 +244,7 @@ class StartActionItem:
     def item_controller(self):
         """Control a task."""
         return StartActionItemController(
-            (self, self.raw, self.state, self.path, self.devices_dict)
+            self, self.raw, self.state, self.path, self.devices_dict
         )
 
     @property
@@ -273,13 +273,13 @@ class StartActionItem:
 class StartActionItemController:
     """Class to edit settings for a task."""
 
-    def __init__(self, init_args):
+    def __init__(self, item, raw, state, path, devices_dict):
         """Initialize TaskControl."""
-        self._item = init_args[0]  # item
-        self.raw = init_args[1]  # raw
-        self.state = init_args[2]  # state
-        self.path = init_args[3]  # path
-        self.devices_dict = init_args[4]  # devices_dict
+        self._item = item
+        self.raw = raw
+        self.state = state
+        self.path = path
+        self.devices_dict = devices_dict
 
     def set_dimmer(self, dimmer):
         """Set final dimmer value for task."""
