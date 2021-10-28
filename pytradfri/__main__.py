@@ -14,11 +14,11 @@ from .gateway import Gateway
 CONFIG_FILE = "tradfri_standalone_psk.conf"
 
 
-def main(args):
+def main(org_args):
     """Run main."""
-    global devices, homekit_id, light, api, lights, gateway, groups, moods, tasks, dump_devices, dump_all
+    global devices, homekit_id, light, api, lights, gateway, groups, moods, tasks, dump_devices, dump_all  # pylint: disable=global-variable-undefined, invalid-name
 
-    if args.host not in load_json(CONFIG_FILE) and args.key is None:
+    if org_args.host not in load_json(CONFIG_FILE) and org_args.key is None:
         print(
             "Please provide the 'Security Code' on the back of your "
             "Tradfri gateway:",
@@ -29,23 +29,23 @@ def main(args):
             raise PytradfriError(
                 "'Security Code' has to be exactly" + "16 characters long."
             )
-        args.key = key
+        org_args.key = key
 
     conf = load_json(CONFIG_FILE)
 
     try:
-        identity = conf[args.host].get("identity")
-        psk = conf[args.host].get("key")
-        api_factory = APIFactory(host=args.host, psk_id=identity, psk=psk)
+        identity = conf[org_args.host].get("identity")
+        psk = conf[org_args.host].get("key")
+        api_factory = APIFactory(host=org_args.host, psk_id=identity, psk=psk)
     except KeyError:
-        identity = uuid.uuid4().hex  # pylint: disable=invalid-name
-        api_factory = APIFactory(host=args.host, psk_id=identity)
+        identity = uuid.uuid4().hex
+        api_factory = APIFactory(host=org_args.host, psk_id=identity)
 
         try:
-            psk = api_factory.generate_psk(args.key)
+            psk = api_factory.generate_psk(org_args.key)
             print("Generated PSK: ", psk)
 
-            conf[args.host] = {"identity": identity, "key": psk}
+            conf[org_args.host] = {"identity": identity, "key": psk}
             save_json(CONFIG_FILE, conf)
         except AttributeError as exc:
             raise PytradfriError(
@@ -64,7 +64,7 @@ def main(args):
         light = lights[0]
     else:
         print("No lights found!")
-        light = None  # pylint: disable=invalid-name
+        light = None
     groups_commands = api(gateway.get_groups())
     groups = api(groups_commands)
     moods = []
@@ -76,12 +76,12 @@ def main(args):
             moods.extend(group_moods)
     else:
         print("No groups found!")
-        group = None  # pylint: disable=invalid-name
+        group = None
     tasks_commands = api(gateway.get_smart_tasks())
     tasks = api(tasks_commands)
     homekit_id = api(gateway.get_gateway_info()).homekit_id
 
-    def dump_all():
+    def dump_all():  # pylint: disable=unused-variable
         """Dump all endpoints."""
         endpoints = api(gateway.get_endpoints())
 
@@ -95,7 +95,7 @@ def main(args):
             print()
             print()
 
-    def dump_devices():
+    def dump_devices():  # pylint: disable=unused-variable
         """Dump devices."""
         pprint([d.raw for d in devices])
 
