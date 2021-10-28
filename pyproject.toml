@@ -44,6 +44,7 @@ good-names = [
     "Run",
     "T",
 ]
+max-args = 7
 
 [tool.pylint."MESSAGES CONTROL"]
 # Reasons disabled:
@@ -68,6 +69,7 @@ disable = [
     "format",
 #    "abstract-class-little-used",
     "abstract-method",
+    "consider-using-assignment-expr",
     "cyclic-import",
     "duplicate-code",
 #    "inconsistent-return-statements",

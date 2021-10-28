@@ -10,7 +10,7 @@ from ..const import (
     ATTR_START_BLINDS,
     RANGE_BLIND,
 )
-from ..resource import TYPE_RAW
+from ..resource import TypeRaw
 from .base_controller import BaseController
 from .blind import Blind
 
@@ -19,9 +19,9 @@ class BlindControl(BaseController):
     """Class to control the blinds."""
 
     @property
-    def raw(self) -> TYPE_RAW:
+    def raw(self) -> TypeRaw:
         """Return raw data that it represents."""
-        return cast(TYPE_RAW, self._device.raw[ATTR_START_BLINDS])
+        return cast(TypeRaw, self._device.raw[ATTR_START_BLINDS])
 
     @property
     def blinds(self) -> list[Blind]:

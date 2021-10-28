@@ -9,28 +9,16 @@ from pytradfri.error import PytradfriError
 from pytradfri.util import load_json, save_json
 
 from .command import Command
-from .const import *  # noqa
 from .gateway import Gateway
 
-if __name__ == "__main__":
-    CONFIG_FILE = "tradfri_standalone_psk.conf"
+CONFIG_FILE = "tradfri_standalone_psk.conf"
 
-    logging.basicConfig(level=logging.DEBUG)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "host", metavar="IP", type=str, help="IP Address of your Tradfri gateway"
-    )
-    parser.add_argument(
-        "-K",
-        "--key",
-        dest="key",
-        required=False,
-        help="Security code found on your Tradfri gateway",
-    )
-    args = parser.parse_args()
+def main(org_args):
+    """Run main."""
+    global devices, homekit_id, light, api, lights, gateway, groups, moods, tasks, dump_devices, dump_all  # pylint: disable=global-variable-undefined, invalid-name
 
-    if args.host not in load_json(CONFIG_FILE) and args.key is None:
+    if org_args.host not in load_json(CONFIG_FILE) and org_args.key is None:
         print(
             "Please provide the 'Security Code' on the back of your "
             "Tradfri gateway:",
@@ -41,31 +29,30 @@ if __name__ == "__main__":
             raise PytradfriError(
                 "'Security Code' has to be exactly" + "16 characters long."
             )
-        else:
-            args.key = key
+        org_args.key = key
 
     conf = load_json(CONFIG_FILE)
 
     try:
-        identity = conf[args.host].get("identity")
-        psk = conf[args.host].get("key")
-        api_factory = APIFactory(host=args.host, psk_id=identity, psk=psk)
+        identity = conf[org_args.host].get("identity")
+        psk = conf[org_args.host].get("key")
+        api_factory = APIFactory(host=org_args.host, psk_id=identity, psk=psk)
     except KeyError:
         identity = uuid.uuid4().hex
-        api_factory = APIFactory(host=args.host, psk_id=identity)
+        api_factory = APIFactory(host=org_args.host, psk_id=identity)
 
         try:
-            psk = api_factory.generate_psk(args.key)
+            psk = api_factory.generate_psk(org_args.key)
             print("Generated PSK: ", psk)
 
-            conf[args.host] = {"identity": identity, "key": psk}
+            conf[org_args.host] = {"identity": identity, "key": psk}
             save_json(CONFIG_FILE, conf)
-        except AttributeError:
+        except AttributeError as exc:
             raise PytradfriError(
                 "Please provide the 'Security Code' on the "
                 "back of your Tradfri gateway using the "
                 "-K flag."
-            )
+            ) from exc
 
     api = api_factory.request
 
@@ -94,7 +81,7 @@ if __name__ == "__main__":
     tasks = api(tasks_commands)
     homekit_id = api(gateway.get_gateway_info()).homekit_id
 
-    def dump_all():
+    def dump_all():  # pylint: disable=unused-variable
         """Dump all endpoints."""
         endpoints = api(gateway.get_endpoints())
 
@@ -108,7 +95,7 @@ if __name__ == "__main__":
             print()
             print()
 
-    def dump_devices():
+    def dump_devices():  # pylint: disable=unused-variable
         """Dump devices."""
         pprint([d.raw for d in devices])
 
@@ -131,3 +118,21 @@ if __name__ == "__main__":
     print("> tasks")
     print("> dump_devices()")
     print("> dump_all()")
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "host", metavar="IP", type=str, help="IP Address of your Tradfri gateway"
+    )
+    parser.add_argument(
+        "-K",
+        "--key",
+        dest="key",
+        required=False,
+        help="Security code found on your Tradfri gateway",
+    )
+    args = parser.parse_args()
+    main(args)

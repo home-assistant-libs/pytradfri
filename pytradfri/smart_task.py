@@ -81,6 +81,7 @@ class SmartTask(ApiResource):
             return "Not At Home"
         if self.is_lights_off:
             return "Lights Off"
+        return None
 
     @property
     def is_wake_up(self):
@@ -136,7 +137,7 @@ class SmartTask(ApiResource):
     def __repr__(self):
         """Return a readable name for smart task."""
         state = "on" if self.state else "off"
-        return "<Task {} - {} - {}>".format(self.id, self.task_type_name, state)
+        return f"<Task {self.id} - {self.task_type_name} - {state}>"
 
 
 class TaskControl:
@@ -164,9 +165,9 @@ class TaskControl:
         """
         #  This is to calculate the difference between local time
         #  and the time in the gateway
-        d1 = self._gateway.get_gateway_info().current_time
-        d2 = dt.utcnow()
-        diff = d1 - d2
+        d_now = self._gateway.get_gateway_info().current_time
+        d_utcnow = dt.utcnow()
+        diff = d_now - d_utcnow
         newtime = dt(100, 1, 1, hour, minute, 00) - diff
 
         command = {
@@ -227,11 +228,11 @@ class StartActionItem:
     def devices_dict(self):
         """Return state of start action task."""
         json_list = {}
-        z = 0
-        for x in self._raw[ROOT_START_ACTION]:
-            if z != self.index:
-                json_list.update(x)
-            z = z + 1
+        index = 0
+        for x_entry in self._raw[ROOT_START_ACTION]:
+            if index != self.index:
+                json_list.update(x_entry)
+            index = index + 1
         return json_list
 
     @property
@@ -266,9 +267,7 @@ class StartActionItem:
 
     def __repr__(self):
         """Return a readable name for this class."""
-        return "<StartActionItem (Device: {} - Dimmer: {} - Time: {})>".format(
-            self.id, self.dimmer, self.transition_time
-        )
+        return f"<StartActionItem (Device: {self.id} - Dimmer: {self.dimmer} - Time: {self.transition_time})>"
 
 
 class StartActionItemController:

@@ -5,24 +5,24 @@ from typing import cast
 
 from ..command import Command
 from ..const import (
-    ROOT_AIR_PURIFIER,
-    ATTR_AIR_PURIFIER_MODE,
     ATTR_AIR_PURIFIER_CONTROLS_LOCKED,
     ATTR_AIR_PURIFIER_LEDS_OFF,
+    ATTR_AIR_PURIFIER_MODE,
     RANGE_AIR_PURIFIER,
+    ROOT_AIR_PURIFIER,
 )
-from ..resource import TYPE_RAW
-from .base_controller import BaseController
+from ..resource import TypeRaw
 from .air_purifier import AirPurifier
+from .base_controller import BaseController
 
 
 class AirPurifierControl(BaseController):
     """Class to control the air purifiers."""
 
     @property
-    def raw(self) -> TYPE_RAW:
+    def raw(self) -> TypeRaw:
         """Return raw data that it represents."""
-        return cast(TYPE_RAW, self._device.raw[ROOT_AIR_PURIFIER])
+        return cast(TypeRaw, self._device.raw[ROOT_AIR_PURIFIER])
 
     @property
     def air_purifiers(self) -> list[AirPurifier]:
@@ -46,12 +46,16 @@ class AirPurifierControl(BaseController):
     def set_controls_locked(self, locked: bool, *, index=0) -> Command:
         """Set physical controls locked of the air purifier."""
 
-        return self.set_value({ATTR_AIR_PURIFIER_CONTROLS_LOCKED: 1 if locked else 0}, index=index)
+        return self.set_value(
+            {ATTR_AIR_PURIFIER_CONTROLS_LOCKED: 1 if locked else 0}, index=index
+        )
 
     def set_leds_off(self, leds_off: bool, *, index=0) -> Command:
         """Set led's off/on of the air purifier."""
 
-        return self.set_value({ATTR_AIR_PURIFIER_LEDS_OFF: 1 if leds_off else 0}, index=index)
+        return self.set_value(
+            {ATTR_AIR_PURIFIER_LEDS_OFF: 1 if leds_off else 0}, index=index
+        )
 
     def set_value(self, value: dict[str, bool | int], *, index=0) -> Command:
         """Set values on air purifier control.

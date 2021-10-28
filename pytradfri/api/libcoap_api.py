@@ -111,7 +111,7 @@ class APIFactory:
         """Observe an endpoint."""
         path = api_command.path
         duration = api_command.observe_duration
-        if duration <= 0:  # pylint: disable=consider-using-assignment-expr
+        if duration <= 0:
             raise ValueError("Observation duration has to be greater than 0.")
         url = api_command.url(self._host)
         err_callback = api_command.err_callback

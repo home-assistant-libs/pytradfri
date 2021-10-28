@@ -170,17 +170,19 @@ class Group(ApiResource):
         try:
             color = COLORS[colorname.lower().replace(" ", "_")]
             return self.set_hex_color(color, transition_time=transition_time)
-        except KeyError:
-            raise ColorError("Invalid color specified: %s", colorname)
+        except KeyError as exc:
+            raise ColorError(f"Invalid color specified: {colorname}") from exc
 
-    def _value_validate(self, value, rnge, identifier="Given"):
+    def _value_validate(
+        self, value, rnge, identifier="Given"
+    ):  # pylint: disable=no-self-use
         """Make sure a value is within a given range."""
         if value is not None and (value < rnge[0] or value > rnge[1]):
             raise ValueError(
-                "%s value must be between %d and %d." % (identifier, rnge[0], rnge[1])
+                f"{identifier} value must be between {rnge[0]} and {rnge[1]}."
             )
 
     def __repr__(self):
         """Return representation of class object."""
         state = "on" if self.state else "off"
-        return "<Group {} - {}>".format(self.name, state)
+        return f"<Group {self.name} - {state}>"
