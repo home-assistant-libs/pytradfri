@@ -98,12 +98,12 @@ class APIFactory:
         await self._reset_protocol(exc)
         self._shutdown = True
 
-    async def _get_response(self, msg):
+    async def _get_response(self, msg, timeout):
         """Perform the request, get the response."""
         try:
             protocol = await self._get_protocol()
             pr_req = protocol.request(msg)
-            pr_resp = await pr_req.response
+            pr_resp = await asyncio.wait_for(pr_req.response, timeout)
             return pr_req, pr_resp
         except CredentialsMissingError as exc:
             await self._reset_protocol(exc)
@@ -130,10 +130,10 @@ class APIFactory:
             await self._update_credentials()
             raise exc
 
-    async def _execute(self, api_command):
+    async def _execute(self, api_command, timeout):
         """Execute the command."""
         if api_command.observe:
-            await self._observe(api_command)
+            await self._observe(api_command, timeout)
             return None
 
         method = api_command.method
@@ -163,7 +163,7 @@ class APIFactory:
         _LOGGER.debug("Executing %s %s", self._host, api_command)
 
         try:
-            _, res = await self._get_response(msg)
+            _, res = await self._get_response(msg, timeout)
         except LibraryShutdown:
             _LOGGER.warning(
                 "Protocol is shutdown, cancelling command: %s %s",
@@ -191,21 +191,21 @@ class APIFactory:
         msg = f"REQUEST {call_type}: {self._host} {api_msg}"
         _LOGGER.debug(msg)
 
-    async def request(self, api_commands):
+    async def request(self, api_commands, timeout=None):
         """Make a request."""
         self.debug_comm("call", api_commands)
         if not isinstance(api_commands, list):
-            result = await self._execute(api_commands)
+            result = await self._execute(api_commands, timeout)
             self.debug_comm("return", result)
             return result
 
-        commands = (self._execute(api_command) for api_command in api_commands)
+        commands = (self._execute(api_command, timeout) for api_command in api_commands)
         command_results = await asyncio.gather(*commands)
 
         self.debug_comm("return", command_results)
         return command_results
 
-    async def _observe(self, api_command):
+    async def _observe(self, api_command, timeout):
         """Observe an endpoint."""
         duration = api_command.observe_duration
         url = api_command.url(self._host)
@@ -214,7 +214,7 @@ class APIFactory:
         msg = Message(code=Code.GET, uri=url, observe=duration)
 
         # Note that this is necessary to start observing
-        pr_req, pr_rsp = await self._get_response(msg)
+        pr_req, pr_rsp = await self._get_response(msg, timeout)
 
         api_command.result = _process_output(pr_rsp)
 
