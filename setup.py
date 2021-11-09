@@ -25,7 +25,7 @@ setup(
     description="IKEA Trådfri/Tradfri API. Control and observe your "
     "lights from Python.",
     long_description=LONG_DESCRIPTION,
-    author="balloob, lwis, ggravlingen",
+    author="balloob, lwis, ggravlingen, janiversen",
     author_email="no@email.com",
     long_description_content_type="text/markdown",
     url=GITHUB_URL,
