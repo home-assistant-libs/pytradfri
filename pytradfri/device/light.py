@@ -89,10 +89,10 @@ class Light:
         state = "on" if self.state else "off"
         return (
             f"<Light #{self.index} - name: {self.device.name}, state: {state}, "
-            "dimmer: {self.dimmer}, "
-            "hex_color: {self.hex_color}, "
-            "xy_color: {self.xy_color}, "
-            "hsb_xy_color: {self.hsb_xy_color}, "
-            "supported features: {self.supported_features} "
+            f"dimmer: {self.dimmer}, "
+            f"hex_color: {self.hex_color}, "
+            f"xy_color: {self.xy_color}, "
+            f"hsb_xy_color: {self.hsb_xy_color}, "
+            f"supported features: {self.supported_features} "
             ">"
         )
