@@ -6,7 +6,7 @@ from collections.abc import Callable
 from enum import Enum
 import json
 import logging
-from typing import cast
+from typing import Any, Union, cast
 
 from aiocoap import Context, Message
 from aiocoap.credentials import CredentialsMissingError
@@ -152,9 +152,7 @@ class APIFactory:
             await self._update_credentials()
             raise exc
 
-    async def _execute(
-        self, api_command: Command, timeout: float | None
-    ) -> dict | str | None:
+    async def _execute(self, api_command: Command, timeout: float | None) -> Any:
         """Execute the command."""
         if api_command.observe:
             await self._observe(api_command, timeout)
@@ -202,7 +200,7 @@ class APIFactory:
 
     async def request(
         self, api_commands: Command | list[Command], timeout: float | None = None
-    ) -> dict | str | None | list[dict | str | None]:
+    ) -> Any:
         """Make a request."""
         if not isinstance(api_commands, list):
             _LOGGER.debug("REQUEST call single: %s %s", self._host, api_commands)
@@ -213,7 +211,7 @@ class APIFactory:
 
         _LOGGER.debug("REQUEST call multiple: %s %s", self._host, api_commands)
         commands = (self._execute(api_command, timeout) for api_command in api_commands)
-        command_results: list[dict | str | None] = await asyncio.gather(*commands)
+        command_results: list = await asyncio.gather(*commands)
         _LOGGER.debug("REQUEST result multiple: %s", command_results)
 
         return command_results
@@ -294,7 +292,7 @@ class APIFactory:
         )
 
 
-def _process_output(res: Message, parse_json: bool = True) -> dict | str | None:
+def _process_output(res: Message, parse_json: bool = True) -> list | dict | str | None:
     """Process output."""
     res_payload: str = res.payload.decode("utf-8")
     output = res_payload.strip()
@@ -316,4 +314,4 @@ def _process_output(res: Message, parse_json: bool = True) -> dict | str | None:
     if not parse_json:
         return output
 
-    return cast(dict, json.loads(output))
+    return cast(Union[list, dict], json.loads(output))
