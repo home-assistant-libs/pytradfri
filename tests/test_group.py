@@ -66,4 +66,4 @@ def test_setters(group):
 def test_moods(group):
     """Test moods."""
     cmd = group.moods()
-    assert cmd.path == [ROOT_MOODS, group.id]
+    assert cmd.path == [ROOT_MOODS, str(group.id)]

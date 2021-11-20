@@ -38,7 +38,7 @@ class Group(ApiResource):
     @property
     def path(self):
         """Path."""
-        return [ROOT_GROUPS, self.id]
+        return [ROOT_GROUPS, str(self.id)]
 
     @property
     def state(self):

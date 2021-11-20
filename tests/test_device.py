@@ -365,7 +365,7 @@ def test_device_properties(device):
     assert device.id == 65539
     assert device.created_at == datetime.utcfromtimestamp(1509923713)
     assert device.reachable
-    assert device.path == [ROOT_DEVICES, 65539]
+    assert device.path == [ROOT_DEVICES, "65539"]
 
 
 def test_device_info_properties(device):

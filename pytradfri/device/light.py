@@ -48,7 +48,7 @@ class Light:
     pdf
     """
 
-    def __init__(self, device: Device, index: int):
+    def __init__(self, device: Device, index: int) -> None:
         """Create object of class."""
         self.device = device
         self.index = index

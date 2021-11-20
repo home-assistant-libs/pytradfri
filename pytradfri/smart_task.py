@@ -57,7 +57,7 @@ class SmartTask(ApiResource):
     @property
     def path(self):
         """Return gateway path."""
-        return [ROOT_SMART_TASKS, self.id]
+        return [ROOT_SMART_TASKS, str(self.id)]
 
     @property
     def state(self):
