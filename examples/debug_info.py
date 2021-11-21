@@ -175,6 +175,28 @@ def print_groups() -> None:
     print(jsonify(container))
 
 
+def print_moods():
+    """Print all moods as JSON."""
+    print("Printing information about all moods defined in the Gateway")
+    groups = api(gateway.get_groups())
+    if not groups:
+        exit(bold("No groups defined"))
+
+    container = []
+
+    for group_command in groups:
+        group = api(group_command)
+        moods = api(gateway.get_moods(group.id))
+
+        for mood in moods:
+            container.append(api(mood).raw.dict())
+
+    if not container:
+        exit(bold("No moods defined"))
+
+    print(jsonify(container))
+
+
 # Choosing the right print function
 print(bold("What information about your Tradfri network do you need?"))
 print("1. Gateway")
@@ -183,6 +205,7 @@ print("3. All paired devices")
 print("4. All paired lamps")
 print("5. All smart tasks")
 print("6. All groups")
+print("7. All moods")
 choice = input("Make a choice: ").strip()
 print()
 
@@ -198,5 +221,7 @@ elif choice == "5":
     print_smart_tasks()
 elif choice == "6":
     print_groups()
+elif choice == "7":
+    print_moods()
 else:
     sys.exit(bold(f"I don't understand '{choice}'"))
