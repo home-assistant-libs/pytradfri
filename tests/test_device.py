@@ -1,10 +1,12 @@
 """Test Device."""
+from copy import deepcopy
 from datetime import datetime
 
 import pytest
 
 from pytradfri import error
 from pytradfri.const import (
+    ATTR_DEVICE_INFO,
     ATTR_DEVICE_STATE,
     ATTR_LAST_SEEN,
     ATTR_LIGHT_COLOR_HEX,
@@ -35,16 +37,20 @@ from .devices import (
 
 
 @pytest.fixture
-def device():
+def device(request):
     """Return device."""
-    return Device(LIGHT_WS)
+    if hasattr(request, "param"):
+        response = deepcopy(request.param)
+    else:
+        response = deepcopy(LIGHT_WS)
+    return Device(response)
 
 
 input_devices = (
     ("comment", "device"),
     [
-        ("Remote control", Device(REMOTE_CONTROL)),
-        ("Motion sensor", Device(MOTION_SENSOR)),
+        ("Remote control", REMOTE_CONTROL),
+        ("Motion sensor", MOTION_SENSOR),
     ],
 )
 
@@ -271,32 +277,6 @@ lamp_value_setting_test_cases = [
     ],
 ]
 
-socket_value_setting_test_cases = [
-    ["function_name", "comment", "test_input", "expected_result"],
-    [
-        [
-            "set_state",
-            "true",
-            {
-                "state": True,
-            },
-            {
-                ATTR_DEVICE_STATE: True,
-            },
-        ],
-        [
-            "set_state",
-            "false",
-            {
-                "state": False,
-            },
-            {
-                ATTR_DEVICE_STATE: False,
-            },
-        ],
-    ],
-]
-
 # Combine lamp_value_setting_test_cases and output_devices where:
 # len(new) = len(a) * len(b)
 src = lamp_value_setting_test_cases[1] * len(output_devices[1])
@@ -321,32 +301,51 @@ def test_lamp_value_setting(
     assert data == expected_result
 
 
-@pytest.mark.parametrize(*socket_value_setting_test_cases)
-def test_socket_value_setting(
-    function_name, comment, test_input, expected_result, device
-):
+@pytest.mark.parametrize(
+    ["function_name", "comment", "test_input", "expected_result"],
+    [
+        [
+            "set_state",
+            "true",
+            {
+                "state": True,
+            },
+            {
+                ATTR_DEVICE_STATE: True,
+            },
+        ],
+        [
+            "set_state",
+            "false",
+            {
+                "state": False,
+            },
+            {
+                ATTR_DEVICE_STATE: False,
+            },
+        ],
+    ],
+)
+def test_socket_value_setting(function_name, comment, test_input, expected_result):
     """Test socket values."""
-    if device.has_socket_control:
-        function = getattr(device[0].socket_control, function_name)
-        command = function(**test_input)
-        data = command.data[ATTR_SWITCH_PLUG][0]
-        assert data == expected_result
+    function = getattr(Device(deepcopy(OUTLET)).socket_control, function_name)
+    command = function(**test_input)
+    data = command.data[ATTR_SWITCH_PLUG][0]
+    assert data == expected_result
 
 
-def test_socket_state_off(device):
+def test_socket_state_off():
     """Test socket off."""
-    if device.has_socket_control:
-        socket = Device(device.raw.copy()).socket_control.socket[0]
-        socket.raw[ATTR_DEVICE_STATE] = 0
-        assert socket.state is False
+    socket = Device(deepcopy(OUTLET)).socket_control.sockets[0]
+    socket.raw[ATTR_DEVICE_STATE] = 0
+    assert socket.state is False
 
 
-def test_socket_state_on(device):
+def test_socket_state_on():
     """Test socket on."""
-    if device.has_socket_control:
-        socket = Device(device.raw.copy()).socket_control.socket[0]
-        socket.raw[ATTR_DEVICE_STATE] = 1
-        assert socket.state is True
+    socket = Device(deepcopy(OUTLET)).socket_control.sockets[0]
+    socket.raw[ATTR_DEVICE_STATE] = 1
+    assert socket.state is True
 
 
 def test_set_state_none(device):
@@ -403,38 +402,42 @@ def test_binary_division():
 
 
 # Test has_light_control function
-def test_has_light_control_true(device):
+def test_has_light_control_true():
     """Test light has control."""
-    dev = Device(device.raw.copy())
-    dev.raw[ATTR_LIGHT_CONTROL] = {1: 2}
+    response = deepcopy(LIGHT_WS)
+    response[ATTR_LIGHT_CONTROL] = [{1: 2}]
+    dev = Device(response)
+
     assert dev.has_light_control is True
 
 
-def test_has_light_control_false(device):
+def test_has_light_control_false():
     """Test light do not have control."""
-    dev = Device(device.raw.copy())
-    dev.raw[ATTR_LIGHT_CONTROL] = {}
+    response = deepcopy(LIGHT_WS)
+    response.pop(ATTR_LIGHT_CONTROL)
+    dev = Device(response)
+
     assert dev.has_light_control is False
 
 
 # Test light state function
 def test_light_state_on(device):
     """Test light on."""
-    light = Device(device.raw.copy()).light_control.lights[0]
+    light = device.light_control.lights[0]
     light.raw[ATTR_DEVICE_STATE] = 1
     assert light.state is True
 
 
 def test_light_state_off(device):
     """Test light off."""
-    light = Device(device.raw.copy()).light_control.lights[0]
+    light = device.light_control.lights[0]
     light.raw[ATTR_DEVICE_STATE] = 0
     assert light.state is False
 
 
 def test_light_state_mangled(device):
     """Test mangled light state."""
-    light = Device(device.raw.copy()).light_control.lights[0]
+    light = device.light_control.lights[0]
     light.raw[ATTR_DEVICE_STATE] = "RandomString"
     assert light.state is False
 
@@ -442,7 +445,7 @@ def test_light_state_mangled(device):
 # Test light hsb_xy_color function
 def test_light_hsb_xy_color(device):
     """Very basic test, just to touch it."""
-    light = Device(device.raw.copy()).light_control.lights[0]
+    light = device.light_control.lights[0]
     assert len(light.hsb_xy_color) == 5
 
 
@@ -454,9 +457,9 @@ def test_last_seen_valid(device):
 
 def test_last_seen_none():
     """Test last seen none."""
-    tmp = LIGHT_WS
-    del tmp[ATTR_LAST_SEEN]
-    dev = Device(tmp)
+    response = deepcopy(LIGHT_WS)
+    del response[ATTR_LAST_SEEN]
+    dev = Device(response)
     assert dev.last_seen is None
 
 
@@ -486,48 +489,56 @@ def test_value_validate_none(device):
 
 
 # Test deviceInfo serial function
-def test_deviceinfo_serial(device):
+def test_deviceinfo_serial():
     """Test serial number."""
-    info = Device(device.raw.copy()).device_info
-    info.raw["2"] = "SomeRandomSerial"
+    response = deepcopy(LIGHT_WS)
+    response[ATTR_DEVICE_INFO]["2"] = "SomeRandomSerial"
+    info = Device(response).device_info
+
     assert info.serial == "SomeRandomSerial"
 
 
 # Test deviceInfo power_source_str function
-def test_deviceinfo_power_source_str_known(device):
+def test_deviceinfo_power_source_str_known():
     """Test power source known."""
-    info = Device(device.raw.copy()).device_info
+    info = Device(deepcopy(LIGHT_WS)).device_info
     assert info.power_source_str is not None
     assert info.power_source_str != "Unknown"
 
 
-def test_deviceinfo_power_source_str_unknown(device):
+def test_deviceinfo_power_source_str_unknown():
     """Test power source unknown."""
-    info = Device(device.raw.copy()).device_info
-    info.raw["6"] = None
+    response = deepcopy(LIGHT_WS)
+    response[ATTR_DEVICE_INFO]["6"] = 99999
+    info = Device(response).device_info
+
     assert info.power_source_str == "Unknown"
 
 
-def test_deviceinfo_power_source_not_present(device):
+def test_deviceinfo_power_source_not_present():
     """Test power source not present."""
-    info = Device(device.raw.copy()).device_info
-    del info.raw["6"]
+    response = deepcopy(LIGHT_WS)
+    del response[ATTR_DEVICE_INFO]["6"]
+    info = Device(response).device_info
+
     assert info.power_source_str is None
 
 
 # Test deviceInfo battery_level function
-@pytest.mark.parametrize(*input_devices)
+@pytest.mark.parametrize(*input_devices, indirect=["device"])
 def test_deviceinfo_battery_level(comment, device):
     """Test battery level."""
-    info = Device(device.raw.copy()).device_info
+    info = device.device_info
     assert type(info.battery_level) is int
     assert info.battery_level >= 0
     assert info.battery_level <= 100
 
 
 @pytest.mark.parametrize(*input_devices)
-def test_deviceinfo_battery_level_unkown(comment, device):
+def test_deviceinfo_battery_level_unknown(comment, device):
     """Test battery level unknown."""
-    info = Device(device.raw.copy()).device_info
-    info.raw["9"] = None
+    response = deepcopy(device)
+    response[ATTR_DEVICE_INFO].pop("9")
+    info = Device(response).device_info
+
     assert info.battery_level is None
