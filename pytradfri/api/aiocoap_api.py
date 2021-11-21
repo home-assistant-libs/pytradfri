@@ -32,7 +32,7 @@ class UndefinedType(Enum):
     _singleton = 0
 
 
-_SINGELTON = UndefinedType._singleton  # pylint: disable=protected-access
+_SENTINEL = UndefinedType._singleton  # pylint: disable=protected-access
 
 
 class APIFactory:
@@ -46,7 +46,7 @@ class APIFactory:
         internal_create: UndefinedType | None = None,
     ):
         """Create object of class."""
-        if internal_create is not _SINGELTON:
+        if internal_create is not _SENTINEL:
             raise ValueError("Use APIFactory.init(…) to initialize APIFactory")
 
         self._psk = psk
@@ -62,7 +62,7 @@ class APIFactory:
         cls, host: str, psk_id: str = "pytradfri", psk: str | None = None
     ) -> "APIFactory":
         """Initialize an APIFactory."""
-        instance = cls(host, psk_id=psk_id, psk=psk, internal_create=_SINGELTON)
+        instance = cls(host, psk_id=psk_id, psk=psk, internal_create=_SENTINEL)
         if psk:
             await instance._update_credentials()
         return instance
