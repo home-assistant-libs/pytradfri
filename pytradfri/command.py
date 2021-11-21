@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union
 
-TypeProcessResultCb = Optional[Callable[[Any], Optional[str]]]
-TypeErrCb = Optional[Callable[[str], str]]
+TypeProcessResultCb = Optional[Callable[[Any], Optional[Union[dict, str]]]]
+TypeErrCb = Callable[[Exception], str]
 
 
 class Command:
@@ -21,7 +21,7 @@ class Command:
         observe: bool = False,
         observe_duration: int = 0,
         process_result: TypeProcessResultCb = None,
-        err_callback: TypeErrCb = None,
+        err_callback: TypeErrCb | None = None,
     ) -> None:
         """Create object of class."""
         self._method = method
@@ -32,8 +32,8 @@ class Command:
         self._err_callback = err_callback
         self._observe = observe
         self._observe_duration = observe_duration
-        self._raw_result: str | None = None
-        self._result: str | None = None
+        self._raw_result: dict | str | None = None
+        self._result: dict | str | None = None
 
     @property
     def method(self) -> str:
@@ -61,7 +61,7 @@ class Command:
         return self._process_result
 
     @property
-    def err_callback(self) -> TypeErrCb:
+    def err_callback(self) -> TypeErrCb | None:
         """Will be fired when an observe request fails."""
         return self._err_callback
 
@@ -76,17 +76,17 @@ class Command:
         return self._observe_duration
 
     @property
-    def raw_result(self) -> str | None:
+    def raw_result(self) -> dict | str | None:
         """Return raw result."""
         return self._raw_result
 
     @property
-    def result(self) -> str | None:
+    def result(self) -> dict | str | None:
         """Return result."""
         return self._result
 
     @result.setter
-    def result(self, value: str) -> None:
+    def result(self, value: dict | str | None) -> None:
         """Return command result."""
         if self._process_result:
             self._result = self._process_result(value)

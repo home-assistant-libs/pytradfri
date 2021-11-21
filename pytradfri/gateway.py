@@ -33,7 +33,7 @@ class Gateway:
     """This class connects to the IKEA Tradfri Gateway."""
 
     @classmethod
-    def generate_psk(cls, identity):
+    def generate_psk(cls, identity: str) -> Command:
         """Generate the PRE_SHARED_KEY from the gateway.
 
         Returns a Command.
