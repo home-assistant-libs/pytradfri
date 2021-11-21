@@ -31,8 +31,8 @@ class Command:
         self._err_callback = err_callback
         self._observe = observe
         self._observe_duration = observe_duration
-        self._raw_result: str | None = None
-        self._result: str | None = None
+        self._raw_result: dict | str | None = None
+        self._result: dict | str | None = None
 
     @property
     def method(self) -> str:
@@ -75,17 +75,17 @@ class Command:
         return self._observe_duration
 
     @property
-    def raw_result(self) -> str | None:
+    def raw_result(self) -> dict | str | None:
         """Return raw result."""
         return self._raw_result
 
     @property
-    def result(self) -> str | None:
+    def result(self) -> dict | str | None:
         """Return result."""
         return self._result
 
     @result.setter
-    def result(self, value: str) -> None:
+    def result(self, value: dict | str | None) -> None:
         """Return command result."""
         if self._process_result:
             self._result = self._process_result(value)
