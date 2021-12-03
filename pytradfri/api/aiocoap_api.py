@@ -12,7 +12,7 @@ from aiocoap.error import (
     ConstructionRenderableError,
     Error,
     LibraryShutdown,
-    RequestTimedOut,
+    TimeoutError,
 )
 from aiocoap.numbers.codes import Code
 
@@ -115,7 +115,7 @@ class APIFactory:
             await self._reset_protocol(exc)
             await self._update_credentials()
             raise RequestTimeout("Request timed out.", exc) from exc
-        except RequestTimedOut as exc:
+        except TimeoutError as exc:
             await self._reset_protocol(exc)
             await self._update_credentials()
             raise RequestTimeout("Request timed out.", exc) from exc
