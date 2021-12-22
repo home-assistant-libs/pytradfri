@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "$EUID" -ne 0 ]
+if [ $(id -u) -ne 0 ]
   then echo "Please run the script as: sudo ./install-coap-client.sh"
   exit
 fi
