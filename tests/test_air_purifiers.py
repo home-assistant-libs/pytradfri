@@ -26,14 +26,14 @@ def test_state(device):
     """Test air purifier mode."""
 
     air_purifier = device.air_purifier_control.air_purifiers[0]
-    assert air_purifier.state == True
+    assert air_purifier.state is True
 
 
 def test_is_auto_mode(device):
     """Test air purifier mode."""
 
     air_purifier = device.air_purifier_control.air_purifiers[0]
-    assert air_purifier.is_auto_mode == True
+    assert air_purifier.is_auto_mode is True
 
 
 def test_air_quality(device):
