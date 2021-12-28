@@ -8,6 +8,7 @@ from ..const import (
     ATTR_AIR_PURIFIER_CONTROLS_LOCKED,
     ATTR_AIR_PURIFIER_LEDS_OFF,
     ATTR_AIR_PURIFIER_MODE,
+    ATTR_AIR_PURIFIER_MODE_AUTO,
     RANGE_AIR_PURIFIER,
     ROOT_AIR_PURIFIER,
 )
@@ -29,18 +30,17 @@ class AirPurifierControl(BaseController):
         """Return air purifier objects of the air purifier control."""
         return [AirPurifier(self._device, i) for i in range(len(self.raw))]
 
-    def set_mode(self, mode: int, *, index=0) -> Command:
-        """Set mode of a air purifier.
+    def turn_off(self, *, index=0) -> Command:
+        """Turn the device off."""
+        return self.set_value({ATTR_AIR_PURIFIER_MODE: 0}, index=index)
 
-        0: off
-        1: Fan level auto
-        10: Fan level 1
-        20: Fan level 2
-        30: Fan level 3
-        40: Fan level 4
-        50: Fan level 5
-        """
-        self._value_validate(mode, RANGE_AIR_PURIFIER, "Air Purifier mode")
+    def turn_on_auto_mode(self, *, index=0) -> Command:
+        """Turn on auto mode."""
+        return self.set_value({ATTR_AIR_PURIFIER_MODE: ATTR_AIR_PURIFIER_MODE_AUTO}, index=index)
+
+    def set_fan_speed(self, mode: int, *, index=0) -> Command:
+        """Set the fan speed of the purifier."""
+        #self._value_validate(mode, RANGE_AIR_PURIFIER, "Air Purifier mode")
         return self.set_value({ATTR_AIR_PURIFIER_MODE: mode}, index=index)
 
     def set_controls_locked(self, locked: bool, *, index=0) -> Command:

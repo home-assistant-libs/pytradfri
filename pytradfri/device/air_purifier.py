@@ -9,6 +9,7 @@ from ..const import (
     ATTR_AIR_PURIFIER_FAN_SPEED,
     ATTR_AIR_PURIFIER_LEDS_OFF,
     ATTR_AIR_PURIFIER_MODE,
+    ATTR_AIR_PURIFIER_MODE_AUTO,
     ROOT_AIR_PURIFIER,
 )
 from ..resource import TypeRaw, TypeRawList
@@ -35,25 +36,25 @@ class AirPurifier:
         )
 
     @property
-    def mode(self) -> int:
-        """Return the current mode of the air purifier.
-
-        0: off
-        1: Fan level auto
-        10: Fan level 1
-        20: Fan level 2
-        30: Fan level 3
-        40: Fan level 4
-        50: Fan level 5
+    def is_auto(self) -> bool:
         """
-        return cast(int, self.raw[ATTR_AIR_PURIFIER_MODE])
+        Return auto mode on or off.
+        
+        Auto mode sets the fan speed automatically based on the air quality.
+        """
+        return self.raw[ATTR_AIR_PURIFIER_MODE] == ATTR_AIR_PURIFIER_MODE_AUTO
+
+    @property
+    def state(self) -> bool:
+        """Return device state, ie on or off."""
+        return self.raw[ATTR_AIR_PURIFIER_MODE] > 0
 
     @property
     def fan_speed(self) -> int:
         """Get the current fan speed of the air purifier.
 
         0: Device is off
-        10..50: Fan speed with a step size of 5
+        2..50: Fan speed with a step size of 1.
         """
         return cast(int, self.raw[ATTR_AIR_PURIFIER_FAN_SPEED])
 
