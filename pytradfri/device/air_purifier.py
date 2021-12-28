@@ -36,7 +36,7 @@ class AirPurifier:
         )
 
     @property
-    def is_auto(self) -> bool:
+    def is_auto_mode(self) -> bool:
         """
         Return auto mode on or off.
         
