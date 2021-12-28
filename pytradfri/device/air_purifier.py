@@ -47,7 +47,7 @@ class AirPurifier:
     @property
     def state(self) -> bool:
         """Return device state, ie on or off."""
-        return self.raw[ATTR_AIR_PURIFIER_MODE] > 0
+        return cast(int, self.raw[ATTR_AIR_PURIFIER_MODE]) > 0
 
     @property
     def fan_speed(self) -> int:
