@@ -39,7 +39,7 @@ class AirPurifier:
     def is_auto_mode(self) -> bool:
         """
         Return auto mode on or off.
-        
+
         Auto mode sets the fan speed automatically based on the air quality.
         """
         return self.raw[ATTR_AIR_PURIFIER_MODE] == ATTR_AIR_PURIFIER_MODE_AUTO

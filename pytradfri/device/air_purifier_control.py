@@ -36,7 +36,9 @@ class AirPurifierControl(BaseController):
 
     def turn_on_auto_mode(self, *, index=0) -> Command:
         """Turn on auto mode."""
-        return self.set_value({ATTR_AIR_PURIFIER_MODE: ATTR_AIR_PURIFIER_MODE_AUTO}, index=index)
+        return self.set_value(
+            {ATTR_AIR_PURIFIER_MODE: ATTR_AIR_PURIFIER_MODE_AUTO}, index=index
+        )
 
     def set_fan_speed(self, mode: int, *, index=0) -> Command:
         """Set the fan speed of the purifier."""
