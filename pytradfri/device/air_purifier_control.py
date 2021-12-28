@@ -40,7 +40,7 @@ class AirPurifierControl(BaseController):
 
     def set_fan_speed(self, mode: int, *, index=0) -> Command:
         """Set the fan speed of the purifier."""
-        #self._value_validate(mode, RANGE_AIR_PURIFIER, "Air Purifier mode")
+        self._value_validate(mode, RANGE_AIR_PURIFIER, "Air Purifier mode")
         return self.set_value({ATTR_AIR_PURIFIER_MODE: mode}, index=index)
 
     def set_controls_locked(self, locked: bool, *, index=0) -> Command:
