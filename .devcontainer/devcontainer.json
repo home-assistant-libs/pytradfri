@@ -1,9 +1,38 @@
 {
 	"name": "Pytradfri dev",
 	"context": "..",
-	"dockerFile": "../Dockerfile",
-	"settings": {},
+	"dockerFile": "Dockerfile.dev",
+	"postCreateCommand": "script/setup",
+	"containerEnv": {
+		"DEVCONTAINER": "1"
+	},
+	"settings": {
+		"python.pythonPath": "/opt/.venv/bin/python",
+		"python.defaultInterpreterPath": "/opt/.venv/bin/python",
+		"python.terminal.activateEnvInCurrentTerminal": true,
+		"python.formatting.provider": "black",
+		"[python]": {
+			"editor.codeActionsOnSave": {
+				"source.organizeImports": true
+			}
+		},
+		"python.formatting.blackArgs": [
+			"-S",
+			"--line-length",
+			"88"
+		],
+		"python.linting.enabled": true,
+		"editor.formatOnPaste": false,
+		"editor.formatOnSave": true,
+		"editor.formatOnType": true,
+		"files.trimTrailingWhitespace": true,
+		"python.languageServer": "Pylance",
+		"python.testing.unittestEnabled": false,
+		"python.testing.pytestEnabled": true,
+	},
 	"extensions": [
-		"ms-python.vscode-pylance"
+		"ms-python.vscode-pylance",
+		"visualstudioexptteam.vscodeintellicode",
+		"esbenp.prettier-vscode"
 	],
 }

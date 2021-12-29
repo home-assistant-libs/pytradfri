@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Stop on errors
+set -e
+
+cd "$(dirname "$0")/../"
+
+if [ ! -n "$DEVCONTAINER" ];then
+  source $VIRTUAL_ENV/bin/activate
+fi
+
+pre-commit install
