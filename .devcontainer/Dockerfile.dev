@@ -12,8 +12,6 @@ COPY . $FILE_LOCATION
 
 WORKDIR $FILE_LOCATION
 
-RUN ls -lashrt
-
 RUN sudo python3 -m venv $VIRTUAL_ENV && \
     sudo chown -R $LOCAL_USER:$LOCAL_USER ${VIRTUAL_ENV} && \
     . $VIRTUAL_ENV/bin/activate && \
