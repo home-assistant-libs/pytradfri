@@ -18,5 +18,4 @@ RUN sudo python3 -m venv $VIRTUAL_ENV && \
     python3 -m pip install --upgrade setuptools wheel Cython && \
     python3 -m pip install -r $FILE_LOCATION/requirements.txt && \
     python3 -m pip install -r $FILE_LOCATION/requirements_test.txt && \
-    sudo $FILE_LOCATION//script/install-coap-client.sh && \
-    python3 -m pip install -e .
+    sudo $FILE_LOCATION//script/install-coap-client.sh
