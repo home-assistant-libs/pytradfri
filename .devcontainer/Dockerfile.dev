@@ -1,0 +1,21 @@
+ARG VARIANT=3.10-bullseye
+FROM mcr.microsoft.com/vscode/devcontainers/python:0-${VARIANT}
+
+ENV VIRTUAL_ENV=/opt/.venv
+ENV FILE_LOCATION "/usr/src/app"
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ENV LOCAL_USER="vscode"
+
+USER $LOCAL_USER
+
+COPY . $FILE_LOCATION
+
+WORKDIR $FILE_LOCATION
+
+RUN sudo python3 -m venv $VIRTUAL_ENV && \
+    sudo chown -R $LOCAL_USER:$LOCAL_USER ${VIRTUAL_ENV} && \
+    . $VIRTUAL_ENV/bin/activate && \
+    python3 -m pip install --upgrade setuptools wheel Cython && \
+    python3 -m pip install -r $FILE_LOCATION/requirements.txt && \
+    python3 -m pip install -r $FILE_LOCATION/requirements_test.txt && \
+    sudo $FILE_LOCATION//script/install-coap-client.sh
