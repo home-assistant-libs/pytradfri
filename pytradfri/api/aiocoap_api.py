@@ -291,9 +291,9 @@ def _process_output(res, parse_json=True):
     # /aiocoap/numbers/codes.py
     if not res.code.is_successful():
         if 128 <= res.code < 160:
-            raise ClientError(f"Gateway output: {output}. Error code: {res.code}")
+            raise ClientError(f"Gateway payload: {output}. Error code: {res.code}.")
         if 160 <= res.code < 192:
-            raise ServerError(f"Gateway output: {output}. Error code: {res.code}")
+            raise ServerError(f"Gateway payload: {output}. Error code: {res.code}.")
 
     if not parse_json:
         return output
