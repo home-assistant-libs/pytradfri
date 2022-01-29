@@ -1,10 +1,14 @@
-"""Coap implementation."""
+"""COAP implementation."""
+from __future__ import annotations
+
 from functools import wraps
 import json
 import logging
 import subprocess
 from time import time
+from typing import TYPE_CHECKING
 
+from ..command import Command
 from ..error import ClientError, RequestError, RequestTimeout, ServerError
 from ..gateway import Gateway
 
@@ -34,7 +38,7 @@ class APIFactory:
         """Set psk."""
         self._psk = value
 
-    def _base_command(self, method):
+    def _base_command(self, method: str) -> list[str]:
         """Return base command."""
         return [
             "coap-client",
@@ -107,7 +111,7 @@ class APIFactory:
 
         return command_results
 
-    def _observe(self, api_command):
+    def _observe(self, api_command: Command) -> None:
         """Observe an endpoint."""
         path = api_command.path
         duration = api_command.observe_duration
@@ -124,14 +128,12 @@ class APIFactory:
             url,
         ]
 
-        kwargs = {
-            "stdout": subprocess.PIPE,
-            "stderr": subprocess.DEVNULL,
-            "universal_newlines": True,
-        }
         try:
             proc = subprocess.Popen(  # pylint: disable=consider-using-with
-                command, **kwargs
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                universal_newlines=True,
             )
         except subprocess.CalledProcessError as exc:
             msg = f"Error executing request: {exc}"
@@ -141,12 +143,19 @@ class APIFactory:
         open_obj = 0
         start = time()
 
-        for data in iter(lambda: proc.stdout.read(1), ""):
+        def read_stdout() -> str:
+            """Read from stdout."""
+            if TYPE_CHECKING:
+                assert proc.stdout
+            return proc.stdout.read(1)
+
+        for data in iter(read_stdout, ""):
             if data == "\n":
                 _LOGGER.debug(
                     "Observing stopped for %s after %.1fs", path, time() - start
                 )
-                err_callback(RequestError("Observing stopped."))
+                if err_callback:
+                    err_callback(RequestError("Observing stopped."))
                 break
 
             if data == "{":

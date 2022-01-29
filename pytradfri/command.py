@@ -5,7 +5,6 @@ from copy import deepcopy
 from typing import Any, Callable, Optional
 
 TypeProcessResultCb = Optional[Callable[[Any], Optional[str]]]
-TypeErrCb = Optional[Callable[[str], str]]
 
 
 class Command:
@@ -21,7 +20,7 @@ class Command:
         observe: bool = False,
         observe_duration: int = 0,
         process_result: TypeProcessResultCb = None,
-        err_callback: TypeErrCb = None,
+        err_callback: Callable[[Exception], None] | None = None,
     ) -> None:
         """Create object of class."""
         self._method = method
@@ -61,7 +60,7 @@ class Command:
         return self._process_result
 
     @property
-    def err_callback(self) -> TypeErrCb:
+    def err_callback(self) -> Callable[[Exception], None] | None:
         """Will be fired when an observe request fails."""
         return self._err_callback
 
