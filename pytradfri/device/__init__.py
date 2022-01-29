@@ -1,5 +1,6 @@
 """Classes to interact with devices."""
 from datetime import datetime
+from typing import Optional, cast
 
 from ..const import (
     ATTR_APPLICATION_TYPE,
@@ -136,48 +137,51 @@ class DeviceInfo:
     }
     ATTR_BATTERY = "9"
 
-    def __init__(self, device):
+    def __init__(self, device) -> None:
         """Create object of class."""
         self._device = device
 
     @property
-    def manufacturer(self):
+    def manufacturer(self) -> str:
         """Human readable manufacturer name."""
-        return self.raw.get(DeviceInfo.ATTR_MANUFACTURER)
+        return cast(str, self.raw.get(DeviceInfo.ATTR_MANUFACTURER))
 
     @property
-    def model_number(self):
+    def model_number(self) -> str:
         """Return model identifier string (manufacturer specified string)."""
-        return self.raw.get(DeviceInfo.ATTR_MODEL_NUMBER)
+        return cast(str, self.raw.get(DeviceInfo.ATTR_MODEL_NUMBER))
 
     @property
-    def serial(self):
+    def serial(self) -> str:
         """Return serial string."""
-        return self.raw.get(DeviceInfo.ATTR_SERIAL)
+        return cast(str, self.raw.get(DeviceInfo.ATTR_SERIAL))
 
     @property
-    def firmware_version(self):
+    def firmware_version(self) -> str:
         """Return current firmware version of device."""
-        return self.raw.get(DeviceInfo.ATTR_FIRMWARE_VERSION)
+        return cast(str, self.raw.get(DeviceInfo.ATTR_FIRMWARE_VERSION))
 
     @property
-    def power_source(self):
+    def power_source(self) -> int:
         """Power source."""
-        return self.raw.get(DeviceInfo.ATTR_POWER_SOURCE)
+        return cast(int, self.raw.get(DeviceInfo.ATTR_POWER_SOURCE))
 
     @property
-    def power_source_str(self):
+    def power_source_str(self) -> Optional[str]:
         """Represent current power source."""
         if DeviceInfo.ATTR_POWER_SOURCE not in self.raw:
             return None
-        return DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, "Unknown")
+
+        return cast(
+            str, DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, "Unknown")
+        )
 
     @property
-    def battery_level(self):
+    def battery_level(self) -> int:
         """Battery in 0..100."""
-        return self.raw.get(DeviceInfo.ATTR_BATTERY)
+        return cast(int, self.raw.get(DeviceInfo.ATTR_BATTERY))
 
     @property
-    def raw(self):
+    def raw(self) -> dict:
         """Return raw data that it represents."""
         return self._device.raw[ATTR_DEVICE_INFO]
