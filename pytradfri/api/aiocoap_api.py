@@ -16,6 +16,7 @@ from aiocoap.error import (
 )
 from aiocoap.numbers.codes import Code
 
+from ..command import Command
 from ..error import ClientError, RequestTimeout, ServerError
 from ..gateway import Gateway
 
@@ -205,7 +206,7 @@ class APIFactory:
         self.debug_comm("return", command_results)
         return command_results
 
-    async def _observe(self, api_command, timeout):
+    async def _observe(self, api_command: Command, timeout: float | None) -> None:
         """Observe an endpoint."""
         duration = api_command.observe_duration
         url = api_command.url(self._host)
@@ -221,11 +222,12 @@ class APIFactory:
         def success_callback(res):
             api_command.result = _process_output(res)
 
-        def error_callback(exc):
+        def error_callback(exc: Exception) -> None:
             if isinstance(exc, LibraryShutdown):
                 _LOGGER.debug("Protocol is shutdown, stopping observation")
                 return
-            err_callback(exc)
+            if err_callback:
+                err_callback(exc)
 
         observation = pr_req.observation
         observation.register_callback(success_callback)
