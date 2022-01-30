@@ -122,11 +122,6 @@ class DeviceInfo:
     http://www.openmobilealliance.org/tech/profiles/LWM2M_Device-v1_0.xml
     """
 
-    ATTR_MANUFACTURER = "0"
-    ATTR_MODEL_NUMBER = "1"
-    ATTR_SERIAL = "2"
-    ATTR_FIRMWARE_VERSION = "3"
-    ATTR_POWER_SOURCE = "6"
     VALUE_POWER_SOURCES = {
         1: "Internal Battery",
         2: "External Battery",
@@ -136,7 +131,6 @@ class DeviceInfo:
         6: "AC (Mains) power",
         7: "Solar",
     }
-    ATTR_BATTERY = "9"
 
     def __init__(self, device: Device) -> None:
         """Create object of class."""
@@ -145,32 +139,32 @@ class DeviceInfo:
     @property
     def manufacturer(self) -> str:
         """Human readable manufacturer name."""
-        return self.raw[DeviceInfo.ATTR_MANUFACTURER]  # type: ignore
+        return self.raw["0"]
 
     @property
     def model_number(self) -> str:
         """Return model identifier string (manufacturer specified string)."""
-        return self.raw[DeviceInfo.ATTR_MODEL_NUMBER]
+        return self.raw["1"]
 
     @property
     def serial(self) -> str:
         """Return serial string."""
-        return self.raw[DeviceInfo.ATTR_SERIAL]
+        return self.raw["2"]
 
     @property
     def firmware_version(self) -> str:
         """Return current firmware version of device."""
-        return self.raw[DeviceInfo.ATTR_FIRMWARE_VERSION]
+        return self.raw["3"]
 
     @property
     def power_source(self) -> int:
         """Power source."""
-        return self.raw[DeviceInfo.ATTR_POWER_SOURCE]
+        return self.raw["6"]
 
     @property
     def power_source_str(self) -> Optional[str]:
         """Represent current power source."""
-        if DeviceInfo.ATTR_POWER_SOURCE not in self.raw:
+        if "6" not in self.raw:
             return None
 
         return DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, "Unknown")
@@ -178,7 +172,7 @@ class DeviceInfo:
     @property
     def battery_level(self) -> int:
         """Battery in 0..100."""
-        return self.raw[DeviceInfo.ATTR_BATTERY]
+        return self.raw["9"]
 
     @property
     def raw(self) -> TypeDeviceInfo:
