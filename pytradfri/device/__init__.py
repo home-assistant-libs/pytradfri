@@ -170,8 +170,11 @@ class DeviceInfo:
         return DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, "Unknown")
 
     @property
-    def battery_level(self) -> int:
+    def battery_level(self) -> Optional[int]:
         """Battery in 0..100."""
+        if "9" not in self.raw:
+            return None
+
         return self.raw["9"]
 
     @property
