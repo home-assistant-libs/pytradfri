@@ -11,7 +11,7 @@ TypeDeviceInfo = TypedDict(
         "2": str,  # Serial number
         "3": str,  # Firmware version
         "6": int,  # Power source
-        "7": int,  # OTA image type
+        "7": str,  # OTA image type
         "9": int,  # Battery level
     },
 )
