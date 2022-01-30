@@ -15,7 +15,7 @@ from ..const import (
     ROOT_SIGNAL_REPEATER,
 )
 from ..resource import ApiResource
-from ..types import TypeDeviceInfo
+from ..typing import TypeDeviceInfo
 from .air_purifier_control import AirPurifierControl
 from .blind_control import BlindControl
 from .light_control import LightControl
