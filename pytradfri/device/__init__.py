@@ -137,7 +137,7 @@ class DeviceInfo:
     }
     ATTR_BATTERY = "9"
 
-    def __init__(self, device) -> None:
+    def __init__(self, device: Device) -> None:
         """Create object of class."""
         self._device = device
 
