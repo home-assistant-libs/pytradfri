@@ -1,4 +1,4 @@
-FROM balenalib/raspberry-pi-python:3.8-buster
+FROM balenalib/raspberry-pi-python:3.10-buster
 
 # https://community.home-assistant.io/t/ikea-tradfri-gateway-zigbee-very-basic-working-implementation/14788/19?u=balloob
 RUN apt-get update -y && \
