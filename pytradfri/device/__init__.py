@@ -1,5 +1,6 @@
 """Classes to interact with devices."""
 from datetime import datetime
+from typing import Optional, TypedDict, cast
 
 from ..const import (
     ATTR_APPLICATION_TYPE,
@@ -19,6 +20,21 @@ from .blind_control import BlindControl
 from .light_control import LightControl
 from .signal_repeater_control import SignalRepeaterControl
 from .socket_control import SocketControl
+
+TypeDeviceInfo = TypedDict(
+    # Alternative syntax required due to the need of using strings as keys:
+    # https://www.python.org/dev/peps/pep-0589/#alternative-syntax
+    "TypeDeviceInfo",
+    {
+        "0": str,  # Manufacturer
+        "1": str,  # Model number
+        "2": str,  # Serial number
+        "3": str,  # Firmware version
+        "6": int,  # Power source
+        "7": str,  # OTA image type
+        "9": int,  # Battery level
+    },
+)
 
 
 class Device(ApiResource):
@@ -120,11 +136,6 @@ class DeviceInfo:
     http://www.openmobilealliance.org/tech/profiles/LWM2M_Device-v1_0.xml
     """
 
-    ATTR_MANUFACTURER = "0"
-    ATTR_MODEL_NUMBER = "1"
-    ATTR_SERIAL = "2"
-    ATTR_FIRMWARE_VERSION = "3"
-    ATTR_POWER_SOURCE = "6"
     VALUE_POWER_SOURCES = {
         1: "Internal Battery",
         2: "External Battery",
@@ -134,50 +145,53 @@ class DeviceInfo:
         6: "AC (Mains) power",
         7: "Solar",
     }
-    ATTR_BATTERY = "9"
 
-    def __init__(self, device):
+    def __init__(self, device: Device) -> None:
         """Create object of class."""
         self._device = device
 
     @property
-    def manufacturer(self):
+    def manufacturer(self) -> str:
         """Human readable manufacturer name."""
-        return self.raw.get(DeviceInfo.ATTR_MANUFACTURER)
+        return self.raw["0"]
 
     @property
-    def model_number(self):
+    def model_number(self) -> str:
         """Return model identifier string (manufacturer specified string)."""
-        return self.raw.get(DeviceInfo.ATTR_MODEL_NUMBER)
+        return self.raw["1"]
 
     @property
-    def serial(self):
+    def serial(self) -> str:
         """Return serial string."""
-        return self.raw.get(DeviceInfo.ATTR_SERIAL)
+        return self.raw["2"]
 
     @property
-    def firmware_version(self):
+    def firmware_version(self) -> str:
         """Return current firmware version of device."""
-        return self.raw.get(DeviceInfo.ATTR_FIRMWARE_VERSION)
+        return self.raw["3"]
 
     @property
-    def power_source(self):
+    def power_source(self) -> int:
         """Power source."""
-        return self.raw.get(DeviceInfo.ATTR_POWER_SOURCE)
+        return self.raw["6"]
 
     @property
-    def power_source_str(self):
+    def power_source_str(self) -> Optional[str]:
         """Represent current power source."""
-        if DeviceInfo.ATTR_POWER_SOURCE not in self.raw:
+        if "6" not in self.raw:
             return None
+
         return DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, "Unknown")
 
     @property
-    def battery_level(self):
+    def battery_level(self) -> Optional[int]:
         """Battery in 0..100."""
-        return self.raw.get(DeviceInfo.ATTR_BATTERY)
+        if "9" not in self.raw:
+            return None
+
+        return self.raw["9"]
 
     @property
-    def raw(self):
+    def raw(self) -> TypeDeviceInfo:
         """Return raw data that it represents."""
-        return self._device.raw[ATTR_DEVICE_INFO]
+        return cast(TypeDeviceInfo, self._device.raw[ATTR_DEVICE_INFO])
