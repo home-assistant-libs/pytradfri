@@ -15,6 +15,7 @@ from ..const import (
     ROOT_SIGNAL_REPEATER,
 )
 from ..resource import ApiResource
+from ..types import TypeDeviceInfo
 from .air_purifier_control import AirPurifierControl
 from .blind_control import BlindControl
 from .light_control import LightControl
@@ -144,27 +145,27 @@ class DeviceInfo:
     @property
     def manufacturer(self) -> str:
         """Human readable manufacturer name."""
-        return cast(str, self.raw.get(DeviceInfo.ATTR_MANUFACTURER))
+        return self.raw[DeviceInfo.ATTR_MANUFACTURER]  # type: ignore
 
     @property
     def model_number(self) -> str:
         """Return model identifier string (manufacturer specified string)."""
-        return cast(str, self.raw.get(DeviceInfo.ATTR_MODEL_NUMBER))
+        return self.raw[DeviceInfo.ATTR_MODEL_NUMBER]
 
     @property
     def serial(self) -> str:
         """Return serial string."""
-        return cast(str, self.raw.get(DeviceInfo.ATTR_SERIAL))
+        return self.raw[DeviceInfo.ATTR_SERIAL]
 
     @property
     def firmware_version(self) -> str:
         """Return current firmware version of device."""
-        return cast(str, self.raw.get(DeviceInfo.ATTR_FIRMWARE_VERSION))
+        return self.raw[DeviceInfo.ATTR_FIRMWARE_VERSION]
 
     @property
     def power_source(self) -> int:
         """Power source."""
-        return cast(int, self.raw.get(DeviceInfo.ATTR_POWER_SOURCE))
+        return self.raw[DeviceInfo.ATTR_POWER_SOURCE]
 
     @property
     def power_source_str(self) -> Optional[str]:
@@ -172,16 +173,14 @@ class DeviceInfo:
         if DeviceInfo.ATTR_POWER_SOURCE not in self.raw:
             return None
 
-        return cast(
-            str, DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, "Unknown")
-        )
+        return DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, "Unknown")
 
     @property
     def battery_level(self) -> int:
         """Battery in 0..100."""
-        return cast(int, self.raw.get(DeviceInfo.ATTR_BATTERY))
+        return self.raw[DeviceInfo.ATTR_BATTERY]
 
     @property
-    def raw(self) -> dict:
+    def raw(self) -> TypeDeviceInfo:
         """Return raw data that it represents."""
-        return self._device.raw[ATTR_DEVICE_INFO]
+        return cast(TypeDeviceInfo, self._device.raw[ATTR_DEVICE_INFO])
