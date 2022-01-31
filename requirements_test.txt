@@ -9,4 +9,3 @@ flake8-docstrings==1.6.0
 flake8-comprehensions==3.8.0
 flake8-noqa==1.2.1
 coverage==6.2
-
