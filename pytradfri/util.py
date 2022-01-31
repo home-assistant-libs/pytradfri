@@ -61,7 +61,7 @@ class BitChoices:
         self._choices = []
         self._lookup = {}
         for index, (key, val) in enumerate(choices):
-            index = 2 ** index
+            index = 2**index
             self._choices.append((index, val))
             self._lookup[key] = index
 

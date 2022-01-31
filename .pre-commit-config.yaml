@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: 21.7b0
+    rev: 22.1.0
     hooks:
       - id: black
         name: black
@@ -29,7 +29,7 @@ repos:
       - id: pylint
         name: pylint
         stages: [manual]
-# DO NOT ACTIVATE until all files have been manually updated.
+        # DO NOT ACTIVATE until all files have been manually updated.
         entry: pylint
         language: system
         types: [python]
@@ -42,7 +42,7 @@ repos:
           - --timeout=30
           - --cov=pytradfri
           - --cov-report=html
-        stages: [push,manual]
+        stages: [push, manual]
         entry: pytest
         language: system
         types: [python]
@@ -55,6 +55,6 @@ repos:
         language: script
         types: [python]
         require_serial: true
-#        files: ^(pytradfri|examples|tests)/.+\.py$
-# DO NOT ADD examples/tests until files have been updated.
+        #        files: ^(pytradfri|examples|tests)/.+\.py$
+        # DO NOT ADD examples/tests until files have been updated.
         files: ^(pytradfri)/.+\.py$
