@@ -7,9 +7,14 @@ from ..const import (
     ATTR_AIR_PURIFIER_AIR_QUALITY,
     ATTR_AIR_PURIFIER_CONTROLS_LOCKED,
     ATTR_AIR_PURIFIER_FAN_SPEED,
+    ATTR_AIR_PURIFIER_FILTER_LIFETIME_REMAINING,
+    ATTR_AIR_PURIFIER_FILTER_LIFETIME_TOTAL,
+    ATTR_AIR_PURIFIER_FILTER_RUNTIME,
+    ATTR_AIR_PURIFIER_FILTER_STATUS,
     ATTR_AIR_PURIFIER_LEDS_OFF,
     ATTR_AIR_PURIFIER_MODE,
     ATTR_AIR_PURIFIER_MODE_AUTO,
+    ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL,
     ROOT_AIR_PURIFIER,
 )
 from ..resource import TypeRaw, TypeRawList
@@ -34,6 +39,31 @@ class AirPurifier:
             TypeRaw,
             cast(TypeRawList, self.device.raw)[ROOT_AIR_PURIFIER][self.index],
         )
+
+    @property
+    def motor_runtime_total(self) -> int:
+        """Return runtime of fan motor, expressed in [x]."""
+        return cast(int, self.raw[ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL])
+
+    @property
+    def filter_lifetime_total(self) -> int:
+        """Return total lifetime of filter, expressed in [x]."""
+        return cast(int, self.raw[ATTR_AIR_PURIFIER_FILTER_LIFETIME_TOTAL])
+
+    @property
+    def filter_status(self) -> int:
+        """Return filter status, expressed in [x]."""
+        return cast(int, self.raw[ATTR_AIR_PURIFIER_FILTER_STATUS])
+
+    @property
+    def filter_lifetime_remaining(self) -> int:
+        """Return remaining lifetime of filter, expressed in [x]."""
+        return cast(int, self.raw[ATTR_AIR_PURIFIER_FILTER_LIFETIME_REMAINING])
+
+    @property
+    def filter_runtime(self) -> int:
+        """Return filter runtime, expressed in [x]."""
+        return cast(int, self.raw[ATTR_AIR_PURIFIER_FILTER_RUNTIME])
 
     @property
     def is_auto_mode(self) -> bool:
