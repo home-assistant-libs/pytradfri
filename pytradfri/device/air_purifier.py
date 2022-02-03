@@ -3,7 +3,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, TypedDict, cast
 
-from ..const import ATTR_AIR_PURIFIER_MODE_AUTO, ROOT_AIR_PURIFIER
+from ..const import (
+    ATTR_AIR_PURIFIER_AIR_QUALITY,
+    ATTR_AIR_PURIFIER_CONTROLS_LOCKED,
+    ATTR_AIR_PURIFIER_FAN_SPEED,
+    ATTR_AIR_PURIFIER_LEDS_OFF,
+    ATTR_AIR_PURIFIER_MODE,
+    ATTR_AIR_PURIFIER_MODE_AUTO,
+    ROOT_AIR_PURIFIER,
+)
 from ..resource import TypeRawList
 
 if TYPE_CHECKING:
@@ -54,12 +62,12 @@ class AirPurifier:
 
         Auto mode sets the fan speed automatically based on the air quality.
         """
-        return self.raw["5900"] == ATTR_AIR_PURIFIER_MODE_AUTO
+        return self.raw[ATTR_AIR_PURIFIER_MODE] == ATTR_AIR_PURIFIER_MODE_AUTO
 
     @property
     def state(self) -> bool:
         """Return device state, ie on or off."""
-        return self.raw["5900"] > 0
+        return self.raw[ATTR_AIR_PURIFIER_MODE] > 0
 
     @property
     def fan_speed(self) -> int:
@@ -68,17 +76,17 @@ class AirPurifier:
         0: Device is off
         2..50: Fan speed with a step size of 1.
         """
-        return self.raw["5908"]
+        return self.raw[ATTR_AIR_PURIFIER_FAN_SPEED]
 
     @property
     def controls_locked(self) -> bool:
         """Return True if physical controls on the air purifier are locked."""
-        return self.raw["5905"] == 1
+        return self.raw[ATTR_AIR_PURIFIER_CONTROLS_LOCKED] == 1
 
     @property
     def leds_off(self) -> bool:
         """Return True if led's on the air purifier are turned off."""
-        return self.raw["5906"] == 1
+        return self.raw[ATTR_AIR_PURIFIER_LEDS_OFF] == 1
 
     @property
     def air_quality(self) -> int:
@@ -89,4 +97,4 @@ class AirPurifier:
         86..: Not good
         65535: If the fan is off or during measuring time after turning on
         """
-        return self.raw["5907"]
+        return self.raw[ATTR_AIR_PURIFIER_AIR_QUALITY]
