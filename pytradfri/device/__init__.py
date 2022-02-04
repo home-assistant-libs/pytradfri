@@ -4,7 +4,13 @@ from typing import Optional, TypedDict, cast
 
 from ..const import (
     ATTR_APPLICATION_TYPE,
+    ATTR_DEVICE_BATTERY,
+    ATTR_DEVICE_FIRMWARE_VERSION,
     ATTR_DEVICE_INFO,
+    ATTR_DEVICE_MANUFACTURER,
+    ATTR_DEVICE_MODEL_NUMBER,
+    ATTR_DEVICE_POWER_SOURCE,
+    ATTR_DEVICE_SERIAL,
     ATTR_LAST_SEEN,
     ATTR_LIGHT_CONTROL,
     ATTR_REACHABLE_STATE,
@@ -153,27 +159,27 @@ class DeviceInfo:
     @property
     def manufacturer(self) -> str:
         """Human readable manufacturer name."""
-        return self.raw["0"]
+        return self.raw[ATTR_DEVICE_MANUFACTURER]
 
     @property
     def model_number(self) -> str:
         """Return model identifier string (manufacturer specified string)."""
-        return self.raw["1"]
+        return self.raw[ATTR_DEVICE_MODEL_NUMBER]
 
     @property
     def serial(self) -> str:
         """Return serial string."""
-        return self.raw["2"]
+        return self.raw[ATTR_DEVICE_SERIAL]
 
     @property
     def firmware_version(self) -> str:
         """Return current firmware version of device."""
-        return self.raw["3"]
+        return self.raw[ATTR_DEVICE_FIRMWARE_VERSION]
 
     @property
     def power_source(self) -> int:
         """Power source."""
-        return self.raw["6"]
+        return self.raw[ATTR_DEVICE_POWER_SOURCE]
 
     @property
     def power_source_str(self) -> Optional[str]:
@@ -186,10 +192,10 @@ class DeviceInfo:
     @property
     def battery_level(self) -> Optional[int]:
         """Battery in 0..100."""
-        if "9" not in self.raw:
+        if ATTR_DEVICE_BATTERY not in self.raw:
             return None
 
-        return self.raw["9"]
+        return self.raw[ATTR_DEVICE_BATTERY]
 
     @property
     def raw(self) -> TypeDeviceInfo:
