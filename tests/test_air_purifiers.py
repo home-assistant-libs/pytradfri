@@ -62,3 +62,38 @@ def test_leds_off(device):
 
     air_purifier = device.air_purifier_control.air_purifiers[0]
     assert not air_purifier.leds_off
+
+
+def test_motor_runtime_total(device):
+    """Test motor's total runtime."""
+
+    air_purifier = device.air_purifier_control.air_purifiers[0]
+    assert air_purifier.motor_runtime_total == 2
+
+
+def test_filter_lifetime_total(device):
+    """Test filter's total life time."""
+
+    air_purifier = device.air_purifier_control.air_purifiers[0]
+    assert air_purifier.filter_lifetime_total == 259200
+
+
+def test_filter_status(device):
+    """Test filter status."""
+
+    air_purifier = device.air_purifier_control.air_purifiers[0]
+    assert air_purifier.filter_status == 0
+
+
+def test_filter_lifetime_remaining(device):
+    """Test remaining life of filter."""
+
+    air_purifier = device.air_purifier_control.air_purifiers[0]
+    assert air_purifier.filter_lifetime_remaining == 259198
+
+
+def test_filter_runtime(device):
+    """Test filter's run time."""
+
+    air_purifier = device.air_purifier_control.air_purifiers[0]
+    assert air_purifier.filter_runtime == 2
