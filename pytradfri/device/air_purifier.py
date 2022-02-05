@@ -62,27 +62,27 @@ class AirPurifier:
 
     @property
     def motor_runtime_total(self) -> int:
-        """Return runtime of fan motor, expressed in [x]."""
+        """Return runtime of fan motor, expressed in minutes."""
         return self.raw[ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL]
 
     @property
     def filter_lifetime_total(self) -> int:
-        """Return total lifetime of filter, expressed in [x]."""
+        """Return total lifetime of filter, expressed in minutes."""
         return self.raw[ATTR_AIR_PURIFIER_FILTER_LIFETIME_TOTAL]
 
     @property
     def filter_status(self) -> int:
-        """Return filter status, expressed in [x]."""
+        """Return filter status."""
         return self.raw[ATTR_AIR_PURIFIER_FILTER_STATUS]
 
     @property
     def filter_lifetime_remaining(self) -> int:
-        """Return remaining lifetime of filter, expressed in [x]."""
+        """Return remaining lifetime of filter, expressed in minutes."""
         return self.raw[ATTR_AIR_PURIFIER_FILTER_LIFETIME_REMAINING]
 
     @property
     def filter_runtime(self) -> int:
-        """Return filter runtime, expressed in [x]."""
+        """Return filter runtime, expressed in minutes."""
         return self.raw[ATTR_AIR_PURIFIER_FILTER_RUNTIME]
 
     @property
