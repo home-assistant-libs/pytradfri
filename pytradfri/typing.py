@@ -6,20 +6,6 @@ as keys: https://www.python.org/dev/peps/pep-0589/#alternative-syntax
 """
 from typing import List, TypedDict
 
-TypeDeviceInfo = TypedDict(
-    "TypeDeviceInfo",
-    {
-        "0": str,  # Manufacturer
-        "1": str,  # Model number
-        "2": str,  # Serial number
-        "3": str,  # Firmware version
-        "6": int,  # Power source
-        "7": str,  # OTA image type
-        "9": int,  # Battery level
-    },
-)
-
-
 TypeAirPurifier = TypedDict(
     "TypeAirPurifier",
     {
@@ -42,6 +28,19 @@ TypeBlind = TypedDict(
     {
         "5536": int,  # Current blind position
         "9003": int,  # ID
+    },
+)
+
+TypeDeviceInfo = TypedDict(
+    "TypeDeviceInfo",
+    {
+        "0": str,  # Manufacturer
+        "1": str,  # Model number
+        "2": str,  # Serial number
+        "3": str,  # Firmware version
+        "6": int,  # Power source
+        "7": str,  # OTA image type
+        "9": int,  # Battery level
     },
 )
 
