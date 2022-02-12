@@ -1,6 +1,6 @@
 """Classes to interact with devices."""
 from datetime import datetime
-from typing import Optional, TypedDict, cast
+from typing import Optional
 
 from ..const import (
     ATTR_APPLICATION_TYPE,
@@ -21,26 +21,12 @@ from ..const import (
     ROOT_SIGNAL_REPEATER,
 )
 from ..resource import ApiResource
+from ..typing import TypeDeviceInfo
 from .air_purifier_control import AirPurifierControl
 from .blind_control import BlindControl
 from .light_control import LightControl
 from .signal_repeater_control import SignalRepeaterControl
 from .socket_control import SocketControl
-
-TypeDeviceInfo = TypedDict(
-    # Alternative syntax required due to the need of using strings as keys:
-    # https://www.python.org/dev/peps/pep-0589/#alternative-syntax
-    "TypeDeviceInfo",
-    {
-        "0": str,  # Manufacturer
-        "1": str,  # Model number
-        "2": str,  # Serial number
-        "3": str,  # Firmware version
-        "6": int,  # Power source
-        "7": str,  # OTA image type
-        "9": int,  # Battery level
-    },
-)
 
 
 class Device(ApiResource):
@@ -200,4 +186,4 @@ class DeviceInfo:
     @property
     def raw(self) -> TypeDeviceInfo:
         """Return raw data that it represents."""
-        return cast(TypeDeviceInfo, self._device.raw[ATTR_DEVICE_INFO])
+        return self._device.raw[ATTR_DEVICE_INFO]
