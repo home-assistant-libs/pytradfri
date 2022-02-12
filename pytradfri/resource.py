@@ -7,7 +7,7 @@ from typing import Any, Callable, Dict, List, Union
 
 from .command import Command, TypeProcessResultCb
 from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME
-from .typing import TypeApiResource
+from .typing import ApiResourceResponse
 
 # type alias
 TypeRaw = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
@@ -18,7 +18,7 @@ TypeRawList = Dict[str, List[Dict[str, Union[str, int]]]]
 class ApiResource:
     """Base object for resources returned from the gateway."""
 
-    def __init__(self, raw: TypeApiResource) -> None:
+    def __init__(self, raw: ApiResourceResponse) -> None:
         """Initialize base object."""
         self.raw = raw
 
@@ -52,7 +52,7 @@ class ApiResource:
     ) -> Command:
         """Observe resource and call callback when updated."""
 
-        def observe_callback(value: TypeApiResource) -> None:
+        def observe_callback(value: ApiResourceResponse) -> None:
             """Call when end point is updated.
 
             Returns a Command.
@@ -89,7 +89,7 @@ class ApiResource:
         Returns a Command.
         """
 
-        def process_result(result: TypeApiResource) -> None:
+        def process_result(result: ApiResourceResponse) -> None:
             self.raw = result
 
         return Command("get", self.path, process_result=process_result)

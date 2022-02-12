@@ -6,8 +6,8 @@ as keys: https://www.python.org/dev/peps/pep-0589/#alternative-syntax
 """
 from typing import List, TypedDict
 
-TypeAirPurifier = TypedDict(
-    "TypeAirPurifier",
+AirPurifierResponse = TypedDict(
+    "AirPurifierResponse",
     {
         "5900": int,  # Mode
         "5902": int,  # Filter runtume
@@ -23,16 +23,16 @@ TypeAirPurifier = TypedDict(
     },
 )
 
-TypeBlind = TypedDict(
-    "TypeBlind",
+TypeBlindResponse = TypedDict(
+    "TypeBlindResponse",
     {
         "5536": int,  # Current blind position
         "9003": int,  # ID
     },
 )
 
-TypeDeviceInfo = TypedDict(
-    "TypeDeviceInfo",
+DeviceInfoResponse = TypedDict(
+    "DeviceInfoResponse",
     {
         "0": str,  # Manufacturer
         "1": str,  # Model number
@@ -45,14 +45,14 @@ TypeDeviceInfo = TypedDict(
 )
 
 
-TypeApiResource = TypedDict(
-    "TypeApiResource",
+ApiResourceResponse = TypedDict(
+    "ApiResourceResponse",
     {
         "9001": str,  # Name
         "9002": int,  # Created at
         "9003": str,  # ID
-        "3": TypeDeviceInfo,
-        "15025": List[TypeAirPurifier],
-        "15015": List[TypeBlind],
+        "3": DeviceInfoResponse,
+        "15025": List[AirPurifierResponse],
+        "15015": List[TypeBlindResponse],
     },
 )
