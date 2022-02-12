@@ -1,11 +1,13 @@
 """Resources for devices."""
 from __future__ import annotations
 
+from abc import abstractmethod
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Union, cast
+from typing import Any, Callable, Dict, List, Union
 
 from .command import Command, TypeProcessResultCb
 from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME
+from .typing import ApiResourceResponse
 
 # type alias
 TypeRaw = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
@@ -16,33 +18,31 @@ TypeRawList = Dict[str, List[Dict[str, Union[str, int]]]]
 class ApiResource:
     """Base object for resources returned from the gateway."""
 
-    def __init__(self, raw: TypeRaw) -> None:
+    def __init__(self, raw: ApiResourceResponse) -> None:
         """Initialize base object."""
         self.raw = raw
 
     @property
     def id(self) -> str | None:
         """Id."""
-        return cast(Union[str, None], self.raw.get(ATTR_ID))
+        return self.raw[ATTR_ID]
 
     @property
     def name(self) -> str | None:
         """Name."""
-        return cast(Union[str, None], self.raw.get(ATTR_NAME))
+        return self.raw[ATTR_NAME]
 
     @property
     def created_at(self) -> datetime | None:
         """Return timestamp of creation."""
         if ATTR_CREATED_AT not in self.raw:
             return None
-        return datetime.utcfromtimestamp(
-            int(cast(TypeRawSimple, self.raw)[ATTR_CREATED_AT])
-        )
+        return datetime.utcfromtimestamp(self.raw[ATTR_CREATED_AT])
 
     @property
+    @abstractmethod
     def path(self) -> list[str]:
         """Path to resource."""
-        raise NotImplementedError("Path property needs to be implemented")
 
     def observe(
         self,
@@ -52,7 +52,7 @@ class ApiResource:
     ) -> Command:
         """Observe resource and call callback when updated."""
 
-        def observe_callback(value: TypeRaw) -> None:
+        def observe_callback(value: ApiResourceResponse) -> None:
             """Call when end point is updated.
 
             Returns a Command.
@@ -89,7 +89,7 @@ class ApiResource:
         Returns a Command.
         """
 
-        def process_result(result: TypeRaw) -> None:
+        def process_result(result: ApiResourceResponse) -> None:
             self.raw = result
 
         return Command("get", self.path, process_result=process_result)
