@@ -21,7 +21,7 @@ from ..const import (
     ROOT_SIGNAL_REPEATER,
 )
 from ..resource import ApiResource
-from ..typing import TypeDeviceInfo
+from ..typing import DeviceInfoResponse
 from .air_purifier_control import AirPurifierControl
 from .blind_control import BlindControl
 from .light_control import LightControl
@@ -184,6 +184,6 @@ class DeviceInfo:
         return self.raw[ATTR_DEVICE_BATTERY]
 
     @property
-    def raw(self) -> TypeDeviceInfo:
+    def raw(self) -> DeviceInfoResponse:
         """Return raw data that it represents."""
         return self._device.raw[ATTR_DEVICE_INFO]

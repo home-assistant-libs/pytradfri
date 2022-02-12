@@ -17,7 +17,7 @@ from ..const import (
     ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL,
     ROOT_AIR_PURIFIER,
 )
-from ..typing import TypeAirPurifier
+from ..typing import AirPurifierResponse
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
@@ -97,7 +97,7 @@ class AirPurifier:
         return self.raw[ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL]
 
     @property
-    def raw(self) -> TypeAirPurifier:
+    def raw(self) -> AirPurifierResponse:
         """Return raw data that it represents."""
         return self.device.raw[ROOT_AIR_PURIFIER][self.index]
 

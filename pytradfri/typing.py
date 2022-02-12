@@ -23,8 +23,8 @@ AirPurifierResponse = TypedDict(
     },
 )
 
-TypeBlindResponse = TypedDict(
-    "TypeBlindResponse",
+BlindResponse = TypedDict(
+    "BlindResponse",
     {
         "5536": int,  # Current blind position
         "9003": int,  # ID
@@ -53,6 +53,6 @@ ApiResourceResponse = TypedDict(
         "9003": str,  # ID
         "3": DeviceInfoResponse,
         "15025": List[AirPurifierResponse],
-        "15015": List[TypeBlindResponse],
+        "15015": List[BlindResponse],
     },
 )
