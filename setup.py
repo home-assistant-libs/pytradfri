@@ -14,7 +14,7 @@ GITHUB_URL = "https://github.com/home-assistant-libs/pytradfri"
 DOWNLOAD_URL = f"{GITHUB_URL}/archive/{VERSION}.zip"
 
 EXTRAS_REQUIRE = {"async": ["aiocoap==0.4.3", "DTLSSocket==0.1.12"]}
-
+INSTALL_REQUIRES = ["pydantic"]
 PACKAGES = find_packages(exclude=["tests", "tests.*"])
 
 setup(
@@ -34,6 +34,7 @@ setup(
     keywords="ikea tradfri api iot light homeautomation",
     download_url=DOWNLOAD_URL,
     extras_require=EXTRAS_REQUIRE,
+    install_requires=INSTALL_REQUIRES,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
