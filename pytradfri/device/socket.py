@@ -1,5 +1,6 @@
 """Represent a socket."""
-from ..const import ATTR_DEVICE_STATE, ATTR_SWITCH_PLUG
+
+from pytradfri.type_hint import SocketResponse
 
 
 class Socket:
@@ -11,16 +12,16 @@ class Socket:
         self.index = index
 
     @property
-    def state(self):
+    def state(self) -> bool:
         """State."""
-        return self.raw.get(ATTR_DEVICE_STATE) == 1
+        return self.raw.state == 1
 
     @property
-    def raw(self):
+    def raw(self) -> SocketResponse:
         """Return raw data that it represents."""
-        return self.device.raw[ATTR_SWITCH_PLUG][self.index]
+        return self.device.raw.socket[self.index]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return representation of class object."""
         state = "on" if self.state else "off"
         return f"<Socket #{self.index} - name: {self.device.name}, state: {state}>"

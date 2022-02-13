@@ -6,8 +6,8 @@ from datetime import datetime
 from typing import Any, Callable, Dict, List, Union
 
 from .command import Command, TypeProcessResultCb
-from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME
-from .typing import ApiResourceResponse
+from .const import ATTR_NAME
+from .type_hint import ApiResourceResponse
 
 # type alias
 TypeRaw = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
@@ -18,26 +18,27 @@ TypeRawList = Dict[str, List[Dict[str, Union[str, int]]]]
 class ApiResource:
     """Base object for resources returned from the gateway."""
 
-    def __init__(self, raw: ApiResourceResponse) -> None:
+    def __init__(self, raw: TypeRawList) -> None:
         """Initialize base object."""
-        self.raw = raw
+        self.raw: ApiResourceResponse = ApiResourceResponse(**raw)
 
     @property
-    def id(self) -> str | None:
+    def id(self) -> int | None:
         """Id."""
-        return self.raw[ATTR_ID]
+        return self.raw.id
 
     @property
     def name(self) -> str | None:
         """Name."""
-        return self.raw[ATTR_NAME]
+        return self.raw.name
 
     @property
     def created_at(self) -> datetime | None:
         """Return timestamp of creation."""
-        if ATTR_CREATED_AT not in self.raw:
-            return None
-        return datetime.utcfromtimestamp(self.raw[ATTR_CREATED_AT])
+        if self.raw.created_at:
+            return datetime.utcfromtimestamp(self.raw.created_at)
+
+        return None
 
     @property
     @abstractmethod

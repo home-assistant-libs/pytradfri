@@ -3,8 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ..const import ATTR_BLIND_CURRENT_POSITION, ATTR_START_BLINDS
-from ..typing import BlindResponse
+from ..type_hint import BlindResponse
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
@@ -22,9 +21,9 @@ class Blind:
     @property
     def raw(self) -> BlindResponse:
         """Return raw data that it represents."""
-        return self.device.raw[ATTR_START_BLINDS][self.index]
+        return self.device.raw.blind[self.index]
 
     @property
     def current_cover_position(self) -> int:
         """Get the current position of the blind."""
-        return self.raw[ATTR_BLIND_CURRENT_POSITION]
+        return self.raw.current_cover_position

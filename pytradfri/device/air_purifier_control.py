@@ -1,8 +1,6 @@
 """Class to control the air purifiers."""
 from __future__ import annotations
 
-from typing import cast
-
 from ..command import Command
 from ..const import (
     ATTR_AIR_PURIFIER_CONTROLS_LOCKED,
@@ -12,7 +10,7 @@ from ..const import (
     RANGE_AIR_PURIFIER,
     ROOT_AIR_PURIFIER,
 )
-from ..resource import TypeRaw
+from ..type_hint import AirPurifierResponse
 from .air_purifier import AirPurifier
 from .base_controller import BaseController
 
@@ -21,9 +19,9 @@ class AirPurifierControl(BaseController):
     """Class to control the air purifiers."""
 
     @property
-    def raw(self) -> TypeRaw:
+    def raw(self) -> list[AirPurifierResponse] | None:
         """Return raw data that it represents."""
-        return cast(TypeRaw, self._device.raw[ROOT_AIR_PURIFIER])
+        return self._device.raw.air_purifier
 
     @property
     def air_purifiers(self) -> list[AirPurifier]:
@@ -64,6 +62,8 @@ class AirPurifierControl(BaseController):
 
         Returns a Command.
         """
-        assert len(self.raw) == 1, "Only devices with 1 air purifier supported"
+        assert (
+            self.raw and len(self.raw) == 1
+        ), "Only devices with 1 air purifier supported"
 
         return Command("put", self._device.path, {ROOT_AIR_PURIFIER: [value]})

@@ -1,4 +1,7 @@
 """Class to control the sockets."""
+
+from pytradfri.type_hint import SocketResponse
+
 from ..command import Command
 from ..const import ATTR_DEVICE_STATE, ATTR_SWITCH_PLUG
 from .base_controller import BaseController
@@ -9,12 +12,12 @@ class SocketControl(BaseController):
     """Class to control the sockets."""
 
     @property
-    def raw(self):
+    def raw(self) -> list[SocketResponse] | None:
         """Return raw data that it represents."""
-        return self._device.raw[ATTR_SWITCH_PLUG]
+        return self._device.raw.socket
 
     @property
-    def sockets(self):
+    def sockets(self) -> list[SocketResponse]:
         """Return socket objects of the socket control."""
         return [Socket(self._device, i) for i in range(len(self.raw))]
 
@@ -27,6 +30,6 @@ class SocketControl(BaseController):
 
         Returns a Command.
         """
-        assert len(self.raw) == 1, "Only devices with 1 socket supported"
+        assert self.raw and len(self.raw) == 1, "Only devices with 1 socket supported"
 
         return Command("put", self._device.path, {ATTR_SWITCH_PLUG: [values]})

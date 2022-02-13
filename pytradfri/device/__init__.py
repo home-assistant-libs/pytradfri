@@ -2,26 +2,9 @@
 from datetime import datetime
 from typing import Optional
 
-from ..const import (
-    ATTR_APPLICATION_TYPE,
-    ATTR_DEVICE_BATTERY,
-    ATTR_DEVICE_FIRMWARE_VERSION,
-    ATTR_DEVICE_INFO,
-    ATTR_DEVICE_MANUFACTURER,
-    ATTR_DEVICE_MODEL_NUMBER,
-    ATTR_DEVICE_POWER_SOURCE,
-    ATTR_DEVICE_SERIAL,
-    ATTR_LAST_SEEN,
-    ATTR_LIGHT_CONTROL,
-    ATTR_REACHABLE_STATE,
-    ATTR_START_BLINDS,
-    ATTR_SWITCH_PLUG,
-    ROOT_AIR_PURIFIER,
-    ROOT_DEVICES,
-    ROOT_SIGNAL_REPEATER,
-)
+from ..const import ROOT_DEVICES
 from ..resource import ApiResource
-from ..typing import DeviceInfoResponse
+from ..type_hint import DeviceInfoResponse
 from .air_purifier_control import AirPurifierControl
 from .blind_control import BlindControl
 from .light_control import LightControl
@@ -33,9 +16,9 @@ class Device(ApiResource):
     """Base class for devices."""
 
     @property
-    def application_type(self):
+    def application_type(self) -> int:
         """Return application type."""
-        return self.raw.get(ATTR_APPLICATION_TYPE)
+        return self.raw.application_type
 
     @property
     def path(self):
@@ -43,39 +26,43 @@ class Device(ApiResource):
         return [ROOT_DEVICES, self.id]
 
     @property
-    def device_info(self):
+    def device_info(self) -> "DeviceInfo":
         """Return Device information."""
         return DeviceInfo(self)
 
     @property
-    def last_seen(self):
+    def last_seen(self) -> datetime | None:
         """Return timestamp when last seen."""
-        if ATTR_LAST_SEEN not in self.raw:
-            return None
-        return datetime.utcfromtimestamp(self.raw[ATTR_LAST_SEEN])
+        if self.raw.last_seen:
+            return datetime.utcfromtimestamp(self.raw.last_seen)
+
+        return None
 
     @property
-    def reachable(self):
+    def reachable(self) -> bool:
         """Check if gateway is reachable."""
-        return self.raw.get(ATTR_REACHABLE_STATE) == 1
+        return self.raw.reachable == 1
 
     @property
-    def has_light_control(self):
+    def has_light_control(self) -> bool:
         """Check if light_control is present."""
-        return self.raw is not None and len(self.raw.get(ATTR_LIGHT_CONTROL, "")) > 0
+        return self.raw.light is not None and len(self.raw.light) > 0
 
     @property
-    def light_control(self):
+    def light_control(self) -> LightControl | None:
         """Return light_control."""
-        return LightControl(self)
+        if self.has_light_control:
+            return LightControl(self)
+
+        return None
 
     @property
-    def has_socket_control(self):
+    def has_socket_control(self) -> bool:
         """Check if socket_control is present."""
-        return self.raw is not None and len(self.raw.get(ATTR_SWITCH_PLUG, "")) > 0
+        return self.raw.socket is not None and len(self.raw.socket) > 0
 
     @property
-    def socket_control(self):
+    def socket_control(self) -> SocketControl | None:
         """Return socket_control."""
         if self.has_socket_control:
             return SocketControl(self)
@@ -84,40 +71,42 @@ class Device(ApiResource):
     @property
     def has_blind_control(self):
         """Check if blind_control is present."""
-        return self.raw is not None and len(self.raw.get(ATTR_START_BLINDS, "")) > 0
+        return self.raw.blind is not None and len(self.raw.blind) > 0
 
     @property
-    def blind_control(self):
+    def blind_control(self) -> BlindControl | None:
         """Return blind_control."""
         if self.has_blind_control:
             return BlindControl(self)
         return None
 
     @property
-    def has_signal_repeater_control(self):
+    def has_signal_repeater_control(self) -> bool:
         """Check if signal_repeater_control is present."""
-        return self.raw is not None and len(self.raw.get(ROOT_SIGNAL_REPEATER, "")) > 0
+        return (
+            self.raw.signal_repeater is not None and len(self.raw.signal_repeater) > 0
+        )
 
     @property
-    def signal_repeater_control(self):
+    def signal_repeater_control(self) -> SignalRepeaterControl | None:
         """Return signal_repeater control, if any."""
         if self.has_signal_repeater_control:
             return SignalRepeaterControl(self)
         return None
 
     @property
-    def has_air_purifier_control(self):
+    def has_air_purifier_control(self) -> bool:
         """Check if air_purifier_control is present."""
-        return self.raw is not None and len(self.raw.get(ROOT_AIR_PURIFIER, "")) > 0
+        return self.raw.air_purifier is not None and len(self.raw.air_purifier) > 0
 
     @property
-    def air_purifier_control(self):
+    def air_purifier_control(self) -> AirPurifierControl | None:
         """Return air_purifier control, if any."""
         if self.has_air_purifier_control:
             return AirPurifierControl(self)
         return None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return representation of class object."""
         return f"<{self.id} - {self.name} ({self.device_info.model_number})>"
 
@@ -145,45 +134,45 @@ class DeviceInfo:
     @property
     def manufacturer(self) -> str:
         """Human readable manufacturer name."""
-        return self.raw[ATTR_DEVICE_MANUFACTURER]
+        return self.raw.manufacturer
 
     @property
     def model_number(self) -> str:
         """Return model identifier string (manufacturer specified string)."""
-        return self.raw[ATTR_DEVICE_MODEL_NUMBER]
+        return self.raw.model_number
 
     @property
     def serial(self) -> str:
         """Return serial string."""
-        return self.raw[ATTR_DEVICE_SERIAL]
+        return self.raw.serial
 
     @property
     def firmware_version(self) -> str:
         """Return current firmware version of device."""
-        return self.raw[ATTR_DEVICE_FIRMWARE_VERSION]
+        return self.raw.firmware_version
 
     @property
     def power_source(self) -> int:
         """Power source."""
-        return self.raw[ATTR_DEVICE_POWER_SOURCE]
+        return self.raw.power_source
 
     @property
     def power_source_str(self) -> Optional[str]:
         """Represent current power source."""
-        if "6" not in self.raw:
-            return None
+        if self.raw.power_source:
+            DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, "Unknown")
 
-        return DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, "Unknown")
+        return None
 
     @property
     def battery_level(self) -> Optional[int]:
         """Battery in 0..100."""
-        if ATTR_DEVICE_BATTERY not in self.raw:
-            return None
+        if self.raw.battery_level:
+            return self.raw.battery_level
 
-        return self.raw[ATTR_DEVICE_BATTERY]
+        return None
 
     @property
     def raw(self) -> DeviceInfoResponse:
         """Return raw data that it represents."""
-        return self._device.raw[ATTR_DEVICE_INFO]
+        return self._device.raw.device_info

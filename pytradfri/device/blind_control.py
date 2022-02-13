@@ -1,7 +1,7 @@
 """Class to control the blinds."""
 from __future__ import annotations
 
-from typing import cast
+from typing import List
 
 from ..command import Command
 from ..const import (
@@ -10,7 +10,7 @@ from ..const import (
     ATTR_START_BLINDS,
     RANGE_BLIND,
 )
-from ..resource import TypeRaw
+from ..type_hint import BlindResponse
 from .base_controller import BaseController
 from .blind import Blind
 
@@ -19,9 +19,9 @@ class BlindControl(BaseController):
     """Class to control the blinds."""
 
     @property
-    def raw(self) -> TypeRaw:
+    def raw(self) -> List[BlindResponse] | None:
         """Return raw data that it represents."""
-        return cast(TypeRaw, self._device.raw[ATTR_START_BLINDS])
+        return self._device.raw.blind
 
     @property
     def blinds(self) -> list[Blind]:
