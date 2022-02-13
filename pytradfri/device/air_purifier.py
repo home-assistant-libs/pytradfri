@@ -3,16 +3,50 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ..const import ATTR_AIR_PURIFIER_MODE_AUTO
-from ..type_hint import AirPurifierResponse
+from pydantic import BaseModel, Field
+
+from ..const import (
+    ATTR_AIR_PURIFIER_AIR_QUALITY,
+    ATTR_AIR_PURIFIER_CONTROLS_LOCKED,
+    ATTR_AIR_PURIFIER_FAN_SPEED,
+    ATTR_AIR_PURIFIER_FILTER_LIFETIME_REMAINING,
+    ATTR_AIR_PURIFIER_FILTER_LIFETIME_TOTAL,
+    ATTR_AIR_PURIFIER_FILTER_RUNTIME,
+    ATTR_AIR_PURIFIER_FILTER_STATUS,
+    ATTR_AIR_PURIFIER_LEDS_OFF,
+    ATTR_AIR_PURIFIER_MODE,
+    ATTR_AIR_PURIFIER_MODE_AUTO,
+    ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL,
+    ATTR_ID,
+)
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
     from . import Device
 
 
+class AirPurifierResponse(BaseModel):
+    """Represent the air purifier part of the device response."""
+
+    air_quality: int = Field(alias=ATTR_AIR_PURIFIER_AIR_QUALITY)
+    controls_locked: int = Field(alias=ATTR_AIR_PURIFIER_CONTROLS_LOCKED)
+    fan_speed: int = Field(alias=ATTR_AIR_PURIFIER_FAN_SPEED)
+    filter_lifetime_remaining: int = Field(
+        alias=ATTR_AIR_PURIFIER_FILTER_LIFETIME_REMAINING
+    )
+    filter_lifetime_total: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_LIFETIME_TOTAL)
+    filter_runtime: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_RUNTIME)
+    filter_status: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_STATUS)
+    id: int = Field(alias=ATTR_ID)
+    leds_off: int = Field(alias=ATTR_AIR_PURIFIER_LEDS_OFF)
+    mode: int = Field(alias=ATTR_AIR_PURIFIER_MODE)
+    motor_runtime_total: int = Field(alias=ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL)
+
+
 class AirPurifier:
     """Represent an air purifier."""
+
+    _model_class: type[AirPurifierResponse] = AirPurifierResponse
 
     def __init__(self, device: Device, index: int) -> None:
         """Create object of class."""

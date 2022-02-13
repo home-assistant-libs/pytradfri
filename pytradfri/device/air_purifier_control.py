@@ -10,16 +10,17 @@ from ..const import (
     RANGE_AIR_PURIFIER,
     ROOT_AIR_PURIFIER,
 )
-from ..type_hint import AirPurifierResponse
-from .air_purifier import AirPurifier
+from .air_purifier import AirPurifier, AirPurifierResponse
 from .base_controller import BaseController
 
 
 class AirPurifierControl(BaseController):
     """Class to control the air purifiers."""
 
+    _model_class: type[AirPurifierResponse] = AirPurifierResponse
+
     @property
-    def raw(self) -> list[AirPurifierResponse] | None:
+    def raw(self) -> list[AirPurifierResponse]:
         """Return raw data that it represents."""
         return self._device.raw.air_purifier
 

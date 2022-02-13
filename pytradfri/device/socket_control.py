@@ -1,23 +1,24 @@
 """Class to control the sockets."""
 
-from pytradfri.type_hint import SocketResponse
 
 from ..command import Command
 from ..const import ATTR_DEVICE_STATE, ATTR_SWITCH_PLUG
 from .base_controller import BaseController
-from .socket import Socket
+from .socket import Socket, SocketResponse
 
 
 class SocketControl(BaseController):
     """Class to control the sockets."""
 
+    _model_class: type[SocketResponse] = SocketResponse
+
     @property
-    def raw(self) -> list[SocketResponse] | None:
+    def raw(self) -> list[SocketResponse]:
         """Return raw data that it represents."""
         return self._device.raw.socket
 
     @property
-    def sockets(self) -> list[SocketResponse]:
+    def sockets(self) -> list[Socket]:
         """Return socket objects of the socket control."""
         return [Socket(self._device, i) for i in range(len(self.raw))]
 

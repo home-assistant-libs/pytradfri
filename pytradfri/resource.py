@@ -5,9 +5,25 @@ from abc import abstractmethod
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Union
 
+from pydantic import BaseModel, Field
+
 from .command import Command, TypeProcessResultCb
-from .const import ATTR_NAME
-from .type_hint import ApiResourceResponse
+from .const import (
+    ATTR_APPLICATION_TYPE,
+    ATTR_CREATED_AT,
+    ATTR_DEVICE_BATTERY,
+    ATTR_DEVICE_FIRMWARE_VERSION,
+    ATTR_DEVICE_INFO,
+    ATTR_DEVICE_MANUFACTURER,
+    ATTR_DEVICE_MODEL_NUMBER,
+    ATTR_DEVICE_POWER_SOURCE,
+    ATTR_DEVICE_SERIAL,
+    ATTR_ID,
+    ATTR_LAST_SEEN,
+    ATTR_NAME,
+    ATTR_OTA_UPDATE_STATE,
+    ATTR_REACHABLE_STATE,
+)
 
 # type alias
 TypeRaw = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
@@ -15,12 +31,47 @@ TypeRawSimple = Dict[str, Union[str, int]]
 TypeRawList = Dict[str, List[Dict[str, Union[str, int]]]]
 
 
+class DeviceInfoResponse(BaseModel):
+    """Represent the device info part of the device response."""
+
+    manufacturer: str = Field(alias=ATTR_DEVICE_MANUFACTURER)
+    model_number: str = Field(alias=ATTR_DEVICE_MODEL_NUMBER)
+    serial: str = Field(alias=ATTR_DEVICE_SERIAL)
+    firmware_version: str = Field(alias=ATTR_DEVICE_FIRMWARE_VERSION)
+    power_source: int = Field(alias=ATTR_DEVICE_POWER_SOURCE)
+    battery_level: int | None = Field(alias=ATTR_DEVICE_BATTERY)
+
+
+class ApiResourceResponse(BaseModel):
+    """Represent an API response."""
+
+    application_type: int = Field(alias=ATTR_APPLICATION_TYPE)
+    created_at: int = Field(alias=ATTR_CREATED_AT)
+    device_info: DeviceInfoResponse = Field(alias=ATTR_DEVICE_INFO)
+    id: int = Field(alias=ATTR_ID)
+    last_seen: int = Field(alias=ATTR_LAST_SEEN)
+    name: str = Field(alias=ATTR_NAME)
+    ota_update_state: int = Field(alias=ATTR_OTA_UPDATE_STATE)
+    reachable: int = Field(alias=ATTR_REACHABLE_STATE)
+
+    """
+    air_purifier: list[Any] = Field(alias=ROOT_AIR_PURIFIER)
+    blind: list[Any] = Field(alias=ATTR_START_BLINDS)
+    light: list[Any] = Field(alias=ATTR_LIGHT_CONTROL)
+    signal_repeater: list[Any] = Field(alias=ROOT_SIGNAL_REPEATER)
+    socket: list[Any] = Field(alias=ATTR_SWITCH_PLUG)
+    """
+
+
 class ApiResource:
     """Base object for resources returned from the gateway."""
 
+    _model_class: type[ApiResourceResponse] = ApiResourceResponse
+    raw: ApiResourceResponse
+
     def __init__(self, raw: TypeRawList) -> None:
         """Initialize base object."""
-        self.raw: ApiResourceResponse = ApiResourceResponse(**raw)
+        self.raw = self._model_class(**raw)
 
     @property
     def id(self) -> int | None:

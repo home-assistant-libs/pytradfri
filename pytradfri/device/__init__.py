@@ -3,8 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 from ..const import ROOT_DEVICES
-from ..resource import ApiResource
-from ..type_hint import DeviceInfoResponse
+from ..resource import ApiResource, DeviceInfoResponse
 from .air_purifier_control import AirPurifierControl
 from .blind_control import BlindControl
 from .light_control import LightControl
@@ -116,6 +115,8 @@ class DeviceInfo:
 
     http://www.openmobilealliance.org/tech/profiles/LWM2M_Device-v1_0.xml
     """
+
+    _model_class: type[DeviceInfoResponse] = DeviceInfoResponse
 
     VALUE_POWER_SOURCES = {
         1: "Internal Battery",

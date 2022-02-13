@@ -1,4 +1,6 @@
 """Represent a light."""
+from typing import TYPE_CHECKING
+
 from ..color import supported_features
 from ..const import (
     ATTR_DEVICE_STATE,
@@ -16,6 +18,10 @@ from ..const import (
     SUPPORT_XY_COLOR,
 )
 
+if TYPE_CHECKING:
+    # avoid cyclic import at runtime.
+    from . import Device
+
 
 class Light:
     """Represent a light.
@@ -24,7 +30,7 @@ class Light:
     pdf
     """
 
-    def __init__(self, device, index):
+    def __init__(self, device: "Device", index: int):
         """Create object of class."""
         self.device = device
         self.index = index

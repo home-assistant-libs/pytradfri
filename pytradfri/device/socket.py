@@ -1,25 +1,40 @@
 """Represent a socket."""
 
-from pytradfri.type_hint import SocketResponse
+from typing import TYPE_CHECKING
+
+from pydantic import BaseModel, Field
+
+from pytradfri.const import ATTR_DEVICE_STATE, ATTR_ID, ATTR_LIGHT_DIMMER
+
+if TYPE_CHECKING:
+    # avoid cyclic import at runtime.
+    from . import Device
+
+
+class SocketResponse(BaseModel):
+    """Represent the socket part of the device response."""
+
+    id: int = Field(alias=ATTR_ID)
+    state: int = Field(alias=ATTR_DEVICE_STATE)
+    dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
 
 
 class Socket:
     """Represent a socket."""
 
-    def __init__(self, device, index):
+    _model_class: type[SocketResponse] = SocketResponse
+    raw: SocketResponse
+
+    def __init__(self, device: "Device", index: int):
         """Create object of class."""
         self.device = device
         self.index = index
+        self.raw = self._model_class(**self.device.raw.dict())[0]
 
     @property
     def state(self) -> bool:
         """State."""
         return self.raw.state == 1
-
-    @property
-    def raw(self) -> SocketResponse:
-        """Return raw data that it represents."""
-        return self.device.raw.socket[self.index]
 
     def __repr__(self) -> str:
         """Return representation of class object."""
