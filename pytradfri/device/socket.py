@@ -1,4 +1,5 @@
 """Represent a socket."""
+from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
@@ -29,7 +30,7 @@ class Socket:
         """Create object of class."""
         self.device = device
         self.index = index
-        self.raw = self._model_class(**self.device.raw.dict())[0]
+        self.raw = self.device.raw.socket[index]
 
     @property
     def state(self) -> bool:

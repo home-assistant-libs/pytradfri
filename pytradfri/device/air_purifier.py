@@ -47,11 +47,13 @@ class AirPurifier:
     """Represent an air purifier."""
 
     _model_class: type[AirPurifierResponse] = AirPurifierResponse
+    raw: AirPurifierResponse
 
     def __init__(self, device: Device, index: int) -> None:
         """Create object of class."""
         self.device = device
         self.index = index
+        self.raw = self.device.raw.air_purifier[index]
 
     @property
     def air_quality(self) -> int:
@@ -116,11 +118,6 @@ class AirPurifier:
     def motor_runtime_total(self) -> int:
         """Return runtime of fan motor, expressed in minutes."""
         return self.raw.motor_runtime_total
-
-    @property
-    def raw(self) -> AirPurifierResponse:
-        """Return raw data that it represents."""
-        return self.device.raw.air_purifier[self.index]
 
     @property
     def state(self) -> bool:

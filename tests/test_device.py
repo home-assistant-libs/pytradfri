@@ -336,15 +336,17 @@ def test_socket_value_setting(function_name, comment, test_input, expected_resul
 
 def test_socket_state_off():
     """Test socket off."""
-    socket = Device(deepcopy(OUTLET)).socket_control.sockets[0]
-    socket.raw[ATTR_DEVICE_STATE] = 0
+    outlet = OUTLET
+    outlet["3312"][0][ATTR_DEVICE_STATE] = 0
+    socket = Device(outlet).socket_control.sockets[0]
     assert socket.state is False
 
 
 def test_socket_state_on():
     """Test socket on."""
-    socket = Device(deepcopy(OUTLET)).socket_control.sockets[0]
-    socket.raw[ATTR_DEVICE_STATE] = 1
+    outlet = OUTLET
+    outlet["3312"][0][ATTR_DEVICE_STATE] = 1
+    socket = Device(outlet).socket_control.sockets[0]
     assert socket.state is True
 
 
@@ -405,7 +407,6 @@ def test_binary_division():
 def test_has_light_control_true():
     """Test light has control."""
     response = deepcopy(LIGHT_WS)
-    response[ATTR_LIGHT_CONTROL] = [{1: 2}]
     dev = Device(response)
 
     assert dev.has_light_control is True
@@ -424,21 +425,21 @@ def test_has_light_control_false():
 def test_light_state_on(device):
     """Test light on."""
     light = device.light_control.lights[0]
-    light.raw[ATTR_DEVICE_STATE] = 1
+    light.raw.state = 1
     assert light.state is True
 
 
 def test_light_state_off(device):
     """Test light off."""
     light = device.light_control.lights[0]
-    light.raw[ATTR_DEVICE_STATE] = 0
+    light.raw.state = 0
     assert light.state is False
 
 
 def test_light_state_mangled(device):
     """Test mangled light state."""
     light = device.light_control.lights[0]
-    light.raw[ATTR_DEVICE_STATE] = "RandomString"
+    light.raw.state = "RandomString"
     assert light.state is False
 
 

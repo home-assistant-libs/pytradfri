@@ -29,7 +29,7 @@ class Blind:
         """Create object of class."""
         self.device = device
         self.index = index
-        self.raw = self._model_class(**self.device.raw.dict())
+        self.raw = self.device.raw.blind[index]
 
     @property
     def current_cover_position(self) -> int:

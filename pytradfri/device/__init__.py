@@ -15,7 +15,7 @@ class Device(ApiResource):
     """Base class for devices."""
 
     @property
-    def application_type(self) -> int:
+    def application_type(self) -> int | None:
         """Return application type."""
         return self.raw.application_type
 
@@ -68,7 +68,7 @@ class Device(ApiResource):
         return None
 
     @property
-    def has_blind_control(self):
+    def has_blind_control(self) -> bool:
         """Check if blind_control is present."""
         return self.raw.blind is not None and len(self.raw.blind) > 0
 
@@ -82,9 +82,7 @@ class Device(ApiResource):
     @property
     def has_signal_repeater_control(self) -> bool:
         """Check if signal_repeater_control is present."""
-        return (
-            self.raw.signal_repeater is not None and len(self.raw.signal_repeater) > 0
-        )
+        return self.raw.signal_repater is not None and len(self.raw.signal_repater) > 0
 
     @property
     def signal_repeater_control(self) -> SignalRepeaterControl | None:
@@ -153,7 +151,7 @@ class DeviceInfo:
         return self.raw.firmware_version
 
     @property
-    def power_source(self) -> int:
+    def power_source(self) -> int | None:
         """Power source."""
         return self.raw.power_source
 
@@ -161,7 +159,7 @@ class DeviceInfo:
     def power_source_str(self) -> Optional[str]:
         """Represent current power source."""
         if self.raw.power_source:
-            DeviceInfo.VALUE_POWER_SOURCES.get(self.power_source, "Unknown")
+            return self.VALUE_POWER_SOURCES.get(self.raw.power_source, "Unknown")
 
         return None
 
@@ -174,6 +172,6 @@ class DeviceInfo:
         return None
 
     @property
-    def raw(self) -> DeviceInfoResponse:
+    def raw(self) -> DeviceInfoResponse | None:
         """Return raw data that it represents."""
         return self._device.raw.device_info

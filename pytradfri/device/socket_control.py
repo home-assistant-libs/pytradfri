@@ -1,5 +1,6 @@
 """Class to control the sockets."""
 
+from __future__ import annotations
 
 from ..command import Command
 from ..const import ATTR_DEVICE_STATE, ATTR_SWITCH_PLUG

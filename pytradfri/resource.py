@@ -7,6 +7,8 @@ from typing import Any, Callable, Dict, List, Union
 
 from pydantic import BaseModel, Field
 
+from pytradfri.device.signal_repeater import SignalRepeaterResponse
+
 from .command import Command, TypeProcessResultCb
 from .const import (
     ATTR_APPLICATION_TYPE,
@@ -20,10 +22,19 @@ from .const import (
     ATTR_DEVICE_SERIAL,
     ATTR_ID,
     ATTR_LAST_SEEN,
+    ATTR_LIGHT_CONTROL,
     ATTR_NAME,
     ATTR_OTA_UPDATE_STATE,
     ATTR_REACHABLE_STATE,
+    ATTR_START_BLINDS,
+    ATTR_SWITCH_PLUG,
+    ROOT_AIR_PURIFIER,
+    ROOT_SIGNAL_REPEATER,
 )
+from .device.air_purifier import AirPurifierResponse
+from .device.blind import BlindResponse
+from .device.light import LightResponse
+from .device.socket import SocketResponse
 
 # type alias
 TypeRaw = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
@@ -38,29 +49,29 @@ class DeviceInfoResponse(BaseModel):
     model_number: str = Field(alias=ATTR_DEVICE_MODEL_NUMBER)
     serial: str = Field(alias=ATTR_DEVICE_SERIAL)
     firmware_version: str = Field(alias=ATTR_DEVICE_FIRMWARE_VERSION)
-    power_source: int = Field(alias=ATTR_DEVICE_POWER_SOURCE)
+    power_source: int | None = Field(alias=ATTR_DEVICE_POWER_SOURCE)
     battery_level: int | None = Field(alias=ATTR_DEVICE_BATTERY)
 
 
 class ApiResourceResponse(BaseModel):
     """Represent an API response."""
 
-    application_type: int = Field(alias=ATTR_APPLICATION_TYPE)
+    application_type: int | None = Field(alias=ATTR_APPLICATION_TYPE)
     created_at: int = Field(alias=ATTR_CREATED_AT)
-    device_info: DeviceInfoResponse = Field(alias=ATTR_DEVICE_INFO)
+    device_info: DeviceInfoResponse | None = Field(alias=ATTR_DEVICE_INFO)
     id: int = Field(alias=ATTR_ID)
-    last_seen: int = Field(alias=ATTR_LAST_SEEN)
-    name: str = Field(alias=ATTR_NAME)
-    ota_update_state: int = Field(alias=ATTR_OTA_UPDATE_STATE)
-    reachable: int = Field(alias=ATTR_REACHABLE_STATE)
+    last_seen: int | None = Field(alias=ATTR_LAST_SEEN)
+    name: str | None = Field(alias=ATTR_NAME)
+    ota_update_state: int | None = Field(alias=ATTR_OTA_UPDATE_STATE)
+    reachable: int | None = Field(alias=ATTR_REACHABLE_STATE)
 
-    """
-    air_purifier: list[Any] = Field(alias=ROOT_AIR_PURIFIER)
-    blind: list[Any] = Field(alias=ATTR_START_BLINDS)
-    light: list[Any] = Field(alias=ATTR_LIGHT_CONTROL)
-    signal_repeater: list[Any] = Field(alias=ROOT_SIGNAL_REPEATER)
-    socket: list[Any] = Field(alias=ATTR_SWITCH_PLUG)
-    """
+    air_purifier: list[AirPurifierResponse] | None = Field(alias=ROOT_AIR_PURIFIER)
+    blind: list[BlindResponse] | None = Field(alias=ATTR_START_BLINDS)
+    light: list[LightResponse] | None = Field(alias=ATTR_LIGHT_CONTROL)
+    socket: list[SocketResponse] | None = Field(alias=ATTR_SWITCH_PLUG)
+    signal_repater: list[SignalRepeaterResponse] | None = Field(
+        alias=ROOT_SIGNAL_REPEATER
+    )
 
 
 class ApiResource:
