@@ -77,30 +77,45 @@ class ApiResourceResponse(BaseModel):
 class ApiResource:
     """Base object for resources returned from the gateway."""
 
-    _model_class: type[ApiResourceResponse] = ApiResourceResponse
-    raw: ApiResourceResponse
+    _model_class: type[ResourceResponse] | None = None
+    raw: TypeRaw | ResourceResponse
 
     def __init__(self, raw: TypeRawList) -> None:
         """Initialize base object."""
-        self.raw = self._model_class(**raw)
+        if self._model_class:
+            self.raw = self._model_class(**raw)
+        else:
+            self.raw = raw
 
     @property
     def id(self) -> int | None:
         """Id."""
-        return self.raw.id
+        if self._model_class:
+            resource_id = self.raw.id  # type: ignore[union-attr]
+        else:
+            resource_id = self.raw[ATTR_ID]  # type: ignore[index]
+        return resource_id
 
     @property
     def name(self) -> str | None:
         """Name."""
-        return self.raw.name
+        if self._model_class:
+            name = self.raw.name  # type: ignore[union-attr]
+        else:
+            name = self.raw[ATTR_NAME]  # type: ignore[index]
+        return name
 
     @property
     def created_at(self) -> datetime | None:
         """Return timestamp of creation."""
-        if self.raw.created_at:
-            return datetime.utcfromtimestamp(self.raw.created_at)
+        if self._model_class:
+            created_at = self.raw.created_at  # type: ignore[union-attr]
+        else:
+            created_at = self.raw[ATTR_CREATED_AT]  # type: ignore[index]
 
-        return None
+        if created_at is None:
+            return None
+        return datetime.utcfromtimestamp(created_at)
 
     @property
     @abstractmethod
