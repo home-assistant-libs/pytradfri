@@ -1,6 +1,8 @@
 """Class to control the air purifiers."""
 from __future__ import annotations
 
+from typing import cast
+
 from ..command import Command
 from ..const import (
     ATTR_AIR_PURIFIER_CONTROLS_LOCKED,
@@ -17,12 +19,10 @@ from .base_controller import BaseController
 class AirPurifierControl(BaseController):
     """Class to control the air purifiers."""
 
-    _model_class: type[AirPurifierResponse] = AirPurifierResponse
-
     @property
     def raw(self) -> list[AirPurifierResponse]:
         """Return raw data that it represents."""
-        return self._device.raw.air_purifier
+        return cast(list[AirPurifierResponse], self._device.raw.air_purifier_control)  # type: ignore[union-attr]
 
     @property
     def air_purifiers(self) -> list[AirPurifier]:

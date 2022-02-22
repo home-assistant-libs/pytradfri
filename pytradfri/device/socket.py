@@ -23,14 +23,15 @@ class SocketResponse(BaseModel):
 class Socket:
     """Represent a socket."""
 
-    _model_class: type[SocketResponse] = SocketResponse
-    raw: SocketResponse
-
     def __init__(self, device: "Device", index: int):
         """Create object of class."""
         self.device = device
         self.index = index
-        self.raw = self.device.raw.socket[index]
+
+    @property
+    def raw(self) -> SocketResponse:
+        """Return raw response."""
+        return self.device.raw.socket_control[self.index]  # type: ignore[union-attr, index]
 
     @property
     def state(self) -> bool:

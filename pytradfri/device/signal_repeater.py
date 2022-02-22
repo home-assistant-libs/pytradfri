@@ -17,12 +17,12 @@ class SignalRepeaterResponse(BaseModel):
 class SignalRepeater:
     """Represent a signal repeater."""
 
-    _model_class: type[SignalRepeaterResponse] = SignalRepeaterResponse
-    raw: SignalRepeaterResponse
-
     def __init__(self, device: Device, index: int):
         """Create object of class."""
         self.device = device
         self.index = index
 
-        self.raw = self.device.raw.signal_repater[index]
+    @property
+    def raw(self) -> SignalRepeaterResponse:
+        """Return raw data that it represents."""
+        return self.device.raw.signal_repater_control[self.index]  # type: ignore[union-attr, index]

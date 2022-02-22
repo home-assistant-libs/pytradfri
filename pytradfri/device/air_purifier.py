@@ -46,14 +46,15 @@ class AirPurifierResponse(BaseModel):
 class AirPurifier:
     """Represent an air purifier."""
 
-    _model_class: type[AirPurifierResponse] = AirPurifierResponse
-    raw: AirPurifierResponse
-
     def __init__(self, device: Device, index: int) -> None:
         """Create object of class."""
         self.device = device
         self.index = index
-        self.raw = self.device.raw.air_purifier[index]
+
+    @property
+    def raw(self) -> AirPurifierResponse:
+        """Return raw response."""
+        return self.device.raw.air_purifier_control[self.index]  # type: ignore[union-attr, index]
 
     @property
     def air_quality(self) -> int:

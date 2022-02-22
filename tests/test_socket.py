@@ -13,4 +13,4 @@ def test_socket():
     """Test socket."""
     plug = socket(OUTLET)
 
-    assert plug.state == 0
+    assert plug.state is False

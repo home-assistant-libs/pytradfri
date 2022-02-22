@@ -22,14 +22,15 @@ class BlindResponse(BaseModel):
 class Blind:
     """Represent a blind."""
 
-    _model_class: type[BlindResponse] = BlindResponse
-    raw: BlindResponse
-
     def __init__(self, device: Device, index: int) -> None:
         """Create object of class."""
         self.device = device
         self.index = index
-        self.raw = self.device.raw.blind[index]
+
+    @property
+    def raw(self) -> BlindResponse:
+        """Return raw response."""
+        return self.device.raw.blind_control[self.index]  # type: ignore[union-attr, index]
 
     @property
     def current_cover_position(self) -> int:

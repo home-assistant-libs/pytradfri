@@ -48,14 +48,15 @@ class Light:
     pdf
     """
 
-    _model_class: type[LightResponse] = LightResponse
-    raw: LightResponse
-
     def __init__(self, device: "Device", index: int):
         """Create object of class."""
         self.device = device
         self.index = index
-        self.raw = self.device.raw.light[index]
+
+    @property
+    def raw(self) -> LightResponse:
+        """Return raw response."""
+        return self.device.raw.light_control[self.index]  # type: ignore[union-attr, index]
 
     @property
     def supported_features(self):

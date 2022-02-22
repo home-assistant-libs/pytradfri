@@ -1,6 +1,8 @@
 """Class to control the blinds."""
 from __future__ import annotations
 
+from typing import cast
+
 from ..command import Command
 from ..const import (
     ATTR_BLIND_CURRENT_POSITION,
@@ -15,12 +17,10 @@ from .blind import Blind, BlindResponse
 class BlindControl(BaseController):
     """Class to control the blinds."""
 
-    _model_class: type[BlindResponse] = BlindResponse
-
     @property
     def raw(self) -> list[BlindResponse]:
         """Return raw data that it represents."""
-        return self._device.raw.blind
+        return cast(list[BlindResponse], self._device.raw.blind_control)  # type: ignore[union-attr]
 
     @property
     def blinds(self) -> list[Blind]:

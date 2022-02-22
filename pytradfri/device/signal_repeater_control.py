@@ -1,7 +1,6 @@
 """Class to control the signal repeater."""
 from __future__ import annotations
 
-from ..const import ROOT_SIGNAL_REPEATER
 from .base_controller import BaseController
 from .signal_repeater import SignalRepeater
 
@@ -12,7 +11,7 @@ class SignalRepeaterControl(BaseController):
     @property
     def raw(self):
         """Return raw data that it represents."""
-        return self._device.raw[ROOT_SIGNAL_REPEATER]
+        return self._device.signal_repeater_control
 
     @property
     def signal_repeaters(self):

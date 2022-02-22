@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import cast
+
 from ..command import Command
 from ..const import ATTR_DEVICE_STATE, ATTR_SWITCH_PLUG
 from .base_controller import BaseController
@@ -16,7 +18,7 @@ class SocketControl(BaseController):
     @property
     def raw(self) -> list[SocketResponse]:
         """Return raw data that it represents."""
-        return self._device.raw.socket
+        return cast(list[SocketResponse], self._device.raw.socket_control)  # type: ignore[union-attr]
 
     @property
     def sockets(self) -> list[Socket]:

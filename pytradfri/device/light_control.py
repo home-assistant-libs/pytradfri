@@ -1,6 +1,8 @@
 """Class to control the lights."""
 from __future__ import annotations
 
+from typing import cast
+
 from ..color import COLORS
 from ..command import Command
 from ..const import (
@@ -70,7 +72,7 @@ class LightControl(BaseController):
     @property
     def raw(self) -> list[LightResponse]:
         """Return raw data that it represents."""
-        return self._device.raw.light
+        return cast(list[LightResponse], self._device.raw.light_control)  # type: ignore[union-attr]
 
     @property
     def lights(self):

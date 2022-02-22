@@ -53,7 +53,7 @@ class DeviceInfoResponse(BaseModel):
     battery_level: int | None = Field(alias=ATTR_DEVICE_BATTERY)
 
 
-class ApiResourceResponse(BaseModel):
+class ResourceResponse(BaseModel):
     """Represent an API response."""
 
     application_type: int | None = Field(alias=ATTR_APPLICATION_TYPE)
@@ -65,11 +65,13 @@ class ApiResourceResponse(BaseModel):
     ota_update_state: int | None = Field(alias=ATTR_OTA_UPDATE_STATE)
     reachable: int | None = Field(alias=ATTR_REACHABLE_STATE)
 
-    air_purifier: list[AirPurifierResponse] | None = Field(alias=ROOT_AIR_PURIFIER)
-    blind: list[BlindResponse] | None = Field(alias=ATTR_START_BLINDS)
-    light: list[LightResponse] | None = Field(alias=ATTR_LIGHT_CONTROL)
-    socket: list[SocketResponse] | None = Field(alias=ATTR_SWITCH_PLUG)
-    signal_repater: list[SignalRepeaterResponse] | None = Field(
+    air_purifier_control: list[AirPurifierResponse] | None = Field(
+        alias=ROOT_AIR_PURIFIER
+    )
+    blind_control: list[BlindResponse] | None = Field(alias=ATTR_START_BLINDS)
+    light_control: list[LightResponse] | None = Field(alias=ATTR_LIGHT_CONTROL)
+    socket_control: list[SocketResponse] | None = Field(alias=ATTR_SWITCH_PLUG)
+    signal_repater_control: list[SignalRepeaterResponse] | None = Field(
         alias=ROOT_SIGNAL_REPEATER
     )
 
@@ -80,7 +82,7 @@ class ApiResource:
     _model_class: type[ResourceResponse] | None = None
     raw: TypeRaw | ResourceResponse
 
-    def __init__(self, raw: TypeRawList) -> None:
+    def __init__(self, raw: TypeRaw) -> None:
         """Initialize base object."""
         if self._model_class:
             self.raw = self._model_class(**raw)
@@ -130,12 +132,15 @@ class ApiResource:
     ) -> Command:
         """Observe resource and call callback when updated."""
 
-        def observe_callback(value: ApiResourceResponse) -> None:
+        def observe_callback(value: TypeRaw) -> None:
             """Call when end point is updated.
 
             Returns a Command.
             """
-            self.raw = value
+            if self._model_class:
+                self.raw = self._model_class(**value)
+            else:
+                self.raw = value
             if callback:
                 callback(self)
 
@@ -167,7 +172,10 @@ class ApiResource:
         Returns a Command.
         """
 
-        def process_result(result: ApiResourceResponse) -> None:
-            self.raw = result
+        def process_result(result: TypeRaw) -> None:
+            if self._model_class:
+                self.raw = self._model_class(**result)
+            else:
+                self.raw = result
 
         return Command("get", self.path, process_result=process_result)
