@@ -1,16 +1,19 @@
 """Test Socket."""
+import pytest
+
 from pytradfri.device import Device
 
 from .devices import OUTLET
 
 
-def socket(raw):
+@pytest.fixture
+def device():
     """Return socket."""
-    return Device(raw).socket_control.sockets[0]
+    return Device(OUTLET)
 
 
-def test_socket():
+def test_socket(device):
     """Test socket."""
-    plug = socket(OUTLET)
+    plug = device.socket_control.sockets[0]
 
     assert plug.state is False
