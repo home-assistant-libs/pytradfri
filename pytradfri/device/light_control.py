@@ -122,7 +122,7 @@ class LightControl(BaseController):
         self, color: str, *, index: int = 0, transition_time: int | None = None
     ) -> Command:
         """Set hex color of the light."""
-        values: dict[str, Any] = {
+        values: dict[str, str | int] = {
             ATTR_LIGHT_COLOR_HEX: color,
         }
 
