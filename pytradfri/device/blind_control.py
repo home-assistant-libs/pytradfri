@@ -1,8 +1,6 @@
 """Class to control the blinds."""
 from __future__ import annotations
 
-import sys
-
 from ..command import Command
 from ..const import (
     ATTR_BLIND_CURRENT_POSITION,
@@ -11,22 +9,7 @@ from ..const import (
     RANGE_BLIND,
 )
 from .base_controller import BaseController
-from .blind import Blind
-
-if sys.version_info < (3, 9, 2):
-    from typing_extensions import TypedDict
-else:
-    from typing import TypedDict
-
-BlindResponse = TypedDict(
-    # The TypedDict:s below uses an alternative syntax due to the need of using strings
-    # as keys: https://www.python.org/dev/peps/pep-0589/#alternative-syntax
-    "BlindResponse",
-    {
-        "5536": int,  # Current blind position
-        "9003": int,  # ID
-    },
-)
+from .blind import Blind, BlindResponse
 
 
 class BlindControl(BaseController):

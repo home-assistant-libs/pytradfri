@@ -1,6 +1,7 @@
 """Represent an air purifier."""
 from __future__ import annotations
 
+import sys
 from typing import TYPE_CHECKING
 
 from ..const import (
@@ -17,9 +18,34 @@ from ..const import (
     ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL,
 )
 
+if sys.version_info < (3, 9, 2):
+    from typing_extensions import TypedDict
+else:
+    from typing import TypedDict
+
+AirPurifierResponse = TypedDict(
+    # The TypedDict:s below uses an alternative syntax due to the need of using strings
+    # as keys: https://www.python.org/dev/peps/pep-0589/#alternative-syntax
+    "AirPurifierResponse",
+    {
+        "5900": int,  # Mode
+        "5902": int,  # Filter runtume
+        "5903": int,  # Filter status
+        "5904": int,  # Filter lifetime total
+        "5905": int,  # Manual controls locked
+        "5906": int,  # Led light on/off
+        "5907": int,  # Air quality level
+        "5908": int,  # Fan speed
+        "5909": int,  # Motor runtime total
+        "5910": int,  # Filter lifetime remaining
+        "9003": int,  # ID
+    },
+)
+
+
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
-    from . import AirPurifierResponse, Device
+    from . import Device
 
 
 class AirPurifier:
