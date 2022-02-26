@@ -25,7 +25,6 @@ class AirPurifierResponse(BaseModel):
     """Represent API response for a blind."""
 
     air_quality: int = Field(alias=ATTR_AIR_PURIFIER_AIR_QUALITY)
-    id: int = Field(alias=ATTR_ID)
     controls_locked: int = Field(alias=ATTR_AIR_PURIFIER_CONTROLS_LOCKED)
     fan_speed: int = Field(alias=ATTR_AIR_PURIFIER_FAN_SPEED)
     filter_lifetime_remaining: int = Field(
@@ -34,8 +33,9 @@ class AirPurifierResponse(BaseModel):
     filter_lifetime_total: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_LIFETIME_TOTAL)
     filter_runtime: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_RUNTIME)
     filter_status: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_STATUS)
-    mode: int = Field(alias=ATTR_AIR_PURIFIER_MODE)
+    id: int = Field(alias=ATTR_ID)
     leds_off: int = Field(alias=ATTR_AIR_PURIFIER_LEDS_OFF)
+    mode: int = Field(alias=ATTR_AIR_PURIFIER_MODE)
     motor_runtime_total: int = Field(alias=ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL)
 
 
