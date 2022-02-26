@@ -15,9 +15,8 @@ class Device(ApiResource):
     """Base class for devices."""
 
     @property
-    def _model_class(self) -> type[DeviceResponse]:  # type: ignore[override]
-        """Return model class type."""
-        return DeviceResponse
+    _model_class: type[DeviceResponse] = DeviceResponse
+    raw: DeviceResponse
 
     @property
     def application_type(self) -> int | None:
