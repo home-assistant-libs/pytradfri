@@ -30,15 +30,15 @@ if TYPE_CHECKING:
 class LightResponse(BaseModel):
     """Represent API response for a blind."""
 
-    state: int = Field(alias=ATTR_DEVICE_STATE)
-    id: int = Field(alias=ATTR_ID)
-    dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
     color_mireds: int | None = Field(alias=ATTR_LIGHT_MIREDS)
     color_hex: str | None = Field(alias=ATTR_LIGHT_COLOR_HEX)
     color_xy_x: int | None = Field(alias=ATTR_LIGHT_COLOR_X)
     color_xy_y: int | None = Field(alias=ATTR_LIGHT_COLOR_Y)
     color_hue: int | None = Field(alias=ATTR_LIGHT_COLOR_HUE)
     color_saturation: int | None = Field(alias=ATTR_LIGHT_COLOR_SATURATION)
+    dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
+    id: int = Field(alias=ATTR_ID)
+    state: int = Field(alias=ATTR_DEVICE_STATE)
 
 
 class Light:
