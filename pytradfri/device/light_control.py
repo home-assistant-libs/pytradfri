@@ -186,7 +186,7 @@ class LightControl(BaseController):
         except KeyError:
             raise ColorError(f"Invalid color specified: {colorname}") from KeyError
 
-    def set_values(self, values: dict[str, Any], *, index: int = 0) -> Command:
+    def set_values(self, values: dict[str, str | int], *, index: int = 0) -> Command:
         """Set values on light control.
 
         Returns a Command.
