@@ -29,12 +29,9 @@ class Device(ApiResource):
         return [ROOT_DEVICES, self.id]
 
     @property
-    def device_info(self) -> "DeviceInfo" | None:
+    def device_info(self) -> "DeviceInfo":
         """Return Device information."""
-        if self._model_class:
-            return DeviceInfo(self)
-
-        return None
+        return DeviceInfo(self)
 
     @property
     def last_seen(self) -> datetime | None:
@@ -114,10 +111,7 @@ class Device(ApiResource):
 
     def __repr__(self) -> str:
         """Return representation of class object."""
-        if self.device_info:
-            return f"<{self.id} - {self.name} ({self.device_info.model_number})>"
-
-        return f"<{self.id} - {self.name})>"
+        return f"<{self.id} - {self.name} ({self.device_info.model_number})>"
 
 
 class DeviceInfo:
@@ -141,49 +135,34 @@ class DeviceInfo:
         self._device = device
 
     @property
-    def manufacturer(self) -> str | None:
+    def manufacturer(self) -> str:
         """Human readable manufacturer name."""
-        if self.raw:
-            return self.raw.manufacturer
-
-        return None
+        return self.raw.manufacturer
 
     @property
-    def model_number(self) -> str | None:
+    def model_number(self) -> str:
         """Return model identifier string (manufacturer specified string)."""
-        if self.raw:
-            return self.raw.model_number
-
-        return None
+        return self.raw.model_number
 
     @property
-    def serial(self) -> str | None:
+    def serial(self) -> str:
         """Return serial string."""
-        if self.raw:
-            return self.raw.serial
-
-        return None
+        return self.raw.serial
 
     @property
-    def firmware_version(self) -> str | None:
+    def firmware_version(self) -> str:
         """Return current firmware version of device."""
-        if self.raw:
-            return self.raw.firmware_version
-
-        return None
+        return self.raw.firmware_version
 
     @property
     def power_source(self) -> int | None:
         """Power source."""
-        if self.raw:
-            return self.raw.power_source
-
-        return None
+        return self.raw.power_source
 
     @property
     def power_source_str(self) -> str | None:
         """Represent current power source."""
-        if self.raw and self.raw.power_source:
+        if self.raw.power_source is not None:
             return self.VALUE_POWER_SOURCES.get(self.raw.power_source, "Unknown")
 
         return None
@@ -191,15 +170,9 @@ class DeviceInfo:
     @property
     def battery_level(self) -> int | None:
         """Battery in 0..100."""
-        if self.raw and self.raw.battery_level:
-            return self.raw.battery_level
-
-        return None
+        return self.raw.battery_level
 
     @property
-    def raw(self) -> DeviceInfoResponse | None:
+    def raw(self) -> DeviceInfoResponse:
         """Return raw data that it represents."""
-        if self._device.raw.device_info:
-            return self._device.raw.device_info
-
-        return None
+        return self._device.raw.device_info
