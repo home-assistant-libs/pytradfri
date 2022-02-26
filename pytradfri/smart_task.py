@@ -30,7 +30,7 @@ from .const import (
     ROOT_SMART_TASKS,
     ROOT_START_ACTION,
 )
-from .resource import ApiResource, TypeRawSimple
+from .resource import ApiResource
 from .util import BitChoices
 
 WEEKDAYS = BitChoices(
@@ -53,7 +53,6 @@ class SmartTask(ApiResource):
         """Initialize the class."""
         super().__init__(raw)
         self._gateway = gateway
-        self.task_raw: TypeRawSimple = raw
 
     @property
     def path(self):
@@ -63,12 +62,12 @@ class SmartTask(ApiResource):
     @property
     def state(self):
         """Boolean representing the light state of the transition."""
-        return self.task_raw.get(ATTR_DEVICE_STATE) == 1
+        return self.raw.get(ATTR_DEVICE_STATE) == 1
 
     @property
     def task_type_id(self):
         """Return type of task."""
-        return self.task_raw.get(ATTR_SMART_TASK_TYPE)
+        return self.raw.get(ATTR_SMART_TASK_TYPE)
 
     @property
     def task_type_name(self):
@@ -87,32 +86,32 @@ class SmartTask(ApiResource):
     @property
     def is_wake_up(self):
         """Boolean representing if this is a wake up task."""
-        return self.task_raw.get(ATTR_SMART_TASK_TYPE) == ATTR_SMART_TASK_WAKE_UP
+        return self.raw.get(ATTR_SMART_TASK_TYPE) == ATTR_SMART_TASK_WAKE_UP
 
     @property
     def is_not_at_home(self):
         """Boolean representing if this is a not home task."""
-        return self.task_raw.get(ATTR_SMART_TASK_TYPE) == ATTR_SMART_TASK_NOT_AT_HOME
+        return self.raw.get(ATTR_SMART_TASK_TYPE) == ATTR_SMART_TASK_NOT_AT_HOME
 
     @property
     def is_lights_off(self):
         """Boolean representing if this is a lights off task."""
-        return self.task_raw.get(ATTR_SMART_TASK_TYPE) == ATTR_SMART_TASK_LIGHTS_OFF
+        return self.raw.get(ATTR_SMART_TASK_TYPE) == ATTR_SMART_TASK_LIGHTS_OFF
 
     @property
     def repeat_days(self):
         """Return int (bit) for enabled weekdays."""
-        return self.task_raw.get(ATTR_REPEAT_DAYS)
+        return self.raw.get(ATTR_REPEAT_DAYS)
 
     @property
     def repeat_days_list(self):
         """Binary representation of weekdays the event takes place."""
-        return WEEKDAYS.get_selected_values(self.task_raw.get(ATTR_REPEAT_DAYS))
+        return WEEKDAYS.get_selected_values(self.raw.get(ATTR_REPEAT_DAYS))
 
     @property
     def task_start_parameters(self):
         """Return hour and minute that task starts."""
-        return self.task_raw.get(ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL)[0]
+        return self.raw.get(ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL)[0]
 
     @property
     def task_start_time(self):
@@ -184,7 +183,7 @@ class TaskControl:
     @property
     def raw(self):
         """Return raw data that it represents."""
-        return self._task.task_raw[ATTR_START_ACTION]
+        return self._task.raw[ATTR_START_ACTION]
 
 
 class StartAction:
@@ -211,7 +210,7 @@ class StartAction:
     @property
     def raw(self):
         """Return raw data that it represents."""
-        return self.start_action.task_raw[ATTR_START_ACTION]
+        return self.start_action.raw[ATTR_START_ACTION]
 
 
 class StartActionItem:
@@ -223,14 +222,14 @@ class StartActionItem:
         self.index = index
         self.state = state
         self.path = path
-        self.task_raw = raw
+        self._raw = raw
 
     @property
     def devices_dict(self):
         """Return state of start action task."""
         json_list = {}
         index = 0
-        for x_entry in self.task_raw[ROOT_START_ACTION]:
+        for x_entry in self._raw[ROOT_START_ACTION]:
             if index != self.index:
                 json_list.update(x_entry)
             index = index + 1
@@ -264,7 +263,7 @@ class StartActionItem:
     @property
     def raw(self):
         """Return raw data that it represents."""
-        return self.task_raw[ROOT_START_ACTION][self.index]
+        return self._raw[ROOT_START_ACTION][self.index]
 
     def __repr__(self):
         """Return a readable name for this class."""
