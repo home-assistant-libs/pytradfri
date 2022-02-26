@@ -1,9 +1,14 @@
 """Test Color."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from .const import (
+    ATTR_LIGHT_COLOR_HEX,
+    ATTR_LIGHT_COLOR_HUE,
+    ATTR_LIGHT_COLOR_SATURATION,
+    ATTR_LIGHT_COLOR_X as X,
+    ATTR_LIGHT_COLOR_Y as Y,
+    ATTR_LIGHT_DIMMER,
+    ATTR_LIGHT_MIREDS,
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
     SUPPORT_HEX_COLOR,
@@ -38,32 +43,29 @@ COLOR_NAMES = {
 # lowercase strings with no spaces are preferred
 COLORS = {name.lower().replace(" ", "_"): hex for hex, name in COLOR_NAMES.items()}
 
-if TYPE_CHECKING:
-    from .device.light import LightResponse
 
-
-def supported_features(data: LightResponse) -> int:
+def supported_features(data: dict[str, str | int]) -> int:
     """Return supported features."""
     supported_color_features = 0
 
-    if data.dimmer:
+    if ATTR_LIGHT_DIMMER in data:
         supported_color_features = supported_color_features + SUPPORT_BRIGHTNESS
 
-    if data.color_hex:
+    if ATTR_LIGHT_COLOR_HEX in data:
         supported_color_features = supported_color_features + SUPPORT_HEX_COLOR
 
-    if data.color_mireds:
+    if ATTR_LIGHT_MIREDS in data:
         supported_color_features = supported_color_features + SUPPORT_COLOR_TEMP
 
-    if data.color_xy_x and data.color_xy_y:
+    if X in data and Y in data:
         supported_color_features = supported_color_features + SUPPORT_XY_COLOR
 
     if (
-        not data.color_mireds
-        and data.color_xy_x
-        and data.color_xy_y
-        and data.saturation
-        and data.hue
+        ATTR_LIGHT_MIREDS not in data
+        and X in data
+        and Y in data
+        and ATTR_LIGHT_COLOR_SATURATION in data
+        and ATTR_LIGHT_COLOR_HUE in data
     ):
         supported_color_features = supported_color_features + SUPPORT_RGB_COLOR
 
