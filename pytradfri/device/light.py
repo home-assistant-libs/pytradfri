@@ -9,6 +9,11 @@ from ..color import supported_features
 from ..const import (
     ATTR_DEVICE_STATE,
     ATTR_ID,
+    ATTR_LIGHT_COLOR_HEX,
+    ATTR_LIGHT_COLOR_HUE,
+    ATTR_LIGHT_COLOR_SATURATION,
+    ATTR_LIGHT_COLOR_X,
+    ATTR_LIGHT_COLOR_Y,
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_MIREDS,
     SUPPORT_BRIGHTNESS,
@@ -29,11 +34,11 @@ class LightResponse(BaseModel):
     id: int = Field(alias=ATTR_ID)
     dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
     color_mireds: int | None = Field(alias=ATTR_LIGHT_MIREDS)
-    color_hex: int | None = Field(alias=ATTR_LIGHT_MIREDS)
-    color_xy_x: int = Field(alias=ATTR_LIGHT_MIREDS)
-    color_xy_y: int = Field(alias=ATTR_LIGHT_MIREDS)
-    color_hue: int | None = Field(alias=ATTR_LIGHT_MIREDS)
-    color_saturation: int | None = Field(alias=ATTR_LIGHT_MIREDS)
+    color_hex: str | None = Field(alias=ATTR_LIGHT_COLOR_HEX)
+    color_xy_x: int | None = Field(alias=ATTR_LIGHT_COLOR_X)
+    color_xy_y: int | None = Field(alias=ATTR_LIGHT_COLOR_Y)
+    color_hue: int | None = Field(alias=ATTR_LIGHT_COLOR_HUE)
+    color_saturation: int | None = Field(alias=ATTR_LIGHT_COLOR_SATURATION)
 
 
 class Light:
@@ -73,21 +78,23 @@ class Light:
         return None
 
     @property
-    def hex_color(self) -> int | None:
+    def hex_color(self) -> str | None:
         """Return hex color."""
         if self.supported_features & SUPPORT_HEX_COLOR:
             return self.raw.color_hex
         return None
 
     @property
-    def xy_color(self) -> tuple[int, int] | None:
+    def xy_color(self) -> tuple[int | None, int | None] | None:
         """Return xy color."""
         if self.supported_features & SUPPORT_XY_COLOR:
             return (self.raw.color_xy_x, self.raw.color_xy_y)
         return None
 
     @property
-    def hsb_xy_color(self) -> tuple[int | None, int | None, int, int, int]:
+    def hsb_xy_color(
+        self,
+    ) -> tuple[int | None, int | None, int, int | None, int | None]:
         """Return hsb xy color."""
         return (
             self.raw.color_hue,
