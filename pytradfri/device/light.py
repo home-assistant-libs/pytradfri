@@ -98,15 +98,24 @@ class Light:
     @property
     def hsb_xy_color(
         self,
-    ) -> tuple[int | None, int | None, int, int | None, int | None]:
+    ) -> tuple[int, int, int, int, int] | None:
         """Return hsb xy color."""
-        return (
-            self.raw.color_hue,
-            self.raw.color_saturation,
-            self.raw.dimmer,
-            self.raw.color_xy_x,
-            self.raw.color_xy_y,
-        )
+        if (
+            self.raw.color_hue is not None
+            and self.raw.color_saturation is not None
+            and self.raw.dimmer is not None
+            and self.raw.color_xy_x is not None
+            and self.raw.color_xy_y is not None
+        ):
+            return (
+                self.raw.color_hue,
+                self.raw.color_saturation,
+                self.raw.dimmer,
+                self.raw.color_xy_x,
+                self.raw.color_xy_y,
+            )
+
+        return None
 
     @property
     def raw(self) -> LightResponse:
