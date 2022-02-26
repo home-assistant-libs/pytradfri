@@ -13,7 +13,7 @@ class SocketControl(BaseController):
     @property
     def raw(self) -> list[Dict[str, Any]]:
         """Return raw data that it represents."""
-        socket_control_response = self._device.raw.socket_control
+        socket_control_response = self._device.raw.socket_control  # type: ignore[union-attr]
         assert socket_control_response is not None
         return socket_control_response
 

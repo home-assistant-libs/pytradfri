@@ -70,7 +70,7 @@ class LightControl(BaseController):
     @property
     def raw(self) -> List[Dict[str, Any]]:
         """Return raw data that it represents."""
-        light_control_response = self._device.raw.light_control
+        light_control_response = self._device.raw.light_control  # type: ignore[union-attr]
         assert light_control_response is not None
         return light_control_response
 

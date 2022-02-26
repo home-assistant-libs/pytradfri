@@ -1,6 +1,8 @@
 """Class to control the blinds."""
 from __future__ import annotations
 
+from typing import cast
+
 from ..command import Command
 from ..const import (
     ATTR_BLIND_CURRENT_POSITION,
@@ -19,9 +21,9 @@ class BlindControl(BaseController):
     @property
     def raw(self) -> list[BlindResponse]:
         """Return raw data that it represents."""
-        blind_control_response = self._device.raw.blind_control
+        blind_control_response = self._device.raw.blind_control  # type: ignore[union-attr]
         assert blind_control_response is not None
-        return blind_control_response
+        return cast(list[BlindResponse], blind_control_response)
 
     @property
     def blinds(self) -> list[Blind]:

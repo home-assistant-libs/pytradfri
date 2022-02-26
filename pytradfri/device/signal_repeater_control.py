@@ -11,7 +11,7 @@ class SignalRepeaterControl(BaseController):
     @property
     def raw(self) -> list[Dict[str, Any]]:
         """Return raw data that it represents."""
-        signal_repater_control_response = self._device.raw.signal_repeater_control
+        signal_repater_control_response = self._device.raw.signal_repeater_control  # type: ignore[union-attr]
         assert signal_repater_control_response is not None
         return signal_repater_control_response
 

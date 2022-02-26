@@ -21,7 +21,7 @@ class AirPurifierControl(BaseController):
     @property
     def raw(self) -> list[AirPurifierResponse]:
         """Return raw data that it represents."""
-        air_purifier_control_response = self._device.raw.air_purifier_control
+        air_purifier_control_response = self._device.raw.air_purifier_control  # type: ignore[union-attr]
         assert air_purifier_control_response is not None
         return air_purifier_control_response
 
