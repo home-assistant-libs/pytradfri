@@ -30,6 +30,7 @@ def test_spectrum_bulb():
     """Test sprectrum bulb."""
     bulb = light(LIGHT_WS)
 
+    assert bulb.hex_color == "0"
     assert bulb.xy_color == (31103, 27007)
     assert bulb.color_temp == 400
 
