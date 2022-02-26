@@ -70,7 +70,7 @@ class DeviceResponse(ApiResourceResponse):
     device_info: DeviceInfoResponse = Field(alias=ATTR_DEVICE_INFO)
     last_seen: Optional[int] = Field(alias=ATTR_LAST_SEEN)
     light_control: Optional[List[Dict[str, Any]]] = Field(alias=ATTR_LIGHT_CONTROL)
-    reachable_state: int = Field(alias=ATTR_REACHABLE_STATE)
+    reachable: int = Field(alias=ATTR_REACHABLE_STATE)
     signal_repeater_control: Optional[List[Dict[str, Any]]] = Field(
         alias=ROOT_SIGNAL_REPEATER
     )
