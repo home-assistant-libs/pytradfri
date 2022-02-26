@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
 
 from ..const import ROOT_DEVICES
 from ..resource import ApiResource, DeviceInfoResponse, DeviceResponse
@@ -30,7 +29,7 @@ class Device(ApiResource):
         return [ROOT_DEVICES, self.id]
 
     @property
-    def device_info(self) -> Optional["DeviceInfo"]:
+    def device_info(self) -> "DeviceInfo" | None:
         """Return Device information."""
         if self._model_class:
             return DeviceInfo(self)
@@ -182,7 +181,7 @@ class DeviceInfo:
         return None
 
     @property
-    def power_source_str(self) -> Optional[str]:
+    def power_source_str(self) -> str | None:
         """Represent current power source."""
         if self.raw and self.raw.power_source:
             return self.VALUE_POWER_SOURCES.get(self.raw.power_source, "Unknown")
@@ -190,7 +189,7 @@ class DeviceInfo:
         return None
 
     @property
-    def battery_level(self) -> Optional[int]:
+    def battery_level(self) -> int | None:
         """Battery in 0..100."""
         if self.raw and self.raw.battery_level:
             return self.raw.battery_level
