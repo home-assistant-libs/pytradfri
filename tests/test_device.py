@@ -337,7 +337,7 @@ def test_socket_value_setting(function_name, comment, test_input, expected_resul
 def test_socket_state_off():
     """Test socket off."""
     socket_response = deepcopy(OUTLET)
-    socket_response["3312"][0][ATTR_DEVICE_STATE] = 0
+    socket_response[ATTR_LIGHT_CONTROL][0][ATTR_DEVICE_STATE] = 0
 
     socket = Device(socket_response).socket_control.sockets[0]
     assert socket.state is False
@@ -346,7 +346,7 @@ def test_socket_state_off():
 def test_socket_state_on():
     """Test socket on."""
     socket_response = deepcopy(OUTLET)
-    socket_response["3312"][0][ATTR_DEVICE_STATE] = 1
+    socket_response[ATTR_LIGHT_CONTROL][0][ATTR_DEVICE_STATE] = 1
 
     socket = Device(socket_response).socket_control.sockets[0]
     assert socket.state is True
