@@ -43,7 +43,7 @@ class ApiResourceResponse(BaseModel):
     id: int = Field(alias=ATTR_ID)
     name: str = Field(alias=ATTR_NAME)
     created_at: Optional[int] = Field(alias=ATTR_CREATED_AT)
-    ota_update_state: int | None = Field(alias=ATTR_OTA_UPDATE_STATE)
+    ota_update_state: Optional[int] = Field(alias=ATTR_OTA_UPDATE_STATE)
 
 
 class DeviceInfoResponse(BaseModel):
@@ -53,8 +53,8 @@ class DeviceInfoResponse(BaseModel):
     model_number: str = Field(alias=ATTR_DEVICE_MODEL_NUMBER)
     serial: str = Field(alias=ATTR_DEVICE_SERIAL)
     firmware_version: str = Field(alias=ATTR_DEVICE_FIRMWARE_VERSION)
-    power_source: int | None = Field(alias=ATTR_DEVICE_POWER_SOURCE)
-    battery_level: int | None = Field(alias=ATTR_DEVICE_BATTERY)
+    power_source: Optional[int] = Field(alias=ATTR_DEVICE_POWER_SOURCE)
+    battery_level: Optional[int] = Field(alias=ATTR_DEVICE_BATTERY)
 
 
 class DeviceResponse(ApiResourceResponse):
@@ -77,19 +77,11 @@ class DeviceResponse(ApiResourceResponse):
     socket_control: Optional[List[Dict[str, Any]]] = Field(alias=ATTR_SWITCH_PLUG)
 
 
-class ResourceResponse(BaseModel):
-    """Represent an API response."""
-
-    created_at: int = Field(alias=ATTR_CREATED_AT)
-    id: int = Field(alias=ATTR_ID)
-    name: str | None = Field(alias=ATTR_NAME)
-
-
 class ApiResource:
     """Base object for resources returned from the gateway."""
 
-    _model_class: type[ResourceResponse] | None = None
-    raw: TypeRaw | ResourceResponse
+    _model_class: type[ApiResourceResponse] | None = None
+    raw: TypeRaw | ApiResourceResponse
 
     def __init__(self, raw: TypeRaw) -> None:
         """Initialize base object."""

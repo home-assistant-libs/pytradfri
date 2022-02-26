@@ -1,5 +1,7 @@
 """Represent a signal repeater."""
-from typing import Any, Dict
+from __future__ import annotations
+
+from typing import Any
 
 
 class SignalRepeater:
@@ -11,8 +13,8 @@ class SignalRepeater:
         self.index = index
 
     @property
-    def raw(self) -> Dict[str, Any]:
+    def raw(self) -> dict[str, Any]:
         """Return raw data that it represents."""
-        signal_repater_control_response = self.device.raw.signal_repeater_control
-        assert signal_repater_control_response is not None
-        return signal_repater_control_response[self.index]
+        signal_repeater_control_response = self.device.raw.signal_repeater_control
+        assert signal_repeater_control_response is not None
+        return signal_repeater_control_response[self.index]

@@ -1,5 +1,7 @@
 """Represent a socket."""
-from typing import Any, Dict
+from __future__ import annotations
+
+from typing import Any
 
 from ..const import ATTR_DEVICE_STATE
 
@@ -18,7 +20,7 @@ class Socket:
         return self.raw.get(ATTR_DEVICE_STATE) == 1
 
     @property
-    def raw(self) -> Dict[str, Any]:
+    def raw(self) -> dict[str, Any]:
         """Return raw data that it represents."""
         socket_control_response = self.device.raw.socket_control
         assert socket_control_response is not None
