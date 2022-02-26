@@ -22,7 +22,7 @@ class SocketControl(BaseController):
         """Return socket objects of the socket control."""
         return [Socket(self._device, i) for i in range(len(self.raw))]
 
-    def set_state(self, state: int, *, index=0) -> Command:
+    def set_state(self, state: int, *, index: int = 0) -> Command:
         """Set state of a socket."""
         return self.set_values({ATTR_DEVICE_STATE: state}, index=index)
 
