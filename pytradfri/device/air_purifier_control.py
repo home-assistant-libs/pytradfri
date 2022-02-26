@@ -12,7 +12,8 @@ from ..const import (
     RANGE_AIR_PURIFIER,
     ROOT_AIR_PURIFIER,
 )
-from .air_purifier import AirPurifier, AirPurifierResponse
+from ..resource import TypeRaw
+from .air_purifier import AirPurifier
 from .base_controller import BaseController
 
 
@@ -20,9 +21,9 @@ class AirPurifierControl(BaseController):
     """Class to control the air purifiers."""
 
     @property
-    def raw(self) -> list[AirPurifierResponse]:
+    def raw(self) -> TypeRaw:
         """Return raw data that it represents."""
-        return cast(list[AirPurifierResponse], self._device.raw.air_purifier_control)  # type: ignore[union-attr]
+        return cast(TypeRaw, self._device.raw[ROOT_AIR_PURIFIER])
 
     @property
     def air_purifiers(self) -> list[AirPurifier]:
@@ -63,8 +64,6 @@ class AirPurifierControl(BaseController):
 
         Returns a Command.
         """
-        assert (
-            self.raw and len(self.raw) == 1
-        ), "Only devices with 1 air purifier supported"
+        assert len(self.raw) == 1, "Only devices with 1 air purifier supported"
 
         return Command("put", self._device.path, {ROOT_AIR_PURIFIER: [value]})

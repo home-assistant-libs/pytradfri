@@ -3,20 +3,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Field
-
-from ..const import ATTR_BLIND_CURRENT_POSITION, ATTR_ID
+from ..const import ATTR_BLIND_CURRENT_POSITION, ATTR_START_BLINDS
+from ..typing import BlindResponse
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
     from . import Device
-
-
-class BlindResponse(BaseModel):
-    """Represent the blind part of the device response."""
-
-    id: int = Field(alias=ATTR_ID)
-    current_cover_position: int = Field(alias=ATTR_BLIND_CURRENT_POSITION)
 
 
 class Blind:
@@ -29,10 +21,10 @@ class Blind:
 
     @property
     def raw(self) -> BlindResponse:
-        """Return raw response."""
-        return self.device.raw.blind_control[self.index]  # type: ignore[union-attr, index]
+        """Return raw data that it represents."""
+        return self.device.raw[ATTR_START_BLINDS][self.index]
 
     @property
     def current_cover_position(self) -> int:
         """Get the current position of the blind."""
-        return self.raw.current_cover_position
+        return self.raw[ATTR_BLIND_CURRENT_POSITION]

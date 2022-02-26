@@ -1,8 +1,4 @@
 """Class to control the lights."""
-from __future__ import annotations
-
-from typing import cast
-
 from ..color import COLORS
 from ..command import Command
 from ..const import (
@@ -25,7 +21,7 @@ from ..const import (
 )
 from ..error import ColorError
 from .base_controller import BaseController
-from .light import Light, LightResponse
+from .light import Light
 
 
 class LightControl(BaseController):
@@ -70,9 +66,9 @@ class LightControl(BaseController):
         self.max_saturation = RANGE_SATURATION[1]
 
     @property
-    def raw(self) -> list[LightResponse]:
+    def raw(self):
         """Return raw data that it represents."""
-        return cast(list[LightResponse], self._device.raw.light_control)  # type: ignore[union-attr]
+        return self._device.raw[ATTR_LIGHT_CONTROL]
 
     @property
     def lights(self):

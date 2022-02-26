@@ -1,27 +1,20 @@
 """Class to control the sockets."""
-
-from __future__ import annotations
-
-from typing import cast
-
 from ..command import Command
 from ..const import ATTR_DEVICE_STATE, ATTR_SWITCH_PLUG
 from .base_controller import BaseController
-from .socket import Socket, SocketResponse
+from .socket import Socket
 
 
 class SocketControl(BaseController):
     """Class to control the sockets."""
 
-    _model_class: type[SocketResponse] = SocketResponse
-
     @property
-    def raw(self) -> list[SocketResponse]:
+    def raw(self):
         """Return raw data that it represents."""
-        return cast(list[SocketResponse], self._device.raw.socket_control)  # type: ignore[union-attr]
+        return self._device.raw[ATTR_SWITCH_PLUG]
 
     @property
-    def sockets(self) -> list[Socket]:
+    def sockets(self):
         """Return socket objects of the socket control."""
         return [Socket(self._device, i) for i in range(len(self.raw))]
 
@@ -34,6 +27,6 @@ class SocketControl(BaseController):
 
         Returns a Command.
         """
-        assert self.raw and len(self.raw) == 1, "Only devices with 1 socket supported"
+        assert len(self.raw) == 1, "Only devices with 1 socket supported"
 
         return Command("put", self._device.path, {ATTR_SWITCH_PLUG: [values]})
