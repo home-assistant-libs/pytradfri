@@ -26,7 +26,7 @@ class SocketControl(BaseController):
         """Set state of a socket."""
         return self.set_values({ATTR_DEVICE_STATE: state}, index=index)
 
-    def set_values(self, values: dict[str, int], *, index) -> Command:
+    def set_values(self, values: dict[str, int], *, index: int = 0) -> Command:
         """Set values on socket control.
 
         Returns a Command.
