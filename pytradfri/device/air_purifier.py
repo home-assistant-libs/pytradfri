@@ -1,7 +1,7 @@
 """Represent an air purifier."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from ..const import (
     ATTR_AIR_PURIFIER_AIR_QUALITY,
@@ -99,7 +99,7 @@ class AirPurifier:
     @property
     def raw(self) -> AirPurifierResponse:
         """Return raw data that it represents."""
-        return cast(AirPurifierResponse, self.device.raw[ROOT_AIR_PURIFIER][self.index])  # type: ignore[index]
+        return self.device.raw[ROOT_AIR_PURIFIER][self.index]
 
     @property
     def state(self) -> bool:
