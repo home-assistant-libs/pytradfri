@@ -1,5 +1,7 @@
 """Represent a light."""
-from typing import Any, Dict
+from __future__ import annotations
+
+from typing import Any
 
 from ..color import supported_features
 from ..const import (
@@ -81,7 +83,7 @@ class Light:
         )
 
     @property
-    def raw(self) -> Dict[str, Any]:
+    def raw(self) -> dict[str, Any]:
         """Return raw data that it represents."""
         light_control_response = self.device.raw.light_control
         assert light_control_response is not None
