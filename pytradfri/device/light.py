@@ -85,9 +85,13 @@ class Light:
         return None
 
     @property
-    def xy_color(self) -> tuple[int | None, int | None] | None:
+    def xy_color(self) -> tuple[int, int] | None:
         """Return xy color."""
-        if self.supported_features & SUPPORT_XY_COLOR:
+        if (
+            self.supported_features & SUPPORT_XY_COLOR
+            and self.raw.color_xy_x is not None
+            and self.raw.color_xy_y is not None
+        ):
             return (self.raw.color_xy_x, self.raw.color_xy_y)
         return None
 

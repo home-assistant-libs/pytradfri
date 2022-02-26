@@ -1,7 +1,7 @@
 """Class to control the lights."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from ..color import COLORS
 from ..command import Command
@@ -98,7 +98,7 @@ class LightControl(BaseController):
         """
         self._value_validate(dimmer, RANGE_BRIGHTNESS, "Dimmer")
 
-        values = {ATTR_LIGHT_DIMMER: dimmer}
+        values: dict[str, str | int] = {ATTR_LIGHT_DIMMER: dimmer}
 
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
@@ -111,7 +111,7 @@ class LightControl(BaseController):
         """Set color temp a light."""
         self._value_validate(color_temp, RANGE_MIREDS, "Color temperature")
 
-        values = {ATTR_LIGHT_MIREDS: color_temp}
+        values: dict[str, str | int] = {ATTR_LIGHT_MIREDS: color_temp}
 
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
@@ -143,7 +143,10 @@ class LightControl(BaseController):
         self._value_validate(color_x, RANGE_X, "X color")
         self._value_validate(color_y, RANGE_Y, "Y color")
 
-        values = {ATTR_LIGHT_COLOR_X: color_x, ATTR_LIGHT_COLOR_Y: color_y}
+        values: dict[str, str | int] = {
+            ATTR_LIGHT_COLOR_X: color_x,
+            ATTR_LIGHT_COLOR_Y: color_y,
+        }
 
         if transition_time is not None:
             values[ATTR_TRANSITION_TIME] = transition_time
@@ -163,7 +166,10 @@ class LightControl(BaseController):
         self._value_validate(hue, RANGE_HUE, "Hue")
         self._value_validate(saturation, RANGE_SATURATION, "Saturation")
 
-        values = {ATTR_LIGHT_COLOR_SATURATION: saturation, ATTR_LIGHT_COLOR_HUE: hue}
+        values: dict[str, str | int] = {
+            ATTR_LIGHT_COLOR_SATURATION: saturation,
+            ATTR_LIGHT_COLOR_HUE: hue,
+        }
 
         if brightness is not None:
             values[ATTR_LIGHT_DIMMER] = brightness
