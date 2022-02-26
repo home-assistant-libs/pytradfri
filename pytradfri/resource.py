@@ -3,11 +3,9 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from pydantic import BaseModel, Field
-
-from pytradfri.device.signal_repeater import SignalRepeaterResponse
 
 from .command import Command, TypeProcessResultCb
 from .const import (
@@ -31,15 +29,21 @@ from .const import (
     ROOT_AIR_PURIFIER,
     ROOT_SIGNAL_REPEATER,
 )
-from .device.air_purifier import AirPurifierResponse
-from .device.blind import BlindResponse
-from .device.light import LightResponse
-from .device.socket import SocketResponse
+from .typing import AirPurifierResponse, BlindResponse
 
 # type alias
 TypeRaw = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
 TypeRawSimple = Dict[str, Union[str, int]]
 TypeRawList = Dict[str, List[Dict[str, Union[str, int]]]]
+
+
+class ApiResourceResponse(BaseModel):
+    """Represent a resource response."""
+
+    id: int = Field(alias=ATTR_ID)
+    name: str = Field(alias=ATTR_NAME)
+    created_at: Optional[int] = Field(alias=ATTR_CREATED_AT)
+    ota_update_state: int | None = Field(alias=ATTR_OTA_UPDATE_STATE)
 
 
 class DeviceInfoResponse(BaseModel):
@@ -53,27 +57,32 @@ class DeviceInfoResponse(BaseModel):
     battery_level: int | None = Field(alias=ATTR_DEVICE_BATTERY)
 
 
+class DeviceResponse(ApiResourceResponse):
+    """Represent a device response."""
+
+    # Type with Any for now to allow smaller typing work chunks
+
+    air_purifier_control: Optional[List[AirPurifierResponse]] = Field(
+        alias=ROOT_AIR_PURIFIER
+    )
+    application_type: int = Field(alias=ATTR_APPLICATION_TYPE)
+    blind_control: Optional[List[BlindResponse]] = Field(alias=ATTR_START_BLINDS)
+    device_info: DeviceInfoResponse = Field(alias=ATTR_DEVICE_INFO)
+    last_seen: Optional[int] = Field(alias=ATTR_LAST_SEEN)
+    light_control: Optional[List[Dict[str, Any]]] = Field(alias=ATTR_LIGHT_CONTROL)
+    reachable_state: int = Field(alias=ATTR_REACHABLE_STATE)
+    signal_repeater_control: Optional[List[Dict[str, Any]]] = Field(
+        alias=ROOT_SIGNAL_REPEATER
+    )
+    socket_control: Optional[List[Dict[str, Any]]] = Field(alias=ATTR_SWITCH_PLUG)
+
+
 class ResourceResponse(BaseModel):
     """Represent an API response."""
 
-    application_type: int | None = Field(alias=ATTR_APPLICATION_TYPE)
     created_at: int = Field(alias=ATTR_CREATED_AT)
-    device_info: DeviceInfoResponse | None = Field(alias=ATTR_DEVICE_INFO)
     id: int = Field(alias=ATTR_ID)
-    last_seen: int | None = Field(alias=ATTR_LAST_SEEN)
     name: str | None = Field(alias=ATTR_NAME)
-    ota_update_state: int | None = Field(alias=ATTR_OTA_UPDATE_STATE)
-    reachable: int | None = Field(alias=ATTR_REACHABLE_STATE)
-
-    air_purifier_control: list[AirPurifierResponse] | None = Field(
-        alias=ROOT_AIR_PURIFIER
-    )
-    blind_control: list[BlindResponse] | None = Field(alias=ATTR_START_BLINDS)
-    light_control: list[LightResponse] | None = Field(alias=ATTR_LIGHT_CONTROL)
-    socket_control: list[SocketResponse] | None = Field(alias=ATTR_SWITCH_PLUG)
-    signal_repater_control: list[SignalRepeaterResponse] | None = Field(
-        alias=ROOT_SIGNAL_REPEATER
-    )
 
 
 class ApiResource:

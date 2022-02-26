@@ -2,13 +2,8 @@
 from datetime import datetime
 from typing import Optional
 
-from ..const import (
-    ATTR_APPLICATION_TYPE,
-    ATTR_LAST_SEEN,
-    ATTR_REACHABLE_STATE,
-    ROOT_DEVICES,
-)
-from ..resource import ApiResource, DeviceInfoResponse, ResourceResponse
+from ..const import ROOT_DEVICES
+from ..resource import ApiResource, DeviceInfoResponse, DeviceResponse
 from .air_purifier_control import AirPurifierControl
 from .blind_control import BlindControl
 from .light_control import LightControl
@@ -19,16 +14,12 @@ from .socket_control import SocketControl
 class Device(ApiResource):
     """Base class for devices."""
 
-    _model_class = DeviceResponse
+    _model_class: type[DeviceResponse] = DeviceResponse
 
     @property
     def application_type(self) -> int | None:
         """Return application type."""
-        if self._model_class:
-            application_type = self.raw.application_type  # type: ignore[union-attr]
-        else:
-            application_type = self.raw[ATTR_APPLICATION_TYPE]
-        return application_type
+        return self.raw.application_type  # type: ignore[union-attr]
 
     @property
     def path(self):
@@ -46,10 +37,7 @@ class Device(ApiResource):
     @property
     def last_seen(self) -> datetime | None:
         """Return timestamp when last seen."""
-        if self._model_class:
-            last_seen = self.raw.last_seen  # type: ignore[union-attr]
-        else:
-            last_seen = self.raw[ATTR_LAST_SEEN]
+        last_seen = self.raw.last_seen  # type: ignore[union-attr]
 
         if last_seen:
             return datetime.utcfromtimestamp(last_seen)
@@ -59,11 +47,7 @@ class Device(ApiResource):
     @property
     def reachable(self) -> bool:
         """Check if gateway is reachable."""
-        if self._model_class:
-            reachable = self.raw.reachable == 1  # type: ignore[union-attr]
-        else:
-            reachable = self.raw[ATTR_REACHABLE_STATE]
-        return reachable
+        return self.raw.reachable == 1  # type: ignore[union-attr]
 
     @property
     def has_light_control(self) -> bool:

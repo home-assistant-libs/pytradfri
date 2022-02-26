@@ -21,7 +21,7 @@ class BlindControl(BaseController):
     @property
     def raw(self) -> TypeRaw:
         """Return raw data that it represents."""
-        return cast(TypeRaw, self._device.raw[ATTR_START_BLINDS])
+        return cast(TypeRaw, self._device.raw[ATTR_START_BLINDS])  # type: ignore[index]
 
     @property
     def blinds(self) -> list[Blind]:

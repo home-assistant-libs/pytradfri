@@ -12,7 +12,7 @@ from ..const import (
     RANGE_AIR_PURIFIER,
     ROOT_AIR_PURIFIER,
 )
-from ..resource import TypeRaw
+from ..typing import AirPurifierResponse
 from .air_purifier import AirPurifier
 from .base_controller import BaseController
 
@@ -21,9 +21,9 @@ class AirPurifierControl(BaseController):
     """Class to control the air purifiers."""
 
     @property
-    def raw(self) -> TypeRaw:
+    def raw(self) -> AirPurifierResponse:
         """Return raw data that it represents."""
-        return cast(TypeRaw, self._device.raw[ROOT_AIR_PURIFIER])
+        return cast(AirPurifierResponse, self._device.raw[ROOT_AIR_PURIFIER])  # type: ignore[index]
 
     @property
     def air_purifiers(self) -> list[AirPurifier]:

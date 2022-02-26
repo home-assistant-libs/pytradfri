@@ -1,7 +1,7 @@
 """Represent a blind."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from ..const import ATTR_BLIND_CURRENT_POSITION, ATTR_START_BLINDS
 from ..typing import BlindResponse
@@ -22,7 +22,7 @@ class Blind:
     @property
     def raw(self) -> BlindResponse:
         """Return raw data that it represents."""
-        return self.device.raw[ATTR_START_BLINDS][self.index]
+        return cast(BlindResponse, self.device.raw[ATTR_START_BLINDS][self.index])  # type: ignore[index]
 
     @property
     def current_cover_position(self) -> int:
