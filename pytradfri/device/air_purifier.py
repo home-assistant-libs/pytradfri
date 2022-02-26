@@ -1,8 +1,9 @@
 """Represent an air purifier."""
 from __future__ import annotations
 
-import sys
 from typing import TYPE_CHECKING
+
+from pydantic import BaseModel, Field
 
 from ..const import (
     ATTR_AIR_PURIFIER_AIR_QUALITY,
@@ -16,31 +17,26 @@ from ..const import (
     ATTR_AIR_PURIFIER_MODE,
     ATTR_AIR_PURIFIER_MODE_AUTO,
     ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL,
+    ATTR_ID,
 )
 
-if sys.version_info < (3, 9, 2):
-    from typing_extensions import TypedDict
-else:
-    from typing import TypedDict
 
-AirPurifierResponse = TypedDict(
-    # The TypedDict:s below uses an alternative syntax due to the need of using strings
-    # as keys: https://www.python.org/dev/peps/pep-0589/#alternative-syntax
-    "AirPurifierResponse",
-    {
-        "5900": int,  # Mode
-        "5902": int,  # Filter runtume
-        "5903": int,  # Filter status
-        "5904": int,  # Filter lifetime total
-        "5905": int,  # Manual controls locked
-        "5906": int,  # Led light on/off
-        "5907": int,  # Air quality level
-        "5908": int,  # Fan speed
-        "5909": int,  # Motor runtime total
-        "5910": int,  # Filter lifetime remaining
-        "9003": int,  # ID
-    },
-)
+class AirPurifierResponse(BaseModel):
+    """Represent API response for a blind."""
+
+    air_quality: int = Field(alias=ATTR_AIR_PURIFIER_AIR_QUALITY)
+    controls_locked: int = Field(alias=ATTR_AIR_PURIFIER_CONTROLS_LOCKED)
+    fan_speed: int = Field(alias=ATTR_AIR_PURIFIER_FAN_SPEED)
+    filter_lifetime_remaining: int = Field(
+        alias=ATTR_AIR_PURIFIER_FILTER_LIFETIME_REMAINING
+    )
+    filter_lifetime_total: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_LIFETIME_TOTAL)
+    filter_runtime: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_RUNTIME)
+    filter_status: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_STATUS)
+    id: int = Field(alias=ATTR_ID)
+    leds_off: int = Field(alias=ATTR_AIR_PURIFIER_LEDS_OFF)
+    mode: int = Field(alias=ATTR_AIR_PURIFIER_MODE)
+    motor_runtime_total: int = Field(alias=ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL)
 
 
 if TYPE_CHECKING:
@@ -65,12 +61,12 @@ class AirPurifier:
         86..: Not good
         65535: If the fan is off or during measuring time after turning on
         """
-        return self.raw[ATTR_AIR_PURIFIER_AIR_QUALITY]
+        return self.raw.air_quality
 
     @property
     def controls_locked(self) -> bool:
         """Return True if physical controls on the air purifier are locked."""
-        return self.raw[ATTR_AIR_PURIFIER_CONTROLS_LOCKED] == 1
+        return self.raw.controls_locked == 1
 
     @property
     def fan_speed(self) -> int:
@@ -79,27 +75,27 @@ class AirPurifier:
         0: Device is off
         2..50: Fan speed with a step size of 1.
         """
-        return self.raw[ATTR_AIR_PURIFIER_FAN_SPEED]
+        return self.raw.fan_speed
 
     @property
     def filter_lifetime_remaining(self) -> int:
         """Return remaining lifetime of filter, expressed in minutes."""
-        return self.raw[ATTR_AIR_PURIFIER_FILTER_LIFETIME_REMAINING]
+        return self.raw.filter_lifetime_remaining
 
     @property
     def filter_lifetime_total(self) -> int:
         """Return total lifetime of filter, expressed in minutes."""
-        return self.raw[ATTR_AIR_PURIFIER_FILTER_LIFETIME_TOTAL]
+        return self.raw.filter_lifetime_total
 
     @property
     def filter_runtime(self) -> int:
         """Return filter runtime, expressed in minutes."""
-        return self.raw[ATTR_AIR_PURIFIER_FILTER_RUNTIME]
+        return self.raw.filter_runtime
 
     @property
     def filter_status(self) -> int:
         """Return filter status."""
-        return self.raw[ATTR_AIR_PURIFIER_FILTER_STATUS]
+        return self.raw.filter_status
 
     @property
     def is_auto_mode(self) -> bool:
@@ -108,17 +104,17 @@ class AirPurifier:
 
         Auto mode sets the fan speed automatically based on the air quality.
         """
-        return self.raw[ATTR_AIR_PURIFIER_MODE] == ATTR_AIR_PURIFIER_MODE_AUTO
+        return self.raw.mode == ATTR_AIR_PURIFIER_MODE_AUTO
 
     @property
     def leds_off(self) -> bool:
         """Return True if led's on the air purifier are turned off."""
-        return self.raw[ATTR_AIR_PURIFIER_LEDS_OFF] == 1
+        return self.raw.leds_off == 1
 
     @property
     def motor_runtime_total(self) -> int:
         """Return runtime of fan motor, expressed in minutes."""
-        return self.raw[ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL]
+        return self.raw.motor_runtime_total
 
     @property
     def raw(self) -> AirPurifierResponse:
@@ -130,4 +126,4 @@ class AirPurifier:
     @property
     def state(self) -> bool:
         """Return device state, ie on or off."""
-        return self.raw[ATTR_AIR_PURIFIER_MODE] > 0
+        return self.raw.mode > 0
