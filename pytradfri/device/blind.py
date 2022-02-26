@@ -1,25 +1,19 @@
 """Represent a blind."""
 from __future__ import annotations
 
-import sys
 from typing import TYPE_CHECKING
 
-from ..const import ATTR_BLIND_CURRENT_POSITION
+from pydantic import BaseModel, Field
 
-if sys.version_info < (3, 9, 2):
-    from typing_extensions import TypedDict
-else:
-    from typing import TypedDict
+from ..const import ATTR_BLIND_CURRENT_POSITION, ATTR_ID
 
-BlindResponse = TypedDict(
-    # The TypedDict:s below uses an alternative syntax due to the need of using strings
-    # as keys: https://www.python.org/dev/peps/pep-0589/#alternative-syntax
-    "BlindResponse",
-    {
-        "5536": int,  # Current blind position
-        "9003": int,  # ID
-    },
-)
+
+class BlindResponse(BaseModel):
+    """Represent API response for a blind."""
+
+    current_cover_position: int = Field(alias=ATTR_BLIND_CURRENT_POSITION)
+    id: int = Field(alias=ATTR_ID)
+
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
@@ -44,4 +38,4 @@ class Blind:
     @property
     def current_cover_position(self) -> int:
         """Get the current position of the blind."""
-        return self.raw[ATTR_BLIND_CURRENT_POSITION]
+        return self.raw.current_cover_position
