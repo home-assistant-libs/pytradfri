@@ -1,7 +1,7 @@
 """Represent a light."""
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
@@ -9,11 +9,6 @@ from ..color import supported_features
 from ..const import (
     ATTR_DEVICE_STATE,
     ATTR_ID,
-    ATTR_LIGHT_COLOR_HEX,
-    ATTR_LIGHT_COLOR_HUE,
-    ATTR_LIGHT_COLOR_SATURATION,
-    ATTR_LIGHT_COLOR_X,
-    ATTR_LIGHT_COLOR_Y,
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_MIREDS,
     SUPPORT_BRIGHTNESS,
@@ -22,12 +17,23 @@ from ..const import (
     SUPPORT_XY_COLOR,
 )
 
+if TYPE_CHECKING:
+    # avoid cyclic import at runtime.
+    from . import Device
+
 
 class LightResponse(BaseModel):
     """Represent API response for a blind."""
 
     state: int = Field(alias=ATTR_DEVICE_STATE)
     id: int = Field(alias=ATTR_ID)
+    dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
+    color_mireds: int | None = Field(alias=ATTR_LIGHT_MIREDS)
+    color_hex: int | None = Field(alias=ATTR_LIGHT_MIREDS)
+    color_xy_x: int = Field(alias=ATTR_LIGHT_MIREDS)
+    color_xy_y: int = Field(alias=ATTR_LIGHT_MIREDS)
+    color_hue: int | None = Field(alias=ATTR_LIGHT_MIREDS)
+    color_saturation: int | None = Field(alias=ATTR_LIGHT_MIREDS)
 
 
 class Light:
@@ -37,59 +43,58 @@ class Light:
     pdf
     """
 
-    def __init__(self, device, index):
+    def __init__(self, device: Device, index: int):
         """Create object of class."""
         self.device = device
         self.index = index
 
     @property
-    def supported_features(self):
+    def supported_features(self) -> int:
         """Return supported features."""
-        return supported_features(self.raw)
+        return supported_features(self.raw.dict())
 
     @property
-    def state(self):
+    def state(self) -> bool:
         """Return device state."""
         return self.raw.state == 1
 
     @property
-    def dimmer(self):
+    def dimmer(self) -> int | None:
         """Return dimmer if present."""
         if self.supported_features & SUPPORT_BRIGHTNESS:
-            return self.raw.get(ATTR_LIGHT_DIMMER)
+            return self.raw.dimmer
         return None
 
     @property
-    def color_temp(self):
+    def color_temp(self) -> int | None:
         """Return color temperature."""
-        if self.supported_features & SUPPORT_COLOR_TEMP:
-            if self.raw.get(ATTR_LIGHT_MIREDS) != 0:
-                return self.raw.get(ATTR_LIGHT_MIREDS)
+        if self.supported_features & SUPPORT_COLOR_TEMP and self.raw.color_mireds:
+            return self.raw.color_mireds
         return None
 
     @property
-    def hex_color(self):
+    def hex_color(self) -> int | None:
         """Return hex color."""
         if self.supported_features & SUPPORT_HEX_COLOR:
-            return self.raw.get(ATTR_LIGHT_COLOR_HEX)
+            return self.raw.color_hex
         return None
 
     @property
-    def xy_color(self):
+    def xy_color(self) -> tuple[int, int] | None:
         """Return xy color."""
         if self.supported_features & SUPPORT_XY_COLOR:
-            return (self.raw.get(ATTR_LIGHT_COLOR_X), self.raw.get(ATTR_LIGHT_COLOR_Y))
+            return (self.raw.color_xy_x, self.raw.color_xy_y)
         return None
 
     @property
-    def hsb_xy_color(self):
+    def hsb_xy_color(self) -> tuple[int | None, int | None, int, int, int]:
         """Return hsb xy color."""
         return (
-            self.raw.get(ATTR_LIGHT_COLOR_HUE),
-            self.raw.get(ATTR_LIGHT_COLOR_SATURATION),
-            self.raw.get(ATTR_LIGHT_DIMMER),
-            self.raw.get(ATTR_LIGHT_COLOR_X),
-            self.raw.get(ATTR_LIGHT_COLOR_Y),
+            self.raw.color_hue,
+            self.raw.color_saturation,
+            self.raw.dimmer,
+            self.raw.color_xy_x,
+            self.raw.color_xy_y,
         )
 
     @property
@@ -99,7 +104,7 @@ class Light:
         assert light_control_response is not None
         return light_control_response[self.index]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return representation of class object."""
         state = "on" if self.state else "off"
         return (
