@@ -8,28 +8,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 from pydantic import BaseModel, Field
 
 from .command import Command, TypeProcessResultCb
-from .const import (
-    ATTR_APPLICATION_TYPE,
-    ATTR_CREATED_AT,
-    ATTR_DEVICE_BATTERY,
-    ATTR_DEVICE_FIRMWARE_VERSION,
-    ATTR_DEVICE_INFO,
-    ATTR_DEVICE_MANUFACTURER,
-    ATTR_DEVICE_MODEL_NUMBER,
-    ATTR_DEVICE_POWER_SOURCE,
-    ATTR_DEVICE_SERIAL,
-    ATTR_ID,
-    ATTR_LAST_SEEN,
-    ATTR_LIGHT_CONTROL,
-    ATTR_NAME,
-    ATTR_OTA_UPDATE_STATE,
-    ATTR_REACHABLE_STATE,
-    ATTR_START_BLINDS,
-    ATTR_SWITCH_PLUG,
-    ROOT_AIR_PURIFIER,
-    ROOT_SIGNAL_REPEATER,
-)
-from .typing import AirPurifierResponse, BlindResponse
+from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME, ATTR_OTA_UPDATE_STATE
 
 # type alias
 TypeRaw = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
@@ -44,37 +23,6 @@ class ApiResourceResponse(BaseModel):
     name: str = Field(alias=ATTR_NAME)
     created_at: Optional[int] = Field(alias=ATTR_CREATED_AT)
     ota_update_state: Optional[int] = Field(alias=ATTR_OTA_UPDATE_STATE)
-
-
-class DeviceInfoResponse(BaseModel):
-    """Represent the device info part of the device response."""
-
-    manufacturer: str = Field(alias=ATTR_DEVICE_MANUFACTURER)
-    model_number: str = Field(alias=ATTR_DEVICE_MODEL_NUMBER)
-    serial: str = Field(alias=ATTR_DEVICE_SERIAL)
-    firmware_version: str = Field(alias=ATTR_DEVICE_FIRMWARE_VERSION)
-    power_source: Optional[int] = Field(alias=ATTR_DEVICE_POWER_SOURCE)
-    battery_level: Optional[int] = Field(alias=ATTR_DEVICE_BATTERY)
-
-
-class DeviceResponse(ApiResourceResponse):
-    """Represent a device response."""
-
-    # Type with Any for now to allow smaller typing work chunks
-
-    air_purifier_control: Optional[List[AirPurifierResponse]] = Field(
-        alias=ROOT_AIR_PURIFIER
-    )
-    application_type: int = Field(alias=ATTR_APPLICATION_TYPE)
-    blind_control: Optional[List[BlindResponse]] = Field(alias=ATTR_START_BLINDS)
-    device_info: DeviceInfoResponse = Field(alias=ATTR_DEVICE_INFO)
-    last_seen: Optional[int] = Field(alias=ATTR_LAST_SEEN)
-    light_control: Optional[List[Dict[str, Any]]] = Field(alias=ATTR_LIGHT_CONTROL)
-    reachable: int = Field(alias=ATTR_REACHABLE_STATE)
-    signal_repeater_control: Optional[List[Dict[str, Any]]] = Field(
-        alias=ROOT_SIGNAL_REPEATER
-    )
-    socket_control: Optional[List[Dict[str, Any]]] = Field(alias=ATTR_SWITCH_PLUG)
 
 
 class ApiResource:

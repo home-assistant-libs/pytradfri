@@ -16,11 +16,10 @@ from ..const import (
     ATTR_AIR_PURIFIER_MODE_AUTO,
     ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL,
 )
-from ..typing import AirPurifierResponse
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
-    from . import Device
+    from . import AirPurifierResponse, Device
 
 
 class AirPurifier:

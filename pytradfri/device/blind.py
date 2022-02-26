@@ -4,11 +4,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ..const import ATTR_BLIND_CURRENT_POSITION
-from ..typing import BlindResponse
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
-    from . import Device
+    from . import BlindResponse, Device
 
 
 class Blind:
