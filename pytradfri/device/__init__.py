@@ -24,6 +24,7 @@ from ..const import (
     ROOT_DEVICES,
     ROOT_SIGNAL_REPEATER,
 )
+from ..device.light import LightResponse
 from ..resource import ApiResource, ApiResourceResponse
 from .air_purifier_control import AirPurifierControl, AirPurifierResponse
 from .blind_control import BlindControl, BlindResponse
@@ -55,7 +56,7 @@ class DeviceResponse(ApiResourceResponse):
     blind_control: Optional[List[BlindResponse]] = Field(alias=ATTR_START_BLINDS)
     device_info: DeviceInfoResponse = Field(alias=ATTR_DEVICE_INFO)
     last_seen: Optional[int] = Field(alias=ATTR_LAST_SEEN)
-    light_control: Optional[List[Dict[str, Any]]] = Field(alias=ATTR_LIGHT_CONTROL)
+    light_control: Optional[LightResponse] = Field(alias=ATTR_LIGHT_CONTROL)
     reachable: int = Field(alias=ATTR_REACHABLE_STATE)
     signal_repeater_control: Optional[List[Dict[str, Any]]] = Field(
         alias=ROOT_SIGNAL_REPEATER

@@ -25,7 +25,7 @@ from ..const import (
 )
 from ..error import ColorError
 from .base_controller import BaseController
-from .light import Light
+from .light import Light, LightResponse
 
 
 class LightControl(BaseController):
@@ -70,7 +70,7 @@ class LightControl(BaseController):
         self.max_saturation = RANGE_SATURATION[1]
 
     @property
-    def raw(self) -> list[dict[str, Any]]:
+    def raw(self) -> list[LightResponse]:
         """Return raw data that it represents."""
         light_control_response = self._device.raw.light_control
         assert light_control_response is not None

@@ -3,9 +3,12 @@ from __future__ import annotations
 
 from typing import Any
 
+from pydantic import BaseModel, Field
+
 from ..color import supported_features
 from ..const import (
     ATTR_DEVICE_STATE,
+    ATTR_ID,
     ATTR_LIGHT_COLOR_HEX,
     ATTR_LIGHT_COLOR_HUE,
     ATTR_LIGHT_COLOR_SATURATION,
@@ -18,6 +21,13 @@ from ..const import (
     SUPPORT_HEX_COLOR,
     SUPPORT_XY_COLOR,
 )
+
+
+class LightResponse(BaseModel):
+    """Represent API response for a blind."""
+
+    state: int = Field(alias=ATTR_DEVICE_STATE)
+    id: int = Field(alias=ATTR_ID)
 
 
 class Light:
@@ -40,7 +50,7 @@ class Light:
     @property
     def state(self):
         """Return device state."""
-        return self.raw.get(ATTR_DEVICE_STATE) == 1
+        return self.raw.state == 1
 
     @property
     def dimmer(self):
@@ -83,7 +93,7 @@ class Light:
         )
 
     @property
-    def raw(self) -> dict[str, Any]:
+    def raw(self) -> LightResponse:
         """Return raw data that it represents."""
         light_control_response = self.device.raw.light_control
         assert light_control_response is not None
