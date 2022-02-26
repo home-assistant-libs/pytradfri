@@ -29,6 +29,7 @@ from .air_purifier_control import AirPurifierControl, AirPurifierResponse
 from .blind_control import BlindControl, BlindResponse
 from .light_control import LightControl
 from .signal_repeater_control import SignalRepeaterControl
+from .socket import SocketResponse
 from .socket_control import SocketControl
 
 
@@ -60,7 +61,7 @@ class DeviceResponse(ApiResourceResponse):
     signal_repeater_control: Optional[List[Dict[str, Any]]] = Field(
         alias=ROOT_SIGNAL_REPEATER
     )
-    socket_control: Optional[List[Dict[str, Any]]] = Field(alias=ATTR_SWITCH_PLUG)
+    socket_control: Optional[List[SocketResponse]] = Field(alias=ATTR_SWITCH_PLUG)
 
 
 class Device(ApiResource):
