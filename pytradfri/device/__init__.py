@@ -14,7 +14,10 @@ from .socket_control import SocketControl
 class Device(ApiResource):
     """Base class for devices."""
 
-    _model_class: type[DeviceResponse] = DeviceResponse
+    @property
+    def _model_class(self) -> type[DeviceResponse]:  # type: ignore[override]
+        """Return model class type."""
+        return DeviceResponse
 
     @property
     def application_type(self) -> int | None:
