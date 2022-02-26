@@ -1,4 +1,6 @@
 """Represent a light."""
+from typing import Any, Dict
+
 from ..color import supported_features
 from ..const import (
     ATTR_DEVICE_STATE,
@@ -7,7 +9,6 @@ from ..const import (
     ATTR_LIGHT_COLOR_SATURATION,
     ATTR_LIGHT_COLOR_X,
     ATTR_LIGHT_COLOR_Y,
-    ATTR_LIGHT_CONTROL,
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_MIREDS,
     SUPPORT_BRIGHTNESS,
@@ -80,9 +81,11 @@ class Light:
         )
 
     @property
-    def raw(self):
+    def raw(self) -> Dict[str, Any]:
         """Return raw data that it represents."""
-        return self.device.raw[ATTR_LIGHT_CONTROL][self.index]
+        light_control_response = self.device.raw.light_control
+        assert light_control_response is not None
+        return light_control_response[self.index]
 
     def __repr__(self):
         """Return representation of class object."""

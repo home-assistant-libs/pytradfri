@@ -1,5 +1,6 @@
 """Class to control the signal repeater."""
-from ..const import ROOT_SIGNAL_REPEATER
+from typing import Any, Dict
+
 from .base_controller import BaseController
 from .signal_repeater import SignalRepeater
 
@@ -8,9 +9,11 @@ class SignalRepeaterControl(BaseController):
     """Class to control the signal repeaters."""
 
     @property
-    def raw(self):
+    def raw(self) -> list[Dict[str, Any]]:
         """Return raw data that it represents."""
-        return self._device.raw[ROOT_SIGNAL_REPEATER]
+        signal_repater_control_response = self._device.raw.signal_repeater_control
+        assert signal_repater_control_response is not None
+        return signal_repater_control_response
 
     @property
     def signal_repeaters(self):
