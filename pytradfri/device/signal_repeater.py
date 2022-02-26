@@ -1,13 +1,16 @@
 """Represent a signal repeater."""
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from . import Device
 
 
 class SignalRepeater:
     """Represent a signal repeater."""
 
-    def __init__(self, device, index):
+    def __init__(self, device: Device, index: int) -> None:
         """Create object of class."""
         self.device = device
         self.index = index

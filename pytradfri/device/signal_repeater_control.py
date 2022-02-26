@@ -18,6 +18,6 @@ class SignalRepeaterControl(BaseController):
         return signal_repeater_control_response
 
     @property
-    def signal_repeaters(self):
+    def signal_repeaters(self) -> list[SignalRepeater]:
         """Return signal repeater objects of the signal repeater control."""
         return [SignalRepeater(self._device, i) for i in range(len(self.raw))]
