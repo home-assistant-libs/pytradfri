@@ -19,7 +19,7 @@ from .socket_control import SocketControl
 class Device(ApiResource):
     """Base class for devices."""
 
-    _model_class = ResourceResponse
+    _model_class = DeviceResponse
 
     @property
     def application_type(self) -> int | None:
