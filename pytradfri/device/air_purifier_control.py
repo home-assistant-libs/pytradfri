@@ -10,8 +10,7 @@ from ..const import (
     RANGE_AIR_PURIFIER,
     ROOT_AIR_PURIFIER,
 )
-from ..typing import AirPurifierResponse
-from .air_purifier import AirPurifier
+from .air_purifier import AirPurifier, AirPurifierResponse
 from .base_controller import BaseController
 
 

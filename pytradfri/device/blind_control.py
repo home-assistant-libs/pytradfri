@@ -8,9 +8,8 @@ from ..const import (
     ATTR_START_BLINDS,
     RANGE_BLIND,
 )
-from ..typing import BlindResponse
 from .base_controller import BaseController
-from .blind import Blind
+from .blind import Blind, BlindResponse
 
 
 class BlindControl(BaseController):
