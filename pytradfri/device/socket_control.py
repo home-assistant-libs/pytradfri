@@ -1,4 +1,8 @@
 """Class to control the sockets."""
+from __future__ import annotations
+
+from typing import Any
+
 from ..command import Command
 from ..const import ATTR_DEVICE_STATE, ATTR_SWITCH_PLUG
 from .base_controller import BaseController
@@ -9,9 +13,11 @@ class SocketControl(BaseController):
     """Class to control the sockets."""
 
     @property
-    def raw(self):
+    def raw(self) -> list[dict[str, Any]]:
         """Return raw data that it represents."""
-        return self._device.raw[ATTR_SWITCH_PLUG]
+        socket_control_response = self._device.raw.socket_control
+        assert socket_control_response is not None
+        return socket_control_response
 
     @property
     def sockets(self):

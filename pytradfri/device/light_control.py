@@ -1,4 +1,8 @@
 """Class to control the lights."""
+from __future__ import annotations
+
+from typing import Any
+
 from ..color import COLORS
 from ..command import Command
 from ..const import (
@@ -66,9 +70,11 @@ class LightControl(BaseController):
         self.max_saturation = RANGE_SATURATION[1]
 
     @property
-    def raw(self):
+    def raw(self) -> list[dict[str, Any]]:
         """Return raw data that it represents."""
-        return self._device.raw[ATTR_LIGHT_CONTROL]
+        light_control_response = self._device.raw.light_control
+        assert light_control_response is not None
+        return light_control_response
 
     @property
     def lights(self):

@@ -1,5 +1,7 @@
 """Represent a signal repeater."""
-from ..const import ROOT_SIGNAL_REPEATER
+from __future__ import annotations
+
+from typing import Any
 
 
 class SignalRepeater:
@@ -11,6 +13,8 @@ class SignalRepeater:
         self.index = index
 
     @property
-    def raw(self):
+    def raw(self) -> dict[str, Any]:
         """Return raw data that it represents."""
-        return self.device.raw[ROOT_SIGNAL_REPEATER][self.index]
+        signal_repeater_control_response = self.device.raw.signal_repeater_control
+        assert signal_repeater_control_response is not None
+        return signal_repeater_control_response[self.index]

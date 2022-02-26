@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ..const import ATTR_BLIND_CURRENT_POSITION, ATTR_START_BLINDS
+from ..const import ATTR_BLIND_CURRENT_POSITION
 from ..typing import BlindResponse
 
 if TYPE_CHECKING:
@@ -22,7 +22,9 @@ class Blind:
     @property
     def raw(self) -> BlindResponse:
         """Return raw data that it represents."""
-        return self.device.raw[ATTR_START_BLINDS][self.index]
+        blind_control_response = self.device.raw.blind_control
+        assert blind_control_response is not None
+        return blind_control_response[self.index]
 
     @property
     def current_cover_position(self) -> int:

@@ -4,7 +4,13 @@ Type hints.
 The TypedDict:s below uses an alternative syntax due to the need of using strings
 as keys: https://www.python.org/dev/peps/pep-0589/#alternative-syntax
 """
-from typing import List, TypedDict
+import sys
+from typing import List
+
+if sys.version_info < (3, 9, 2):
+    from typing_extensions import TypedDict
+else:
+    from typing import TypedDict
 
 AirPurifierResponse = TypedDict(
     "AirPurifierResponse",

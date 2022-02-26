@@ -15,7 +15,6 @@ from ..const import (
     ATTR_AIR_PURIFIER_MODE,
     ATTR_AIR_PURIFIER_MODE_AUTO,
     ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL,
-    ROOT_AIR_PURIFIER,
 )
 from ..typing import AirPurifierResponse
 
@@ -99,7 +98,9 @@ class AirPurifier:
     @property
     def raw(self) -> AirPurifierResponse:
         """Return raw data that it represents."""
-        return self.device.raw[ROOT_AIR_PURIFIER][self.index]
+        air_purifier_control_response = self.device.raw.air_purifier_control
+        assert air_purifier_control_response is not None
+        return air_purifier_control_response[self.index]
 
     @property
     def state(self) -> bool:
