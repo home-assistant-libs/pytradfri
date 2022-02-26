@@ -1,7 +1,7 @@
 """Represent an air purifier."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from ..const import (
     ATTR_AIR_PURIFIER_AIR_QUALITY,
@@ -98,9 +98,9 @@ class AirPurifier:
     @property
     def raw(self) -> AirPurifierResponse:
         """Return raw data that it represents."""
-        air_purifier_control_response = self.device.raw.air_purifier_control  # type: ignore[union-attr]
+        air_purifier_control_response = self.device.raw.air_purifier_control
         assert air_purifier_control_response is not None
-        return cast(AirPurifierResponse, air_purifier_control_response[self.index])
+        return air_purifier_control_response[self.index]
 
     @property
     def state(self) -> bool:

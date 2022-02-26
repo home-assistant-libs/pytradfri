@@ -14,14 +14,13 @@ from .socket_control import SocketControl
 class Device(ApiResource):
     """Base class for devices."""
 
-    @property
     _model_class: type[DeviceResponse] = DeviceResponse
     raw: DeviceResponse
 
     @property
     def application_type(self) -> int | None:
         """Return application type."""
-        return self.raw.application_type  # type: ignore[union-attr]
+        return self.raw.application_type
 
     @property
     def path(self):
@@ -39,7 +38,7 @@ class Device(ApiResource):
     @property
     def last_seen(self) -> datetime | None:
         """Return timestamp when last seen."""
-        last_seen = self.raw.last_seen  # type: ignore[union-attr]
+        last_seen = self.raw.last_seen
 
         if last_seen:
             return datetime.utcfromtimestamp(last_seen)
@@ -49,12 +48,12 @@ class Device(ApiResource):
     @property
     def reachable(self) -> bool:
         """Check if gateway is reachable."""
-        return self.raw.reachable == 1  # type: ignore[union-attr]
+        return self.raw.reachable == 1
 
     @property
     def has_light_control(self) -> bool:
         """Check if light_control is present."""
-        return self.raw.light_control is not None  # type: ignore[union-attr]
+        return self.raw.light_control is not None
 
     @property
     def light_control(self) -> LightControl | None:
@@ -67,7 +66,7 @@ class Device(ApiResource):
     @property
     def has_socket_control(self) -> bool:
         """Check if socket_control is present."""
-        return self.raw.socket_control is not None  # type: ignore[union-attr]
+        return self.raw.socket_control is not None
 
     @property
     def socket_control(self) -> SocketControl | None:
@@ -79,7 +78,7 @@ class Device(ApiResource):
     @property
     def has_blind_control(self) -> bool:
         """Check if blind_control is present."""
-        return self.raw.blind_control is not None  # type: ignore[union-attr]
+        return self.raw.blind_control is not None
 
     @property
     def blind_control(self) -> BlindControl | None:
@@ -91,7 +90,7 @@ class Device(ApiResource):
     @property
     def has_signal_repeater_control(self) -> bool:
         """Check if signal_repeater_control is present."""
-        return self.raw.signal_repater is not None  # type: ignore[union-attr]
+        return self.raw.signal_repeater_control is not None
 
     @property
     def signal_repeater_control(self) -> SignalRepeaterControl | None:
@@ -103,7 +102,7 @@ class Device(ApiResource):
     @property
     def has_air_purifier_control(self) -> bool:
         """Check if air_purifier_control is present."""
-        return self.raw.air_purifier_control is not None  # type: ignore[union-attr]
+        return self.raw.air_purifier_control is not None
 
     @property
     def air_purifier_control(self) -> AirPurifierControl | None:
@@ -199,7 +198,7 @@ class DeviceInfo:
     @property
     def raw(self) -> DeviceInfoResponse | None:
         """Return raw data that it represents."""
-        if self._device.raw.device_info:  # type: ignore[union-attr]
-            return self._device.raw.device_info  # type: ignore[union-attr]
+        if self._device.raw.device_info:
+            return self._device.raw.device_info
 
         return None
