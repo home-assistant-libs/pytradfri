@@ -56,7 +56,7 @@ class Light:
     @property
     def supported_features(self) -> int:
         """Return supported features."""
-        return supported_features(self.raw.dict())
+        return supported_features(self.raw)
 
     @property
     def state(self) -> bool:

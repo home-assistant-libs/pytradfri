@@ -352,12 +352,6 @@ def test_socket_state_on():
     assert socket.state is True
 
 
-def test_set_state_none(device):
-    """Set none state."""
-    with pytest.raises(TypeError):
-        device.light_control.set_state(None)
-
-
 def test_set_predefined_color_invalid(device):
     """Test set invalid color."""
     with pytest.raises(error.ColorError):
@@ -409,7 +403,6 @@ def test_binary_division():
 def test_has_light_control_true():
     """Test light has control."""
     response = deepcopy(LIGHT_WS)
-    response[ATTR_LIGHT_CONTROL] = [{1: 2}]
     dev = Device(response)
 
     assert dev.has_light_control is True
@@ -425,30 +418,39 @@ def test_has_light_control_false():
 
 
 # Test light state function
-def test_light_state_on(device):
+def test_light_state_on():
     """Test light on."""
+    device_data = deepcopy(LIGHT_WS)
+    device_data[ATTR_LIGHT_CONTROL][0][ATTR_DEVICE_STATE] = 1
+    device = Device(deepcopy(device_data))
     light = device.light_control.lights[0]
-    light.raw[ATTR_DEVICE_STATE] = 1
     assert light.state is True
 
 
-def test_light_state_off(device):
+def test_light_state_off():
     """Test light off."""
+    device_data = deepcopy(LIGHT_WS)
+    device_data[ATTR_LIGHT_CONTROL][0][ATTR_DEVICE_STATE] = 0
+    device = Device(deepcopy(device_data))
     light = device.light_control.lights[0]
-    light.raw[ATTR_DEVICE_STATE] = 0
     assert light.state is False
 
 
-def test_light_state_mangled(device):
+def test_light_state_mangled():
     """Test mangled light state."""
-    light = device.light_control.lights[0]
-    light.raw[ATTR_DEVICE_STATE] = "RandomString"
-    assert light.state is False
+    device_data = deepcopy(LIGHT_WS)
+    device_data[ATTR_LIGHT_CONTROL][0][ATTR_DEVICE_STATE] = "RandomString"
+    with pytest.raises(ValueError):
+        device = Device(deepcopy(device_data))
+        light = device.light_control.lights[0]
+        assert light.state is False
 
 
 # Test light hsb_xy_color function
-def test_light_hsb_xy_color(device):
+def test_light_hsb_xy_color():
     """Very basic test, just to touch it."""
+    device_data = deepcopy(LIGHT_CWS)
+    device = Device(deepcopy(device_data))
     light = device.light_control.lights[0]
     assert len(light.hsb_xy_color) == 5
 

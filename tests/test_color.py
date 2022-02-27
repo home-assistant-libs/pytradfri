@@ -8,6 +8,7 @@ from pytradfri.const import (
     SUPPORT_RGB_COLOR,
     SUPPORT_XY_COLOR,
 )
+from pytradfri.device.light import LightResponse
 
 from .devices import (
     LIGHT_CWS,
@@ -29,10 +30,13 @@ MAX_KELVIN_WS = 4000
 
 def test_supported_colors():
     """Test supported colors."""
-    assert supported_features(LIGHT_W[ATTR_LIGHT_CONTROL][0]) == SUPPORT_BRIGHTNESS
+    assert (
+        supported_features(LightResponse(**LIGHT_W[ATTR_LIGHT_CONTROL][0]))
+        == SUPPORT_BRIGHTNESS
+    )
 
     assert (
-        supported_features(LIGHT_WS["3311"][0])
+        supported_features(LightResponse(**LIGHT_WS["3311"][0]))
         == SUPPORT_BRIGHTNESS
         + SUPPORT_COLOR_TEMP
         + SUPPORT_HEX_COLOR
@@ -40,7 +44,7 @@ def test_supported_colors():
     )
 
     assert (
-        supported_features(LIGHT_WS_CUSTOM_COLOR["3311"][0])
+        supported_features(LightResponse(**LIGHT_WS_CUSTOM_COLOR["3311"][0]))
         == SUPPORT_BRIGHTNESS
         + SUPPORT_COLOR_TEMP
         + SUPPORT_HEX_COLOR
@@ -48,11 +52,14 @@ def test_supported_colors():
     )
 
     assert (
-        supported_features(LIGHT_CWS["3311"][0])
+        supported_features(LightResponse(**LIGHT_CWS["3311"][0]))
         == SUPPORT_BRIGHTNESS + SUPPORT_RGB_COLOR + SUPPORT_HEX_COLOR + SUPPORT_XY_COLOR
     )
 
+    x = supported_features(LightResponse(**LIGHT_CWS_CUSTOM_COLOR["3311"][0]))
+    print(x)
+
     assert (
-        supported_features(LIGHT_CWS_CUSTOM_COLOR["3311"][0])
+        supported_features(LightResponse(**LIGHT_CWS_CUSTOM_COLOR["3311"][0]))
         == SUPPORT_BRIGHTNESS + SUPPORT_RGB_COLOR + SUPPORT_HEX_COLOR + SUPPORT_XY_COLOR
     )
