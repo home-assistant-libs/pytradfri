@@ -49,8 +49,6 @@ class DeviceInfoResponse(BaseModel):
 class DeviceResponse(ApiResourceResponse):
     """Represent a device response."""
 
-    # Type with Any for now to allow smaller typing work chunks
-
     air_purifier_control: Optional[List[AirPurifierResponse]] = Field(
         alias=ROOT_AIR_PURIFIER
     )
