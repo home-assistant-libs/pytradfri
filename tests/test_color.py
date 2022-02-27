@@ -56,8 +56,6 @@ def test_supported_colors():
         == SUPPORT_BRIGHTNESS + SUPPORT_RGB_COLOR + SUPPORT_HEX_COLOR + SUPPORT_XY_COLOR
     )
 
-    x = supported_features(LightResponse(**LIGHT_CWS_CUSTOM_COLOR["3311"][0]))
-    print(x)
 
     assert (
         supported_features(LightResponse(**LIGHT_CWS_CUSTOM_COLOR["3311"][0]))
