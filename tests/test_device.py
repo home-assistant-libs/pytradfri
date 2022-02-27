@@ -422,7 +422,7 @@ def test_light_state_on():
     """Test light on."""
     device_data = deepcopy(LIGHT_WS)
     device_data[ATTR_LIGHT_CONTROL][0][ATTR_DEVICE_STATE] = 1
-    device = Device(deepcopy(device_data))
+    device = Device(device_data)
     light = device.light_control.lights[0]
     assert light.state is True
 
@@ -431,7 +431,7 @@ def test_light_state_off():
     """Test light off."""
     device_data = deepcopy(LIGHT_WS)
     device_data[ATTR_LIGHT_CONTROL][0][ATTR_DEVICE_STATE] = 0
-    device = Device(deepcopy(device_data))
+    device = Device(device_data)
     light = device.light_control.lights[0]
     assert light.state is False
 
@@ -441,7 +441,7 @@ def test_light_state_mangled():
     device_data = deepcopy(LIGHT_WS)
     device_data[ATTR_LIGHT_CONTROL][0][ATTR_DEVICE_STATE] = "RandomString"
     with pytest.raises(ValueError):
-        device = Device(deepcopy(device_data))
+        device = Device(device_data)
         light = device.light_control.lights[0]
         assert light.state is False
 
@@ -450,7 +450,7 @@ def test_light_state_mangled():
 def test_light_hsb_xy_color():
     """Very basic test, just to touch it."""
     device_data = deepcopy(LIGHT_CWS)
-    device = Device(deepcopy(device_data))
+    device = Device(device_data)
     light = device.light_control.lights[0]
     assert len(light.hsb_xy_color) == 5
 
