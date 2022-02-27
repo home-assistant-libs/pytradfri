@@ -1,17 +1,15 @@
 """Class to control the signal repeater."""
 from __future__ import annotations
 
-from typing import Any
-
 from .base_controller import BaseController
-from .signal_repeater import SignalRepeater
+from .signal_repeater import SignalRepeater, SignalRepeaterResponse
 
 
 class SignalRepeaterControl(BaseController):
     """Class to control the signal repeaters."""
 
     @property
-    def raw(self) -> list[dict[str, Any]]:
+    def raw(self) -> list[SignalRepeaterResponse]:
         """Return raw data that it represents."""
         signal_repeater_control_response = self._device.raw.signal_repeater_control
         assert signal_repeater_control_response is not None
