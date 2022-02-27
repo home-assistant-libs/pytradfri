@@ -12,8 +12,6 @@ from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME, ATTR_OTA_UPDATE_STATE
 
 # type alias
 TypeRaw = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
-TypeRawSimple = Dict[str, Union[str, int]]
-TypeRawList = Dict[str, List[Dict[str, Union[str, int]]]]
 
 
 class ApiResourceResponse(BaseModel):
