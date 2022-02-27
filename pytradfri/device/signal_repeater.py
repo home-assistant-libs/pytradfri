@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class SignalRepeaterResponse(BaseModel):
-    """Represent API response for a blind."""
+    """Represent API response for a signal repeater."""
 
     id: int = Field(alias=ATTR_ID)
 
