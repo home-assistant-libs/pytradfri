@@ -168,14 +168,14 @@ class Gateway:
             "get", [ROOT_GATEWAY, ATTR_GATEWAY_INFO], process_result=process_result
         )
 
-    def get_moods(self, group_id) -> Command:
+    def get_moods(self, group_id: str) -> Command:
         """
         Return moods available in given group.
 
         Returns a Command.
         """
 
-        def process_result(result) -> list[Command]:
+        def process_result(result: list[str]) -> list[Command]:
             return [self.get_mood(mood, mood_parent=group_id) for mood in result]
 
         return Command("get", [ROOT_MOODS, group_id], process_result=process_result)
@@ -205,7 +205,7 @@ class Gateway:
         Returns a Command.
         """
 
-        def process_result(result: list[str]):
+        def process_result(result: list[str]) -> list[Command]:
             return [self.get_smart_task(task) for task in result]
 
         return Command("get", [ROOT_SMART_TASKS], process_result=process_result)
