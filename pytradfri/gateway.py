@@ -83,7 +83,6 @@ class Gateway:
         """
 
         def process_result(result: str) -> list[str]:
-            assert isinstance(result, str)
             return [line.split(";")[0][2:-1] for line in result.split(",")]
 
         return Command(
