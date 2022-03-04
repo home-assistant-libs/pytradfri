@@ -4,7 +4,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from .command import Command, TypeProcessResultCb
+from .command import Command
 from .const import (
     ATTR_AUTH,
     ATTR_COMMISSIONING_MODE,
@@ -82,7 +82,7 @@ class Gateway:
         Returns a Command.
         """
 
-        def process_result(result: TypeProcessResultCb) -> list[str]:
+        def process_result(result: str) -> list[str]:
             assert isinstance(result, str)
             return [line.split(";")[0][2:-1] for line in result.split(",")]
 
