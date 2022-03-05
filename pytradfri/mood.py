@@ -18,7 +18,7 @@ class Mood(ApiResource):
     @property
     def path(self) -> list[str]:
         """Path."""
-        return [ROOT_MOODS, self._parent, cast(str, self.id)]
+        return [ROOT_MOODS, self._parent, str(self.id)]
 
     def __repr__(self) -> str:
         """Return representation of class object."""
