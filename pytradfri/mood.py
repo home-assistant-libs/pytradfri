@@ -1,8 +1,6 @@
 """Represent a mood on the gateway."""
 from __future__ import annotations
 
-from typing import cast
-
 from .const import ROOT_MOODS
 from .resource import ApiResource, TypeRaw
 
@@ -18,7 +16,7 @@ class Mood(ApiResource):
     @property
     def path(self) -> list[str]:
         """Path."""
-        return [ROOT_MOODS, self._parent, str(self.id)]
+        return [ROOT_MOODS, str(self._parent), str(self.id)]
 
     def __repr__(self) -> str:
         """Return representation of class object."""

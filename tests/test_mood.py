@@ -15,4 +15,4 @@ def mood():
 
 def test_mood_properties(mood):
     """Test properties of mood."""
-    assert mood.path == [ROOT_MOODS, 131080, 196625]
+    assert mood.path == [ROOT_MOODS, "131080", "196625"]
