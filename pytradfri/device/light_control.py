@@ -86,9 +86,9 @@ class LightControl(BaseController):
         """Return light objects of the light control."""
         return [Light(self._device, i) for i in range(len(self.raw))]
 
-    def set_state(self, state: int, *, index: int = 0) -> Command:
+    def set_state(self, state: bool, *, index: int = 0) -> Command:
         """Set state of a light."""
-        return self.set_values({ATTR_DEVICE_STATE: state}, index=index)
+        return self.set_values({ATTR_DEVICE_STATE: int(state)}, index=index)
 
     def set_dimmer(
         self, dimmer: int, *, index: int = 0, transition_time: int | None = None
