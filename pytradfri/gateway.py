@@ -288,12 +288,11 @@ class Gateway:
 class GatewayInfo:
     """This class contains Gateway information."""
 
-    _model_class: type[GatewayInfoResponse] = GatewayInfoResponse
     raw: GatewayInfoResponse
 
-    def __init__(self, raw: TypeRaw):
+    def __init__(self, raw: TypeRaw) -> None:
         """Create object of class."""
-        self.raw = self._model_class(**raw)
+        self.raw = GatewayInfoResponse(**raw)
 
     @property
     def certificate_provisioned(self) -> int:
@@ -303,7 +302,7 @@ class GatewayInfo:
     @property
     def current_time(self) -> datetime | None:
         """Return current time (normal timestamp)."""
-        if self.raw.current_time:
+        if self.raw.current_time is not None:
             return datetime.utcfromtimestamp(self.raw.current_time)
 
         return None
@@ -326,7 +325,7 @@ class GatewayInfo:
     @property
     def first_setup(self) -> datetime | None:
         """Return the time when gateway was first set up."""
-        if self.raw.first_setup:
+        if self.raw.first_setup is not None:
             return datetime.utcfromtimestamp(self.raw.first_setup)
 
         return None
@@ -395,9 +394,9 @@ class GatewayInfo:
         Returns a Command.
         """
 
-        def process_result(result: GatewayInfoResponse) -> None:
+        def process_result(result: TypeRaw) -> None:
             """Define callback to process result."""
-            self.raw = result
+            self.raw = GatewayInfoResponse(**result)
 
         return Command("get", self.path, process_result=process_result)
 
