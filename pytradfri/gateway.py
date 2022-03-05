@@ -191,6 +191,8 @@ class Gateway:
         def process_result(result: TypeRaw) -> Mood:
             return Mood(result, mood_parent)
 
+        # The path argument of Command expects a list of strings
+        assert isinstance(mood_parent, str)
         return Command(
             "get",
             [ROOT_MOODS, mood_parent, mood_id],

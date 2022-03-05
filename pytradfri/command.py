@@ -14,7 +14,7 @@ class Command:
         self,
         method: str,
         path: list[str],
-        data: dict[str, Any] | None = None,
+        data: Any | None = None,
         *,
         parse_json: bool = True,
         observe: bool = False,
