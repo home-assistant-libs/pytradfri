@@ -4,7 +4,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Callable, Optional
 
-TypeProcessResultCb = Optional[Callable[[Any], Optional[str]]]
+TypeProcessResultCb = Optional[Callable[[Any], Optional[Any]]]
 
 
 class Command:
@@ -19,7 +19,7 @@ class Command:
         parse_json: bool = True,
         observe: bool = False,
         observe_duration: int = 0,
-        process_result: Optional[Any] = None,
+        process_result: TypeProcessResultCb = None,
         err_callback: Callable[[Exception], None] | None = None,
     ) -> None:
         """Create object of class."""
