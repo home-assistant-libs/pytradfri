@@ -85,7 +85,7 @@ class Group(ApiResource):
         return None
 
     @property
-    def member_ids(self) -> list[str]:
+    def member_ids(self) -> list[str] | list:
         """Members of this group."""
         info: dict[str, Any] = self.raw.group_members
 
@@ -131,7 +131,7 @@ class Group(ApiResource):
         """Set state of a group."""
         return self.set_values({ATTR_DEVICE_STATE: int(state)})
 
-    def set_dimmer(self, dimmer: int, transition_time: int | None = None):
+    def set_dimmer(self, dimmer: int, transition_time: int | None = None) -> Command:
         """Set dimmer value of a group.
 
         dimmer: Integer between 0..255
@@ -215,7 +215,7 @@ class Group(ApiResource):
             raise ColorError(f"Invalid color specified: {colorname}") from exc
 
     def _value_validate(
-        self, value, rnge, identifier="Given"
+        self, value: int, rnge: tuple[int, int], identifier: str = "Given"
     ) -> None:  # pylint: disable=no-self-use
         """Make sure a value is within a given range."""
         if value is not None and (value < rnge[0] or value > rnge[1]):
