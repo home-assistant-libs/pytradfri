@@ -180,7 +180,7 @@ class Gateway:
         return Command("get", [ROOT_MOODS, group_id], process_result=process_result)
 
     @classmethod
-    def get_mood(cls, mood_id: str, *, mood_parent: str | None = None) -> Command:
+    def get_mood(cls, mood_id: str, *, mood_parent: str) -> Command:
         """
         Return a mood.
 
