@@ -3,12 +3,15 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
 
 from pydantic import BaseModel, Field
 
 from .command import Command, TypeProcessResultCb
 from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME, ATTR_OTA_UPDATE_STATE
+
+if TYPE_CHECKING:
+    from .group import GroupResponse
 
 # type alias
 TypeRaw = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
@@ -26,8 +29,8 @@ class ApiResourceResponse(BaseModel):
 class ApiResource:
     """Base object for resources returned from the gateway."""
 
-    _model_class: type[ApiResourceResponse] | None = None
-    raw: TypeRaw | ApiResourceResponse
+    _model_class: type[ApiResourceResponse] | type[GroupResponse] | None = None
+    raw: TypeRaw | ApiResourceResponse | GroupResponse
 
     def __init__(self, raw: TypeRaw) -> None:
         """Initialize base object."""
