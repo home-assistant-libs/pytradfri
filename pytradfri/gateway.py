@@ -189,7 +189,7 @@ class Gateway:
         Returns a Command.
         """
 
-        def process_result(result: dict[str, Any]) -> GatewayInfo:
+        def process_result(result: TypeRaw) -> GatewayInfo:
             return GatewayInfo(result)
 
         return Command(
