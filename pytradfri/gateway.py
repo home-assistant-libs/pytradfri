@@ -380,14 +380,14 @@ class GatewayInfo:
         """Return update status."""
         return self.raw.update_progress
 
-    def set_values(self, values: dict[str, Any]) -> Command:
+    def set_values(self, values: dict[str, Any]) -> Command[None]:
         """Help set values for mood.
 
         Returns a Command.
         """
         return Command("put", self.path, values)
 
-    def update(self) -> Command:
+    def update(self) -> Command[None]:
         """
         Update the info.
 
