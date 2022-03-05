@@ -320,7 +320,7 @@ class GatewayInfo:
 
     @property
     def firmware_version(self) -> str:
-        """NTP server in use."""
+        """Return gateway firmware version."""
         return self.raw.firmware_version
 
     @property
