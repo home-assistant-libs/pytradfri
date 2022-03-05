@@ -1,4 +1,8 @@
 """Group handling."""
+from typing import TYPE_CHECKING, cast
+
+from pytradfri.command import Command
+
 from .color import COLORS
 from .const import (
     ATTR_DEVICE_STATE,
@@ -24,39 +28,42 @@ from .const import (
     ROOT_GROUPS,
 )
 from .error import ColorError
-from .resource import ApiResource
+from .resource import ApiResource, TypeRaw
+
+if TYPE_CHECKING:
+    from .gateway import Gateway
 
 
 class Group(ApiResource):
     """Represent a group."""
 
-    def __init__(self, gateway, raw):
+    def __init__(self, gateway: Gateway, raw: TypeRaw):
         """Create object of class."""
         super().__init__(raw)
         self._gateway = gateway
 
     @property
-    def path(self):
+    def path(self) -> list[str]:
         """Path."""
-        return [ROOT_GROUPS, self.id]
+        return [ROOT_GROUPS, str(self.id)]
 
     @property
-    def state(self):
+    def state(self) -> bool:
         """Boolean representing the light state of the group."""
         return self.raw.get(ATTR_DEVICE_STATE) == 1
 
     @property
-    def dimmer(self):
+    def dimmer(self) -> int:
         """Dimmer value of the group."""
         return self.raw.get(ATTR_LIGHT_DIMMER)
 
     @property
-    def hex_color(self):
+    def hex_color(self) -> str:
         """Return hex color."""
         return self.raw.get(ATTR_LIGHT_COLOR_HEX)
 
     @property
-    def member_ids(self):
+    def member_ids(self) -> int | list:
         """Members of this group."""
         info = self.raw.get(ATTR_GROUP_MEMBERS, {})
 
@@ -66,31 +73,31 @@ class Group(ApiResource):
         return info[ATTR_HS_LINK].get(ATTR_ID, [])
 
     @property
-    def mood_id(self):
+    def mood_id(self) -> int:
         """Active mood."""
         return self.raw.get(ATTR_MOOD)
 
-    def members(self):
+    def members(self) -> list[Command]:
         """Return device objects of members of this group."""
         return [self._gateway.get_device(dev) for dev in self.member_ids]
 
-    def add_member(self, memberid):
+    def add_member(self, memberid: str) -> Command:
         """Add a member to this group."""
         return self._gateway.add_group_member(
             {ATTR_GROUP_ID: self.id, ATTR_ID: [memberid]}
         )
 
-    def remove_member(self, memberid):
+    def remove_member(self, memberid: str) -> Command:
         """Remove a member from this group."""
         return self._gateway.remove_group_member(
             {ATTR_GROUP_ID: self.id, ATTR_ID: [memberid]}
         )
 
-    def moods(self):
+    def moods(self) -> Command:
         """Return mood objects of moods in this group."""
         return self._gateway.get_moods(self.id)
 
-    def mood(self):
+    def mood(self) -> Command:
         """Active mood."""
         return self._gateway.get_mood(self.mood_id, mood_parent=self.id)
 
@@ -182,7 +189,7 @@ class Group(ApiResource):
                 f"{identifier} value must be between {rnge[0]} and {rnge[1]}."
             )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return representation of class object."""
         state = "on" if self.state else "off"
         return f"<Group {self.name} - {state}>"
