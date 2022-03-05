@@ -66,7 +66,7 @@ class Gateway:
     """This class connects to the IKEA Tradfri Gateway."""
 
     @classmethod
-    def generate_psk(cls, identity: str) -> Command:
+    def generate_psk(cls, identity: str) -> Command[str]:
         """Generate the PRE_SHARED_KEY from the gateway.
 
         Returns a Command.
@@ -83,7 +83,7 @@ class Gateway:
         )
 
     @classmethod
-    def get_endpoints(cls) -> Command:
+    def get_endpoints(cls) -> Command[list[str]]:
         """
         Return all available endpoints on the gateway.
 
@@ -120,20 +120,20 @@ class Gateway:
             process_result=process_result,
         )
 
-    def get_devices(self) -> Command:
+    def get_devices(self) -> Command[list[Command[Device]]]:
         """
         Return the devices linked to the gateway.
 
         Returns a Command.
         """
 
-        def process_result(result: list[str]) -> list[Command]:
+        def process_result(result: list[str]) -> list[Command[Device]]:
             return [self.get_device(dev) for dev in result]
 
         return Command("get", [ROOT_DEVICES], process_result=process_result)
 
     @classmethod
-    def get_device(cls, device_id: str) -> Command:
+    def get_device(cls, device_id: str) -> Command[Device]:
         """
         Return specified device.
 
@@ -145,19 +145,19 @@ class Gateway:
 
         return Command("get", [ROOT_DEVICES, device_id], process_result=process_result)
 
-    def get_groups(self) -> Command:
+    def get_groups(self) -> Command[list[Command[Group]]]:
         """
         Return the groups linked to the gateway.
 
         Returns a Command.
         """
 
-        def process_result(result: list[str]) -> list[Command]:
+        def process_result(result: list[str]) -> list[Command[Group]]:
             return [self.get_group(group) for group in result]
 
         return Command("get", [ROOT_GROUPS], process_result=process_result)
 
-    def get_group(self, group_id: str) -> Command:
+    def get_group(self, group_id: str) -> Command[Group]:
         """
         Return specified group.
 
@@ -170,19 +170,19 @@ class Gateway:
         return Command("get", [ROOT_GROUPS, group_id], process_result=process_result)
 
     @classmethod
-    def add_group_member(cls, values: dict[str, Any]) -> Command:
+    def add_group_member(cls, values: dict[str, Any]) -> Command[None]:
         """Add a device to a group."""
 
         return Command("put", [ROOT_GROUPS, "add"], values)
 
     @classmethod
-    def remove_group_member(cls, values: dict[str, Any]) -> Command:
+    def remove_group_member(cls, values: dict[str, Any]) -> Command[None]:
         """Remove a device from a group."""
 
         return Command("put", [ROOT_GROUPS, "remove"], values)
 
     @classmethod
-    def get_gateway_info(cls) -> Command:
+    def get_gateway_info(cls) -> Command[GatewayInfo]:
         """
         Return the gateway info.
 
@@ -196,20 +196,20 @@ class Gateway:
             "get", [ROOT_GATEWAY, ATTR_GATEWAY_INFO], process_result=process_result
         )
 
-    def get_moods(self, group_id: str) -> Command:
+    def get_moods(self, group_id: str) -> Command[list[Command[Mood]]]:
         """
         Return moods available in given group.
 
         Returns a Command.
         """
 
-        def process_result(result: list[str]) -> list[Command]:
+        def process_result(result: list[str]) -> list[Command[Mood]]:
             return [self.get_mood(mood, mood_parent=group_id) for mood in result]
 
         return Command("get", [ROOT_MOODS, group_id], process_result=process_result)
 
     @classmethod
-    def get_mood(cls, mood_id: str, *, mood_parent: str) -> Command:
+    def get_mood(cls, mood_id: str, *, mood_parent: str) -> Command[Mood]:
         """
         Return a mood.
 
@@ -226,19 +226,19 @@ class Gateway:
             process_result=process_result,
         )
 
-    def get_smart_tasks(self) -> Command:
+    def get_smart_tasks(self) -> Command[list[Command[SmartTask]]]:
         """
         Return the transitions linked to the gateway.
 
         Returns a Command.
         """
 
-        def process_result(result: list[str]) -> list[Command]:
+        def process_result(result: list[str]) -> list[Command[SmartTask]]:
             return [self.get_smart_task(task) for task in result]
 
         return Command("get", [ROOT_SMART_TASKS], process_result=process_result)
 
-    def get_smart_task(self, task_id: str) -> Command:
+    def get_smart_task(self, task_id: str) -> Command[SmartTask]:
         """
         Return specified transition.
 
@@ -253,7 +253,7 @@ class Gateway:
         )
 
     @classmethod
-    def reboot(cls) -> Command:
+    def reboot(cls) -> Command[None]:
         """Reboot the Gateway.
 
         Returns a Command.
@@ -262,7 +262,7 @@ class Gateway:
         return Command("post", [ROOT_GATEWAY, ATTR_GATEWAY_REBOOT])
 
     @classmethod
-    def set_commissioning_timeout(cls, timeout: int) -> Command:
+    def set_commissioning_timeout(cls, timeout: int) -> Command[None]:
         """Put the gateway in pairing state.
 
         The pairing state is when the gateway accepts pairings from
@@ -275,7 +275,7 @@ class Gateway:
         )
 
     @classmethod
-    def factory_reset(cls) -> Command:
+    def factory_reset(cls) -> Command[None]:
         """Reset Gateway to factory defaults.
 
         WARNING: All data in Gateway is lost (pairing, groups, etc)

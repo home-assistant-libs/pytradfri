@@ -27,17 +27,17 @@ class BlindControl(BaseController):
         """Return blind objects of the blind control."""
         return [Blind(self._device, i) for i in range(len(self.raw))]
 
-    def trigger_blind(self) -> Command:
+    def trigger_blind(self) -> Command[None]:
         """Trigger the blind's movement."""
         return self.set_value({ATTR_BLIND_TRIGGER: True})
 
-    def set_state(self, state: int) -> Command:
+    def set_state(self, state: int) -> Command[None]:
         """Set state of a blind."""
         self._value_validate(state, RANGE_BLIND, "Blind position")
 
         return self.set_value({ATTR_BLIND_CURRENT_POSITION: state})
 
-    def set_value(self, value: dict[str, bool | int]) -> Command:
+    def set_value(self, value: dict[str, bool | int]) -> Command[None]:
         """Set values on blind control.
 
         Returns a Command.

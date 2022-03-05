@@ -1,13 +1,14 @@
 """Command implementation."""
 from __future__ import annotations
 
+from collections.abc import Callable
 from copy import deepcopy
-from typing import Any, Callable, Optional
+from typing import Any, Generic, TypeVar
 
-TypeProcessResultCb = Optional[Callable[[Any], Any]]
+T = TypeVar("T")
 
 
-class Command:
+class Command(Generic[T]):
     """The object for coap commands."""
 
     def __init__(
@@ -19,7 +20,7 @@ class Command:
         parse_json: bool = True,
         observe: bool = False,
         observe_duration: int = 0,
-        process_result: TypeProcessResultCb = None,
+        process_result: Callable[..., T] | None = None,
         err_callback: Callable[[Exception], None] | None = None,
     ) -> None:
         """Create object of class."""
@@ -32,7 +33,7 @@ class Command:
         self._observe = observe
         self._observe_duration = observe_duration
         self._raw_result: list | dict | str | None = None
-        self._result: Any = None
+        self._result: T | None = None
 
     @property
     def method(self) -> str:
@@ -54,10 +55,13 @@ class Command:
         """Json parsing result."""
         return self._parse_json
 
-    @property
-    def process_result(self) -> TypeProcessResultCb:
-        """Definition of callback to process result."""
-        return self._process_result
+    def process_result(self, result: list | dict | str | None) -> T | None:
+        """Process and set result."""
+        if self._process_result:
+            self._result = self._process_result(result)
+
+        self._raw_result = result
+        return self._result
 
     @property
     def err_callback(self) -> Callable[[Exception], None] | None:
@@ -80,17 +84,9 @@ class Command:
         return self._raw_result
 
     @property
-    def result(self) -> Any:
+    def result(self) -> T | None:
         """Return result."""
         return self._result
-
-    @result.setter
-    def result(self, value: list | dict | str | None) -> None:
-        """Return command result."""
-        if self._process_result:
-            self._result = self._process_result(value)
-
-        self._raw_result = value
 
     @property
     def path_str(self) -> str:
@@ -129,7 +125,7 @@ class Command:
             command2._data, self._data  # pylint: disable=protected-access
         )
 
-    def __add__(self, other: Command | None) -> Command:
+    def __add__(self, other: Command | None) -> Command[T]:
         """Add Command to this Command."""
         if other is None:
             return deepcopy(self)
