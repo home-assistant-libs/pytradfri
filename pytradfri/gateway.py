@@ -136,7 +136,7 @@ class Gateway:
         Returns a Command.
         """
 
-        def process_result(result: TypeRaw):
+        def process_result(result: TypeRaw) -> Group:
             return Group(self, result)
 
         return Command("get", [ROOT_GROUPS, group_id], process_result=process_result)
