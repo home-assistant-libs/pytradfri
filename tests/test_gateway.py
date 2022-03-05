@@ -1,4 +1,5 @@
 """Test Gateway."""
+from copy import deepcopy
 from datetime import datetime
 
 import pytest
@@ -8,33 +9,33 @@ from pytradfri.gateway import Gateway, GatewayInfo
 
 GATEWAY_INFO = {
     "9023": "xyz.pool.ntp.pool",
-    "9029": "1.2.42",
-    "9054": 0,
-    "9055": 0,
     "9059": 1509788799,
+    "9073": 0,  # Uknown
     "9060": "2017-11-04T09:46:39.046784Z",
-    "9061": 0,
-    "9062": 0,
-    "9066": 5,
-    "9069": 1509474847,
+    "9080": 0,  # Uknown
     "9071": 1,
-    "9072": 0,
-    "9073": 0,
-    "9074": 0,
-    "9075": 0,
-    "9076": 0,
-    "9077": 0,
-    "9078": 0,
-    "9079": 0,
-    "9080": 0,
-    "9081": "7e0000000000000a",
-    "9083": "123-45-67",
-    "9092": 0,
+    "9062": 0,  # Uknown
+    "9061": 0,
     "9093": 0,
-    "9106": 0,
+    "9029": "1.2.42",
+    "9081": "7e0000000000000a",
+    "9092": 0,
+    "9069": 1509474847,
+    "9082": True,  # Uknown
+    "9055": 0,
+    "9083": "123-45-67",
+    "9066": 5,
+    "9054": 0,
+    "9077": 0,  # Uknown
+    "9072": 0,  # Uknown
+    "9074": 0,  # Uknown
+    "9075": 0,  # Uknown
+    "9076": 0,  # Uknown
+    "9078": 0,  # Uknown
+    "9079": 0,  # Uknown
+    "9106": 0,  # Uknown
+    "9105": 0,  # Uknown
 }
-
-GATEWAY_INFO_EMPTY = {}
 
 
 @pytest.fixture
@@ -54,7 +55,6 @@ def test_get_device(gateway):
 def test_gateway_info():
     """Test retrival of gateway info."""
     gateway_info = GatewayInfo(GATEWAY_INFO)
-    gateway_info_empty = GatewayInfo(GATEWAY_INFO_EMPTY)
 
     assert gateway_info.id == "7e0000000000000a"
     assert gateway_info.ntp_server == "xyz.pool.ntp.pool"
@@ -64,6 +64,11 @@ def test_gateway_info():
     assert gateway_info.first_setup == datetime.utcfromtimestamp(1509474847)
     assert gateway_info.homekit_id == "123-45-67"
     assert gateway_info.path == ["15011", "15012"]
+
+    new_gateway = deepcopy(GATEWAY_INFO)
+    new_gateway["9059"] = None
+    new_gateway["9069"] = None
+    gateway_info_empty = GatewayInfo(new_gateway)
 
     assert gateway_info_empty.current_time is None
     assert gateway_info_empty.first_setup is None

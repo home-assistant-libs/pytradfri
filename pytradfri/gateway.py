@@ -2,11 +2,15 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
+
+from pydantic import BaseModel, Field
 
 from .command import Command
 from .const import (
+    ATTR_ALEXA_PAIR_STATUS,
     ATTR_AUTH,
+    ATTR_CERTIFICATE_PROV,
     ATTR_COMMISSIONING_MODE,
     ATTR_CURRENT_TIME_ISO8601,
     ATTR_CURRENT_TIME_UNIX,
@@ -16,9 +20,14 @@ from .const import (
     ATTR_GATEWAY_ID,
     ATTR_GATEWAY_INFO,
     ATTR_GATEWAY_REBOOT,
+    ATTR_GATEWAY_TIME_SOURCE,
+    ATTR_GATEWAY_UPDATE_PROGRESS,
+    ATTR_GOOGLE_HOME_PAIR_STATUS,
     ATTR_HOMEKIT_ID,
     ATTR_IDENTITY,
     ATTR_NTP,
+    ATTR_OTA_TYPE,
+    ATTR_OTA_UPDATE_STATE,
     ATTR_PSK,
     ROOT_DEVICES,
     ROOT_GATEWAY,
@@ -31,6 +40,26 @@ from .group import Group
 from .mood import Mood
 from .resource import TypeRaw
 from .smart_task import SmartTask
+
+
+class GatewayInfoResponse(BaseModel):
+    """Represent API response for the gateway."""
+
+    certificate_provisioned: int = Field(alias=ATTR_CERTIFICATE_PROV)
+    current_time: Optional[int] = Field(alias=ATTR_CURRENT_TIME_UNIX)
+    current_time_iso8601: str = Field(alias=ATTR_CURRENT_TIME_ISO8601)
+    commissioning_mode: int = Field(alias=ATTR_COMMISSIONING_MODE)
+    firmware_version: str = Field(alias=ATTR_FIRMWARE_VERSION)
+    first_setup: Optional[int] = Field(alias=ATTR_FIRST_SETUP)
+    homekit_id: str = Field(alias=ATTR_HOMEKIT_ID)
+    id: str = Field(alias=ATTR_GATEWAY_ID)
+    ntp_server: str = Field(alias=ATTR_NTP)
+    ota_type: int = Field(alias=ATTR_OTA_TYPE)
+    ota_update_state: int = Field(ATTR_OTA_UPDATE_STATE)
+    pair_status_alexa: int = Field(alias=ATTR_ALEXA_PAIR_STATUS)
+    pair_status_google_home: int = Field(ATTR_GOOGLE_HOME_PAIR_STATUS)
+    time_source: int = Field(alias=ATTR_GATEWAY_TIME_SOURCE)
+    update_progress: int = Field(alias=ATTR_GATEWAY_UPDATE_PROGRESS)
 
 
 class Gateway:
@@ -160,7 +189,7 @@ class Gateway:
         Returns a Command.
         """
 
-        def process_result(result: dict[str, str | int]) -> GatewayInfo:
+        def process_result(result: TypeRaw) -> GatewayInfo:
             return GatewayInfo(result)
 
         return Command(
@@ -259,74 +288,118 @@ class Gateway:
 class GatewayInfo:
     """This class contains Gateway information."""
 
-    def __init__(self, raw):
+    raw: GatewayInfoResponse
+
+    def __init__(self, raw: TypeRaw) -> None:
         """Create object of class."""
-        self.raw = raw
+        self.raw = GatewayInfoResponse(**raw)
 
     @property
-    def id(self):
-        """Return the gateway id."""
-        return self.raw.get(ATTR_GATEWAY_ID)
+    def certificate_provisioned(self) -> int:
+        """Return provisioning status of certificate."""
+        return self.raw.certificate_provisioned
 
     @property
-    def ntp_server(self):
-        """NTP server in use."""
-        return self.raw.get(ATTR_NTP)
-
-    @property
-    def firmware_version(self):
-        """NTP server in use."""
-        return self.raw.get(ATTR_FIRMWARE_VERSION)
-
-    @property
-    def current_time(self):
+    def current_time(self) -> datetime | None:
         """Return current time (normal timestamp)."""
-        if ATTR_CURRENT_TIME_UNIX not in self.raw:
-            return None
-        return datetime.utcfromtimestamp(self.raw[ATTR_CURRENT_TIME_UNIX])
+        if self.raw.current_time is not None:
+            return datetime.utcfromtimestamp(self.raw.current_time)
+
+        return None
 
     @property
-    def current_time_iso8601(self):
+    def commissioning_mode(self) -> int:
+        """Return comissioning mode."""
+        return self.raw.commissioning_mode
+
+    @property
+    def current_time_iso8601(self) -> str:
         """Return current time in iso8601 format."""
-        return self.raw.get(ATTR_CURRENT_TIME_ISO8601)
+        return self.raw.current_time_iso8601
 
     @property
-    def first_setup(self):
+    def firmware_version(self) -> str:
+        """Return gateway firmware version."""
+        return self.raw.firmware_version
+
+    @property
+    def first_setup(self) -> datetime | None:
         """Return the time when gateway was first set up."""
-        if ATTR_FIRST_SETUP not in self.raw:
-            return None
-        return datetime.utcfromtimestamp(self.raw[ATTR_FIRST_SETUP])
+        if self.raw.first_setup is not None:
+            return datetime.utcfromtimestamp(self.raw.first_setup)
+
+        return None
 
     @property
-    def homekit_id(self):
+    def homekit_id(self) -> str:
         """Return homekit id."""
-        return self.raw.get(ATTR_HOMEKIT_ID)
+        return self.raw.homekit_id
 
     @property
-    def path(self):
+    def id(self) -> str:
+        """Return the gateway id."""
+        return self.raw.id
+
+    @property
+    def ntp_server(self) -> str:
+        """NTP server in use."""
+        return self.raw.ntp_server
+
+    @property
+    def ota_type(self) -> int:
+        """Return OTA type."""
+        return self.raw.ota_type
+
+    @property
+    def ota_update_state(self) -> int:
+        """Return OTA update state."""
+        return self.raw.ota_update_state
+
+    @property
+    def pair_status_google_home(self) -> int:
+        """Return pairing status Google Home."""
+        return self.raw.pair_status_google_home
+
+    @property
+    def pair_status_alexa(self) -> int:
+        """Return pairing status Amazon Alexa."""
+        return self.raw.pair_status_alexa
+
+    @property
+    def path(self) -> list[str]:
         """Return path."""
         return [ROOT_GATEWAY, ATTR_GATEWAY_INFO]
 
-    def set_values(self, values):
+    @property
+    def time_source(self) -> int:
+        """Return time source."""
+        return self.raw.time_source
+
+    @property
+    def update_progress(self) -> int:
+        """Return update status."""
+        return self.raw.update_progress
+
+    def set_values(self, values: dict[str, Any]) -> Command:
         """Help set values for mood.
 
         Returns a Command.
         """
         return Command("put", self.path, values)
 
-    def update(self):
+    def update(self) -> Command:
         """
         Update the info.
 
         Returns a Command.
         """
 
-        def process_result(result):
+        def process_result(result: TypeRaw) -> None:
             """Define callback to process result."""
-            self.raw = result
+            self.raw = GatewayInfoResponse(**result)
 
         return Command("get", self.path, process_result=process_result)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return representation of class object."""
         return "<GatewayInfo>"
