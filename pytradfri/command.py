@@ -19,7 +19,7 @@ class Command:
         parse_json: bool = True,
         observe: bool = False,
         observe_duration: int = 0,
-        process_result: TypeProcessResultCb = None,
+        process_result: Optional[Any] = None,
         err_callback: Callable[[Exception], None] | None = None,
     ) -> None:
         """Create object of class."""
