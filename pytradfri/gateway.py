@@ -373,7 +373,7 @@ class GatewayInfo:
 
     @property
     def time_source(self) -> int:
-        """Return homekit id."""
+        """Return time source."""
         return self.raw.time_source
 
     @property
