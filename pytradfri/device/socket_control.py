@@ -22,11 +22,11 @@ class SocketControl(BaseController):
         """Return socket objects of the socket control."""
         return [Socket(self._device, i) for i in range(len(self.raw))]
 
-    def set_state(self, state: bool, *, index: int = 0) -> Command:
+    def set_state(self, state: bool, *, index: int = 0) -> Command[None]:
         """Set state of a socket."""
         return self.set_values({ATTR_DEVICE_STATE: int(state)}, index=index)
 
-    def set_values(self, values: dict[str, int], *, index: int = 0) -> Command:
+    def set_values(self, values: dict[str, int], *, index: int = 0) -> Command[None]:
         """Set values on socket control.
 
         Returns a Command.

@@ -95,7 +95,7 @@ class APIFactory:
             msg = f"Error executing request: {exc}"
             raise RequestError(msg) from None
 
-        api_command.result = _process_output(return_value, parse_json)
+        api_command.process_result(_process_output(return_value, parse_json))
         return api_command.result
 
     def request(self, api_commands, *, timeout=None):
@@ -166,7 +166,7 @@ class APIFactory:
             output += data
 
             if open_obj == 0:
-                api_command.result = _process_output(output)
+                api_command.process_result(_process_output(output))
                 output = ""
 
     def generate_psk(self, security_key):

@@ -7,7 +7,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 from pydantic import BaseModel, Field
 
-from .command import Command, TypeProcessResultCb
+from .command import Command
 from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME, ATTR_OTA_UPDATE_STATE
 
 # type alias
@@ -73,10 +73,10 @@ class ApiResource:
 
     def observe(
         self,
-        callback: TypeProcessResultCb,
+        callback: Callable[[ApiResource], None],
         err_callback: Callable[[Exception], None] | None,
         duration: int = 60,
-    ) -> Command:
+    ) -> Command[None]:
         """Observe resource and call callback when updated."""
 
         def observe_callback(value: TypeRaw) -> None:
@@ -100,11 +100,11 @@ class ApiResource:
             observe_duration=duration,
         )
 
-    def set_name(self, name: str) -> Command:
+    def set_name(self, name: str) -> Command[None]:
         """Set group name."""
         return self.set_values({ATTR_NAME: name})
 
-    def set_values(self, values: Any) -> Command:
+    def set_values(self, values: Any) -> Command[None]:
         """Help to set values for group.
 
         Helper to set values for group.
@@ -112,7 +112,7 @@ class ApiResource:
         """
         return Command("put", self.path, values)
 
-    def update(self) -> Command:
+    def update(self) -> Command[None]:
         """
         Update the group.
 

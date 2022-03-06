@@ -194,7 +194,7 @@ class APIFactory:
             )
             return None
 
-        api_command.result = _process_output(res, parse_json)
+        api_command.process_result(_process_output(res, parse_json))
 
         return api_command.result
 
@@ -227,10 +227,10 @@ class APIFactory:
         # Note that this is necessary to start observing
         pr_req, pr_rsp = await self._get_response(msg, timeout)
 
-        api_command.result = _process_output(pr_rsp)
+        api_command.process_result(_process_output(pr_rsp))
 
         def success_callback(res: Message) -> None:
-            api_command.result = _process_output(res)
+            api_command.process_result(_process_output(res))
 
         def error_callback(exc: Exception) -> None:
             if isinstance(exc, LibraryShutdown):

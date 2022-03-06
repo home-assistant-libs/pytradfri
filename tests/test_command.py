@@ -7,9 +7,6 @@ from pytradfri.command import Command
 def test_property_access():
     """Test property access in Command."""
 
-    def pr():
-        pass
-
     def ec():
         pass
 
@@ -20,7 +17,6 @@ def test_property_access():
         parse_json=True,
         observe=False,
         observe_duration=0,
-        process_result=pr,
         err_callback=ec,
     )
 
@@ -29,7 +25,6 @@ def test_property_access():
     assert command.parse_json is True
     assert command.observe is False
     assert command.observe_duration == 0
-    assert command.process_result == pr
     assert command.err_callback == ec
 
 
@@ -43,7 +38,7 @@ def test_result():
     assert command.result is None
     assert command.raw_result is None
 
-    command.result = 0
+    command.process_result(0)
     assert command.result == 1
     assert command.raw_result == 0
 
