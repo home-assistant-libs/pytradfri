@@ -43,8 +43,7 @@ class GroupResponse(ApiResourceResponse):
 
     color_hex: Optional[str] = Field(alias=ATTR_LIGHT_COLOR_HEX)
     dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
-    group_members: Optional[dict[str, Any]] = Field(alias=ATTR_GROUP_MEMBERS)
-    id: int = Field(alias=ATTR_ID)
+    group_members: Optional[Dict[str, Dict[str, List[int]]]] = Field(alias=ATTR_GROUP_MEMBERS)
     mood_id: str = Field(alias=ATTR_MOOD)
     state: int = Field(alias=ATTR_DEVICE_STATE)
 
@@ -55,10 +54,9 @@ class Group(ApiResource):
     _model_class: type[GroupResponse] = GroupResponse
     raw: GroupResponse
 
-    def __init__(self, gateway: Gateway, raw: TypeRaw):
+    def __init__(self, gateway: Gateway, raw: TypeRaw) -> None:
         """Create object of class."""
         super().__init__(raw)
-        self.raw = GroupResponse(**raw)
         self._gateway = gateway
 
     @property
@@ -85,7 +83,7 @@ class Group(ApiResource):
         return None
 
     @property
-    def member_ids(self) -> list | list[int]:
+    def member_ids(self) -> list[int]:
         """
         Members of this group.
 
