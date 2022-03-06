@@ -63,7 +63,7 @@ def test_setters(group):
     assert cmd.data == {ATTR_GROUP_ID: GROUP[ATTR_ID], ATTR_ID: [65547]}
 
 
-def test_moods(group: Group):
+def test_moods(group: Group) -> None:
     """Test moods."""
     cmd = group.moods()
     assert cmd.path == [ROOT_MOODS, group.id]
