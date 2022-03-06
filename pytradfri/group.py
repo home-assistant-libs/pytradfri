@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from pytradfri.command import Command
 
@@ -32,13 +32,13 @@ from .const import (
     ROOT_GROUPS,
 )
 from .error import ColorError
-from .resource import ApiResource, TypeRaw
+from .resource import ApiResource, ApiResourceResponse, TypeRaw
 
 if TYPE_CHECKING:
     from .gateway import Gateway
 
 
-class GroupResponse(BaseModel):
+class GroupResponse(ApiResourceResponse):
     """Represent API response for a blind."""
 
     color_hex: Optional[str] = Field(alias=ATTR_LIGHT_COLOR_HEX)
