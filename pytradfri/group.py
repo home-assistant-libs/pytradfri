@@ -1,7 +1,7 @@
 """Group handling."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 from pydantic import Field
 
@@ -43,7 +43,9 @@ class GroupResponse(ApiResourceResponse):
 
     color_hex: Optional[str] = Field(alias=ATTR_LIGHT_COLOR_HEX)
     dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
-    group_members: Optional[Dict[str, Dict[str, List[int]]]] = Field(alias=ATTR_GROUP_MEMBERS)
+    group_members: Optional[Dict[str, Dict[str, List[int]]]] = Field(
+        alias=ATTR_GROUP_MEMBERS
+    )
     mood_id: str = Field(alias=ATTR_MOOD)
     state: int = Field(alias=ATTR_DEVICE_STATE)
 
