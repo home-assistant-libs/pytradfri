@@ -40,7 +40,7 @@ class ApiResource:
             self.raw = raw
 
     @property
-    def id(self) -> int | None:
+    def id(self) -> int:
         """Id."""
         if self._model_class:
             resource_id = self.raw.id  # type: ignore[union-attr]
@@ -49,7 +49,7 @@ class ApiResource:
         return resource_id
 
     @property
-    def name(self) -> str | None:
+    def name(self) -> str:
         """Name."""
         if self._model_class:
             name = self.raw.name  # type: ignore[union-attr]
