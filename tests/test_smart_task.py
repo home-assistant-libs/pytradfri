@@ -106,7 +106,7 @@ def test_smart_task_set_start_action_dimmer():
     )
 
     assert cmd.method == "put"
-    assert cmd.path == ["15010", 317094]
+    assert cmd.path == ["15010", "317094"]
     assert cmd.data == {
         "9042": {
             "15013": [

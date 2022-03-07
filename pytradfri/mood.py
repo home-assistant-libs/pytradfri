@@ -8,7 +8,7 @@ from .resource import ApiResource, TypeRaw
 class Mood(ApiResource):
     """Mood."""
 
-    def __init__(self, raw: TypeRaw, parent: str) -> None:
+    def __init__(self, raw: TypeRaw, parent: int) -> None:
         """Create object of class."""
         super().__init__(raw)
         self._parent = parent

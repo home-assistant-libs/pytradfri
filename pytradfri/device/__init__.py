@@ -71,14 +71,14 @@ class Device(ApiResource):
     raw: DeviceResponse
 
     @property
-    def application_type(self) -> int | None:
+    def application_type(self) -> int:
         """Return application type."""
         return self.raw.application_type
 
     @property
-    def path(self):
+    def path(self) -> list[str]:
         """Return path."""
-        return [ROOT_DEVICES, self.id]
+        return [ROOT_DEVICES, str(self.id)]
 
     @property
     def device_info(self) -> "DeviceInfo":
@@ -90,7 +90,7 @@ class Device(ApiResource):
         """Return timestamp when last seen."""
         last_seen = self.raw.last_seen
 
-        if last_seen:
+        if last_seen is not None:
             return datetime.utcfromtimestamp(last_seen)
 
         return None
@@ -110,7 +110,6 @@ class Device(ApiResource):
         """Return light_control."""
         if self.has_light_control:
             return LightControl(self)
-
         return None
 
     @property
