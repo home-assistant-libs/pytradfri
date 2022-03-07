@@ -94,7 +94,7 @@ class Group(ApiResource):
         """
         info = self.raw.group_members
 
-        if info is None or ATTR_HS_LINK not in info:
+        if not info or ATTR_HS_LINK not in info:
             return []
 
         member_ids: list[int] = info[ATTR_HS_LINK][ATTR_ID]
