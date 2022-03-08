@@ -109,39 +109,41 @@ class Group(ApiResource):
         """Active mood."""
         return self.raw.mood_id
 
-    def members(self) -> list[Command]:
+    def members(self) -> list[Command[Device]]:
         """Return device objects of members of this group."""
         return [self._gateway.get_device(str(dev)) for dev in self.member_ids]
 
-    def add_member(self, memberid: str) -> Command:
+    def add_member(self, memberid: str) -> Command[None]:
         """Add a member to this group."""
         return self._gateway.add_group_member(
             {ATTR_GROUP_ID: self.id, ATTR_ID: [memberid]}
         )
 
-    def remove_member(self, memberid: str) -> Command:
+    def remove_member(self, memberid: str) -> Command[None]:
         """Remove a member from this group."""
         return self._gateway.remove_group_member(
             {ATTR_GROUP_ID: self.id, ATTR_ID: [memberid]}
         )
 
-    def moods(self) -> Command:
+    def moods(self) -> Command[list[Command[Mood]]]:
         """Return mood objects of moods in this group."""
-        return self._gateway.get_moods(str(self.id))
+        return self._gateway.get_moods(self.id)
 
-    def mood(self) -> Command:
+    def mood(self) -> Command[Mood]:
         """Active mood."""
-        return self._gateway.get_mood(self.mood_id, mood_parent=str(self.id))
+        return self._gateway.get_mood(self.mood_id, mood_parent=self.id)
 
-    def activate_mood(self, mood_id: str) -> Command:
+    def activate_mood(self, mood_id: str) -> Command[None]:
         """Activate a mood."""
         return self.set_values({ATTR_MOOD: mood_id, ATTR_DEVICE_STATE: int(self.state)})
 
-    def set_state(self, state: bool) -> Command:
+    def set_state(self, state: bool) -> Command[None]:
         """Set state of a group."""
         return self.set_values({ATTR_DEVICE_STATE: int(state)})
 
-    def set_dimmer(self, dimmer: int, transition_time: int | None = None) -> Command:
+    def set_dimmer(
+        self, dimmer: int, transition_time: int | None = None
+    ) -> Command[None]:
         """Set dimmer value of a group.
 
         dimmer: Integer between 0..255
@@ -156,7 +158,7 @@ class Group(ApiResource):
 
     def set_color_temp(
         self, color_temp: int, *, index: int = 0, transition_time: int | None = None
-    ) -> Command:
+    ) -> Command[None]:
         """Set color temp a light."""
         self._value_validate(color_temp, RANGE_MIREDS, "Color temperature")
 
@@ -167,7 +169,9 @@ class Group(ApiResource):
 
         return self.set_values(values)
 
-    def set_hex_color(self, color: str, transition_time: int | None = None) -> Command:
+    def set_hex_color(
+        self, color: str, transition_time: int | None = None
+    ) -> Command[None]:
         """Set hex color of a group."""
         values: dict[str, int | str] = {
             ATTR_LIGHT_COLOR_HEX: color,
@@ -184,7 +188,7 @@ class Group(ApiResource):
         *,
         index: int = 0,
         transition_time: int | None = None,
-    ) -> Command:
+    ) -> Command[None]:
         """Set HSB color settings of the light."""
         self._value_validate(hue, RANGE_HUE, "Hue")
         self._value_validate(saturation, RANGE_SATURATION, "Saturation")
@@ -202,7 +206,7 @@ class Group(ApiResource):
 
     def set_xy_color(
         self, color_x: int, color_y: int, transition_time: int | None = None
-    ) -> Command:
+    ) -> Command[None]:
         """Set xy color of a group."""
         self._value_validate(color_x, RANGE_X, "X color")
         self._value_validate(color_y, RANGE_Y, "Y color")
@@ -216,7 +220,7 @@ class Group(ApiResource):
 
     def set_predefined_color(
         self, colorname: str, transition_time: int | None = None
-    ) -> Command:
+    ) -> Command[None]:
         """Set predefined color for group."""
         try:
             color = COLORS[colorname.lower().replace(" ", "_")]
