@@ -26,8 +26,10 @@ from ..const import (
 )
 from ..device.light import LightResponse
 from ..resource import ApiResource, ApiResourceResponse
-from .air_purifier_control import AirPurifierControl, AirPurifierResponse
-from .blind_control import BlindControl, BlindResponse
+from .air_purifier import AirPurifierResponse
+from .air_purifier_control import AirPurifierControl
+from .blind import BlindResponse
+from .blind_control import BlindControl
 from .light_control import LightControl
 from .signal_repeater import SignalRepeaterResponse
 from .signal_repeater_control import SignalRepeaterControl
