@@ -5,9 +5,8 @@ from typing import TYPE_CHECKING, Dict, List, Optional
 
 from pydantic import Field
 
-from pytradfri.command import Command
-
 from .color import COLORS
+from .command import Command
 from .const import (
     ATTR_DEVICE_STATE,
     ATTR_GROUP_ID,
@@ -31,7 +30,9 @@ from .const import (
     RANGE_Y,
     ROOT_GROUPS,
 )
+from .device import Device
 from .error import ColorError
+from .mood import Mood
 from .resource import ApiResource, ApiResourceResponse, TypeRaw
 
 if TYPE_CHECKING:
@@ -43,9 +44,7 @@ class GroupResponse(ApiResourceResponse):
 
     color_hex: Optional[str] = Field(alias=ATTR_LIGHT_COLOR_HEX)
     dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
-    group_members: Optional[Dict[str, Dict[str, List[int]]]] = Field(
-        alias=ATTR_GROUP_MEMBERS
-    )
+    group_members: Dict[str, Dict[str, List[int]]] = Field(alias=ATTR_GROUP_MEMBERS)
     mood_id: str = Field(alias=ATTR_MOOD)
     state: int = Field(alias=ATTR_DEVICE_STATE)
 
@@ -89,20 +88,16 @@ class Group(ApiResource):
         """
         Members of this group.
 
-        The resonse looks like this:
-        {"15002": {"9003": [65536, 65537, 65538, 65539]}}
+        A group with devices will look like this:
+        {"15002": {"9003": [65536, 65537]}}
+
+        An empty group will look like this:
+        {"15002": {"9003": []}}
+
+        If a group is created in the app and no devices are added
+        to it, it will immediately be deleted.
         """
-        info = self.raw.group_members
-
-        if not info or ATTR_HS_LINK not in info:
-            return []
-
-        member_ids: list[int] = info[ATTR_HS_LINK][ATTR_ID]
-
-        if member_ids:
-            return member_ids
-
-        return []
+        return self.raw.group_members[ATTR_HS_LINK][ATTR_ID]
 
     @property
     def mood_id(self) -> str:
