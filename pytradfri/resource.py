@@ -30,7 +30,7 @@ class ApiResource:
     """Base object for resources returned from the gateway."""
 
     _model_class: type[ApiResourceResponse] | None = None
-    raw: TypeRaw | ApiResourceResponse | GroupResponse
+    raw: TypeRaw | ApiResourceResponse
 
     def __init__(self, raw: TypeRaw) -> None:
         """Initialize base object."""
