@@ -6,7 +6,7 @@ from collections.abc import Callable
 from enum import Enum
 import json
 import logging
-from typing import Any, Union, cast
+from typing import Union, cast, overload
 
 from aiocoap import Context, Message
 from aiocoap.credentials import CredentialsMissingError
@@ -19,7 +19,7 @@ from aiocoap.error import (
 from aiocoap.numbers.codes import Code
 from aiocoap.protocol import BlockwiseRequest
 
-from ..command import Command
+from ..command import Command, T
 from ..error import ClientError, RequestTimeout, ServerError
 from ..gateway import Gateway
 
@@ -141,8 +141,8 @@ class APIFactory:
             await self._reset_protocol(exc)
             await self._update_credentials()
             raise RequestTimeout("Request timed out.", exc) from exc
-        except LibraryShutdown:
-            raise
+        except LibraryShutdown as exc:
+            raise ClientError("Protocol is shutdown.", exc) from exc
         except Error as exc:
             await self._reset_protocol(exc)
             await self._update_credentials()
@@ -152,11 +152,12 @@ class APIFactory:
             await self._update_credentials()
             raise exc
 
-    async def _execute(self, api_command: Command, timeout: float | None) -> Any:
+    async def _execute(self, api_command: Command[T], timeout: float | None) -> T:
         """Execute the command."""
         if api_command.observe:
             await self._observe(api_command, timeout)
-            return None
+            # The observe command result is set by the observe helper method above.
+            return api_command.result
 
         method = api_command.method
         data = api_command.data
@@ -184,23 +185,28 @@ class APIFactory:
 
         _LOGGER.debug("Executing %s %s", self._host, api_command)
 
-        try:
-            _, res = await self._get_response(msg, timeout)
-        except LibraryShutdown:
-            _LOGGER.warning(
-                "Protocol is shutdown, cancelling command: %s %s",
-                self._host,
-                api_command,
-            )
-            return None
-
+        _, res = await self._get_response(msg, timeout)
         api_command.process_result(_process_output(res, parse_json))
 
         return api_command.result
 
+    @overload
     async def request(
-        self, api_commands: Command | list[Command], timeout: float | None = None
-    ) -> Any:
+        self, api_commands: Command[T], timeout: float | None = None
+    ) -> T:
+        """Make a request."""
+        ...
+
+    @overload
+    async def request(
+        self, api_commands: list[Command[T]], timeout: float | None = None
+    ) -> list[T]:
+        """Make a request."""
+        ...
+
+    async def request(
+        self, api_commands: Command[T] | list[Command[T]], timeout: float | None = None
+    ) -> T | list[T]:
         """Make a request."""
         if not isinstance(api_commands, list):
             _LOGGER.debug("REQUEST call single: %s %s", self._host, api_commands)
@@ -211,7 +217,7 @@ class APIFactory:
 
         _LOGGER.debug("REQUEST call multiple: %s %s", self._host, api_commands)
         commands = (self._execute(api_command, timeout) for api_command in api_commands)
-        command_results: list = await asyncio.gather(*commands)
+        command_results: list[T] = await asyncio.gather(*commands)
         _LOGGER.debug("REQUEST result multiple: %s", command_results)
 
         return command_results

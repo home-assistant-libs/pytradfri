@@ -33,7 +33,9 @@ class Command(Generic[T]):
         self._observe = observe
         self._observe_duration = observe_duration
         self._raw_result: list | dict | str | None = None
-        self._result: T | None = None
+        # If there's no process_result callback, the result will always be None.
+        # And in that case T will also be None.
+        self._result: T = None  # type: ignore[assignment]
 
     @property
     def method(self) -> str:
@@ -55,7 +57,7 @@ class Command(Generic[T]):
         """Json parsing result."""
         return self._parse_json
 
-    def process_result(self, result: list | dict | str | None) -> T | None:
+    def process_result(self, result: list | dict | str | None) -> T:
         """Process and set result."""
         if self._process_result:
             self._result = self._process_result(result)
@@ -84,7 +86,7 @@ class Command(Generic[T]):
         return self._raw_result
 
     @property
-    def result(self) -> T | None:
+    def result(self) -> T:
         """Return result."""
         return self._result
 
