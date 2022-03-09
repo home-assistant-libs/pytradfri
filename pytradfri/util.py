@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import logging
+from typing import Iterator, Union, cast
 
 from .error import PytradfriError
 
@@ -19,7 +20,7 @@ def load_json(filename: str) -> list | dict:
     """
     try:
         with open(filename, encoding="utf-8") as fdesc:
-            return json.loads(fdesc.read())
+            return cast(Union[dict, list], json.loads(fdesc.read()))
     except FileNotFoundError:
         # This is not a fatal error
         _LOGGER.debug("JSON file not found: %s", filename)
@@ -56,34 +57,34 @@ class BitChoices:
     http://stackoverflow.com/questions/3663898/representing-a-multi-select-field-for-weekdays-in-a-django-model
     """
 
-    def __init__(self, choices):
+    def __init__(self, choices: tuple[tuple[str, str], ...]) -> None:
         """Initialize BitChoices class."""
-        self._choices = []
-        self._lookup = {}
+        self._choices: list[tuple[int, str]] = []
+        self._lookup: dict[str, int] = {}
         for index, (key, val) in enumerate(choices):
             index = 2**index
             self._choices.append((index, val))
             self._lookup[key] = index
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         """Iterate over object."""
         return iter(self._choices)
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Len."""
         return len(self._choices)
 
-    def __getattr__(self, attr):
+    def __getattr__(self, attr: str) -> int:
         """Getattr."""
         try:
             return self._lookup[attr]
         except KeyError as exc:
             raise AttributeError(attr) from exc
 
-    def get_selected_keys(self, selection):
+    def get_selected_keys(self, selection: int) -> list[str]:
         """Return a list of keys for the given selection."""
         return [k for k, b in self._lookup.items() if b & selection]
 
-    def get_selected_values(self, selection):
+    def get_selected_values(self, selection: int) -> list[str]:
         """Return a list of values for the given selection."""
         return [v for b, v in self._choices if b & selection]
