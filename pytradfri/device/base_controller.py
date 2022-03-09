@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Sequence
 
 from pydantic import BaseModel, Field
 
@@ -30,7 +30,7 @@ class BaseController:
     @abstractmethod
     def raw(
         self,
-    ) -> list[BaseResponse]:
+    ) -> Sequence[BaseResponse]:
         """Return raw data that it represents."""
 
     @classmethod
