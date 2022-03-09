@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Iterator
+from typing import Iterator, Union, cast
 
 from .error import PytradfriError
 
@@ -20,8 +20,7 @@ def load_json(filename: str) -> list | dict:
     """
     try:
         with open(filename, encoding="utf-8") as fdesc:
-            return_value: list | dict = json.loads(fdesc.read())
-            return return_value
+            return cast(Union[dict, list], json.loads(fdesc.read()))
     except FileNotFoundError:
         # This is not a fatal error
         _LOGGER.debug("JSON file not found: %s", filename)
