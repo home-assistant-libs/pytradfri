@@ -3,21 +3,20 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
-from ..const import ATTR_DEVICE_STATE, ATTR_ID
-
-
-class SocketResponse(BaseModel):
-    """Represent API response for a blind."""
-
-    id: int = Field(alias=ATTR_ID)
-    state: int = Field(alias=ATTR_DEVICE_STATE)
-
+from ..const import ATTR_DEVICE_STATE
+from .base_controller import BaseResponse
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
     from . import Device
+
+
+class SocketResponse(BaseResponse):
+    """Represent API response for a blind."""
+
+    state: int = Field(alias=ATTR_DEVICE_STATE)
 
 
 class Socket:

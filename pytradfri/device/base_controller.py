@@ -4,15 +4,19 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import TYPE_CHECKING
 
-from .air_purifier import AirPurifierResponse
-from .blind import BlindResponse
-from .light import LightResponse
-from .signal_repeater import SignalRepeaterResponse
-from .socket import SocketResponse
+from pydantic import BaseModel, Field
+
+from ..const import ATTR_ID
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
     from . import Device
+
+
+class BaseResponse(BaseModel):
+    """Represent API base response."""
+
+    id: int = Field(alias=ATTR_ID)
 
 
 class BaseController:
@@ -26,9 +30,7 @@ class BaseController:
     @abstractmethod
     def raw(
         self,
-    ) -> list[BlindResponse] | list[SocketResponse] | list[
-        SignalRepeaterResponse
-    ] | list[LightResponse] | list[AirPurifierResponse]:
+    ) -> list[BaseResponse]:
         """Return raw data that it represents."""
 
     @classmethod

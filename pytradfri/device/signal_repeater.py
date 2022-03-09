@@ -3,18 +3,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Field
-
-from ..const import ATTR_ID
+from .base_controller import BaseResponse
 
 if TYPE_CHECKING:
     from . import Device
 
 
-class SignalRepeaterResponse(BaseModel):
+class SignalRepeaterResponse(BaseResponse):
     """Represent API response for a signal repeater."""
-
-    id: int = Field(alias=ATTR_ID)
 
 
 class SignalRepeater:
