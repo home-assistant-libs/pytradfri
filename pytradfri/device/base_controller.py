@@ -4,19 +4,11 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Sequence
 
-from pydantic import BaseModel, Field
-
-from ..const import ATTR_ID
+from ..resource import BaseResponse
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
     from . import Device
-
-
-class BaseResponse(BaseModel):
-    """Represent API base response."""
-
-    id: int = Field(alias=ATTR_ID)
 
 
 class BaseController:

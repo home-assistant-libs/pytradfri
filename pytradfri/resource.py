@@ -5,14 +5,19 @@ from abc import abstractmethod
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from .command import Command
 from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME, ATTR_OTA_UPDATE_STATE
-from .device.base_controller import BaseResponse
 
 # type alias
 TypeRaw = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
+
+
+class BaseResponse(BaseModel):
+    """Represent API base response."""
+
+    id: int = Field(alias=ATTR_ID)
 
 
 class ApiResourceResponse(BaseResponse):

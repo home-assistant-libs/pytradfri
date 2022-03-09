@@ -18,7 +18,7 @@ from ..const import (
     ATTR_AIR_PURIFIER_MODE_AUTO,
     ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL,
 )
-from .base_controller import BaseResponse
+from ..resource import BaseResponse
 
 
 class AirPurifierResponse(BaseResponse):

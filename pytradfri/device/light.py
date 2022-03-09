@@ -20,7 +20,7 @@ from ..const import (
     SUPPORT_HEX_COLOR,
     SUPPORT_XY_COLOR,
 )
-from .base_controller import BaseResponse
+from ..resource import BaseResponse
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.

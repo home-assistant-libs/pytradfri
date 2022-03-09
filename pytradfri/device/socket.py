@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from pydantic import Field
 
 from ..const import ATTR_DEVICE_STATE
-from .base_controller import BaseResponse
+from ..resource import BaseResponse
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.

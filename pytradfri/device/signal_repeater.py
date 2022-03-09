@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .base_controller import BaseResponse
+from ..resource import BaseResponse
 
 if TYPE_CHECKING:
     from . import Device

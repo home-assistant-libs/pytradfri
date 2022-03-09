@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from pydantic import Field
 
 from ..const import ATTR_BLIND_CURRENT_POSITION
-from .base_controller import BaseResponse
+from ..resource import BaseResponse
 
 
 class BlindResponse(BaseResponse):
