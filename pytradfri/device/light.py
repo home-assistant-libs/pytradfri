@@ -3,12 +3,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from ..color import supported_features
 from ..const import (
     ATTR_DEVICE_STATE,
-    ATTR_ID,
     ATTR_LIGHT_COLOR_HEX,
     ATTR_LIGHT_COLOR_HUE,
     ATTR_LIGHT_COLOR_SATURATION,
@@ -21,13 +20,14 @@ from ..const import (
     SUPPORT_HEX_COLOR,
     SUPPORT_XY_COLOR,
 )
+from ..resource import BaseResponse
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
     from . import Device
 
 
-class LightResponse(BaseModel):
+class LightResponse(BaseResponse):
     """Represent API response for a blind."""
 
     color_mireds: Optional[int] = Field(alias=ATTR_LIGHT_MIREDS)
@@ -37,7 +37,6 @@ class LightResponse(BaseModel):
     color_hue: Optional[int] = Field(alias=ATTR_LIGHT_COLOR_HUE)
     color_saturation: Optional[int] = Field(alias=ATTR_LIGHT_COLOR_SATURATION)
     dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
-    id: int = Field(alias=ATTR_ID)
     state: int = Field(alias=ATTR_DEVICE_STATE)
 
 

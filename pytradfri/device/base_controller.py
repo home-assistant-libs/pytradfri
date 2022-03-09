@@ -1,7 +1,10 @@
 """Base class for a controller."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from abc import abstractmethod
+from typing import TYPE_CHECKING, Sequence
+
+from ..resource import BaseResponse
 
 if TYPE_CHECKING:
     # avoid cyclic import at runtime.
@@ -16,9 +19,11 @@ class BaseController:
         self._device = device
 
     @property
-    def raw(self):
+    @abstractmethod
+    def raw(
+        self,
+    ) -> Sequence[BaseResponse]:
         """Return raw data that it represents."""
-        return None
 
     @classmethod
     def _value_validate(
@@ -30,7 +35,7 @@ class BaseController:
                 f"{identifier} value must be between {rnge[0]} and {rnge[1]}."
             )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return representation of class object."""
         return (
             f"<{type(self).__name__} for {self._device.name} ({len(self.raw)} devices)>"

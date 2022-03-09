@@ -3,16 +3,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
-from ..const import ATTR_BLIND_CURRENT_POSITION, ATTR_ID
+from ..const import ATTR_BLIND_CURRENT_POSITION
+from ..resource import BaseResponse
 
 
-class BlindResponse(BaseModel):
+class BlindResponse(BaseResponse):
     """Represent API response for a blind."""
 
     current_cover_position: int = Field(alias=ATTR_BLIND_CURRENT_POSITION)
-    id: int = Field(alias=ATTR_ID)
 
 
 if TYPE_CHECKING:

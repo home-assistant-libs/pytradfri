@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from ..const import (
     ATTR_AIR_PURIFIER_AIR_QUALITY,
@@ -17,11 +17,11 @@ from ..const import (
     ATTR_AIR_PURIFIER_MODE,
     ATTR_AIR_PURIFIER_MODE_AUTO,
     ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL,
-    ATTR_ID,
 )
+from ..resource import BaseResponse
 
 
-class AirPurifierResponse(BaseModel):
+class AirPurifierResponse(BaseResponse):
     """Represent API response for a blind."""
 
     air_quality: int = Field(alias=ATTR_AIR_PURIFIER_AIR_QUALITY)
@@ -33,7 +33,6 @@ class AirPurifierResponse(BaseModel):
     filter_lifetime_total: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_LIFETIME_TOTAL)
     filter_runtime: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_RUNTIME)
     filter_status: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_STATUS)
-    id: int = Field(alias=ATTR_ID)
     leds_off: int = Field(alias=ATTR_AIR_PURIFIER_LEDS_OFF)
     mode: int = Field(alias=ATTR_AIR_PURIFIER_MODE)
     motor_runtime_total: int = Field(alias=ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL)

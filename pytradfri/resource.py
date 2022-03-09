@@ -14,10 +14,15 @@ from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME, ATTR_OTA_UPDATE_STATE
 TypeRaw = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
 
 
-class ApiResourceResponse(BaseModel):
-    """Represent a resource response."""
+class BaseResponse(BaseModel):
+    """Represent API base response."""
 
     id: int = Field(alias=ATTR_ID)
+
+
+class ApiResourceResponse(BaseResponse):
+    """Represent a resource response."""
+
     name: str = Field(alias=ATTR_NAME)
     created_at: Optional[int] = Field(alias=ATTR_CREATED_AT)
     ota_update_state: Optional[int] = Field(alias=ATTR_OTA_UPDATE_STATE)
