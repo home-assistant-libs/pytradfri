@@ -8,9 +8,11 @@ SmartTask # return top level info
         StartActionItem # Get info on specific device in task
             StartActionItemController # change values for task
 """
+from __future__ import annotations
 
 import datetime
 from datetime import datetime as dt
+from typing import Any
 
 from .command import Command
 from .const import (
@@ -30,7 +32,7 @@ from .const import (
     ROOT_SMART_TASKS,
     ROOT_START_ACTION,
 )
-from .resource import ApiResource
+from .resource import ApiResource, TypeRaw
 from .util import BitChoices
 
 WEEKDAYS = BitChoices(
@@ -273,17 +275,24 @@ class StartActionItem:
 class StartActionItemController:
     """Class to edit settings for a task."""
 
-    def __init__(self, item, raw, state, path, devices_dict):
-        """Initialize TaskControl."""
+    def __init__(
+        self,
+        item: StartActionItem,
+        raw: TypeRaw,
+        state: int,
+        path: list[str],
+        devices_dict: dict[str, int],
+    ):
+        """Initialize StartActionItemController."""
         self._item = item
         self.raw = raw
         self.state = state
         self.path = path
         self.devices_dict = devices_dict
 
-    def set_dimmer(self, dimmer):
+    def set_dimmer(self, dimmer: Command) -> Command[None]:
         """Set final dimmer value for task."""
-        command = {
+        command: dict[str, dict[str, Any]] = {
             ATTR_START_ACTION: {
                 ATTR_DEVICE_STATE: self.state,
                 ROOT_START_ACTION: [
@@ -298,9 +307,9 @@ class StartActionItemController:
         }
         return self.set_values(command)
 
-    def set_transition_time(self, transition_time):
+    def set_transition_time(self, transition_time: int) -> Command[None]:
         """Set time (mins) for light transition."""
-        command = {
+        command: dict[str, dict[str, Any]] = {
             ATTR_START_ACTION: {
                 ATTR_DEVICE_STATE: self.state,
                 ROOT_START_ACTION: [
@@ -315,10 +324,10 @@ class StartActionItemController:
         }
         return self.set_values(command)
 
-    def set_values(self, command):
+    def set_values(self, values: dict[str, dict[str, Any]]) -> Command[None]:
         """
         Set values on task control.
 
         Returns a Command.
         """
-        return Command("put", self._item.path, command)
+        return Command("put", self._item.path, values)
