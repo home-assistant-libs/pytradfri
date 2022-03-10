@@ -290,7 +290,7 @@ class StartActionItemController:
         self.path = path
         self.devices_dict = devices_dict
 
-    def set_dimmer(self, dimmer: Command) -> Command[None]:
+    def set_dimmer(self, dimmer: int) -> Command[None]:
         """Set final dimmer value for task."""
         command: dict[str, dict[str, Any]] = {
             ATTR_START_ACTION: {
