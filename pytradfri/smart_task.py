@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import datetime
 from datetime import datetime as dt
-from typing import Any
+from typing import Any, cast
 
 from .command import Command
 from .const import (
@@ -62,9 +62,9 @@ class SmartTask(ApiResource):
         return [ROOT_SMART_TASKS, str(self.id)]
 
     @property
-    def state(self):
+    def state(self) -> bool:
         """Boolean representing the light state of the transition."""
-        return self.raw.get(ATTR_DEVICE_STATE) == 1
+        return cast(bool, self.raw.get(ATTR_DEVICE_STATE) == 1)  # type: ignore[union-attr]
 
     @property
     def task_type_id(self):
@@ -145,7 +145,7 @@ class SmartTask(ApiResource):
 class TaskControl:
     """Class to control the tasks."""
 
-    def __init__(self, task, state, path, gateway):
+    def __init__(self, task, state: bool, path, gateway):
         """Initialize TaskControl."""
         self._task = task
         self.state = state
@@ -197,9 +197,9 @@ class StartAction:
         self.path = path
 
     @property
-    def state(self):
+    def state(self) -> bool:
         """Return state of start action task."""
-        return self.raw.get(ATTR_DEVICE_STATE)
+        return cast(bool, self.raw.get(ATTR_DEVICE_STATE) == 1)
 
     @property
     def devices(self):
@@ -218,7 +218,7 @@ class StartAction:
 class StartActionItem:
     """Class to show settings for a task."""
 
-    def __init__(self, task, index, state, path, raw):
+    def __init__(self, task, index, state: bool, path, raw):
         """Initialize TaskInfo."""
         self.task = task
         self.index = index
