@@ -279,7 +279,7 @@ class StartActionItemController:
         self,
         item: StartActionItem,
         raw: TypeRaw,
-        state: int,
+        state: bool,
         path: list[str],
         devices_dict: dict[str, int],
     ):
@@ -294,7 +294,7 @@ class StartActionItemController:
         """Set final dimmer value for task."""
         command: dict[str, dict[str, Any]] = {
             ATTR_START_ACTION: {
-                ATTR_DEVICE_STATE: self.state,
+                ATTR_DEVICE_STATE: int(self.state),
                 ROOT_START_ACTION: [
                     {
                         ATTR_ID: self.raw[ATTR_ID],
@@ -311,7 +311,7 @@ class StartActionItemController:
         """Set time (mins) for light transition."""
         command: dict[str, dict[str, Any]] = {
             ATTR_START_ACTION: {
-                ATTR_DEVICE_STATE: self.state,
+                ATTR_DEVICE_STATE: int(self.state),
                 ROOT_START_ACTION: [
                     {
                         ATTR_ID: self.raw[ATTR_ID],
