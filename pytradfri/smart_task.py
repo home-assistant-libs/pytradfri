@@ -216,12 +216,14 @@ class TaskControl:
 
         def process_result(result: TypeRaw) -> None:
             gateway_info: GatewayInfo = GatewayInfo(result)
-            if gateway_info.current_time is not None:
+            if gateway_info.current_time:
                 d_now: dt = gateway_info.current_time
                 d_utcnow: dt = dt.utcnow()
                 diff: timedelta = d_now - d_utcnow
 
                 setattr(self._task, "delta_time_gateway_local", diff)
+
+            return None
 
         return Command(
             "get", [ROOT_GATEWAY, ATTR_GATEWAY_INFO], process_result=process_result
