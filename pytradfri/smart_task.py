@@ -57,7 +57,7 @@ WEEKDAYS: BitChoices = BitChoices(
 class SmartTaskMixin(BaseModel):
     """Represent common task attributes."""
 
-    state: int = Field(ATTR_DEVICE_STATE)
+    state: int = Field(alias=ATTR_DEVICE_STATE)
 
 
 class StartActionResponse(BaseResponse):
@@ -284,15 +284,21 @@ class StartActionItem:
         self._raw = raw
 
     @property
-    def devices_dict(self) -> dict[str, int]:
-        """Return state of start action task."""
-        json_list: dict[str, int] = {}
-        index: int = 0
-        for x_entry in self._raw.root_start_action:
-            if index != self.index:
-                json_list.update(x_entry)
-            index = index + 1
-        return json_list
+    def devices_list(self) -> list[dict[str, int]]:
+        """Store task data for all tasks but the one we want to update."""
+        output_list: list[dict[str, int]] = []
+        current_data_list: list[StartActionResponse] = self._raw.root_start_action
+        for idx, record in enumerate(current_data_list):
+            if idx != self.index:
+                output_list.append(
+                    {
+                        ATTR_ID: record.id,
+                        ATTR_TRANSITION_TIME: record.transition_time,
+                        ATTR_LIGHT_DIMMER: record.dimmer,
+                    }
+                )
+
+        return output_list
 
     @property
     def id(self) -> int:
@@ -303,7 +309,7 @@ class StartActionItem:
     def item_controller(self) -> StartActionItemController:
         """Control a task."""
         return StartActionItemController(
-            self, self.raw, self.state, self.path, self.devices_dict
+            self, self.raw, self.state, self.path, self.devices_list
         )
 
     @property
@@ -338,45 +344,51 @@ class StartActionItemController:
         raw: StartActionResponse,
         state: bool,
         path: list[str],
-        devices_dict: dict[str, int],
+        devices_list: list[dict[str, int]],
     ):
         """Initialize StartActionItemController."""
         self._item = item
         self.raw = raw
         self.state = state
         self.path = path
-        self.devices_dict = devices_dict
+        self.devices_list = devices_list
 
     def set_dimmer(self, dimmer: int) -> Command[None]:
         """Set final dimmer value for task."""
+        root_start_action_list: list[dict[str, int]] = [
+            {
+                ATTR_ID: self.raw.id,
+                ATTR_LIGHT_DIMMER: dimmer,
+                ATTR_TRANSITION_TIME: self.raw.transition_time,
+            }
+        ]
+
+        root_start_action_list.extend(self.devices_list)
+
         command: dict[str, dict[str, Any]] = {
             ATTR_START_ACTION: {
                 ATTR_DEVICE_STATE: int(self.state),
-                ROOT_START_ACTION: [
-                    {
-                        ATTR_ID: self.raw.id,
-                        ATTR_LIGHT_DIMMER: dimmer,
-                        ATTR_TRANSITION_TIME: self.raw.transition_time,
-                    },
-                    self.devices_dict,
-                ],
+                ROOT_START_ACTION: root_start_action_list,
             }
         }
         return self.set_values(command)
 
     def set_transition_time(self, transition_time: int) -> Command[None]:
         """Set time (mins) for light transition."""
+        root_start_action_list: list[dict[str, int]] = [
+            {
+                ATTR_ID: self.raw.id,
+                ATTR_LIGHT_DIMMER: self.raw.dimmer,
+                ATTR_TRANSITION_TIME: transition_time * 10 * 60,
+            }
+        ]
+
+        root_start_action_list.extend(self.devices_list)
+
         command: dict[str, dict[str, Any]] = {
             ATTR_START_ACTION: {
                 ATTR_DEVICE_STATE: int(self.state),
-                ROOT_START_ACTION: [
-                    {
-                        ATTR_ID: self.raw.id,
-                        ATTR_LIGHT_DIMMER: self.raw.dimmer,
-                        ATTR_TRANSITION_TIME: transition_time * 10 * 60,
-                    },
-                    self.devices_dict,
-                ],
+                ROOT_START_ACTION: root_start_action_list,
             }
         }
         return self.set_values(command)
