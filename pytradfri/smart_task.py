@@ -103,6 +103,7 @@ class SmartTask(ApiResource):
         """Initialize the class."""
         super().__init__(raw)
         self._gateway = gateway
+        self._delta_time_gateway_local: timedelta = timedelta(0)
 
     @property
     def path(self) -> list[str]:
@@ -182,11 +183,11 @@ class SmartTask(ApiResource):
     @property
     def delta_time_gateway_local(self) -> timedelta:
         """Return difference between local time and time set on gateway."""
-        return timedelta(0)
+        return self._delta_time_gateway_local
 
     @delta_time_gateway_local.setter
     def delta_time_gateway_local(self, value: timedelta) -> None:
-        self.delta_time_gateway_local = value
+        self._delta_time_gateway_local = value
 
     @property
     def start_action(self) -> StartAction:
