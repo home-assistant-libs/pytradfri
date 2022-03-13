@@ -103,7 +103,7 @@ class SmartTask(ApiResource):
         """Initialize the class."""
         super().__init__(raw)
         self._gateway = gateway
-        self._delta_time_gateway_local: timedelta = timedelta(0)
+        self.delta_time_gateway_local: timedelta = timedelta(0)
 
     @property
     def path(self) -> list[str]:
@@ -181,15 +181,6 @@ class SmartTask(ApiResource):
         return TaskControl(self, self.state, self.path, self._gateway)
 
     @property
-    def delta_time_gateway_local(self) -> timedelta:
-        """Return difference between local time and time set on gateway."""
-        return self._delta_time_gateway_local
-
-    @delta_time_gateway_local.setter
-    def delta_time_gateway_local(self, value: timedelta) -> None:
-        self._delta_time_gateway_local = value
-
-    @property
     def start_action(self) -> StartAction:
         """Return start action object."""
         return StartAction(self, self.path)
@@ -230,7 +221,7 @@ class TaskControl:
                 d_utcnow: dt = dt.utcnow()
                 diff: timedelta = d_now - d_utcnow
 
-                self._task.delta_time_gateway_local = diff
+                setattr(self._task, "delta_time_gateway_local", diff)
 
         return Command(
             "get", [ROOT_GATEWAY, ATTR_GATEWAY_INFO], process_result=process_result
