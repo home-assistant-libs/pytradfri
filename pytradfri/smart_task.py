@@ -11,7 +11,7 @@ SmartTask # return top level info
 from __future__ import annotations
 
 from datetime import datetime as dt, time
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -63,7 +63,7 @@ class SmartTaskMixin(BaseModel):
 class StartActionResponse(BaseResponse):
     """Represent a start action response."""
 
-    transition_time: int = Field(alias=ATTR_TRANSITION_TIME)
+    transition_time: Optional[int] = Field(alias=ATTR_TRANSITION_TIME)
     dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
 
 
@@ -290,13 +290,14 @@ class StartActionItem:
         current_data_list: list[StartActionResponse] = self._raw.root_start_action
         for idx, record in enumerate(current_data_list):
             if idx != self.index:
-                output_list.append(
-                    {
-                        ATTR_ID: record.id,
-                        ATTR_TRANSITION_TIME: record.transition_time,
-                        ATTR_LIGHT_DIMMER: record.dimmer,
-                    }
-                )
+                list_record: dict[str, int] = {}
+                list_record[ATTR_ID] = record.id
+                list_record[ATTR_LIGHT_DIMMER] = record.dimmer
+
+                if record.transition_time is not None:
+                    list_record[ATTR_TRANSITION_TIME] = record.transition_time
+
+                output_list.append(list_record)
 
         return output_list
 
@@ -313,12 +314,15 @@ class StartActionItem:
         )
 
     @property
-    def transition_time(self) -> int:
+    def transition_time(self) -> int | None:
         """Transition runs for this long from the time in task_start.
 
         Value is in seconds x 10. Default to 0 if transition is missing.
         """
-        return round(self.raw.transition_time / 60 / 10)
+        if self.raw.transition_time is not None:
+            return round(self.raw.transition_time / 60 / 10)
+
+        return None
 
     @property
     def dimmer(self) -> int:
@@ -359,9 +363,11 @@ class StartActionItemController:
             {
                 ATTR_ID: self.raw.id,
                 ATTR_LIGHT_DIMMER: dimmer,
-                ATTR_TRANSITION_TIME: self.raw.transition_time,
             }
         ]
+
+        if self.raw.transition_time is not None:
+            root_start_action_list[0][ATTR_TRANSITION_TIME] = self.raw.transition_time
 
         root_start_action_list.extend(self.devices_list)
 
@@ -382,7 +388,6 @@ class StartActionItemController:
                 ATTR_TRANSITION_TIME: transition_time * 10 * 60,
             }
         ]
-
         root_start_action_list.extend(self.devices_list)
 
         command: dict[str, dict[str, Any]] = {
