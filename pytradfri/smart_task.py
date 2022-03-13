@@ -10,7 +10,7 @@ SmartTask # return top level info
 """
 from __future__ import annotations
 
-from datetime import datetime as dt, time
+from datetime import datetime as dt, time, timedelta
 from typing import TYPE_CHECKING, Any, List, Optional
 
 from pydantic import BaseModel, Field
@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field
 from .command import Command
 from .const import (
     ATTR_DEVICE_STATE,
+    ATTR_GATEWAY_INFO,
     ATTR_ID,
     ATTR_LIGHT_DIMMER,
     ATTR_REPEAT_DAYS,
@@ -31,6 +32,7 @@ from .const import (
     ATTR_START_ACTION,
     ATTR_TIME_START_TIME_MINUTE,
     ATTR_TRANSITION_TIME,
+    ROOT_GATEWAY,
     ROOT_SMART_TASKS,
     ROOT_START_ACTION,
 )
@@ -178,6 +180,15 @@ class SmartTask(ApiResource):
         return TaskControl(self, self.state, self.path, self._gateway)
 
     @property
+    def delta_time_gateway_local(self) -> timedelta:
+        """Return difference between local time and time set on gateway."""
+        return timedelta(0)
+
+    @delta_time_gateway_local.setter
+    def delta_time_gateway_local(self, value: timedelta) -> None:
+        self.delta_time_gateway_local = value
+
+    @property
     def start_action(self) -> StartAction:
         """Return start action object."""
         return StartAction(self, self.path)
@@ -208,25 +219,36 @@ class TaskControl:
             for idx in range(len(self.raw.root_start_action))
         ]
 
+    def calibrate_time(self) -> Command[None]:
+        """Calibrate difference between local time and gateway time."""
+
+        def process_result(result: TypeRaw) -> None:
+            gateway_info: GatewayInfo = GatewayInfo(result)
+            if gateway_info.current_time is not None:
+                d_now: dt = gateway_info.current_time
+                d_utcnow: dt = dt.utcnow()
+                diff: timedelta = d_now - d_utcnow
+
+                self._task.delta_time_gateway_local = diff
+
+        return Command(
+            "get", [ROOT_GATEWAY, ATTR_GATEWAY_INFO], process_result=process_result
+        )
+
     def set_dimmer_start_time(self, hour: int, minute: int) -> Command[None]:
         """Set start time for task (hh:mm) in iso8601.
 
         NB: dimmer starts 30 mins before time in app
         """
-        #  This is to calculate the difference between local time
-        #  and the time in the gateway
-        gateway_info: Command[GatewayInfo] = self._gateway.get_gateway_info()
-        d_now = gateway_info.current_time  # type: ignore[attr-defined]
-        assert d_now is not None
-        d_utcnow = dt.utcnow()
-        diff = d_now - d_utcnow
-        newtime = dt(100, 1, 1, hour, minute, 00) - diff
+        new_time: dt = (
+            dt(100, 1, 1, hour, minute, 00) - self._task.delta_time_gateway_local
+        )
 
         command: dict[str, list[dict[str, int]]] = {
             ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL: [
                 {
-                    ATTR_SMART_TASK_TRIGGER_TIME_START_HOUR: newtime.hour,
-                    ATTR_SMART_TASK_TRIGGER_TIME_START_MIN: newtime.minute,
+                    ATTR_SMART_TASK_TRIGGER_TIME_START_HOUR: new_time.hour,
+                    ATTR_SMART_TASK_TRIGGER_TIME_START_MIN: new_time.minute,
                 }
             ]
         }
