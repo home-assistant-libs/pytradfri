@@ -103,7 +103,7 @@ class SmartTask(ApiResource):
         """Initialize the class."""
         super().__init__(raw)
         self._gateway = gateway
-        self.delta_time_gateway_local: timedelta = timedelta(0)
+        self.delta_time_gateway_local = timedelta(0)
 
     @property
     def path(self) -> list[str]:
