@@ -221,7 +221,7 @@ class TaskControl:
                 d_utcnow: dt = dt.utcnow()
                 diff: timedelta = d_now - d_utcnow
 
-                setattr(self._task, "delta_time_gateway_local", diff)
+                self._task.delta_time_gateway_local = diff
 
             return None
 
