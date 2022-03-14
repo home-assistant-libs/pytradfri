@@ -219,9 +219,9 @@ class TaskControl:
             if not gateway_info.current_time:
                 return
 
-            d_now: dt = gateway_info.current_time
-            d_utcnow: dt = dt.utcnow()
-            diff: timedelta = d_now - d_utcnow
+            d_now = gateway_info.current_time
+            d_utcnow = dt.utcnow()
+            diff = d_now - d_utcnow
 
             self._task.delta_time_gateway_local = diff
 
