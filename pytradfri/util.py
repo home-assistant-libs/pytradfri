@@ -66,7 +66,7 @@ class BitChoices:
             self._choices.append((index, val))
             self._lookup[key] = index
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[tuple[int, str]]:
         """Iterate over object."""
         return iter(self._choices)
 
