@@ -8,7 +8,7 @@ import subprocess
 from time import time
 from typing import TYPE_CHECKING
 
-from ..command import Command
+from ..command import Command, T
 from ..error import ClientError, RequestError, RequestTimeout, ServerError
 from ..gateway import Gateway
 
@@ -111,7 +111,7 @@ class APIFactory:
 
         return command_results
 
-    def _observe(self, api_command: Command) -> None:
+    def _observe(self, api_command: Command[T]) -> None:
         """Observe an endpoint."""
         path = api_command.path
         duration = api_command.observe_duration
