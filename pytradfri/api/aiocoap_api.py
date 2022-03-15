@@ -6,7 +6,7 @@ from collections.abc import Callable
 from enum import Enum
 import json
 import logging
-from typing import Any, Union, cast, overload
+from typing import Any, Dict, List, Union, cast, overload
 
 from aiocoap import Context, Message
 from aiocoap.credentials import CredentialsMissingError
@@ -322,4 +322,4 @@ def _process_output(
     if not parse_json:
         return output
 
-    return cast(Union[list[Any], dict[Any, Any]], json.loads(output))
+    return cast(Union[List[Any], Dict[Any, Any]], json.loads(output))
