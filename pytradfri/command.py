@@ -127,7 +127,7 @@ class Command(Generic[T]):
             command2._data, self._data  # pylint: disable=protected-access
         )
 
-    def __add__(self, other: Command[T] | None) -> Command[T]:
+    def __add__(self, other: Command[Any] | None) -> Command[T]:
         """Add Command to this Command."""
         if other is None:
             return deepcopy(self)
