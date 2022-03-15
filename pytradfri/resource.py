@@ -23,7 +23,7 @@ class BaseResponse(BaseModel):
 class ApiResourceResponse(BaseResponse):
     """Represent a resource response."""
 
-    name: str = Field(alias=ATTR_NAME)
+    name: Optional[str] = Field(alias=ATTR_NAME)
     created_at: Optional[int] = Field(alias=ATTR_CREATED_AT)
     ota_update_state: Optional[int] = Field(alias=ATTR_OTA_UPDATE_STATE)
 
@@ -51,7 +51,7 @@ class ApiResource:
         return resource_id
 
     @property
-    def name(self) -> str:
+    def name(self) -> str | None:
         """Name."""
         if self._model_class:
             name = self.raw.name  # type: ignore[union-attr]
