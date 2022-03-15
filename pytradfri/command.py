@@ -119,7 +119,7 @@ class Command(Generic[T]):
                 b_dict[key] = value
         return b_dict
 
-    def combine_data(self, command2: Command[T] | None) -> None:
+    def combine_data(self, command2: Command[Any] | None) -> None:
         """Combine data for this command with another."""
         if command2 is None:
             return
