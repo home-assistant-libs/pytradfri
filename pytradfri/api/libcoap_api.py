@@ -47,7 +47,9 @@ class APIFactory:
 
     def _base_command(self, method: str) -> list[str]:
         """Return base command."""
-        assert self._psk is not None
+        if self._psk is None:
+            return []
+
         return [
             "coap-client",
             "-u",
