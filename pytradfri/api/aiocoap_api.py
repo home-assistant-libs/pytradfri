@@ -53,7 +53,7 @@ class APIFactory:
         self._host = host
         self._psk_id = psk_id
         self._observations_err_callbacks: list[Callable[[Exception], None]] = []
-        self._protocol: asyncio.Task | None = None
+        self._protocol: asyncio.Task[Context] | None = None
         self._reset_lock = asyncio.Lock()
         self._shutdown = False
 
