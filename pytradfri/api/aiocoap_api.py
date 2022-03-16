@@ -6,7 +6,7 @@ from collections.abc import Callable
 from enum import Enum
 import json
 import logging
-from typing import Union, cast, overload
+from typing import Any, Dict, List, Union, cast, overload
 
 from aiocoap import Context, Message
 from aiocoap.credentials import CredentialsMissingError
@@ -53,7 +53,7 @@ class APIFactory:
         self._host = host
         self._psk_id = psk_id
         self._observations_err_callbacks: list[Callable[[Exception], None]] = []
-        self._protocol: asyncio.Task | None = None
+        self._protocol: asyncio.Task[Context] | None = None
         self._reset_lock = asyncio.Lock()
         self._shutdown = False
 
@@ -222,7 +222,7 @@ class APIFactory:
 
         return command_results
 
-    async def _observe(self, api_command: Command, timeout: float | None) -> None:
+    async def _observe(self, api_command: Command[T], timeout: float | None) -> None:
         """Observe an endpoint."""
         duration = api_command.observe_duration
         url = api_command.url(self._host)
@@ -298,7 +298,9 @@ class APIFactory:
         )
 
 
-def _process_output(res: Message, parse_json: bool = True) -> list | dict | str | None:
+def _process_output(
+    res: Message, parse_json: bool = True
+) -> list[Any] | dict[Any, Any] | str | None:
     """Process output."""
     res_payload: str = res.payload.decode("utf-8")
     output = res_payload.strip()
@@ -320,4 +322,4 @@ def _process_output(res: Message, parse_json: bool = True) -> list | dict | str 
     if not parse_json:
         return output
 
-    return cast(Union[list, dict], json.loads(output))
+    return cast(Union[List[Any], Dict[Any, Any]], json.loads(output))

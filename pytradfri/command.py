@@ -32,7 +32,7 @@ class Command(Generic[T]):
         self._err_callback = err_callback
         self._observe = observe
         self._observe_duration = observe_duration
-        self._raw_result: list | dict | str | None = None
+        self._raw_result: list[Any] | dict[Any, Any] | str | None = None
         # If there's no process_result callback, the result will always be None.
         # And in that case T will also be None.
         self._result: T = None  # type: ignore[assignment]
@@ -57,7 +57,7 @@ class Command(Generic[T]):
         """Json parsing result."""
         return self._parse_json
 
-    def process_result(self, result: list | dict | str | None) -> T:
+    def process_result(self, result: list[Any] | dict[Any, Any] | str | None) -> T:
         """Process and set result."""
         if self._process_result:
             self._result = self._process_result(result)
@@ -81,7 +81,7 @@ class Command(Generic[T]):
         return self._observe_duration
 
     @property
-    def raw_result(self) -> list | dict | str | None:
+    def raw_result(self) -> list[Any] | dict[Any, Any] | str | None:
         """Return raw result."""
         return self._raw_result
 
@@ -119,7 +119,7 @@ class Command(Generic[T]):
                 b_dict[key] = value
         return b_dict
 
-    def combine_data(self, command2: Command | None) -> None:
+    def combine_data(self, command2: Command[Any] | None) -> None:
         """Combine data for this command with another."""
         if command2 is None:
             return
@@ -127,7 +127,7 @@ class Command(Generic[T]):
             command2._data, self._data  # pylint: disable=protected-access
         )
 
-    def __add__(self, other: Command | None) -> Command[T]:
+    def __add__(self, other: Command[Any] | None) -> Command[T]:
         """Add Command to this Command."""
         if other is None:
             return deepcopy(self)

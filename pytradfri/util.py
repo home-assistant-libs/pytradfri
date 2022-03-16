@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Iterator, Union, cast
+from typing import Any, Dict, Iterator, List, Union, cast
 
 from .error import PytradfriError
 
@@ -13,14 +13,14 @@ from .error import PytradfriError
 _LOGGER = logging.getLogger(__name__)
 
 
-def load_json(filename: str) -> list | dict:
+def load_json(filename: str) -> list[Any] | dict[Any, Any]:
     """Load JSON data from a file and return as dict or list.
 
     Defaults to returning empty dict if file is not found.
     """
     try:
         with open(filename, encoding="utf-8") as fdesc:
-            return cast(Union[dict, list], json.loads(fdesc.read()))
+            return cast(Union[Dict[Any, Any], List[Any]], json.loads(fdesc.read()))
     except FileNotFoundError:
         # This is not a fatal error
         _LOGGER.debug("JSON file not found: %s", filename)
@@ -33,7 +33,7 @@ def load_json(filename: str) -> list | dict:
     return {}  # (also evaluates to False)
 
 
-def save_json(filename: str, config: list | dict) -> bool:
+def save_json(filename: str, config: list[Any] | dict[Any, Any]) -> bool:
     """Save JSON data to a file.
 
     Returns True on success.
@@ -66,7 +66,7 @@ class BitChoices:
             self._choices.append((index, val))
             self._lookup[key] = index
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[tuple[int, str]]:
         """Iterate over object."""
         return iter(self._choices)
 
