@@ -1,12 +1,13 @@
 """COAP implementation."""
 from __future__ import annotations
 
-from functools import wraps
 import json
 import logging
 import subprocess
 from time import time
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Union, cast
+
+from aiocoap import Message
 
 from ..command import Command, T
 from ..error import ClientError, RequestError, RequestTimeout, ServerError
@@ -21,7 +22,13 @@ SERVER_ERROR_PREFIX = "5."
 class APIFactory:
     """APIFactory."""
 
-    def __init__(self, host, psk_id="pytradfri", psk=None, timeout=10):
+    def __init__(
+        self,
+        host: str,
+        psk_id: str = "pytradfri",
+        psk: str | None = None,
+        timeout: int = 10,
+    ) -> None:
         """Create object of class."""
         self._host = host
         self._psk_id = psk_id
@@ -29,17 +36,18 @@ class APIFactory:
         self._timeout = timeout  # seconds
 
     @property
-    def psk(self):
+    def psk(self) -> str | None:
         """Return psk."""
         return self._psk
 
     @psk.setter
-    def psk(self, value):
+    def psk(self, value: str) -> None:
         """Set psk."""
         self._psk = value
 
     def _base_command(self, method: str) -> list[str]:
         """Return base command."""
+        assert self._psk is not None
         return [
             "coap-client",
             "-u",
@@ -52,7 +60,9 @@ class APIFactory:
             method,
         ]
 
-    def _execute(self, api_command, *, timeout=None):
+    def _execute(
+        self, api_command: Command[T], *, timeout: int | None = None
+    ) -> T | None:
         """Execute the command."""
 
         if api_command.observe:
@@ -71,7 +81,7 @@ class APIFactory:
 
         command = self._base_command(method)
 
-        kwargs = {
+        kwargs: dict[str, Any] = {
             "stderr": subprocess.DEVNULL,
             "timeout": proc_timeout,
             "universal_newlines": True,
@@ -98,7 +108,9 @@ class APIFactory:
         api_command.process_result(_process_output(return_value, parse_json))
         return api_command.result
 
-    def request(self, api_commands, *, timeout=None):
+    def request(
+        self, api_commands: list[Command[T]], *, timeout: int | None = None
+    ) -> T | list[T] | list[Any] | None:
         """Make a request. Timeout is in seconds."""
         if not isinstance(api_commands, list):
             return self._execute(api_commands, timeout=timeout)
@@ -169,7 +181,7 @@ class APIFactory:
                 api_command.process_result(_process_output(output))
                 output = ""
 
-    def generate_psk(self, security_key):
+    def generate_psk(self, security_key: str) -> str:
         """Generate and set a psk from the security key."""
         if not self._psk:
             # Backup the real identity.
@@ -180,7 +192,8 @@ class APIFactory:
             self._psk = security_key
 
             # Ask the Gateway to generate the psk for the identity.
-            self._psk = self.request(Gateway().generate_psk(existing_psk_id))
+            command: list[Command[str]] = [Gateway().generate_psk(existing_psk_id)]
+            self._psk = cast(str, self.request(command))
 
             # Restore the real identity.
             self._psk_id = existing_psk_id
@@ -188,7 +201,9 @@ class APIFactory:
         return self._psk
 
 
-def _process_output(output, parse_json=True):
+def _process_output(
+    output: Message, parse_json: bool = True
+) -> list[Any] | dict[Any, Any] | str | None:
     """Process output."""
     output = output.strip()
     _LOGGER.debug("Received: %s", output)
@@ -206,22 +221,5 @@ def _process_output(output, parse_json=True):
     if output.startswith(SERVER_ERROR_PREFIX):
         raise ServerError(output)
     if not parse_json:
-        return output
-    return json.loads(output)
-
-
-def retry_timeout(api, retries=3):
-    """Retry API call when a timeout occurs."""
-
-    @wraps(api)
-    def retry_api(*args, **kwargs):
-        """Retrying API."""
-        for i in range(1, retries + 1):
-            try:
-                return api(*args, **kwargs)
-            except RequestTimeout:
-                if i == retries:
-                    raise
-        return None
-
-    return retry_api
+        return cast(str, output)
+    return cast(Union[Dict[Any, Any], List[Any]], json.loads(output))
