@@ -48,7 +48,7 @@ class APIFactory:
     def _base_command(self, method: str) -> list[str]:
         """Return base command."""
         if self._psk is None:
-            return []
+            raise RuntimeError("You must enter a PSK.")
 
         return [
             "coap-client",
