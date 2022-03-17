@@ -15,7 +15,7 @@ def test_constructor_timeout_passed_to_subprocess(monkeypatch):
 
     monkeypatch.setattr("subprocess.check_output", capture_args)
 
-    api = APIFactory("anything", timeout=20)
+    api = APIFactory("anything", timeout=20, psk="abc")
     api.request(Gateway().get_devices())
     assert capture["timeout"] == 20
 
@@ -30,6 +30,6 @@ def test_custom_timeout_passed_to_subprocess(monkeypatch):
 
     monkeypatch.setattr("subprocess.check_output", capture_args)
 
-    api = APIFactory("anything")
+    api = APIFactory("anything", psk="abc")
     api.request(Gateway().get_devices(), timeout=1)
     assert capture["timeout"] == 1
