@@ -5,7 +5,7 @@ import json
 import logging
 import subprocess
 from time import time
-from typing import TYPE_CHECKING, Any, Dict, List, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast, overload
 
 from aiocoap import Message
 
@@ -110,9 +110,21 @@ class APIFactory:
         api_command.process_result(_process_output(return_value, parse_json))
         return api_command.result
 
+    @overload
+    def request(self, api_commands: Command[T], timeout: int | None = None) -> T | None:
+        """Make a request. Timeout is in seconds."""
+        ...
+
+    @overload
     def request(
-        self, api_commands: list[Command[T]], *, timeout: int | None = None
-    ) -> T | list[T] | list[Any] | None:
+        self, api_commands: list[Command[T]], timeout: int | None = None
+    ) -> list[Optional[T]] | None:
+        """Make a request. Timeout is in seconds."""
+        ...
+
+    def request(
+        self, api_commands: Command[T] | list[Command[T]], timeout: int | None = None
+    ) -> T | list[Optional[T]] | None:
         """Make a request. Timeout is in seconds."""
         if not isinstance(api_commands, list):
             return self._execute(api_commands, timeout=timeout)
