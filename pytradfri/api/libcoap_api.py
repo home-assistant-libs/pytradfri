@@ -5,7 +5,7 @@ import json
 import logging
 import subprocess
 from time import time
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast, overload
+from typing import TYPE_CHECKING, Any, Dict, List, Union, cast, overload
 
 from aiocoap import Message
 
@@ -62,14 +62,12 @@ class APIFactory:
             method,
         ]
 
-    def _execute(
-        self, api_command: Command[T], *, timeout: int | None = None
-    ) -> T | None:
+    def _execute(self, api_command: Command[T], *, timeout: int | None = None) -> T:
         """Execute the command."""
 
         if api_command.observe:
             self._observe(api_command)
-            return None
+            return api_command.result
 
         method = api_command.method
         path = api_command.path
@@ -111,20 +109,20 @@ class APIFactory:
         return api_command.result
 
     @overload
-    def request(self, api_commands: Command[T], timeout: int | None = None) -> T | None:
+    def request(self, api_commands: Command[T], timeout: int | None = None) -> T:
         """Make a request. Timeout is in seconds."""
         ...
 
     @overload
     def request(
         self, api_commands: list[Command[T]], timeout: int | None = None
-    ) -> list[Optional[T]] | None:
+    ) -> list[T]:
         """Make a request. Timeout is in seconds."""
         ...
 
     def request(
         self, api_commands: Command[T] | list[Command[T]], timeout: int | None = None
-    ) -> T | list[Optional[T]] | None:
+    ) -> T | list[T]:
         """Make a request. Timeout is in seconds."""
         if not isinstance(api_commands, list):
             return self._execute(api_commands, timeout=timeout)
@@ -206,8 +204,7 @@ class APIFactory:
             self._psk = security_key
 
             # Ask the Gateway to generate the psk for the identity.
-            command: list[Command[str]] = [Gateway().generate_psk(existing_psk_id)]
-            self._psk = cast(str, self.request(command))
+            self._psk = self.request(Gateway().generate_psk(existing_psk_id))
 
             # Restore the real identity.
             self._psk_id = existing_psk_id
