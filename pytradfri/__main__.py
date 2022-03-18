@@ -32,7 +32,7 @@ if __name__ == "__main__":
         required=False,
         help="Security code found on your Tradfri gateway",
     )
-    org_args: argparse.Namespace = parser.parse_args()
+    org_args = parser.parse_args()
 
     if org_args.host not in load_json(CONFIG_FILE) and org_args.key is None:
         print(
