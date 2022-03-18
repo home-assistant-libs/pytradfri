@@ -1,11 +1,15 @@
 """Provide a CLI for Tradfri."""
+from __future__ import annotations
+
 import argparse
 import logging
 from pprint import pprint
 import uuid
 
 from pytradfri.api.libcoap_api import APIFactory
+from pytradfri.device import Device
 from pytradfri.error import PytradfriError
+from pytradfri.group import Group
 from pytradfri.util import load_json, save_json
 
 from .command import Command
@@ -14,9 +18,21 @@ from .gateway import Gateway
 CONFIG_FILE = "tradfri_standalone_psk.conf"
 
 
-def main(org_args):
-    """Run main."""
-    global devices, homekit_id, light, api, lights, gateway, groups, moods, tasks, dump_devices, dump_all  # pylint: disable=global-variable-undefined, invalid-name
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "host", metavar="IP", type=str, help="IP Address of your Tradfri gateway"
+    )
+    parser.add_argument(
+        "-K",
+        "--key",
+        dest="key",
+        required=False,
+        help="Security code found on your Tradfri gateway",
+    )
+    org_args: argparse.Namespace = parser.parse_args()
 
     if org_args.host not in load_json(CONFIG_FILE) and org_args.key is None:
         print(
@@ -61,7 +77,7 @@ def main(org_args):
     devices = api(devices_commands)
     lights = [dev for dev in devices if dev.has_light_control]
     if lights:
-        light = lights[0]
+        light: Device | None = lights[0]
     else:
         print("No lights found!")
         light = None
@@ -69,7 +85,7 @@ def main(org_args):
     groups = api(groups_commands)
     moods = []
     if groups:
-        group = groups[0]
+        group: Group | None = groups[0]
         for group in groups:
             moods_commands = api(group.moods())
             group_moods = api(moods_commands)
@@ -81,7 +97,7 @@ def main(org_args):
     tasks = api(tasks_commands)
     homekit_id = api(gateway.get_gateway_info()).homekit_id
 
-    def dump_all():  # pylint: disable=unused-variable
+    def dump_all() -> None:  # pylint: disable=unused-variable
         """Dump all endpoints."""
         endpoints = api(gateway.get_endpoints())
 
@@ -95,7 +111,7 @@ def main(org_args):
             print()
             print()
 
-    def dump_devices():  # pylint: disable=unused-variable
+    def dump_devices() -> None:  # pylint: disable=unused-variable
         """Dump devices."""
         pprint([d.raw for d in devices])
 
@@ -118,21 +134,3 @@ def main(org_args):
     print("> tasks")
     print("> dump_devices()")
     print("> dump_all()")
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "host", metavar="IP", type=str, help="IP Address of your Tradfri gateway"
-    )
-    parser.add_argument(
-        "-K",
-        "--key",
-        dest="key",
-        required=False,
-        help="Security code found on your Tradfri gateway",
-    )
-    args = parser.parse_args()
-    main(args)
