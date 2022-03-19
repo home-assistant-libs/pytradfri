@@ -29,6 +29,7 @@ setup(
     author_email="no@email.com",
     long_description_content_type="text/markdown",
     url=GITHUB_URL,
+    package_data={"pytradfri": ["py.typed"]},
     include_package_data=True,
     license="MIT",
     keywords="ikea tradfri api iot light homeautomation",

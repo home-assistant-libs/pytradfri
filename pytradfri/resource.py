@@ -31,41 +31,27 @@ class ApiResourceResponse(BaseResponse):
 class ApiResource:
     """Base object for resources returned from the gateway."""
 
-    _model_class: type[ApiResourceResponse] | None = None
-    raw: TypeRaw | ApiResourceResponse
+    _model_class: type[ApiResourceResponse] = ApiResourceResponse
+    raw: ApiResourceResponse
 
     def __init__(self, raw: TypeRaw) -> None:
         """Initialize base object."""
-        if self._model_class:
-            self.raw = self._model_class(**raw)
-        else:
-            self.raw = raw
+        self.raw = self._model_class(**raw)
 
     @property
     def id(self) -> int:
         """Id."""
-        if self._model_class:
-            resource_id = self.raw.id  # type: ignore[union-attr]
-        else:
-            resource_id = self.raw[ATTR_ID]  # type: ignore[index]
-        return resource_id
+        return self.raw.id
 
     @property
     def name(self) -> str | None:
         """Name."""
-        if self._model_class:
-            name = self.raw.name  # type: ignore[union-attr]
-        else:
-            name = self.raw[ATTR_NAME]  # type: ignore[index]
-        return name
+        return self.raw.name
 
     @property
     def created_at(self) -> datetime | None:
         """Return timestamp of creation."""
-        if self._model_class:
-            created_at = self.raw.created_at  # type: ignore[union-attr]
-        else:
-            created_at = self.raw[ATTR_CREATED_AT]  # type: ignore[index]
+        created_at = self.raw.created_at
 
         if created_at is None:
             return None
@@ -89,10 +75,8 @@ class ApiResource:
 
             Returns a Command.
             """
-            if self._model_class:
-                self.raw = self._model_class(**value)
-            else:
-                self.raw = value
+            self.raw = self._model_class(**value)
+
             if callback:
                 callback(self)
 
@@ -125,9 +109,6 @@ class ApiResource:
         """
 
         def process_result(result: TypeRaw) -> None:
-            if self._model_class:
-                self.raw = self._model_class(**result)
-            else:
-                self.raw = result
+            self.raw = self._model_class(**result)
 
         return Command("get", self.path, process_result=process_result)
