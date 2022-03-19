@@ -32,7 +32,7 @@ class ApiResource:
     """Base object for resources returned from the gateway."""
 
     _model_class: type[ApiResourceResponse] = ApiResourceResponse
-    raw: TypeRaw | ApiResourceResponse
+    raw: ApiResourceResponse
 
     def __init__(self, raw: TypeRaw) -> None:
         """Initialize base object."""
@@ -41,17 +41,17 @@ class ApiResource:
     @property
     def id(self) -> int:
         """Id."""
-        return self.raw.id  # type: ignore[union-attr]
+        return self.raw.id
 
     @property
     def name(self) -> str | None:
         """Name."""
-        return self.raw.name  # type: ignore[union-attr]
+        return self.raw.name
 
     @property
     def created_at(self) -> datetime | None:
         """Return timestamp of creation."""
-        created_at = self.raw.created_at  # type: ignore[union-attr]
+        created_at = self.raw.created_at
 
         if created_at is None:
             return None
@@ -75,10 +75,8 @@ class ApiResource:
 
             Returns a Command.
             """
-            if self._model_class:
-                self.raw = self._model_class(**value)
-            else:
-                self.raw = value
+            self.raw = self._model_class(**value)
+
             if callback:
                 callback(self)
 
@@ -111,9 +109,6 @@ class ApiResource:
         """
 
         def process_result(result: TypeRaw) -> None:
-            if self._model_class:
-                self.raw = self._model_class(**result)
-            else:
-                self.raw = result
+            self.raw = self._model_class(**result)
 
         return Command("get", self.path, process_result=process_result)
