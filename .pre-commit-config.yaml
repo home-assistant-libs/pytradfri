@@ -24,6 +24,15 @@ repos:
     hooks:
       - id: isort
         name: isort
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.1.0
+    hooks:
+      - id: requirements-txt-fixer
+      - id: check-json
+        exclude: (.vscode|.devcontainer)
+      - id: no-commit-to-branch
+        args:
+          - --branch=master
   - repo: local
     hooks:
       - id: pylint
