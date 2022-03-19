@@ -98,26 +98,6 @@ class Command(Generic[T]):
         """Generate url for coap client."""
         return f"coaps://{host}:5684/{self.path_str}"
 
-    def _merge(
-        self, a_dict: dict[str, Any] | None, b_dict: dict[str, Any] | None
-    ) -> dict[str, Any] | None:
-        """Merge a into b."""
-        if a_dict is None or b_dict is None:
-            return None
-        for key, value in a_dict.items():
-            if isinstance(value, dict):
-                item = b_dict.setdefault(key, {})
-                self._merge(value, item)
-            elif isinstance(value, list):
-                item = b_dict.setdefault(key, [{}])
-                if len(value) == 1 and isinstance(value[0], dict):
-                    self._merge(value[0], item[0])
-                else:
-                    b_dict[key] = value
-            else:
-                b_dict[key] = value
-        return b_dict
-
     def __repr__(self) -> str:
         """Return the representation."""
         if self.data is None:
