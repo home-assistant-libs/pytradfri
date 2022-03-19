@@ -268,14 +268,6 @@ class StartAction:
         return self.raw.state == 1
 
     @property
-    def devices(self) -> list[StartActionItem]:
-        """Return state of start action task."""
-        return [
-            StartActionItem(self.smart_task, i, self.state, self.path, self.raw)
-            for i in range(len(self.raw.root_start_action))
-        ]
-
-    @property
     def raw(self) -> RootStartActionResponse:
         """Return raw data that it represents."""
         return self.smart_task.raw.start_action
