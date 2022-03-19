@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from copy import deepcopy
 from typing import Any, Generic, TypeVar
 
 T = TypeVar("T")
@@ -118,25 +117,6 @@ class Command(Generic[T]):
             else:
                 b_dict[key] = value
         return b_dict
-
-    def combine_data(self, command2: Command[Any] | None) -> None:
-        """Combine data for this command with another."""
-        if command2 is None:
-            return
-        self._data = self._merge(
-            command2._data, self._data  # pylint: disable=protected-access
-        )
-
-    def __add__(self, other: Command[Any] | None) -> Command[T]:
-        """Add Command to this Command."""
-        if other is None:
-            return deepcopy(self)
-        if isinstance(other, self.__class__):
-            new_obj = deepcopy(self)
-            new_obj.combine_data(other)
-            return new_obj
-        msg = f"unsupported operand type(s) for '{self.__class__}' and '{type(other)}'"
-        raise (TypeError(msg))
 
     def __repr__(self) -> str:
         """Return the representation."""
