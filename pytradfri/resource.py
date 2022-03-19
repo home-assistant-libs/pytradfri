@@ -31,41 +31,27 @@ class ApiResourceResponse(BaseResponse):
 class ApiResource:
     """Base object for resources returned from the gateway."""
 
-    _model_class: type[ApiResourceResponse] | None = None
+    _model_class: type[ApiResourceResponse] = ApiResourceResponse
     raw: TypeRaw | ApiResourceResponse
 
     def __init__(self, raw: TypeRaw) -> None:
         """Initialize base object."""
-        if self._model_class:
-            self.raw = self._model_class(**raw)
-        else:
-            self.raw = raw
+        self.raw = self._model_class(**raw)
 
     @property
     def id(self) -> int:
         """Id."""
-        if self._model_class:
-            resource_id = self.raw.id  # type: ignore[union-attr]
-        else:
-            resource_id = self.raw[ATTR_ID]  # type: ignore[index]
-        return resource_id
+        return self.raw.id  # type: ignore[union-attr]
 
     @property
     def name(self) -> str | None:
         """Name."""
-        if self._model_class:
-            name = self.raw.name  # type: ignore[union-attr]
-        else:
-            name = self.raw[ATTR_NAME]  # type: ignore[index]
-        return name
+        return self.raw.name  # type: ignore[union-attr]
 
     @property
     def created_at(self) -> datetime | None:
         """Return timestamp of creation."""
-        if self._model_class:
-            created_at = self.raw.created_at  # type: ignore[union-attr]
-        else:
-            created_at = self.raw[ATTR_CREATED_AT]  # type: ignore[index]
+        created_at = self.raw.created_at  # type: ignore[union-attr]
 
         if created_at is None:
             return None
