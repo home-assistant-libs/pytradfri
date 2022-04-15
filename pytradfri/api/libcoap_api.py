@@ -7,8 +7,6 @@ import subprocess
 from time import time
 from typing import TYPE_CHECKING, Any, Dict, List, Union, cast, overload
 
-from aiocoap import Message
-
 from ..command import Command, T
 from ..error import ClientError, RequestError, RequestTimeout, ServerError
 from ..gateway import Gateway
@@ -213,7 +211,7 @@ class APIFactory:
 
 
 def _process_output(
-    output: Message, parse_json: bool = True
+    output: str, parse_json: bool = True
 ) -> list[Any] | dict[Any, Any] | str | None:
     """Process output."""
     output = output.strip()
@@ -232,5 +230,5 @@ def _process_output(
     if output.startswith(SERVER_ERROR_PREFIX):
         raise ServerError(output)
     if not parse_json:
-        return cast(str, output)
+        return output
     return cast(Union[Dict[Any, Any], List[Any]], json.loads(output))
