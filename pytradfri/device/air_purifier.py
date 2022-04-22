@@ -93,7 +93,7 @@ class AirPurifier:
 
     @property
     def filter_status(self) -> bool:
-        """Return true if filter needs to be replaced."""
+        """Return True if filter needs to be replaced."""
         return bool(self.raw.filter_status)
 
     @property
