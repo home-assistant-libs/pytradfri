@@ -82,7 +82,7 @@ def test_filter_status(device):
     """Test filter status."""
 
     air_purifier = device.air_purifier_control.air_purifiers[0]
-    assert air_purifier.filter_status == 0
+    assert air_purifier.filter_status is False
 
 
 def test_filter_lifetime_remaining(device):

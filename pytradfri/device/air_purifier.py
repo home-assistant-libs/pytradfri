@@ -92,9 +92,13 @@ class AirPurifier:
         return self.raw.filter_runtime
 
     @property
-    def filter_status(self) -> int:
-        """Return filter status."""
-        return self.raw.filter_status
+    def filter_status(self) -> bool:
+        """
+        Return True if filter needs to be replaced.
+
+        This property is true when filter_lifetime_remaining is less than zero.
+        """
+        return bool(self.raw.filter_status)
 
     @property
     def is_auto_mode(self) -> bool:
