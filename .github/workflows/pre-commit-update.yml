@@ -20,7 +20,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v2
         with:
-          token: ${{ secrets.CPR_GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           branch: update/pre-commit-autoupdate
           title: Auto-update pre-commit hooks
           commit-message: Auto-update pre-commit hooks
