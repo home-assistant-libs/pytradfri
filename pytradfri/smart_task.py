@@ -79,7 +79,9 @@ class TimeIntervalResponse(BaseModel):
 class RootStartActionResponse(SmartTaskMixin, BaseModel):
     """Represent a smart action response."""
 
-    root_start_action: List[StartActionResponse] = Field(alias=ROOT_START_ACTION)
+    root_start_action: List[StartActionResponse] = Field(
+        alias=ROOT_START_ACTION, default=[]
+    )
 
 
 class SmartTaskResponse(SmartTaskMixin, ApiResourceResponse):
