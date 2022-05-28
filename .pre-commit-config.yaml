@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: 22.1.0
+    rev: 22.3.0
     hooks:
       - id: black
         name: black
@@ -9,15 +9,15 @@ repos:
           - --quiet
         files: ^(pytradfri|examples|tests)/.+\.py$
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2
+    rev: 4.0.1
     hooks:
       - id: flake8
         name: flake8
         entry: flake8
         additional_dependencies:
           - flake8-docstrings==1.6.0
-          - flake8-comprehensions==3.5.0
-          - flake8-noqa==1.1.0
+          - flake8-comprehensions==3.10.0
+          - flake8-noqa==1.2.2
         files: ^(pytradfri|examples|tests)/.+\.py$
   - repo: https://github.com/PyCQA/isort
     rev: 5.9.3
@@ -25,7 +25,7 @@ repos:
       - id: isort
         name: isort
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v4.2.0
     hooks:
       - id: requirements-txt-fixer
       - id: check-json
