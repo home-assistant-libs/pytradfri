@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.0.0
       - name: Set up Python
-        uses: actions/setup-python@v2.0.0
+        uses: actions/setup-python@v3.1.2
         with:
           python-version: 3.8
       - name: Install pre-commit
