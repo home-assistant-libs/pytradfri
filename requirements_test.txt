@@ -3,7 +3,7 @@ flake8==4.0.1
 pytest-timeout==2.1.0
 pytest-cov==3.0.0
 black==22.3.0
-mypy==0.950
+mypy==0.960
 pre-commit==2.19.0
 flake8-docstrings==1.6.0
 flake8-comprehensions==3.10.0
