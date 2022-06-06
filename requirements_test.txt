@@ -8,4 +8,4 @@ pre-commit==2.19.0
 flake8-docstrings==1.6.0
 flake8-comprehensions==3.10.0
 flake8-noqa==1.2.2
-coverage==6.4
+coverage==6.4.1
