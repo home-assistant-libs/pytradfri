@@ -20,7 +20,7 @@ repos:
           - flake8-noqa==1.2.2
         files: ^(pytradfri|examples|tests)/.+\.py$
   - repo: https://github.com/PyCQA/isort
-    rev: 5.9.3
+    rev: 5.10.1
     hooks:
       - id: isort
         name: isort
