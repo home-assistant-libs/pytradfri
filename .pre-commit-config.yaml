@@ -8,17 +8,6 @@ repos:
           - --safe
           - --quiet
         files: ^(pytradfri|examples|tests)/.+\.py$
-  - repo: https://github.com/pycqa/flake8
-    rev: 4.0.1
-    hooks:
-      - id: flake8
-        name: flake8
-        entry: flake8
-        additional_dependencies:
-          - flake8-docstrings==1.6.0
-          - flake8-comprehensions==3.10.0
-          - flake8-noqa==1.2.2
-        files: ^(pytradfri|examples|tests)/.+\.py$
   - repo: https://github.com/PyCQA/isort
     rev: 5.10.1
     hooks:
@@ -33,6 +22,14 @@ repos:
       - id: no-commit-to-branch
         args:
           - --branch=master
+  - repo: local
+    hooks:
+      - id: flake8
+        name: flake8
+        entry: flake8
+        language: system
+        types: [python]
+        files: ^(pytradfri|examples|tests)/.+\.py$
   - repo: local
     hooks:
       - id: pylint
