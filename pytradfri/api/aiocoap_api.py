@@ -6,7 +6,7 @@ from collections.abc import Callable
 from enum import Enum
 import json
 import logging
-from typing import Any, Dict, List, Union, cast, overload
+from typing import Any, Dict, List, Protocol, Union, cast, overload
 
 from aiocoap import Context, Message
 from aiocoap.credentials import CredentialsMissingError
@@ -33,6 +33,27 @@ class UndefinedType(Enum):
 
 
 _SENTINEL = UndefinedType._singleton  # pylint: disable=protected-access
+
+
+class APIRequestProtocol(Protocol):
+    """Represent the protocol for the APIFactory request method."""
+
+    @overload
+    async def __call__(
+        self, api_commands: Command[T], timeout: float | None = None
+    ) -> T:
+        """Define the signature of the request method."""
+
+    @overload
+    async def __call__(
+        self, api_commands: list[Command[T]], timeout: float | None = None
+    ) -> list[T]:
+        """Define the signature of the request method."""
+
+    async def __call__(
+        self, api_commands: Command[T] | list[Command[T]], timeout: float | None = None
+    ) -> T | list[T]:
+        """Define the signature of the request method."""
 
 
 class APIFactory:
@@ -195,14 +216,12 @@ class APIFactory:
         self, api_commands: Command[T], timeout: float | None = None
     ) -> T:
         """Make a request."""
-        ...
 
     @overload
     async def request(
         self, api_commands: list[Command[T]], timeout: float | None = None
     ) -> list[T]:
         """Make a request."""
-        ...
 
     async def request(
         self, api_commands: Command[T] | list[Command[T]], timeout: float | None = None
