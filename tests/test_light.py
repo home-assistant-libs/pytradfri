@@ -91,3 +91,39 @@ def test_setters():
 
     with pytest.raises(error.ColorError):
         Device(LIGHT_CWS).light_control.set_predefined_color("Ggravlingen")
+
+
+def test_combine_command():
+    """Test light control combine command."""
+    device = Device(LIGHT_CWS)
+
+    assert device.light_control is not None
+
+    dimmer_cmd = device.light_control.set_dimmer(100)
+
+    assert dimmer_cmd.data == {"3311": [{"5851": 100}]}
+
+    hsb_xy_color_cmd = device.light_control.set_hsb(
+        hue=100, saturation=75, brightness=50, transition_time=60
+    )
+
+    assert hsb_xy_color_cmd.data == {
+        "3311": [{"5707": 100, "5708": 75, "5712": 60, "5851": 50}]
+    }
+
+    combined_cmd = device.light_control.combine_commands([dimmer_cmd, hsb_xy_color_cmd])
+
+    assert combined_cmd.data == {
+        "3311": [{"5707": 100, "5708": 75, "5712": 60, "5851": 50}]
+    }
+
+    combined_cmd = device.light_control.combine_commands([combined_cmd, dimmer_cmd])
+
+    assert combined_cmd.data == {
+        "3311": [{"5707": 100, "5708": 75, "5712": 60, "5851": 100}]
+    }
+
+    combined_cmd.data.clear()
+
+    with pytest.raises(TypeError):
+        device.light_control.combine_commands([dimmer_cmd, combined_cmd])
