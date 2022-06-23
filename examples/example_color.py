@@ -122,7 +122,7 @@ async def run():
     light = None
     # Find a bulb that can set color
     for dev in lights:
-        if dev.light_control.can_set_color:
+        if dev.light_control.lights[0].supports_hsb_xy_color:
             light = dev
             break
 
