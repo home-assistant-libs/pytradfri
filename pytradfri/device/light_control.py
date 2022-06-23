@@ -40,23 +40,7 @@ class LightControl(BaseController):
         """Create object of class."""
         super().__init__(device)
 
-        self.can_set_dimmer: bool = False
-        self.can_set_temp: bool = False
-        self.can_set_xy: bool = False
-        self.can_set_color: bool = False
         self.can_combine_commands: bool = False
-
-        if ATTR_LIGHT_DIMMER in self.raw[0].dict():
-            self.can_set_dimmer = True
-
-        if ATTR_LIGHT_MIREDS in self.raw[0].dict():
-            self.can_set_temp = True
-
-        if ATTR_LIGHT_COLOR_X in self.raw[0].dict():
-            self.can_set_xy = True
-
-        if ATTR_LIGHT_COLOR_HUE in self.raw[0].dict():
-            self.can_set_color = True
 
         # Currently uncertain which bulbs are capable of setting
         # multiple values simultaneously. As of gateway firmware

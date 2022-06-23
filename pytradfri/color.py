@@ -46,16 +46,16 @@ def supported_features(data: LightResponse) -> int:
     """Return supported features."""
     supported_color_features = 0
 
-    if data.dimmer:
+    if data.dimmer is not None:
         supported_color_features = supported_color_features + SUPPORT_BRIGHTNESS
 
     if data.color_hex:
         supported_color_features = supported_color_features + SUPPORT_HEX_COLOR
 
-    if data.color_mireds:
+    if data.color_mireds is not None:
         supported_color_features = supported_color_features + SUPPORT_COLOR_TEMP
 
-    if data.color_xy_x and data.color_xy_y:
+    if None not in (data.color_xy_x, data.color_xy_y):
         supported_color_features = supported_color_features + SUPPORT_XY_COLOR
 
     if (
@@ -64,6 +64,7 @@ def supported_features(data: LightResponse) -> int:
         and data.color_xy_y is not None
         and data.color_saturation is not None
         and data.color_hue is not None
+        and data.dimmer is not None
     ):
         supported_color_features = supported_color_features + SUPPORT_RGB_COLOR
 

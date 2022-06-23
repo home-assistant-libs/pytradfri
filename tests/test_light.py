@@ -24,6 +24,11 @@ def test_white_bulb():
 
     assert bulb.hex_color is None
     assert bulb.xy_color is None
+    assert bulb.supports_dimmer
+    assert not bulb.supports_color_temp
+    assert not bulb.supports_hex_color
+    assert not bulb.supports_xy_color
+    assert not bulb.supports_hsb_xy_color
 
 
 def test_spectrum_bulb():
@@ -33,6 +38,11 @@ def test_spectrum_bulb():
     assert bulb.hex_color == "0"
     assert bulb.xy_color == (31103, 27007)
     assert bulb.color_temp == 400
+    assert bulb.supports_dimmer
+    assert bulb.supports_color_temp
+    assert bulb.supports_hex_color
+    assert bulb.supports_xy_color
+    assert not bulb.supports_hsb_xy_color
 
 
 def test_spectrum_bulb_custom_color():
@@ -41,6 +51,11 @@ def test_spectrum_bulb_custom_color():
 
     assert bulb.hex_color == "0"
     assert bulb.xy_color == (32228, 27203)
+    assert bulb.supports_dimmer
+    assert bulb.supports_color_temp
+    assert bulb.supports_hex_color
+    assert bulb.supports_xy_color
+    assert not bulb.supports_hsb_xy_color
 
 
 def test_color_bulb():
@@ -48,7 +63,12 @@ def test_color_bulb():
     bulb = light(LIGHT_CWS)
 
     assert bulb.hex_color == "f1e0b5"
-    #  assert bulb.xy_color == (32768, 15729) # temporarily disable
+    assert bulb.xy_color == (30015, 26870)
+    assert bulb.supports_dimmer
+    assert not bulb.supports_color_temp
+    assert bulb.supports_hex_color
+    assert bulb.supports_xy_color
+    assert bulb.supports_hsb_xy_color
 
 
 def test_color_bulb_custom_color():
@@ -56,7 +76,12 @@ def test_color_bulb_custom_color():
     bulb = light(LIGHT_CWS_CUSTOM_COLOR)
 
     assert bulb.hex_color == "0"
-    #  assert bulb.xy_color == (23327, 33940) # temporarily disable
+    assert bulb.xy_color == (23327, 33940)
+    assert bulb.supports_dimmer
+    assert not bulb.supports_color_temp
+    assert bulb.supports_hex_color
+    assert bulb.supports_xy_color
+    assert bulb.supports_hsb_xy_color
 
 
 def test_setters():

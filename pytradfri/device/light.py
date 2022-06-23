@@ -18,6 +18,7 @@ from ..const import (
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
     SUPPORT_HEX_COLOR,
+    SUPPORT_RGB_COLOR,
     SUPPORT_XY_COLOR,
 )
 from ..resource import BaseResponse
@@ -36,7 +37,7 @@ class LightResponse(BaseResponse):
     color_xy_y: Optional[int] = Field(alias=ATTR_LIGHT_COLOR_Y)
     color_hue: Optional[int] = Field(alias=ATTR_LIGHT_COLOR_HUE)
     color_saturation: Optional[int] = Field(alias=ATTR_LIGHT_COLOR_SATURATION)
-    dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
+    dimmer: Optional[int] = Field(alias=ATTR_LIGHT_DIMMER)
     state: int = Field(alias=ATTR_DEVICE_STATE)
 
 
@@ -58,6 +59,31 @@ class Light:
         return supported_features(self.raw)
 
     @property
+    def supports_dimmer(self) -> bool:
+        """Return True if light supports dimmer."""
+        return bool(self.supported_features & SUPPORT_BRIGHTNESS)
+
+    @property
+    def supports_color_temp(self) -> bool:
+        """Return True if light supports color temperature."""
+        return bool(self.supported_features & SUPPORT_COLOR_TEMP)
+
+    @property
+    def supports_hex_color(self) -> bool:
+        """Return True if light supports hex color."""
+        return bool(self.supported_features & SUPPORT_HEX_COLOR)
+
+    @property
+    def supports_xy_color(self) -> bool:
+        """Return True if light supports xy color."""
+        return bool(self.supported_features & SUPPORT_XY_COLOR)
+
+    @property
+    def supports_hsb_xy_color(self) -> bool:
+        """Return True if light supports hsb xy color."""
+        return bool(self.supported_features & SUPPORT_RGB_COLOR)
+
+    @property
     def state(self) -> bool:
         """Return device state."""
         return self.raw.state == 1
@@ -65,32 +91,22 @@ class Light:
     @property
     def dimmer(self) -> int | None:
         """Return dimmer if present."""
-        if self.supported_features & SUPPORT_BRIGHTNESS:
-            return self.raw.dimmer
-        return None
+        return self.raw.dimmer
 
     @property
     def color_temp(self) -> int | None:
         """Return color temperature."""
-        if self.supported_features & SUPPORT_COLOR_TEMP and self.raw.color_mireds:
-            return self.raw.color_mireds
-        return None
+        return self.raw.color_mireds
 
     @property
     def hex_color(self) -> str | None:
         """Return hex color."""
-        if self.supported_features & SUPPORT_HEX_COLOR:
-            return self.raw.color_hex
-        return None
+        return self.raw.color_hex
 
     @property
     def xy_color(self) -> tuple[int, int] | None:
         """Return xy color."""
-        if (
-            self.supported_features & SUPPORT_XY_COLOR
-            and self.raw.color_xy_x is not None
-            and self.raw.color_xy_y is not None
-        ):
+        if self.raw.color_xy_x is not None and self.raw.color_xy_y is not None:
             return (self.raw.color_xy_x, self.raw.color_xy_y)
         return None
 
