@@ -1,8 +1,9 @@
 """Class to control the lights."""
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import TYPE_CHECKING
+from collections.abc import Sequence
+from copy import deepcopy
+from typing import TYPE_CHECKING, List, Mapping, Union, cast
 
 from ..color import COLORS
 from ..command import Command
@@ -187,3 +188,24 @@ class LightControl(BaseController):
         assert len(self.raw) == 1, "Only devices with 1 light supported"
 
         return Command("put", self._device.path, {ATTR_LIGHT_CONTROL: [values]})
+
+    def combine_commands(self, commands: Sequence[Command[None]]) -> Command[None]:
+        """Combine a sequence of light control commands."""
+        combined_data: dict[str, str | int] = {}
+
+        for command in commands:
+            data = command.data
+            if data is None or ATTR_LIGHT_CONTROL not in data:
+                raise TypeError(f"Invalid command data: {data}")
+
+            light_control_data = cast(
+                List[Mapping[str, Union[str, int]]], data[ATTR_LIGHT_CONTROL]
+            )
+            for control_data in light_control_data:
+                combined_data.update(control_data)
+
+        new_command = deepcopy(commands[0])
+        assert new_command.data is not None  # Ensured by raising an error above.
+        new_command.data[ATTR_LIGHT_CONTROL] = [combined_data]
+
+        return new_command
