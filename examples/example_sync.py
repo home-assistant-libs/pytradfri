@@ -12,22 +12,25 @@ running you will be asked to input the 'Security Code' found on
 the back of your IKEA gateway.
 """
 
-import os
-
-# Hack to allow relative import above top level package
-import sys
-
-folder = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.normpath("%s/.." % folder))
-
 import argparse
+import os
+import sys
 import threading
 import time
 import uuid
 
+# Hack to allow relative import above top level package
+
+folder = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.normpath(f"{folder}/.."))
+
+# pylint: disable=wrong-import-position
+
 from pytradfri import Gateway
-from pytradfri.api.libcoap_api import APIFactory
+from pytradfri.api.libcoap_api import APIFactory, APIRequestProtocol
+from pytradfri.device import Device
 from pytradfri.error import PytradfriError
+from pytradfri.resource import ApiResource
 from pytradfri.util import load_json, save_json
 
 CONFIG_FILE = "tradfri_standalone_psk.conf"
@@ -49,27 +52,29 @@ args = parser.parse_args()
 
 if args.host not in load_json(CONFIG_FILE) and args.key is None:
     print(
-        "Please provide the 'Security Code' on the back of your " "Tradfri gateway:",
+        "Please provide the 'Security Code' on the back of your Tradfri gateway:",
         end=" ",
     )
     key = input().strip()
     if len(key) != 16:
         raise PytradfriError("Invalid 'Security Code' provided.")
-    else:
-        args.key = key
+
+    args.key = key
 
 
-def observe(api, device):
+def observe(api: APIRequestProtocol, device: Device) -> None:
     """Observe."""
 
-    def callback(updated_device):
+    def callback(updated_device: ApiResource) -> None:
+        assert isinstance(updated_device, Device)
+        assert updated_device.light_control is not None
         light = updated_device.light_control.lights[0]
-        print("Received message for: %s" % light)
+        print(f"Received message for: {light}")
 
-    def err_callback(err):
+    def err_callback(err: Exception) -> None:
         print(err)
 
-    def worker():
+    def worker() -> None:
         api(device.observe(callback, err_callback, duration=120))
 
     threading.Thread(target=worker, daemon=True).start()
@@ -77,7 +82,7 @@ def observe(api, device):
     time.sleep(1)
 
 
-def run():
+def run() -> None:
     """Run."""
     # Assign configuration variables.
     # The configuration check takes care they are present.
@@ -97,12 +102,12 @@ def run():
 
             conf[args.host] = {"identity": identity, "key": psk}
             save_json(CONFIG_FILE, conf)
-        except AttributeError:
+        except AttributeError as err:
             raise PytradfriError(
                 "Please provide the 'Security Code' on the "
                 "back of your Tradfri gateway using the "
                 "-K flag."
-            )
+            ) from err
 
     api = api_factory.request
 
@@ -127,14 +132,15 @@ def run():
     if light:
         observe(api, light)
 
+        assert light.light_control is not None
         # Example 1: checks state of the light (true=on)
-        print("State: {}".format(light.light_control.lights[0].state))
+        print(f"State: {light.light_control.lights[0].state}")
 
         # Example 2: get dimmer level of the light
-        print("Dimmer: {}".format(light.light_control.lights[0].dimmer))
+        print(f"Dimmer: {light.light_control.lights[0].dimmer}")
 
         # Example 3: What is the name of the light
-        print("Name: {}".format(light.name))
+        print(f"Name: {light.name}")
 
         # Example 4: Set the light level of the light
         dim_command = light.light_control.set_dimmer(254)
@@ -158,7 +164,8 @@ def run():
         blind = None
 
     if blind:
-        blind_command = blinds[0].blind_control.set_state(50)
+        assert blind.blind_control is not None
+        blind_command = blind.blind_control.set_state(50)
         api(blind_command)
 
     tasks_command = gateway.get_smart_tasks()
@@ -167,16 +174,25 @@ def run():
 
     # Example 6: Return the transition time (in minutes) for task#1
     if tasks:
-        print(tasks[0].task_control.tasks[0].transition_time)
+        task = tasks[0]
+    else:
+        print("No tasks found!")
+        task = None
 
-        # Example 7: Set the dimmer stop value to 30 for light#1 in task#1
-        dim_command_2 = tasks[0].start_action.devices[0].item_controller.set_dimmer(30)
-        api(dim_command_2)
+    if task:
+        task_control_tasks = task.task_control.tasks
+        if task_control_tasks:
+            task_control_task = task_control_tasks[0]
+            print(task_control_task.transition_time)
+
+            # Example 7: Set the dimmer stop value to 30 for light#1 in task#1
+            dim_command_2 = task_control_task.item_controller.set_dimmer(30)
+            api(dim_command_2)
 
     if light:
         print("Sleeping for 2 min to listen for more observation events")
         print(
-            "Try altering the light (%s) in the app, and watch the events!" % light.name
+            f"Try altering the light ({light.name}) in the app, and watch the events!"
         )
         time.sleep(120)
 
