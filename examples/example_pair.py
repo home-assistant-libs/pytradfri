@@ -13,19 +13,22 @@ Where <IP> is the address to your IKEA gateway. The first time
 running you will be asked to input the 'Security Code' found on
 the back of your IKEA gateway.
 """
-
-import os
-
-# Hack to allow relative import above top level package
-import sys
-
-folder = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.normpath("%s/.." % folder))
+from __future__ import annotations
 
 import argparse
 import asyncio
+from collections.abc import Callable
 import logging
+import os
+import sys
 import uuid
+
+# Hack to allow relative import above top level package
+
+folder = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.normpath(f"{folder}/.."))
+
+# pylint: disable=wrong-import-position
 
 from pytradfri import Gateway
 from pytradfri.api.aiocoap_api import APIFactory
@@ -37,6 +40,8 @@ from pytradfri.util import load_json, save_json
 logging.basicConfig(level=logging.INFO)
 
 CONFIG_FILE = "tradfri_standalone_psk.conf"
+
+# pylint: disable=invalid-name
 
 
 parser = argparse.ArgumentParser()
@@ -51,17 +56,17 @@ args = parser.parse_args()
 
 if args.host not in load_json(CONFIG_FILE) and args.key is None:
     print(
-        "Please provide the 'Security Code' on the back of your " "Tradfri gateway:",
+        "Please provide the 'Security Code' on the back of your Tradfri gateway:",
         end=" ",
     )
     key = input().strip()
     if len(key) != 16:
         raise PytradfriError("Invalid 'Security Code' provided.")
-    else:
-        args.key = key
+
+    args.key = key
 
 
-async def run(shutdown):
+async def run(shutdown: asyncio.Future[None]) -> None:
     """Run."""
     # Assign configuration variables.
     # The configuration check takes care they are present.
@@ -81,12 +86,12 @@ async def run(shutdown):
 
             conf[args.host] = {"identity": identity, "key": psk}
             save_json(CONFIG_FILE, conf)
-        except AttributeError:
+        except AttributeError as err:
             raise PytradfriError(
                 "Please provide the 'Security Code' on the "
                 "back of your Tradfri gateway using the "
                 "-K flag."
-            )
+            ) from err
 
     api = api_factory.request
 
@@ -98,19 +103,21 @@ async def run(shutdown):
     # set and regularly renew the commissioning timeout, remove when done
     #
 
-    async def keep_commissioning_alive(readiness):
+    async def keep_commissioning_alive(readiness: Callable[[], None]) -> None:
+        readiness_called = False
         try:
             while True:
                 await api(gateway.set_commissioning_timeout(60))
-                if readiness is not None:
+                if not readiness_called:
                     readiness()
-                readiness = None
+                    readiness_called = True
                 await asyncio.sleep(45)
         finally:
-            await api(gateway.set_commissioning_timeout(00))
+            await api(gateway.set_commissioning_timeout(0))
 
-    commissioning_ready = asyncio.Future()
-    commissioning = asyncio.Task(
+    commissioning_ready: asyncio.Future[None] = asyncio.Future()
+    commissioning: asyncio.Task[None] | None
+    commissioning = asyncio.create_task(
         keep_commissioning_alive(lambda: commissioning_ready.set_result(None))
     )
 
@@ -118,31 +125,31 @@ async def run(shutdown):
     # monitor the device list and give instructions
     #
 
-    last_devices = None
+    last_devices: list[str] | None = None
 
-    def devices_updated(result):
+    def devices_updated(result: list[str]) -> None:
         nonlocal last_devices
 
         if last_devices is None:
-            print("Originally, %s device(s) are known" % len(result))
+            print(f"Originally, {len(result)} device(s) are known")
         else:
             for r in result:
-                if r not in last_devices:
-                    asyncio.Task(new_device(r))
+                if r not in last_devices:  # pylint: disable=unsupported-membership-test
+                    asyncio.create_task(new_device(r))
 
         last_devices = result
 
-    async def new_device(devno):
+    async def new_device(device_id: str) -> None:
         nonlocal commissioning
 
         print("New device, fetching details...", end="", flush=True)
 
-        device_command = gateway.get_device(devno)
+        device_command = gateway.get_device(device_id)
         device = await api(device_command)
 
         print()
 
-        print("  New device description: %s" % (device,))
+        print(f"  New device description: {(device,)}")
 
         if commissioning:
             if device.has_light_control:
@@ -170,7 +177,7 @@ async def run(shutdown):
                     " the gateway was not in pairing mode any more."
                 )
             else:
-                print("You can still add more light bulbs; press Ctrl-C when" " done.")
+                print("You can still add more light bulbs; press Ctrl-C when done.")
 
     observe_devices = Command(
         "get", [ROOT_DEVICES], observe=True, process_result=devices_updated
@@ -196,13 +203,14 @@ async def run(shutdown):
     if commissioning is not None:
         print("Please allow for the commissioning mode to be disabled")
         commissioning.cancel()
+        commissioning = None
 
 
 if __name__ == "__main__":
-    shutdown = asyncio.Future()
-    main = run(shutdown)
+    shutdown_future: asyncio.Future[None] = asyncio.Future()
+    main = run(shutdown_future)
     try:
-        asyncio.get_event_loop().run_until_complete(main)
+        asyncio.run(main)
     except KeyboardInterrupt:
-        shutdown.set_result(None)
-        asyncio.get_event_loop().run_until_complete(main)
+        shutdown_future.set_result(None)
+        asyncio.run(main)
