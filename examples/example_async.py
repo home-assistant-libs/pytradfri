@@ -12,21 +12,24 @@ running you will be asked to input the 'Security Code' found on
 the back of your IKEA gateway.
 """
 
-import os
-
-# Hack to allow relative import above top level package
-import sys
-
-folder = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.normpath("%s/.." % folder))
-
 import argparse
 import asyncio
+import os
+import sys
 import uuid
+
+# Hack to allow relative import above top level package
+
+folder = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.normpath(f"{folder}/.."))
+
+# pylint: disable=wrong-import-position
 
 from pytradfri import Gateway
 from pytradfri.api.aiocoap_api import APIFactory
+from pytradfri.device import Device
 from pytradfri.error import PytradfriError
+from pytradfri.resource import ApiResource
 from pytradfri.util import load_json, save_json
 
 CONFIG_FILE = "tradfri_standalone_psk.conf"
@@ -44,17 +47,17 @@ args = parser.parse_args()
 
 if args.host not in load_json(CONFIG_FILE) and args.key is None:
     print(
-        "Please provide the 'Security Code' on the back of your " "Tradfri gateway:",
+        "Please provide the 'Security Code' on the back of your Tradfri gateway:",
         end=" ",
     )
     key = input().strip()
     if len(key) != 16:
         raise PytradfriError("Invalid 'Security Code' provided.")
-    else:
-        args.key = key
+
+    args.key = key
 
 
-async def run():
+async def run() -> None:
     """Run."""
     # Assign configuration variables.
     # The configuration check takes care they are present.
@@ -74,12 +77,12 @@ async def run():
 
             conf[args.host] = {"identity": identity, "key": psk}
             save_json(CONFIG_FILE, conf)
-        except AttributeError:
+        except AttributeError as err:
             raise PytradfriError(
                 "Please provide the 'Security Code' on the "
                 "back of your Tradfri gateway using the "
                 "-K flag."
-            )
+            ) from err
 
     api = api_factory.request
 
@@ -101,11 +104,13 @@ async def run():
         print("No lights found!")
         light = None
 
-    def observe_callback(updated_device):
+    def observe_callback(updated_device: ApiResource) -> None:
+        assert isinstance(updated_device, Device)
+        assert updated_device.light_control is not None
         light = updated_device.light_control.lights[0]
-        print("Received message for: %s" % light)
+        print(f"Received message for: {light}")
 
-    def observe_err_callback(err):
+    def observe_err_callback(err: Exception) -> None:
         print("observe error:", err)
 
     for light in lights:
@@ -113,11 +118,12 @@ async def run():
             observe_callback, observe_err_callback, duration=120
         )
         # Start observation as a second task on the loop.
-        asyncio.ensure_future(api(observe_command))
+        asyncio.create_task(api(observe_command))
         # Yield to allow observing to start.
         await asyncio.sleep(0)
 
     if light:
+        assert light.light_control is not None
         # Example 1: checks state of the light (true=on)
         print("Is on:", light.light_control.lights[0].state)
 
@@ -149,20 +155,33 @@ async def run():
         blind = None
 
     if blind:
-        blind_command = blinds[0].blind_control.set_state(50)
+        assert blind.blind_control is not None
+        blind_command = blind.blind_control.set_state(50)
         await api(blind_command)
 
     tasks_command = gateway.get_smart_tasks()
     tasks_commands = await api(tasks_command)
     tasks = await api(tasks_commands)
 
+    # Print all tasks
+    print(tasks)
+
     # Example 6: Return the transition time (in minutes) for task#1
     if tasks:
-        print(tasks[0].task_control.tasks[0].transition_time)
+        task = tasks[0]
+    else:
+        print("No tasks found!")
+        task = None
 
-        # Example 7: Set the dimmer stop value to 30 for light#1 in task#1
-        dim_command_2 = tasks[0].start_action.devices[0].item_controller.set_dimmer(30)
-        await api(dim_command_2)
+    if task:
+        task_control_tasks = task.task_control.tasks
+        if task_control_tasks:
+            task_control_task = task_control_tasks[0]
+            print(task_control_task.transition_time)
+
+            # Example 7: Set the dimmer stop value to 30 for light#1 in task#1
+            dim_command_2 = task_control_task.item_controller.set_dimmer(30)
+            await api(dim_command_2)
 
     print("Waiting for observation to end (2 mins)")
     print("Try altering any light in the app, and watch the events!")
@@ -171,4 +190,4 @@ async def run():
     await api_factory.shutdown()
 
 
-asyncio.get_event_loop().run_until_complete(run())
+asyncio.run(run())
