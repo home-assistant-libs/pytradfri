@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -51,19 +51,19 @@ class DeviceInfoResponse(BaseModel):
 class DeviceResponse(ApiResourceResponse):
     """Represent a device response."""
 
-    air_purifier_control: Optional[List[AirPurifierResponse]] = Field(
+    air_purifier_control: Optional[list[AirPurifierResponse]] = Field(
         alias=ROOT_AIR_PURIFIER
     )
     application_type: int = Field(alias=ATTR_APPLICATION_TYPE)
-    blind_control: Optional[List[BlindResponse]] = Field(alias=ATTR_START_BLINDS)
+    blind_control: Optional[list[BlindResponse]] = Field(alias=ATTR_START_BLINDS)
     device_info: DeviceInfoResponse = Field(alias=ATTR_DEVICE_INFO)
     last_seen: Optional[int] = Field(alias=ATTR_LAST_SEEN)
-    light_control: Optional[List[LightResponse]] = Field(alias=ATTR_LIGHT_CONTROL)
+    light_control: Optional[list[LightResponse]] = Field(alias=ATTR_LIGHT_CONTROL)
     reachable: int = Field(alias=ATTR_REACHABLE_STATE)
-    signal_repeater_control: Optional[List[SignalRepeaterResponse]] = Field(
+    signal_repeater_control: Optional[list[SignalRepeaterResponse]] = Field(
         alias=ROOT_SIGNAL_REPEATER
     )
-    socket_control: Optional[List[SocketResponse]] = Field(alias=ATTR_SWITCH_PLUG)
+    socket_control: Optional[list[SocketResponse]] = Field(alias=ATTR_SWITCH_PLUG)
 
 
 class Device(ApiResource):

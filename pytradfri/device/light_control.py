@@ -1,9 +1,9 @@
 """Class to control the lights."""
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from copy import deepcopy
-from typing import TYPE_CHECKING, List, Mapping, Union, cast
+from typing import TYPE_CHECKING, Union, cast
 
 from ..color import COLORS
 from ..command import Command
@@ -199,7 +199,7 @@ class LightControl(BaseController):
                 raise TypeError(f"Invalid command data: {data}")
 
             light_control_data = cast(
-                List[Mapping[str, Union[str, int]]], data[ATTR_LIGHT_CONTROL]
+                list[Mapping[str, Union[str, int]]], data[ATTR_LIGHT_CONTROL]
             )
             for control_data in light_control_data:
                 combined_data.update(control_data)

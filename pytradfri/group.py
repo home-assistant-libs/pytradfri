@@ -1,7 +1,7 @@
 """Group handling."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import TYPE_CHECKING, Optional
 
 from pydantic import Field
 
@@ -44,7 +44,7 @@ class GroupResponse(ApiResourceResponse):
 
     color_hex: Optional[str] = Field(alias=ATTR_LIGHT_COLOR_HEX)
     dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
-    group_members: Dict[str, Dict[str, List[int]]] = Field(alias=ATTR_GROUP_MEMBERS)
+    group_members: dict[str, dict[str, list[int]]] = Field(alias=ATTR_GROUP_MEMBERS)
     mood_id: str = Field(alias=ATTR_MOOD)
     state: int = Field(alias=ATTR_DEVICE_STATE)
 
@@ -225,7 +225,7 @@ class Group(ApiResource):
 
     def _value_validate(
         self, value: int, rnge: tuple[int, int], identifier: str = "Given"
-    ) -> None:  # pylint: disable=no-self-use
+    ) -> None:
         """Make sure a value is within a given range."""
         if value is not None and (value < rnge[0] or value > rnge[1]):
             raise ValueError(

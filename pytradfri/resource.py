@@ -2,8 +2,9 @@
 from __future__ import annotations
 
 from abc import abstractmethod
+from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -11,7 +12,7 @@ from .command import Command
 from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME, ATTR_OTA_UPDATE_STATE
 
 # type alias
-TypeRaw = Dict[str, Union[str, int, List[Dict[str, Union[str, int]]]]]
+TypeRaw = dict[str, Union[str, int, list[dict[str, Union[str, int]]]]]
 
 
 class BaseResponse(BaseModel):

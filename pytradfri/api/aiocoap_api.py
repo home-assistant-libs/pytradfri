@@ -6,7 +6,7 @@ from collections.abc import Callable
 from enum import Enum
 import json
 import logging
-from typing import Any, Dict, List, Protocol, Union, cast, overload
+from typing import Any, Protocol, Union, cast, overload
 
 from aiocoap import Context, Message
 from aiocoap.credentials import CredentialsMissingError
@@ -14,7 +14,7 @@ from aiocoap.error import (
     ConstructionRenderableError,
     Error,
     LibraryShutdown,
-    TimeoutError,
+    TimeoutError as COAPTimeoutError,
 )
 from aiocoap.numbers.codes import Code
 from aiocoap.protocol import BlockwiseRequest
@@ -158,7 +158,7 @@ class APIFactory:
             await self._reset_protocol(exc)
             await self._update_credentials()
             raise RequestTimeout("Request timed out.", exc) from exc
-        except TimeoutError as exc:
+        except COAPTimeoutError as exc:
             await self._reset_protocol(exc)
             await self._update_credentials()
             raise RequestTimeout("Request timed out.", exc) from exc
@@ -341,4 +341,4 @@ def _process_output(
     if not parse_json:
         return output
 
-    return cast(Union[List[Any], Dict[Any, Any]], json.loads(output))
+    return cast(Union[list[Any], dict[Any, Any]], json.loads(output))

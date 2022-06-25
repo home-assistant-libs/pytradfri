@@ -5,7 +5,7 @@ import json
 import logging
 import subprocess
 from time import time
-from typing import TYPE_CHECKING, Any, Dict, List, Union, cast, overload
+from typing import TYPE_CHECKING, Any, Union, cast, overload
 
 from ..command import Command, T
 from ..error import ClientError, RequestError, RequestTimeout, ServerError
@@ -109,14 +109,12 @@ class APIFactory:
     @overload
     def request(self, api_commands: Command[T], timeout: int | None = None) -> T:
         """Make a request. Timeout is in seconds."""
-        ...
 
     @overload
     def request(
         self, api_commands: list[Command[T]], timeout: int | None = None
     ) -> list[T]:
         """Make a request. Timeout is in seconds."""
-        ...
 
     def request(
         self, api_commands: Command[T] | list[Command[T]], timeout: int | None = None
@@ -231,4 +229,4 @@ def _process_output(
         raise ServerError(output)
     if not parse_json:
         return output
-    return cast(Union[Dict[Any, Any], List[Any]], json.loads(output))
+    return cast(Union[dict[Any, Any], list[Any]], json.loads(output))

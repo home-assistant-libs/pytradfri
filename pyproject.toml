@@ -68,6 +68,7 @@ disable = [
     "format",
 #    "abstract-class-little-used",
     "abstract-method",
+    "consider-alternative-union-syntax",
     "consider-using-assignment-expr",
     "cyclic-import",
     "duplicate-code",

@@ -1,9 +1,10 @@
 """JSON utility functions."""
 from __future__ import annotations
 
+from collections.abc import Iterator
 import json
 import logging
-from typing import Any, Dict, Iterator, List, Union, cast
+from typing import Any, Union, cast
 
 from .error import PytradfriError
 
@@ -20,7 +21,7 @@ def load_json(filename: str) -> list[Any] | dict[Any, Any]:
     """
     try:
         with open(filename, encoding="utf-8") as fdesc:
-            return cast(Union[Dict[Any, Any], List[Any]], json.loads(fdesc.read()))
+            return cast(Union[dict[Any, Any], list[Any]], json.loads(fdesc.read()))
     except FileNotFoundError:
         # This is not a fatal error
         _LOGGER.debug("JSON file not found: %s", filename)
