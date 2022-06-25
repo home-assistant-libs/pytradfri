@@ -17,19 +17,19 @@ from pytradfri.group import Group
 from .devices import GROUP
 
 
-@pytest.fixture
-def gateway():
+@pytest.fixture(name="gateway")
+def gateway_fixture() -> Gateway:
     """Return gateway."""
     return Gateway()
 
 
-@pytest.fixture
-def group(gateway):
+@pytest.fixture(name="group")
+def group_fixture(gateway: Gateway) -> Group:
     """Return Group."""
     return Group(gateway, GROUP)
 
 
-def test_setters(group):
+def test_setters(group: Group) -> None:
     """Test setters in group."""
     cmd = Group("anygateway", GROUP).set_predefined_color("Candlelight")
     assert cmd.data == {"5706": "ebb63e"}
