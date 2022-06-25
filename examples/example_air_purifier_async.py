@@ -12,17 +12,18 @@ running you will be asked to input the 'Security Code' found on
 the back of your IKEA gateway.
 """
 
-import os
-
-# Hack to allow relative import above top level package
-import sys
-
-folder = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.normpath("%s/.." % folder))
-
 import argparse
 import asyncio
+import os
+import sys
 import uuid
+
+# Hack to allow relative import above top level package
+
+folder = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.normpath(f"{folder}/.."))
+
+# pylint: disable=wrong-import-position
 
 from pytradfri import Gateway
 from pytradfri.api.aiocoap_api import APIFactory
@@ -42,17 +43,17 @@ args = parser.parse_args()
 
 if args.host not in load_json(CONFIG_FILE) and args.key is None:
     print(
-        "Please provide the 'Security Code' on the back of your " "Tradfri gateway:",
+        "Please provide the 'Security Code' on the back of your Tradfri gateway:",
         end=" ",
     )
     key = input().strip()
     if len(key) != 16:
         raise PytradfriError("Invalid 'Security Code' provided.")
-    else:
-        args.key = key
+
+    args.key = key
 
 
-async def run():
+async def run() -> None:
     """Run."""
     # Assign configuration variables.
     # The configuration check takes care they are present.
@@ -72,12 +73,12 @@ async def run():
 
             conf[args.host] = {"identity": identity, "key": psk}
             save_json(CONFIG_FILE, conf)
-        except AttributeError:
+        except AttributeError as err:
             raise PytradfriError(
                 "Please provide the 'Security Code' on the "
                 "back of your Tradfri gateway using the "
                 "-K flag."
-            )
+            ) from err
 
     api = api_factory.request
 
@@ -94,9 +95,10 @@ async def run():
 
     for air_purifier in air_purifiers:
         control = air_purifier.air_purifier_control
+        assert control is not None
         print(control.air_purifiers[0].air_quality)
         # Set mode auto
-        command = control.set_mode(1)
+        command = control.turn_on_auto_mode()
         await api(command)
 
     await api_factory.shutdown()
