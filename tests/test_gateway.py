@@ -10,36 +10,36 @@ from pytradfri.gateway import Gateway, GatewayInfo
 GATEWAY_INFO = {
     "9023": "xyz.pool.ntp.pool",
     "9059": 1509788799,
-    "9073": 0,  # Uknown
+    "9073": 0,  # Unknown
     "9060": "2017-11-04T09:46:39.046784Z",
-    "9080": 0,  # Uknown
+    "9080": 0,  # Unknown
     "9071": 1,
-    "9062": 0,  # Uknown
+    "9062": 0,  # Unknown
     "9061": 0,
     "9093": 0,
     "9029": "1.2.42",
     "9081": "7e0000000000000a",
     "9092": 0,
     "9069": 1509474847,
-    "9082": True,  # Uknown
+    "9082": True,  # Unknown
     "9055": 0,
     "9083": "123-45-67",
     "9066": 5,
     "9054": 0,
-    "9077": 0,  # Uknown
-    "9072": 0,  # Uknown
-    "9074": 0,  # Uknown
-    "9075": 0,  # Uknown
-    "9076": 0,  # Uknown
-    "9078": 0,  # Uknown
-    "9079": 0,  # Uknown
-    "9106": 0,  # Uknown
-    "9105": 0,  # Uknown
+    "9077": 0,  # Unknown
+    "9072": 0,  # Unknown
+    "9074": 0,  # Unknown
+    "9075": 0,  # Unknown
+    "9076": 0,  # Unknown
+    "9078": 0,  # Unknown
+    "9079": 0,  # Unknown
+    "9106": 0,  # Unknown
+    "9105": 0,  # Unknown
 }
 
 
-@pytest.fixture
-def gateway():
+@pytest.fixture(name="gateway")
+def gateway_fixture():
     """Fixture that returns a gateway."""
     return Gateway()
 
@@ -53,7 +53,7 @@ def test_get_device(gateway):
 
 
 def test_gateway_info():
-    """Test retrival of gateway info."""
+    """Test retrieval of gateway info."""
     gateway_info = GatewayInfo(GATEWAY_INFO)
 
     assert gateway_info.id == "7e0000000000000a"
