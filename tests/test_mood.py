@@ -7,8 +7,8 @@ from pytradfri.mood import Mood
 from .moods import MOOD
 
 
-@pytest.fixture
-def mood():
+@pytest.fixture(name="mood")
+def mood_fixture():
     """Return Mood object."""
     return Mood(MOOD, 131080)
 
