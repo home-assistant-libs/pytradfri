@@ -20,26 +20,27 @@ the back of your IKEA gateway.
 The gateway returns:
     Hue (a guess)
     Saturation (a guess)
-    Brignthess
+    Brightness
     X
     Y
     Hex (for some colors)
 """
 
-import os
-
-# Hack to allow relative import above top level package
-import sys
-
-folder = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.normpath("%s/.." % folder))
-
 import argparse
 import asyncio
+import os
+import sys
 import uuid
 
 from colormath.color_conversions import convert_color
 from colormath.color_objects import XYZColor, sRGBColor
+
+# Hack to allow relative import above top level package
+
+folder = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.normpath(f"{folder}/.."))
+
+# pylint: disable=wrong-import-position
 
 from pytradfri import Gateway
 from pytradfri.api.aiocoap_api import APIFactory
@@ -61,17 +62,17 @@ args = parser.parse_args()
 
 if args.host not in load_json(CONFIG_FILE) and args.key is None:
     print(
-        "Please provide the 'Security Code' on the back of your " "Tradfri gateway:",
+        "Please provide the 'Security Code' on the back of your Tradfri gateway:",
         end=" ",
     )
     key = input().strip()
     if len(key) != 16:
         raise PytradfriError("Invalid 'Security Code' provided.")
-    else:
-        args.key = key
+
+    args.key = key
 
 
-async def run():
+async def run() -> None:
     """Run."""
     # Assign configuration variables.
     # The configuration check takes care they are present.
@@ -91,12 +92,12 @@ async def run():
 
             conf[args.host] = {"identity": identity, "key": psk}
             save_json(CONFIG_FILE, conf)
-        except AttributeError:
+        except AttributeError as err:
             raise PytradfriError(
                 "Please provide the 'Security Code' on the "
                 "back of your Tradfri gateway using the "
                 "-K flag."
-            )
+            ) from err
 
     api = api_factory.request
 
@@ -108,21 +109,23 @@ async def run():
 
     lights = [dev for dev in devices if dev.has_light_control]
 
-    rgb = (0, 0, 102)
+    rgb_tuple = (0, 0, 102)
 
     # Convert RGB to XYZ using a D50 illuminant.
     xyz = convert_color(
-        sRGBColor(rgb[0], rgb[1], rgb[2]),
+        sRGBColor(rgb_tuple[0], rgb_tuple[1], rgb_tuple[2]),
         XYZColor,
         observer="2",
         target_illuminant="d65",
     )
-    xy = int(xyz.xyz_x), int(xyz.xyz_y)
+    xy_tuple = int(xyz.xyz_x), int(xyz.xyz_y)
 
     light = None
     # Find a bulb that can set color
     for dev in lights:
-        if dev.light_control.lights[0].supports_hsb_xy_color:
+        light_control = dev.light_control
+        assert light_control is not None
+        if light_control.lights[0].supports_hsb_xy_color:
             light = dev
             break
 
@@ -130,26 +133,34 @@ async def run():
         print("No color bulbs found")
         return
 
-    xy_command = light.light_control.set_xy_color(xy[0], xy[1])
+    light_control = light.light_control
+    assert light_control is not None
+    xy_command = light_control.set_xy_color(xy_tuple[0], xy_tuple[1])
     await api(xy_command)
 
-    xy = light.light_control.lights[0].xy_color
+    xy_color = light_control.lights[0].xy_color
+    dimmer = light_control.lights[0].dimmer
+
+    if xy_color is None or dimmer is None:
+        print("Light color properties are missing")
+        return
 
     #  Normalize Z
-    Z = int(light.light_control.lights[0].dimmer / 254 * 65535)
-    xyZ = xy + (Z,)
+
+    z_color = int(dimmer / 254 * 65535)
+    xyz = xy_color + (z_color,)
     rgb = convert_color(
-        XYZColor(xyZ[0], xyZ[1], xyZ[2]),
+        XYZColor(xyz[0], xyz[1], xyz[2]),
         sRGBColor,
         observer="2",
         target_illuminant="d65",
     )
-    rgb = (int(rgb.rgb_r), int(rgb.rgb_g), int(rgb.rgb_b))
-    print(rgb)
+    rgb_tuple = (int(rgb.rgb_r), int(rgb.rgb_g), int(rgb.rgb_b))
+    print(rgb_tuple)
 
     await asyncio.sleep(120)
 
     await api_factory.shutdown()
 
 
-asyncio.get_event_loop().run_until_complete(run())
+asyncio.run(run())
