@@ -20,7 +20,7 @@ PACKAGES = find_packages(exclude=["tests", "tests.*"])
 setup(
     name="pytradfri",
     packages=PACKAGES,
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     version=VERSION,
     description="IKEA Trådfri/Tradfri API. Control and observe your "
     "lights from Python.",
@@ -41,7 +41,6 @@ setup(
         "Intended Audience :: Developers",
         "Natural Language :: English",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Topic :: Home Automation",
