@@ -11,7 +11,7 @@ SmartTask # return top level info
 from __future__ import annotations
 
 from datetime import datetime as dt, time, timedelta
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -79,7 +79,7 @@ class TimeIntervalResponse(BaseModel):
 class RootStartActionResponse(SmartTaskMixin, BaseModel):
     """Represent a smart action response."""
 
-    root_start_action: List[StartActionResponse] = Field(
+    root_start_action: list[StartActionResponse] = Field(
         alias=ROOT_START_ACTION, default=[]
     )
 
@@ -90,7 +90,7 @@ class SmartTaskResponse(SmartTaskMixin, ApiResourceResponse):
     smart_task_type: int = Field(alias=ATTR_SMART_TASK_TYPE)
     repeat_days: int = Field(alias=ATTR_REPEAT_DAYS)
     start_action: RootStartActionResponse = Field(alias=ATTR_START_ACTION)
-    time_interval: List[TimeIntervalResponse] = Field(
+    time_interval: list[TimeIntervalResponse] = Field(
         alias=ATTR_SMART_TASK_TRIGGER_TIME_INTERVAL
     )
 

@@ -17,6 +17,8 @@ from .gateway import Gateway
 
 CONFIG_FILE = "tradfri_standalone_psk.conf"
 
+# pylint: disable=invalid-name
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

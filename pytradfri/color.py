@@ -3,9 +3,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from .device.light import LightResponse
-
 from .const import (
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR_TEMP,
@@ -13,6 +10,9 @@ from .const import (
     SUPPORT_RGB_COLOR,
     SUPPORT_XY_COLOR,
 )
+
+if TYPE_CHECKING:
+    from .device.light import LightResponse
 
 # Extracted from Tradfri Android App string.xml
 COLOR_NAMES = {
