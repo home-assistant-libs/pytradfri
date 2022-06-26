@@ -68,6 +68,9 @@ disable = [
     "format",
 #    "abstract-class-little-used",
     "abstract-method",
+    # When Python 3.10 is the minimum version
+    # (or pydantic is updated to support the new union syntax with Python 3.9)
+    # we can remove this disable and change to the new syntax.
     "consider-alternative-union-syntax",
     "consider-using-assignment-expr",
     "cyclic-import",
