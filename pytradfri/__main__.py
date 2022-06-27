@@ -99,7 +99,7 @@ if __name__ == "__main__":
     tasks = api(tasks_commands)
     homekit_id = api(gateway.get_gateway_info()).homekit_id
 
-    def dump_all() -> None:  # pylint: disable=unused-variable
+    def dump_all() -> None:
         """Dump all endpoints."""
         endpoints = api(gateway.get_endpoints())
 
@@ -113,7 +113,7 @@ if __name__ == "__main__":
             print()
             print()
 
-    def dump_devices() -> None:  # pylint: disable=unused-variable
+    def dump_devices() -> None:
         """Dump devices."""
         pprint([d.raw for d in devices])
 
