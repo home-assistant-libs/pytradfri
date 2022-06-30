@@ -127,7 +127,7 @@ def print_gateway_endpoints() -> None:
 def print_all_devices() -> None:
     """Print all devices as JSON."""
     print("Printing information about all devices paired to the Gateway")
-    if len(devices) == 0:
+    if not devices:
         sys.exit(bold("No devices paired"))
 
     container: list[dict[str, Any]] = []
