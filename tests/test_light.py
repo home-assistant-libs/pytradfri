@@ -32,7 +32,7 @@ def test_white_bulb():
 
 
 def test_spectrum_bulb():
-    """Test sprectrum bulb."""
+    """Test spectrum bulb."""
     bulb = light(LIGHT_WS)
 
     assert bulb.hex_color == "0"

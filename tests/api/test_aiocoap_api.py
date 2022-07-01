@@ -6,13 +6,13 @@ from pytradfri.api.aiocoap_api import APIFactory
 from pytradfri.command import Command
 
 
-def async_test(f):
+def async_test(func):
     """Start test."""
 
-    @functools.wraps(f)
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """Wrap to start event loop."""
-        future = f(*args, **kwargs)
+        future = func(*args, **kwargs)
         loop = asyncio.get_event_loop()
         loop.run_until_complete(future)
 
@@ -78,7 +78,7 @@ async def test_request_returns_single(monkeypatch):
 
     response = await api(command)
 
-    assert type(response) != list
+    assert not isinstance(response, list)
 
 
 @async_test
@@ -92,4 +92,4 @@ async def test_request_returns_list(monkeypatch):
 
     response = await api([command, command, command])
 
-    assert type(response) == list
+    assert isinstance(response, list)

@@ -6,13 +6,13 @@ from pytradfri.device import Device
 from .devices import BLIND
 
 
-@pytest.fixture
-def device():
+@pytest.fixture(name="device")
+def device_fixture() -> Device:
     """Return Device."""
     return Device(BLIND)
 
 
-def test_device_info_properties(device):
+def test_device_info_properties(device: Device) -> None:
     """Test device info properties."""
     info = device.device_info
 
@@ -23,7 +23,7 @@ def test_device_info_properties(device):
     assert info.battery_level == 77
 
 
-def test_current_position(device):
+def test_current_position(device: Device) -> None:
     """Test blind position."""
 
     blind = device.blind_control.blinds[0]

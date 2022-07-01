@@ -36,8 +36,8 @@ from .devices import (
 )
 
 
-@pytest.fixture
-def device(request):
+@pytest.fixture(name="device")
+def device_fixture(request: pytest.FixtureRequest) -> Device:
     """Return device."""
     if hasattr(request, "param"):
         response = deepcopy(request.param)
@@ -101,7 +101,7 @@ lamp_value_setting_test_cases = [
         ],
         [
             "set_hsb",
-            "with_transitiontime",
+            "with_transition_time",
             {"hue": 300, "saturation": 200, "brightness": 100, "transition_time": 2},
             {
                 ATTR_LIGHT_COLOR_HUE: 300,
@@ -112,7 +112,7 @@ lamp_value_setting_test_cases = [
         ],
         [
             "set_hsb",
-            "with_faulty_transitiontime",
+            "with_faulty_transition_time",
             {"hue": 300, "saturation": 200, "transition_time": -2},
             {
                 ATTR_LIGHT_COLOR_HUE: 300,
@@ -158,7 +158,7 @@ lamp_value_setting_test_cases = [
         ],
         [
             "set_xy_color",
-            "with_transitiontime",
+            "with_transition_time",
             {"color_x": 300, "color_y": 200, "transition_time": 2},
             {ATTR_LIGHT_COLOR_X: 300, ATTR_LIGHT_COLOR_Y: 200, ATTR_TRANSITION_TIME: 2},
         ],
@@ -184,7 +184,7 @@ lamp_value_setting_test_cases = [
         ],
         [
             "set_color_temp",
-            "with_transitiontime",
+            "with_transition_time",
             {"color_temp": 300, "transition_time": 2},
             {ATTR_LIGHT_MIREDS: 300, ATTR_TRANSITION_TIME: 2},
         ],
@@ -210,7 +210,7 @@ lamp_value_setting_test_cases = [
         ],
         [
             "set_dimmer",
-            "with_transitiontime",
+            "with_transition_time",
             {"dimmer": 200, "transition_time": 2},
             {ATTR_LIGHT_DIMMER: 200, ATTR_TRANSITION_TIME: 2},
         ],
@@ -256,7 +256,7 @@ lamp_value_setting_test_cases = [
         ],
         [
             "set_hex_color",
-            "with_transitiontime",
+            "with_transition_time",
             {"color": "4a418a", "transition_time": 2},
             {ATTR_LIGHT_COLOR_HEX: "4a418a", ATTR_TRANSITION_TIME: 2},
         ],
@@ -270,7 +270,7 @@ lamp_value_setting_test_cases = [
         ],
         [
             "set_predefined_color",
-            "with_transitiontime",
+            "with_transition_time",
             {"colorname": "Saturated Purple", "transition_time": 2},
             {ATTR_LIGHT_COLOR_HEX: "8f2686", ATTR_TRANSITION_TIME: 2},
         ],
@@ -280,14 +280,14 @@ lamp_value_setting_test_cases = [
 # Combine lamp_value_setting_test_cases and output_devices where:
 # len(new) = len(a) * len(b)
 src = lamp_value_setting_test_cases[1] * len(output_devices[1])
-newList = []
-for i in range(len(src)):
+new_list = []
+for i, src_item in enumerate(src):
     index = int((i / len(src)) * len(output_devices[1]))
-    newList.append(
-        [src[i][0], src[i][1], src[i][2], src[i][3], output_devices[1][index]]
+    new_list.append(
+        [src_item[0], src_item[1], src_item[2], src_item[3], output_devices[1][index]]
     )
 lamp_value_setting_test_cases[0].append("device")
-lamp_value_setting_test_cases[1] = newList
+lamp_value_setting_test_cases[1] = new_list
 
 
 @pytest.mark.parametrize(*lamp_value_setting_test_cases)
@@ -472,6 +472,7 @@ def test_last_seen_none():
 # Test _value_validate function
 def test_value_validate_lower_edge(device):
     """Test value lower edge."""
+    # pylint: disable=protected-access
     rnge = (10, 100)
     with pytest.raises(ValueError):
         device.light_control._value_validate(9, rnge)
@@ -481,6 +482,7 @@ def test_value_validate_lower_edge(device):
 
 def test_value_validate_upper_edge(device):
     """Test value upper edge."""
+    # pylint: disable=protected-access
     rnge = (10, 100)
     assert device.light_control._value_validate(99, rnge) is None
     assert device.light_control._value_validate(100, rnge) is None
@@ -490,12 +492,13 @@ def test_value_validate_upper_edge(device):
 
 def test_value_validate_none(device):
     """Test value none."""
+    # pylint: disable=protected-access
     rnge = (10, 100)
     assert device.light_control._value_validate(None, rnge) is None
 
 
 # Test deviceInfo serial function
-def test_deviceinfo_serial():
+def test_device_info_serial():
     """Test serial number."""
     response = deepcopy(LIGHT_WS)
     response[ATTR_DEVICE_INFO]["2"] = "SomeRandomSerial"
@@ -505,14 +508,14 @@ def test_deviceinfo_serial():
 
 
 # Test deviceInfo power_source_str function
-def test_deviceinfo_power_source_str_known():
+def test_device_info_power_source_str_known():
     """Test power source known."""
     info = Device(deepcopy(LIGHT_WS)).device_info
     assert info.power_source_str is not None
     assert info.power_source_str != "Unknown"
 
 
-def test_deviceinfo_power_source_str_unknown():
+def test_device_info_power_source_str_unknown():
     """Test power source unknown."""
     response = deepcopy(LIGHT_WS)
     response[ATTR_DEVICE_INFO]["6"] = 99999
@@ -521,7 +524,7 @@ def test_deviceinfo_power_source_str_unknown():
     assert info.power_source_str == "Unknown"
 
 
-def test_deviceinfo_power_source_not_present():
+def test_device_info_power_source_not_present():
     """Test power source not present."""
     response = deepcopy(LIGHT_WS)
     del response[ATTR_DEVICE_INFO]["6"]
@@ -532,16 +535,16 @@ def test_deviceinfo_power_source_not_present():
 
 # Test deviceInfo battery_level function
 @pytest.mark.parametrize(*input_devices, indirect=["device"])
-def test_deviceinfo_battery_level(comment, device):
+def test_device_info_battery_level(comment: str, device: Device) -> None:
     """Test battery level."""
     info = device.device_info
-    assert type(info.battery_level) is int
+    assert isinstance(info.battery_level, int)
     assert info.battery_level >= 0
     assert info.battery_level <= 100
 
 
 @pytest.mark.parametrize(*input_devices)
-def test_deviceinfo_battery_level_unknown(comment, device):
+def test_device_info_battery_level_unknown(comment: str, device: Device) -> None:
     """Test battery level unknown."""
     response = deepcopy(device)
     response[ATTR_DEVICE_INFO].pop("9")
