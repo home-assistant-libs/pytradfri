@@ -5,7 +5,7 @@ import json
 import logging
 import subprocess
 from time import time
-from typing import TYPE_CHECKING, Any, Union, cast, overload
+from typing import TYPE_CHECKING, Any, Protocol, Union, cast, overload
 
 from ..command import Command, T
 from ..error import ClientError, RequestError, RequestTimeout, ServerError
@@ -15,6 +15,25 @@ _LOGGER = logging.getLogger(__name__)
 
 CLIENT_ERROR_PREFIX = "4."
 SERVER_ERROR_PREFIX = "5."
+
+
+class APIRequestProtocol(Protocol):
+    """Represent the protocol for the APIFactory request method."""
+
+    @overload
+    def __call__(self, api_commands: Command[T], timeout: int | None = None) -> T:
+        """Define the signature of the request method."""
+
+    @overload
+    def __call__(
+        self, api_commands: list[Command[T]], timeout: int | None = None
+    ) -> list[T]:
+        """Define the signature of the request method."""
+
+    def __call__(
+        self, api_commands: Command[T] | list[Command[T]], timeout: int | None = None
+    ) -> T | list[T]:
+        """Define the signature of the request method."""
 
 
 class APIFactory:
