@@ -24,24 +24,6 @@ repos:
           - --branch=master
   - repo: local
     hooks:
-      - id: flake8
-        name: flake8
-        entry: flake8
-        language: system
-        types: [python]
-        files: ^(pytradfri|examples|tests)/.+\.py$
-  - repo: local
-    hooks:
-      - id: pylint
-        name: pylint
-        stages: [manual]
-        # DO NOT ACTIVATE until all files have been manually updated.
-        entry: pylint
-        language: system
-        types: [python]
-        files: ^(pytradfri|examples|tests)/.+\.py$
-  - repo: local
-    hooks:
       - id: pytest
         name: pytest
         args:
@@ -53,14 +35,22 @@ repos:
         language: system
         types: [python]
         files: tests
-  - repo: local
-    hooks:
       - id: mypy
         name: mypy
         entry: ./script/run-pre-commit.sh mypy
         language: script
         types: [python]
         require_serial: true
-        #        files: ^(pytradfri|examples|tests)/.+\.py$
-        # DO NOT ADD examples/tests until files have been updated.
-        files: ^(pytradfri)/.+\.py$
+        files: ^(pytradfri|examples|tests)/.+\.py$
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        files: ^(pytradfri|examples|tests)/.+\.py$
+      - id: flake8
+        name: flake8
+        entry: flake8
+        language: system
+        types: [python]
+        files: ^(pytradfri|examples|tests)/.+\.py$
