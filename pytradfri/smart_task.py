@@ -21,6 +21,7 @@ from .const import (
     ATTR_GATEWAY_INFO,
     ATTR_ID,
     ATTR_LIGHT_DIMMER,
+    ATTR_NAME,
     ATTR_REPEAT_DAYS,
     ATTR_SMART_TASK_LIGHTS_OFF,
     ATTR_SMART_TASK_NOT_AT_HOME,
@@ -249,6 +250,12 @@ class TaskControl:
             ]
         }
         return self._task.set_values(command)
+
+    def set_state(self, state: bool) -> Command[None]:
+        """Set state of a task."""
+        return self._task.set_values(
+            {ATTR_DEVICE_STATE: int(state), ATTR_NAME: self._task.name}
+        )
 
     @property
     def raw(self) -> RootStartActionResponse:
