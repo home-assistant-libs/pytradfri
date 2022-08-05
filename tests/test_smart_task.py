@@ -6,6 +6,7 @@ from pytradfri.smart_task import BitChoices, SmartTask
 
 TASK = {
     "5850": 1,
+    "9001": "Sample Name",
     "9002": 1492349682,
     "9003": 317094,
     "9040": 4,
@@ -101,3 +102,15 @@ def test_smart_task_info():
 def test_smart_task_bit_choices():
     """Test smart task with bit choices."""
     assert WEEKDAYS.get_selected_values(3) == ["Monday", "Tuesday"]
+
+
+def test_smart_task_set_state():
+    """Test smart task set state"""
+    gateway = Gateway()
+    tc = SmartTask(gateway, TASK).task_control
+
+    cmd = tc.set_state(True)
+    assert cmd.data == {"5850": 1, "9001": "Sample Name"}
+
+    cmd = tc.set_state(False)
+    assert cmd.data == {"5850": 0, "9001": "Sample Name"}
