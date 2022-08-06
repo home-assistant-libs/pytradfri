@@ -105,7 +105,7 @@ def test_smart_task_bit_choices():
 
 
 def test_smart_task_set_state():
-    """Test smart task set state"""
+    """Test smart task set state."""
     gateway = Gateway()
     tc = SmartTask(gateway, TASK).task_control
 
