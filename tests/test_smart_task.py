@@ -107,10 +107,10 @@ def test_smart_task_bit_choices():
 def test_smart_task_set_state():
     """Test smart task set state."""
     gateway = Gateway()
-    tc = SmartTask(gateway, TASK).task_control
+    task_control = SmartTask(gateway, TASK).task_control
 
-    cmd = tc.set_state(True)
+    cmd = task_control.set_state(True)
     assert cmd.data == {"5850": 1, "9001": "Sample Name"}
 
-    cmd = tc.set_state(False)
+    cmd = task_control.set_state(False)
     assert cmd.data == {"5850": 0, "9001": "Sample Name"}
