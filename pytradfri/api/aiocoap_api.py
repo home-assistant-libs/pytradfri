@@ -74,7 +74,8 @@ class APIFactory:
         self._host = host
         self._psk_id = psk_id
         self._observations_err_callbacks: list[Callable[[Exception], None]] = []
-        self._protocol: asyncio.Task[Context] | None = None
+        self._protocol: Context | None = None
+        self._protocol_creation_lock = asyncio.Lock()
         self._reset_lock = asyncio.Lock()
         self._shutdown = False
 
@@ -100,9 +101,10 @@ class APIFactory:
 
     async def _get_protocol(self) -> Context:
         """Get the protocol for the request."""
-        if self._protocol is None:
-            self._protocol = asyncio.create_task(Context.create_client_context())
-        return await self._protocol
+        async with self._protocol_creation_lock:
+            if self._protocol is None:
+                self._protocol = await Context.create_client_context()
+        return self._protocol
 
     async def _reset_protocol(self, exc: BaseException | None = None) -> None:
         """Reset the protocol if an error occurs."""
