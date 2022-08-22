@@ -1,5 +1,5 @@
 black==22.6.0
-coverage==6.4.3
+coverage==6.4.4
 flake8==5.0.4
 flake8-comprehensions==3.10.0
 flake8-docstrings==1.6.0
