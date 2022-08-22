@@ -3,7 +3,7 @@ coverage==6.4.3
 flake8==5.0.4
 flake8-comprehensions==3.10.0
 flake8-docstrings==1.6.0
-flake8-noqa==1.2.8
+flake8-noqa==1.2.9
 mypy==0.971
 pre-commit==2.20.0
 pylint==2.14.5
