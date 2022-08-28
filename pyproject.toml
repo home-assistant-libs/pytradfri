@@ -119,5 +119,5 @@ plugins = "pydantic.mypy"
 strict = true
 
 [[tool.mypy.overrides]]
-module = 'tests.*'
+module = "tests.*"
 ignore_errors = true
