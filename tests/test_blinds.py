@@ -25,6 +25,5 @@ def test_device_info_properties(device: Device) -> None:
 
 def test_current_position(device: Device) -> None:
     """Test blind position."""
-
     blind = device.blind_control.blinds[0]
     assert blind.current_cover_position == 50

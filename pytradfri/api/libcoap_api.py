@@ -81,7 +81,6 @@ class APIFactory:
 
     def _execute(self, api_command: Command[T], *, timeout: int | None = None) -> T:
         """Execute the command."""
-
         if api_command.observe:
             self._observe(api_command)
             return api_command.result

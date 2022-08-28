@@ -46,14 +46,12 @@ class AirPurifierControl(BaseController):
 
     def set_controls_locked(self, locked: bool, *, index: int = 0) -> Command[None]:
         """Set physical controls locked of the air purifier."""
-
         return self.set_value(
             {ATTR_AIR_PURIFIER_CONTROLS_LOCKED: 1 if locked else 0}, index=index
         )
 
     def set_leds_off(self, leds_off: bool, *, index: int = 0) -> Command[None]:
         """Set led's off/on of the air purifier."""
-
         return self.set_value(
             {ATTR_AIR_PURIFIER_LEDS_OFF: 1 if leds_off else 0}, index=index
         )
