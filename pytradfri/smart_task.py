@@ -353,7 +353,10 @@ class StartActionItem:
 
     def __repr__(self) -> str:
         """Return a readable name for this class."""
-        return f"<StartActionItem (Device: {self.id} - Dimmer: {self.dimmer} - Time: {self.transition_time})>"
+        return (
+            f"<StartActionItem (Device: {self.id} - Dimmer: {self.dimmer} - "
+            f"Time: {self.transition_time})>"
+        )
 
 
 class StartActionItemController:

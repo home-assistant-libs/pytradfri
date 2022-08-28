@@ -172,13 +172,11 @@ class Gateway:
     @classmethod
     def add_group_member(cls, values: dict[str, Any]) -> Command[None]:
         """Add a device to a group."""
-
         return Command("put", [ROOT_GROUPS, "add"], values)
 
     @classmethod
     def remove_group_member(cls, values: dict[str, Any]) -> Command[None]:
         """Remove a device from a group."""
-
         return Command("put", [ROOT_GROUPS, "remove"], values)
 
     @classmethod
@@ -260,7 +258,6 @@ class Gateway:
 
         Returns a Command.
         """
-
         return Command("post", [ROOT_GATEWAY, ATTR_GATEWAY_REBOOT])
 
     @classmethod
@@ -271,7 +268,6 @@ class Gateway:
         switches, dimmers and motion sensors for up to timeout seconds.
         Returns a Command.
         """
-
         return Command(
             "put", [ROOT_GATEWAY, ATTR_GATEWAY_INFO], {ATTR_COMMISSIONING_MODE: timeout}
         )
@@ -283,7 +279,6 @@ class Gateway:
         WARNING: All data in Gateway is lost (pairing, groups, etc)
         Returns a Command.
         """
-
         return Command("post", [ROOT_GATEWAY, ATTR_GATEWAY_FACTORY_DEFAULTS])
 
 
