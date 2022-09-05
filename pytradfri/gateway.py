@@ -55,9 +55,9 @@ class GatewayInfoResponse(BaseModel):
     id: str = Field(alias=ATTR_GATEWAY_ID)
     ntp_server: str = Field(alias=ATTR_NTP)
     ota_type: int = Field(alias=ATTR_OTA_TYPE)
-    ota_update_state: int = Field(ATTR_OTA_UPDATE_STATE)
+    ota_update_state: int = Field(alias=ATTR_OTA_UPDATE_STATE)
     pair_status_alexa: int = Field(alias=ATTR_ALEXA_PAIR_STATUS)
-    pair_status_google_home: int = Field(ATTR_GOOGLE_HOME_PAIR_STATUS)
+    pair_status_google_home: int = Field(alias=ATTR_GOOGLE_HOME_PAIR_STATUS)
     time_source: int = Field(alias=ATTR_GATEWAY_TIME_SOURCE)
     update_progress: int = Field(alias=ATTR_GATEWAY_UPDATE_PROGRESS)
 
