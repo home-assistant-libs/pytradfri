@@ -78,8 +78,7 @@ class ApiResource:
             """
             self.raw = self._model_class(**value)
 
-            if callback:
-                callback(self)
+            callback(self)
 
         return Command(
             "get",
