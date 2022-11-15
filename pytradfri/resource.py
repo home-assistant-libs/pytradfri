@@ -65,7 +65,7 @@ class ApiResource:
 
     def observe(
         self,
-        callback: Callable[[ApiResource], None],
+        callback: Callable[[ApiResource], None] | None,
         err_callback: Callable[[Exception], None] | None,
         duration: int = 60,
     ) -> Command[None]:
@@ -78,7 +78,8 @@ class ApiResource:
             """
             self.raw = self._model_class(**value)
 
-            callback(self)
+            if callback:
+                callback(self)
 
         return Command(
             "get",
