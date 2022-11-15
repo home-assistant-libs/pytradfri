@@ -65,7 +65,7 @@ class ApiResource:
 
     def observe(
         self,
-        callback: Callable[[ApiResource], None],
+        callback: Callable[[ApiResource], None] | None,
         err_callback: Callable[[Exception], None] | None,
         duration: int = 60,
     ) -> Command[None]:
