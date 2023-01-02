@@ -25,7 +25,7 @@ import uuid
 folder = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.normpath(f"{folder}/.."))
 
-# pylint: disable=wrong-import-position
+# pylint: disable=import-error, wrong-import-position
 
 from pytradfri import Gateway
 from pytradfri.api.libcoap_api import APIFactory
@@ -175,12 +175,12 @@ def print_groups() -> None:
     print(jsonify(container))
 
 
-def print_moods():
+def print_moods() -> None:
     """Print all moods as JSON."""
     print("Printing information about all moods defined in the Gateway")
     groups = api(gateway.get_groups())
     if not groups:
-        exit(bold("No groups defined"))
+        sys.exit(bold("No groups defined"))
 
     container = []
 
@@ -192,7 +192,7 @@ def print_moods():
             container.append(api(mood).raw.dict())
 
     if not container:
-        exit(bold("No moods defined"))
+        sys.exit(bold("No moods defined"))
 
     print(jsonify(container))
 

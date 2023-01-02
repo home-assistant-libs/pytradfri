@@ -24,7 +24,7 @@ import uuid
 folder = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.normpath(f"{folder}/.."))
 
-# pylint: disable=wrong-import-position
+# pylint: disable=import-error, wrong-import-position
 
 from pytradfri import Gateway
 from pytradfri.api.libcoap_api import APIFactory, APIRequestProtocol
