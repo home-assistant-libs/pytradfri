@@ -1,4 +1,7 @@
 categories:
+  - title: "⚠ Breaking Changes"
+    labels:
+      - "breaking-change"
   - title: "⬆️ Dependencies"
     collapse-after: 1
     labels:
