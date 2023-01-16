@@ -166,6 +166,16 @@ SUPPORT_HEX_COLOR: Final = 4
 SUPPORT_RGB_COLOR: Final = 8
 SUPPORT_XY_COLOR: Final = 16
 
+# SmartTask repeat days values
+class Days:
+    MONDAY = 1 << 6
+    TUESDAY = 1 << 5
+    WEDNESDAY = 1 << 4
+    THURSDAY = 1 << 3
+    FRIDAY = 1 << 2
+    SATURDAY = 1 << 1
+    SUNDAY = 1
+
 ATTR_DEVICE_MANUFACTURER: Final = "0"
 ATTR_DEVICE_MODEL_NUMBER: Final = "1"
 ATTR_DEVICE_SERIAL: Final = "2"
