@@ -138,6 +138,9 @@ if __name__ == "__main__":
     if socket:
         print("> sockets")
         print("> socket.socket_control.sockets")
+        print("> from pytradfri.const.Days import TUESDAY, THURSDAY, SATURDAY, SUNDAY")
+        print("> days = TUESDAY | THURSDAY | SATURDAY | SUNDAY")
+        print("> api(socket.socket_control.set_repeat_days(days))")
     if tasks:
         print("> tasks[0].repeat_days_list")
     print("> api(gateway.reboot())")
