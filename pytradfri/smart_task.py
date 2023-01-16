@@ -232,6 +232,11 @@ class TaskControl:
             "get", [ROOT_GATEWAY, ATTR_GATEWAY_INFO], process_result=process_result
         )
 
+    def set_repeat_days(self, days: int) -> Command[None]:
+        """Set which days the smart task should be enabled."""
+        command: dict[str, int] = {ATTR_REPEAT_DAYS: days}
+        return self._task.set_values(command)
+
     def set_dimmer_start_time(self, hour: int, minute: int) -> Command[None]:
         """Set start time for task (hh:mm) in iso8601.
 
