@@ -67,7 +67,7 @@ class StartActionResponse(BaseResponse):
     """Represent a start action response."""
 
     transition_time: Optional[int] = Field(alias=ATTR_TRANSITION_TIME)
-    dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
+    dimmer: Optional[int] = Field(alias=ATTR_LIGHT_DIMMER)
 
 
 class TimeIntervalResponse(BaseModel):
@@ -309,7 +309,8 @@ class StartActionItem:
             if idx != self.index:
                 list_record: dict[str, int] = {}
                 list_record[ATTR_ID] = record.id
-                list_record[ATTR_LIGHT_DIMMER] = record.dimmer
+                if record.dimmer is not None:
+                    list_record[ATTR_LIGHT_DIMMER] = record.dimmer
 
                 if record.transition_time is not None:
                     list_record[ATTR_TRANSITION_TIME] = record.transition_time
@@ -342,7 +343,7 @@ class StartActionItem:
         return None
 
     @property
-    def dimmer(self) -> int:
+    def dimmer(self) -> int | None:
         """Return dimmer level."""
         return self.raw.dimmer
 
@@ -404,10 +405,13 @@ class StartActionItemController:
         root_start_action_list: list[dict[str, int]] = [
             {
                 ATTR_ID: self.raw.id,
-                ATTR_LIGHT_DIMMER: self.raw.dimmer,
                 ATTR_TRANSITION_TIME: transition_time * 10 * 60,
             }
         ]
+
+        if self.raw.dimmer is not None:
+            root_start_action_list[0][ATTR_LIGHT_DIMMER] = self.raw.dimmer
+
         root_start_action_list.extend(self.devices_list)
 
         command: dict[str, dict[str, Any]] = {
