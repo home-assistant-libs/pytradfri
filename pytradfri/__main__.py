@@ -83,6 +83,13 @@ if __name__ == "__main__":
     else:
         print("No lights found!")
         light = None
+
+    sockets = [dev for dev in devices if dev.has_socket_control]
+    if sockets:
+        socket: Device | None = sockets[0]
+    else:
+        print("No sockets found!")
+        socket = None
     groups_commands = api(gateway.get_groups())
     groups = api(groups_commands)
     moods = []
@@ -128,6 +135,9 @@ if __name__ == "__main__":
         print("> api(light.light_control.set_xy_color(30015, 26870))")
         print("> api(light.light_control.set_predefined_color('Warm Amber'))")
         print("> api(lights[1].light_control.set_dimmer(20))")
+    if socket:
+        print("> sockets")
+        print("> socket.socket_control.sockets")
     if tasks:
         print("> tasks[0].repeat_days_list")
     print("> api(gateway.reboot())")
