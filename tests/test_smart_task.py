@@ -55,6 +55,18 @@ TASK3 = {
     "9044": [{"9046": 8, "9047": 15}],
 }
 
+TASK_OPTIONAL_DIMMER = {
+    "9001": "Light and dark",
+    "9002": 1613335145,
+    "9003": 318615,
+    "5850": 1,
+    "9040": 2,
+    "9041": 127,
+    "9042": {"5850": 1, "15013": [{"9003": 65553}]},
+    "9043": {"5850": 0, "15013": [{"9003": 65553}]},
+    "9044": [{"9046": 15, "9047": 0, "9048": 7, "9049": 0, "9226": 0}],
+}
+
 
 WEEKDAYS = BitChoices(
     (
@@ -114,3 +126,18 @@ def test_smart_task_set_state():
 
     cmd = task_control.set_state(False)
     assert cmd.data == {"5850": 0, "9001": "Sample Name"}
+
+
+def test_optional_dimmer():
+    """Test a smart task with missing dimmer attribute."""
+    gateway = Gateway()
+    task = SmartTask(gateway, TASK_OPTIONAL_DIMMER).task_control.tasks[0]
+
+    assert task.id == 65553
+    assert task.index == 0
+    assert task.state is True
+    assert task.path == ["15010", "318615"]
+    assert task.dimmer is None
+    assert task.transition_time is None
+    devices_list = task.devices_list
+    assert devices_list == []
