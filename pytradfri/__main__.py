@@ -129,6 +129,7 @@ if __name__ == "__main__":
     print("> devices")
     print("> homekit_id")
     if light:
+        print("> lights")
         print("> light.light_control.lights")
         print("> api(light.light_control.set_dimmer(10))")
         print("> api(light.light_control.set_dimmer(254))")
