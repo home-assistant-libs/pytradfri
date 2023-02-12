@@ -50,7 +50,6 @@ disable = [
   # (or pydantic is updated to support the new union syntax with Python 3.9)
   # we can remove this disable and change to the new syntax.
   "consider-alternative-union-syntax",
-  "consider-using-assignment-expr",
   "duplicate-code",
   "locally-disabled",
   "too-few-public-methods",

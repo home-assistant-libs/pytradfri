@@ -77,8 +77,7 @@ if __name__ == "__main__":
     gateway = Gateway()
     devices_commands = api(gateway.get_devices())
     devices = api(devices_commands)
-    lights = [dev for dev in devices if dev.has_light_control]
-    if lights:
+    if lights := [dev for dev in devices if dev.has_light_control]:
         light: Device | None = lights[0]
     else:
         print("No lights found!")
