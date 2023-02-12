@@ -152,8 +152,7 @@ def print_lamps() -> None:
 def print_smart_tasks() -> None:
     """Print smart tasks as JSON."""
     print("Printing information about smart tasks")
-    tasks = api(gateway.get_smart_tasks())
-    if not tasks:
+    if not (tasks := api(gateway.get_smart_tasks())):
         sys.exit(bold("No smart tasks defined"))
 
     container: list[dict[str, Any]] = []
@@ -165,8 +164,7 @@ def print_smart_tasks() -> None:
 def print_groups() -> None:
     """Print all groups as JSON."""
     print("Printing information about all groups defined in the Gateway")
-    groups = api(gateway.get_groups())
-    if not groups:
+    if not (groups := api(gateway.get_groups())):
         sys.exit(bold("No groups defined"))
 
     container: list[dict[str, Any]] = []
@@ -178,8 +176,7 @@ def print_groups() -> None:
 def print_moods() -> None:
     """Print all moods as JSON."""
     print("Printing information about all moods defined in the Gateway")
-    groups = api(gateway.get_groups())
-    if not groups:
+    if not (groups := api(gateway.get_groups())):
         sys.exit(bold("No groups defined"))
 
     container = []
