@@ -1,7 +1,7 @@
 """Represent a light."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from pydantic import Field
 
@@ -31,13 +31,13 @@ if TYPE_CHECKING:
 class LightResponse(BaseResponse):
     """Represent API response for a blind."""
 
-    color_mireds: Optional[int] = Field(alias=ATTR_LIGHT_MIREDS)
-    color_hex: Optional[str] = Field(alias=ATTR_LIGHT_COLOR_HEX)
-    color_xy_x: Optional[int] = Field(alias=ATTR_LIGHT_COLOR_X)
-    color_xy_y: Optional[int] = Field(alias=ATTR_LIGHT_COLOR_Y)
-    color_hue: Optional[int] = Field(alias=ATTR_LIGHT_COLOR_HUE)
-    color_saturation: Optional[int] = Field(alias=ATTR_LIGHT_COLOR_SATURATION)
-    dimmer: Optional[int] = Field(alias=ATTR_LIGHT_DIMMER)
+    color_mireds: int | None = Field(alias=ATTR_LIGHT_MIREDS)
+    color_hex: str | None = Field(alias=ATTR_LIGHT_COLOR_HEX)
+    color_xy_x: int | None = Field(alias=ATTR_LIGHT_COLOR_X)
+    color_xy_y: int | None = Field(alias=ATTR_LIGHT_COLOR_Y)
+    color_hue: int | None = Field(alias=ATTR_LIGHT_COLOR_HUE)
+    color_saturation: int | None = Field(alias=ATTR_LIGHT_COLOR_SATURATION)
+    dimmer: int | None = Field(alias=ATTR_LIGHT_DIMMER)
     state: int = Field(alias=ATTR_DEVICE_STATE)
 
 

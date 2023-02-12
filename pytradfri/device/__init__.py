@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -44,26 +43,26 @@ class DeviceInfoResponse(BaseModel):
     model_number: str = Field(alias=ATTR_DEVICE_MODEL_NUMBER)
     serial: str = Field(alias=ATTR_DEVICE_SERIAL)
     firmware_version: str = Field(alias=ATTR_DEVICE_FIRMWARE_VERSION)
-    power_source: Optional[int] = Field(alias=ATTR_DEVICE_POWER_SOURCE)
-    battery_level: Optional[int] = Field(alias=ATTR_DEVICE_BATTERY)
+    power_source: int | None = Field(alias=ATTR_DEVICE_POWER_SOURCE)
+    battery_level: int | None = Field(alias=ATTR_DEVICE_BATTERY)
 
 
 class DeviceResponse(ApiResourceResponse):
     """Represent a device response."""
 
-    air_purifier_control: Optional[list[AirPurifierResponse]] = Field(
+    air_purifier_control: list[AirPurifierResponse] | None = Field(
         alias=ROOT_AIR_PURIFIER
     )
     application_type: int = Field(alias=ATTR_APPLICATION_TYPE)
-    blind_control: Optional[list[BlindResponse]] = Field(alias=ATTR_START_BLINDS)
+    blind_control: list[BlindResponse] | None = Field(alias=ATTR_START_BLINDS)
     device_info: DeviceInfoResponse = Field(alias=ATTR_DEVICE_INFO)
-    last_seen: Optional[int] = Field(alias=ATTR_LAST_SEEN)
-    light_control: Optional[list[LightResponse]] = Field(alias=ATTR_LIGHT_CONTROL)
+    last_seen: int | None = Field(alias=ATTR_LAST_SEEN)
+    light_control: list[LightResponse] | None = Field(alias=ATTR_LIGHT_CONTROL)
     reachable: int = Field(alias=ATTR_REACHABLE_STATE)
-    signal_repeater_control: Optional[list[SignalRepeaterResponse]] = Field(
+    signal_repeater_control: list[SignalRepeaterResponse] | None = Field(
         alias=ROOT_SIGNAL_REPEATER
     )
-    socket_control: Optional[list[SocketResponse]] = Field(alias=ATTR_SWITCH_PLUG)
+    socket_control: list[SocketResponse] | None = Field(alias=ATTR_SWITCH_PLUG)
 
 
 class Device(ApiResource):
@@ -83,7 +82,7 @@ class Device(ApiResource):
         return [ROOT_DEVICES, str(self.id)]
 
     @property
-    def device_info(self) -> "DeviceInfo":
+    def device_info(self) -> DeviceInfo:
         """Return Device information."""
         return DeviceInfo(self)
 

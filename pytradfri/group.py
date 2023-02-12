@@ -1,7 +1,7 @@
 """Group handling."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from pydantic import Field
 
@@ -42,7 +42,7 @@ if TYPE_CHECKING:
 class GroupResponse(ApiResourceResponse):
     """Represent API response for a blind."""
 
-    color_hex: Optional[str] = Field(alias=ATTR_LIGHT_COLOR_HEX)
+    color_hex: str | None = Field(alias=ATTR_LIGHT_COLOR_HEX)
     dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
     group_members: dict[str, dict[str, list[int]]] = Field(alias=ATTR_GROUP_MEMBERS)
     mood_id: str = Field(alias=ATTR_MOOD)
