@@ -87,6 +87,7 @@ runtime-typing = false
 max-line-length-suggestions = 72
 
 [tool.pytest.ini_options]
+asyncio_mode = "auto"
 norecursedirs = [
   ".git",
   "testing_config",
@@ -119,4 +120,4 @@ strict = true
 
 [[tool.mypy.overrides]]
 module = "tests.*"
-ignore_errors = true
+#ignore_errors = true
