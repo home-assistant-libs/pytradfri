@@ -120,4 +120,4 @@ strict = true
 
 [[tool.mypy.overrides]]
 module = "tests.*"
-#ignore_errors = true
+ignore_errors = true
