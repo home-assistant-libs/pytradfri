@@ -87,6 +87,7 @@ runtime-typing = false
 max-line-length-suggestions = 72
 
 [tool.pytest.ini_options]
+asyncio_mode = "auto"
 norecursedirs = [
   ".git",
   "testing_config",
