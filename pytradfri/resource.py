@@ -52,9 +52,7 @@ class ApiResource:
     @property
     def created_at(self) -> datetime | None:
         """Return timestamp of creation."""
-        created_at = self.raw.created_at
-
-        if created_at is None:
+        if (created_at := self.raw.created_at) is None:
             return None
         return datetime.utcfromtimestamp(created_at)
 

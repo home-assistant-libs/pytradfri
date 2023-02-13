@@ -152,8 +152,7 @@ class APIFactory:
     def _observe(self, api_command: Command[T]) -> None:
         """Observe an endpoint."""
         path = api_command.path
-        duration = api_command.observe_duration
-        if duration <= 0:
+        if (duration := api_command.observe_duration) <= 0:
             raise ValueError("Observation duration has to be greater than 0.")
         url = api_command.url(self._host)
         err_callback = api_command.err_callback

@@ -90,9 +90,7 @@ class Device(ApiResource):
     @property
     def last_seen(self) -> datetime | None:
         """Return timestamp when last seen."""
-        last_seen = self.raw.last_seen
-
-        if last_seen is not None:
+        if (last_seen := self.raw.last_seen) is not None:
             return datetime.utcfromtimestamp(last_seen)
 
         return None

@@ -170,18 +170,15 @@ def run() -> None:
 
     tasks_command = gateway.get_smart_tasks()
     tasks_commands = api(tasks_command)
-    tasks = api(tasks_commands)
-
-    # Example 6: Return the transition time (in minutes) for task#1
-    if tasks:
+    if tasks := api(tasks_commands):
+        # Example 6: Return the transition time (in minutes) for task#1
         task = tasks[0]
     else:
         print("No tasks found!")
         task = None
 
     if task:
-        task_control_tasks = task.task_control.tasks
-        if task_control_tasks:
+        if task_control_tasks := task.task_control.tasks:
             task_control_task = task_control_tasks[0]
             print(task_control_task.transition_time)
 

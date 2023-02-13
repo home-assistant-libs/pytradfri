@@ -134,7 +134,7 @@ async def run(shutdown: asyncio.Future[None]) -> None:
             print(f"Originally, {len(result)} device(s) are known")
         else:
             for r in result:
-                if r not in last_devices:  # pylint: disable=unsupported-membership-test
+                if r not in last_devices:
                     asyncio.create_task(new_device(r))
 
         last_devices = result

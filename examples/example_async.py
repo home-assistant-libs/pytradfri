@@ -174,8 +174,7 @@ async def run() -> None:
         task = None
 
     if task:
-        task_control_tasks = task.task_control.tasks
-        if task_control_tasks:
+        if task_control_tasks := task.task_control.tasks:
             task_control_task = task_control_tasks[0]
             print(task_control_task.transition_time)
 
