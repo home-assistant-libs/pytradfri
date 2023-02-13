@@ -11,7 +11,7 @@ SmartTask # return top level info
 from __future__ import annotations
 
 from datetime import datetime as dt, time, timedelta
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, Field
 
@@ -66,8 +66,8 @@ class SmartTaskMixin(BaseModel):
 class StartActionResponse(BaseResponse):
     """Represent a start action response."""
 
-    transition_time: Optional[int] = Field(alias=ATTR_TRANSITION_TIME)
-    dimmer: Optional[int] = Field(alias=ATTR_LIGHT_DIMMER)
+    transition_time: int | None = Field(alias=ATTR_TRANSITION_TIME)
+    dimmer: int | None = Field(alias=ATTR_LIGHT_DIMMER)
 
 
 class TimeIntervalResponse(BaseModel):

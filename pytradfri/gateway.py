@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -46,11 +46,11 @@ class GatewayInfoResponse(BaseModel):
     """Represent API response for the gateway."""
 
     certificate_provisioned: int = Field(alias=ATTR_CERTIFICATE_PROV)
-    current_time: Optional[int] = Field(alias=ATTR_CURRENT_TIME_UNIX)
+    current_time: int | None = Field(alias=ATTR_CURRENT_TIME_UNIX)
     current_time_iso8601: str = Field(alias=ATTR_CURRENT_TIME_ISO8601)
     commissioning_mode: int = Field(alias=ATTR_COMMISSIONING_MODE)
     firmware_version: str = Field(alias=ATTR_FIRMWARE_VERSION)
-    first_setup: Optional[int] = Field(alias=ATTR_FIRST_SETUP)
+    first_setup: int | None = Field(alias=ATTR_FIRST_SETUP)
     homekit_id: str = Field(alias=ATTR_HOMEKIT_ID)
     id: str = Field(alias=ATTR_GATEWAY_ID)
     ntp_server: str = Field(alias=ATTR_NTP)

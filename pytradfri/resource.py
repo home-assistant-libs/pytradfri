@@ -4,7 +4,7 @@ from __future__ import annotations
 from abc import abstractmethod
 from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from pydantic import BaseModel, Field
 
@@ -24,9 +24,9 @@ class BaseResponse(BaseModel):
 class ApiResourceResponse(BaseResponse):
     """Represent a resource response."""
 
-    name: Optional[str] = Field(alias=ATTR_NAME)
-    created_at: Optional[int] = Field(alias=ATTR_CREATED_AT)
-    ota_update_state: Optional[int] = Field(alias=ATTR_OTA_UPDATE_STATE)
+    name: str | None = Field(alias=ATTR_NAME)
+    created_at: int | None = Field(alias=ATTR_CREATED_AT)
+    ota_update_state: int | None = Field(alias=ATTR_OTA_UPDATE_STATE)
 
 
 class ApiResource:

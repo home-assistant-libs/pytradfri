@@ -284,7 +284,7 @@ class APIFactory:
                     f"coaps://{self._host}:5684/{command.path_str}": {
                         "dtls": {
                             "psk": security_key.encode("utf-8"),
-                            "client-identity": "Client_identity".encode("utf-8"),
+                            "client-identity": b"Client_identity",
                         }
                     }
                 }

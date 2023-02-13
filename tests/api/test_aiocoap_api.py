@@ -38,7 +38,7 @@ class MockResponse:
     @property
     def payload(self):
         """Return payload."""
-        return "{}".encode("utf-8")
+        return b"{}"
 
 
 class MockProtocol:
