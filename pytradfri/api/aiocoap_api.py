@@ -6,7 +6,7 @@ from collections.abc import Callable
 from enum import Enum
 import json
 import logging
-from typing import Any, Protocol, Union, cast, overload
+from typing import Any, Protocol, cast, overload
 
 from aiocoap import Context, Message
 from aiocoap.credentials import CredentialsMissingError
@@ -81,7 +81,7 @@ class APIFactory:
     @classmethod
     async def init(
         cls, host: str, psk_id: str = "pytradfri", psk: str | None = None
-    ) -> "APIFactory":
+    ) -> APIFactory:
         """Initialize an APIFactory."""
         instance = cls(host, psk_id=psk_id, psk=psk, internal_create=_SENTINEL)
         if psk:
@@ -341,4 +341,4 @@ def _process_output(
     if not parse_json:
         return output
 
-    return cast(Union[list[Any], dict[Any, Any]], json.loads(output))
+    return cast(list[Any] | dict[Any, Any], json.loads(output))

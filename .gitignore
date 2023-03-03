@@ -156,3 +156,5 @@ tradfri_standalone_psk.conf
 
 # Visual Studio Code
 .vscode/*
+
+.ruff_cache
