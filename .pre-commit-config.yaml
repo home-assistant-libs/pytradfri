@@ -54,9 +54,3 @@ repos:
         language: system
         types: [python]
         files: ^(pytradfri|examples|tests)/.+\.py$
-      - id: flake8
-        name: flake8
-        entry: flake8
-        language: system
-        types: [python]
-        files: ^(pytradfri|examples|tests)/.+\.py$
