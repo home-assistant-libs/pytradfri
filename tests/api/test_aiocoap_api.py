@@ -1,8 +1,8 @@
 """Test aiocoap API."""
 from typing import Any
 
-from aiocoap import Message
 import pytest
+from aiocoap import Message
 
 from pytradfri.api.aiocoap_api import APIFactory
 from pytradfri.command import Command

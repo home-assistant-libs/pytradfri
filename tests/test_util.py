@@ -1,9 +1,9 @@
 """Test Util."""
 import json
-from os import path
 import shutil
 import tempfile
 import unittest
+from os import path
 from unittest.mock import patch
 
 import pytest

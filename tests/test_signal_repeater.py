@@ -2,7 +2,6 @@
 
 
 from pytradfri.device import Device
-
 from tests.devices import SIGNAL_REPEATER
 
 
