@@ -130,3 +130,15 @@ select = [
     "I",  # isort
     "UP",  # pyupgrade
 ]
+
+[tool.ruff.isort]
+# will group `import x` and `from x import` of the same module.
+combine-as-imports = true
+force-sort-within-sections = true
+forced-separate = [
+  "tests",
+]
+known-first-party = [
+  "pytradfri",
+  "tests",
+]

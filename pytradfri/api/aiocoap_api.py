@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 import asyncio
-import json
-import logging
 from collections.abc import Callable
 from enum import Enum
+import json
+import logging
 from typing import Any, Protocol, cast, overload
 
 from aiocoap import Context, Message
@@ -14,8 +14,6 @@ from aiocoap.error import (
     ConstructionRenderableError,
     Error,
     LibraryShutdown,
-)
-from aiocoap.error import (
     TimeoutError as COAPTimeoutError,
 )
 from aiocoap.numbers.codes import Code

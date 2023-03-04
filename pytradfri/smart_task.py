@@ -10,8 +10,7 @@ SmartTask # return top level info
 """
 from __future__ import annotations
 
-from datetime import datetime as dt
-from datetime import time, timedelta
+from datetime import datetime as dt, time, timedelta
 from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, Field

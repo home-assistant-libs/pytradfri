@@ -17,8 +17,8 @@ import argparse
 import json
 import os
 import sys
-import uuid
 from typing import Any
+import uuid
 
 # Hack to allow relative import above top level package
 

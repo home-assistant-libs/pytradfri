@@ -3,8 +3,8 @@ from __future__ import annotations
 
 import argparse
 import logging
-import uuid
 from pprint import pprint
+import uuid
 
 from pytradfri.api.libcoap_api import APIFactory
 from pytradfri.device import Device
