@@ -17,11 +17,11 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-from collections.abc import Callable
 import logging
 import os
 import sys
 import uuid
+from collections.abc import Callable
 
 # Hack to allow relative import above top level package
 
