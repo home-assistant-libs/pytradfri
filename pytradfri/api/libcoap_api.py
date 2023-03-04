@@ -5,7 +5,7 @@ import json
 import logging
 import subprocess
 from time import time
-from typing import TYPE_CHECKING, Any, Protocol, Union, cast, overload
+from typing import TYPE_CHECKING, Any, Protocol, cast, overload
 
 from ..command import Command, T
 from ..error import ClientError, RequestError, RequestTimeout, ServerError
@@ -246,4 +246,4 @@ def _process_output(
         raise ServerError(output)
     if not parse_json:
         return output
-    return cast(Union[dict[Any, Any], list[Any]], json.loads(output))
+    return cast(dict[Any, Any] | list[Any], json.loads(output))

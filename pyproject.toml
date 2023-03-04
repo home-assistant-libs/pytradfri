@@ -121,3 +121,24 @@ strict = true
 [[tool.mypy.overrides]]
 module = "tests.*"
 ignore_errors = true
+
+[tool.ruff]
+target-version = "py310"
+
+select = [
+    "F",  # pyflakes/autoflake
+    "I",  # isort
+    "UP",  # pyupgrade
+]
+
+[tool.ruff.isort]
+# will group `import x` and `from x import` of the same module.
+combine-as-imports = true
+force-sort-within-sections = true
+forced-separate = [
+  "tests",
+]
+known-first-party = [
+  "pytradfri",
+  "tests",
+]
