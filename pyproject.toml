@@ -126,7 +126,7 @@ ignore_errors = true
 target-version = "py310"
 
 select = [
-    "I",  # isort
     "F",  # pyflakes/autoflake
+    "I",  # isort
     "UP",  # pyupgrade
 ]
