@@ -129,6 +129,7 @@ select = [
     "B007", # Loop control variable {name} not used within loop body
     "B014", # Exception handler with duplicate exception
     "C",  # complexity
+    "E",  # pycodestyle
     "F",  # pyflakes/autoflake
     "I",  # isort
     "ICN001", # import concentions; {name} should be imported as {asname}
@@ -157,3 +158,14 @@ known-first-party = [
   "pytradfri",
   "tests",
 ]
+
+[tool.ruff.per-file-ignores]
+# E402 Module level import not at top of file
+
+"examples/debug_info.py" = ["E402"]
+"examples/example_air_purifier_async.py" = ["E402"]
+"examples/example_async.py" = ["E402"]
+"examples/example_cover_async.py" = ["E402"]
+"examples/example_pair.py" = ["E402"]
+"examples/example_socket_async.py" = ["E402"]
+"examples/example_sync.py" = ["E402"]
