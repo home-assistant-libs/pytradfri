@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-This file generates debug information about your Tradfri network.
+"""Generates debug information about your Tradfri network.
 
 To run the script, do the following:
 $ pip3 install pytradfri

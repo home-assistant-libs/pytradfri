@@ -423,8 +423,7 @@ class StartActionItemController:
         return self.set_values(command)
 
     def set_values(self, values: dict[str, dict[str, Any]]) -> Command[None]:
-        """
-        Set values on task control.
+        """Set values on task control.
 
         Returns a Command.
         """

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-This is an example of how the pytradfri-library can be used.
+"""Example of how the pytradfri-library can be used.
 
 To run the script, do the following:
 $ pip3 install pytradfri

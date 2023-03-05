@@ -101,8 +101,7 @@ class ApiResource:
         return Command("put", self.path, values)
 
     def update(self) -> Command[None]:
-        """
-        Update the group.
+        """Update the group.
 
         Returns a Command.
         """
