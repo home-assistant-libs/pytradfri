@@ -85,8 +85,7 @@ class Group(ApiResource):
 
     @property
     def member_ids(self) -> list[int]:
-        """
-        Members of this group.
+        """Members of this group.
 
         A group with devices will look like this:
         {"15002": {"9003": [65536, 65537]}}

@@ -63,7 +63,7 @@ class GatewayInfoResponse(BaseModel):
 
 
 class Gateway:
-    """This class connects to the IKEA Tradfri Gateway."""
+    """IKEA Tradfri Gateway specific methods and properties."""
 
     @classmethod
     def generate_psk(cls, identity: str) -> Command[str]:
@@ -84,8 +84,7 @@ class Gateway:
 
     @classmethod
     def get_endpoints(cls) -> Command[list[str]]:
-        """
-        Return all available endpoints on the gateway.
+        """Return all available endpoints on the gateway.
 
         The response from the gateway looks like this:
         <//15006>;ct=0;obs,
@@ -121,8 +120,7 @@ class Gateway:
         )
 
     def get_devices(self) -> Command[list[Command[Device]]]:
-        """
-        Return the devices linked to the gateway.
+        """Return the devices linked to the gateway.
 
         Returns a Command.
         """
@@ -134,8 +132,7 @@ class Gateway:
 
     @classmethod
     def get_device(cls, device_id: str) -> Command[Device]:
-        """
-        Return specified device.
+        """Return specified device.
 
         Returns a Command.
         """
@@ -146,8 +143,7 @@ class Gateway:
         return Command("get", [ROOT_DEVICES, device_id], process_result=process_result)
 
     def get_groups(self) -> Command[list[Command[Group]]]:
-        """
-        Return the groups linked to the gateway.
+        """Return the groups linked to the gateway.
 
         Returns a Command.
         """
@@ -158,8 +154,7 @@ class Gateway:
         return Command("get", [ROOT_GROUPS], process_result=process_result)
 
     def get_group(self, group_id: str) -> Command[Group]:
-        """
-        Return specified group.
+        """Return specified group.
 
         Returns a Command.
         """
@@ -181,8 +176,7 @@ class Gateway:
 
     @classmethod
     def get_gateway_info(cls) -> Command[GatewayInfo]:
-        """
-        Return the gateway info.
+        """Return the gateway info.
 
         Returns a Command.
         """
@@ -195,8 +189,7 @@ class Gateway:
         )
 
     def get_moods(self, group_id: int) -> Command[list[Command[Mood]]]:
-        """
-        Return moods available in given group.
+        """Return moods available in given group.
 
         Returns a Command.
         """
@@ -210,8 +203,7 @@ class Gateway:
 
     @classmethod
     def get_mood(cls, mood_id: str, *, mood_parent: int) -> Command[Mood]:
-        """
-        Return a mood.
+        """Return a mood.
 
         Returns a Command.
         """
@@ -227,8 +219,7 @@ class Gateway:
         )
 
     def get_smart_tasks(self) -> Command[list[Command[SmartTask]]]:
-        """
-        Return the transitions linked to the gateway.
+        """Return the transitions linked to the gateway.
 
         Returns a Command.
         """
@@ -239,8 +230,7 @@ class Gateway:
         return Command("get", [ROOT_SMART_TASKS], process_result=process_result)
 
     def get_smart_task(self, task_id: str) -> Command[SmartTask]:
-        """
-        Return specified transition.
+        """Return specified transition.
 
         Returns a Command.
         """
@@ -283,7 +273,7 @@ class Gateway:
 
 
 class GatewayInfo:
-    """This class contains Gateway information."""
+    """Gateway information."""
 
     raw: GatewayInfoResponse
 
@@ -385,8 +375,7 @@ class GatewayInfo:
         return Command("put", self.path, values)
 
     def update(self) -> Command[None]:
-        """
-        Update the info.
+        """Update the info.
 
         Returns a Command.
         """

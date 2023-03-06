@@ -42,13 +42,13 @@ class APIRequestProtocol(Protocol):
     async def __call__(
         self, api_commands: Command[T], timeout: float | None = None
     ) -> T:
-        """Define the signature of the request method."""
+        ...
 
     @overload
     async def __call__(
         self, api_commands: list[Command[T]], timeout: float | None = None
     ) -> list[T]:
-        """Define the signature of the request method."""
+        ...
 
     async def __call__(
         self, api_commands: Command[T] | list[Command[T]], timeout: float | None = None
@@ -215,13 +215,13 @@ class APIFactory:
     async def request(
         self, api_commands: Command[T], timeout: float | None = None
     ) -> T:
-        """Make a request."""
+        ...
 
     @overload
     async def request(
         self, api_commands: list[Command[T]], timeout: float | None = None
     ) -> list[T]:
-        """Make a request."""
+        ...
 
     async def request(
         self, api_commands: Command[T] | list[Command[T]], timeout: float | None = None

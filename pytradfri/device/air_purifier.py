@@ -93,8 +93,7 @@ class AirPurifier:
 
     @property
     def filter_status(self) -> bool:
-        """
-        Return True if filter needs to be replaced.
+        """Return True if filter needs to be replaced.
 
         This property is true when filter_lifetime_remaining is less than zero.
         """
@@ -102,8 +101,7 @@ class AirPurifier:
 
     @property
     def is_auto_mode(self) -> bool:
-        """
-        Return auto mode on or off.
+        """Return auto mode on or off.
 
         Auto mode sets the fan speed automatically based on the air quality.
         """
