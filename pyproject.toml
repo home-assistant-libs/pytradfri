@@ -167,11 +167,12 @@ known-first-party = [
 
 [tool.ruff.per-file-ignores]
 # E402 Module level import not at top of file
-
+# C901 too complex
 "examples/debug_info.py" = ["E402"]
 "examples/example_air_purifier_async.py" = ["E402"]
-"examples/example_async.py" = ["E402"]
+"examples/example_async.py" = ["E402", "C901"]
 "examples/example_cover_async.py" = ["E402"]
-"examples/example_pair.py" = ["E402"]
+"examples/example_pair.py" = ["E402", "C901"]
 "examples/example_socket_async.py" = ["E402"]
-"examples/example_sync.py" = ["E402"]
+"examples/example_sync.py" = ["E402", "C901"]
+"pytradfri/api/libcoap_api.py" = ["C901"]
