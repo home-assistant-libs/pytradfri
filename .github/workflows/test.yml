@@ -108,6 +108,8 @@ jobs:
         run: black --check ./
       - name: Run mypy
         run: mypy examples pytradfri tests
+      - name: Run Pylint
+        run: pre-commit run --hook-stage manual pylint --all-files --show-diff-on-failure
 
   pytest:
     name: Run test suite
