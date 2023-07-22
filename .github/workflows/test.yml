@@ -1,7 +1,13 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
 name: Run Tests
+
+# Explicitly set permissions to allow Dependabot workflow runs to write in the PR
+# for coverage's reporting.
+# By default, these are read-only when the actions are ran by Dependabot
+# https://docs.github.com/en/code-security/dependabot/working-with-dependabot/automating-dependabot-with-github-actions#changing-github_token-permissions
+permissions: write-all
+
+env:
+  ALL_PYTHON_VERSIONS: "['3.10', '3.11']"
 
 on:
   push:
@@ -13,23 +19,128 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  info:
     runs-on: ubuntu-latest
+    name: Collect information & changes data
+    outputs:
+      run_pipeline: ${{ steps.changes.outputs.core }}
+      python_versions: ${{ steps.info.outputs.python_versions }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+
+      - name: Filter for core changes
+        uses: dorny/paths-filter@v2.11.1
+        id: changes
+        with:
+          filters: |
+            core:
+             - pytradfri/**/*.py
+             - tests/**/*.py
+             - .github/workflows/test.yml
+             - .github/workflows/pre-commit-update.yml
+             - requirements.txt
+             - requirements_test.txt
+             - pyproject.toml
+
+      - name: Collect additional information
+        id: info
+        run: |
+          echo "python_versions: ${ALL_PYTHON_VERSIONS}"
+          echo "python_versions=${ALL_PYTHON_VERSIONS}" >> $GITHUB_OUTPUT
+
+  create-virtualenv:
+    name: Setup environment
+    runs-on: ubuntu-latest
+    needs: info
+    timeout-minutes: 30
+    if: needs.info.outputs.run_pipeline == 'true'
     strategy:
       matrix:
-        python-version:
-          - "3.10"
-          - "3.11"
-
+        python-version: ${{ fromJSON(needs.info.outputs.python_versions) }}
     steps:
-      - uses: actions/checkout@v3.5.3
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4.7.0
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+
+      - uses: syphar/restore-virtualenv@v1.3
+        id: cache-virtualenv
+
+      - uses: syphar/restore-pip-download-cache@v1.2
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+      - name: Install requirements
         run: |
-          python -m pip install --upgrade pip
-          pip install tox tox-gh-actions
-      - name: Test with tox
-        run: tox
+          pip install -r requirements.txt
+          pip install -r requirements_test.txt
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+  linter:
+    name: Run code linters
+    needs:
+      - info
+      - create-virtualenv
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        python-version: ${{ fromJSON(needs.info.outputs.python_versions) }}
+    if: needs.info.outputs.run_pipeline == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+        with:
+          fetch-depth: "2"
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4.7.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: syphar/restore-virtualenv@v1.3
+        id: cache-virtualenv
+      - name: Run ruff (fully)
+        run: |
+          pre-commit run --hook-stage manual ruff --all-files --show-diff-on-failure
+      - name: Run Black
+        run: black --check ./
+      - name: Run mypy
+        run: mypy examples pytradfri tests
+
+  pytest:
+    name: Run test suite
+    continue-on-error: true
+    needs:
+      - info
+      - create-virtualenv
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        python-version: ${{ fromJSON(needs.info.outputs.python_versions) }}
+    if: needs.info.outputs.run_pipeline == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4.7.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: syphar/restore-virtualenv@v1.3
+        id: cache-virtualenv
+
+      - name: Run tests
+        run: |
+          pytest tests/ --timeout=30 --cov pytradfri --cov-report xml:coverage.xml
+
+      - name: Post coverage back to Pull Request
+        uses: orgoro/coverage@v3
+        with:
+          coverageFile: coverage.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # Fail under 79
+          thresholdAll: 0.79
