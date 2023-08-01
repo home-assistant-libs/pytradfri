@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import logging
 from pprint import pprint
+from typing import Any
 import uuid
 
 from pytradfri.api.libcoap_api import APIFactory
@@ -17,10 +18,11 @@ from .gateway import Gateway
 
 CONFIG_FILE = "tradfri_standalone_psk.conf"
 
-# pylint: disable=invalid-name, not-an-iterable, unsubscriptable-object
+# pylint: disable=not-an-iterable, unsubscriptable-object
 
 
-if __name__ == "__main__":
+def main() -> None:
+    """Run the CLI."""
     logging.basicConfig(level=logging.DEBUG)
 
     parser = argparse.ArgumentParser()
@@ -34,46 +36,15 @@ if __name__ == "__main__":
         required=False,
         help="Security code found on your Tradfri gateway",
     )
-    org_args = parser.parse_args()
+    # org_args = parser.parse_args()
+    org_args: argparse.Namespace = parser.parse_args()
 
-    if org_args.host not in load_json(CONFIG_FILE) and org_args.key is None:
-        print(
-            "Please provide the 'Security Code' on the back of your "
-            "Tradfri gateway:",
-            end=" ",
-        )
-        key = input().strip()
-        if len(key) != 16:
-            raise PytradfriError(
-                "'Security Code' has to be exactly" + "16 characters long."
-            )
-        org_args.key = key
+    request_security_code(org_args)
 
-    conf = load_json(CONFIG_FILE)
+    conf: list[Any] | dict[Any, Any] = load_json(CONFIG_FILE)
 
-    try:
-        identity = conf[org_args.host].get("identity")
-        psk = conf[org_args.host].get("key")
-        api_factory = APIFactory(host=org_args.host, psk_id=identity, psk=psk)
-    except KeyError:
-        identity = uuid.uuid4().hex
-        api_factory = APIFactory(host=org_args.host, psk_id=identity)
-
-        try:
-            psk = api_factory.generate_psk(org_args.key)
-            print("Generated PSK: ", psk)
-
-            conf[org_args.host] = {"identity": identity, "key": psk}
-            save_json(CONFIG_FILE, conf)
-        except AttributeError as exc:
-            raise PytradfriError(
-                "Please provide the 'Security Code' on the "
-                "back of your Tradfri gateway using the "
-                "-K flag."
-            ) from exc
-
+    api_factory = initialize_api_factory(conf, org_args)
     api = api_factory.request
-
     gateway = Gateway()
     devices_commands = api(gateway.get_devices())
     devices = api(devices_commands)
@@ -96,9 +67,11 @@ if __name__ == "__main__":
         group = None
     tasks_commands = api(gateway.get_smart_tasks())
     tasks = api(tasks_commands)
-    homekit_id = api(gateway.get_gateway_info()).homekit_id
+    homekit_id = api(  # noqa: F841 # pylint: disable=unused-variable
+        gateway.get_gateway_info()
+    ).homekit_id
 
-    def dump_all() -> None:
+    def dump_all() -> None:  # pylint: disable=unused-variable
         """Dump all endpoints."""
         endpoints = api(gateway.get_endpoints())
 
@@ -112,7 +85,7 @@ if __name__ == "__main__":
             print()
             print()
 
-    def dump_devices() -> None:
+    def dump_devices() -> None:  # pylint: disable=unused-variable
         """Dump devices."""
         pprint([d.raw for d in devices])
 
@@ -135,3 +108,50 @@ if __name__ == "__main__":
     print("> tasks")
     print("> dump_devices()")
     print("> dump_all()")
+
+
+def request_security_code(org_args: argparse.Namespace) -> None:
+    """Request security code that appears on the back of the Tradfri gateway."""
+    if org_args.host not in load_json(CONFIG_FILE) and org_args.key is None:
+        print(
+            "Please provide the 'Security Code' on the back of√your "
+            "Tradfri gateway:",
+            end=" ",
+        )
+        key = input().strip()
+        if len(key) != 16:
+            raise PytradfriError(
+                "'Security Code' has to be exactly" + "16 characters long."
+            )
+        org_args.key = key
+
+
+def initialize_api_factory(
+    conf: list[Any] | dict[Any, Any], org_args: argparse.Namespace
+) -> APIFactory:
+    """Initialize API Factory using the PSK."""
+    try:
+        identity = conf[org_args.host].get("identity")
+        psk = conf[org_args.host].get("key")
+        api_factory = APIFactory(host=org_args.host, psk_id=identity, psk=psk)
+    except KeyError:
+        identity = uuid.uuid4().hex
+        api_factory = APIFactory(host=org_args.host, psk_id=identity)
+
+        try:
+            psk = api_factory.generate_psk(org_args.key)
+            print("Generated PSK: ", psk)
+
+            conf[org_args.host] = {"identity": identity, "key": psk}
+            save_json(CONFIG_FILE, conf)
+        except AttributeError as exc:
+            raise PytradfriError(
+                "Please provide the 'Security Code' on the "
+                "back of your Tradfri gateway using the "
+                "-K flag."
+            ) from exc
+    return api_factory
+
+
+if __name__ == "__main__":
+    main()
