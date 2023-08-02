@@ -1,4 +1,4 @@
-FROM python:3.10-stretch
+FROM python:3.11-bullseye
 
 COPY . /usr/src/app/
 
