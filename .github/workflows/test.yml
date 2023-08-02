@@ -23,25 +23,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Collect information & changes data
     outputs:
-      run_pipeline: ${{ steps.changes.outputs.core }}
       python_versions: ${{ steps.info.outputs.python_versions }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3.5.3
-
-      - name: Filter for core changes
-        uses: dorny/paths-filter@v2.11.1
-        id: changes
-        with:
-          filters: |
-            core:
-             - pytradfri/**/*.py
-             - tests/**/*.py
-             - .github/workflows/test.yml
-             - .github/workflows/pre-commit-update.yml
-             - requirements.txt
-             - requirements_test.txt
-             - pyproject.toml
 
       - name: Collect additional information
         id: info
@@ -54,7 +39,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: info
     timeout-minutes: 30
-    if: needs.info.outputs.run_pipeline == 'true'
     strategy:
       matrix:
         python-version: ${{ fromJSON(needs.info.outputs.python_versions) }}
@@ -89,7 +73,6 @@ jobs:
     strategy:
       matrix:
         python-version: ${{ fromJSON(needs.info.outputs.python_versions) }}
-    if: needs.info.outputs.run_pipeline == 'true'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3.5.3
@@ -122,7 +105,6 @@ jobs:
     strategy:
       matrix:
         python-version: ${{ fromJSON(needs.info.outputs.python_versions) }}
-    if: needs.info.outputs.run_pipeline == 'true'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3.5.3
