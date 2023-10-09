@@ -1,5 +1,5 @@
 black==23.9.1
-coverage==7.3.1
+coverage==7.3.2
 mypy==1.5.1
 pre-commit==3.4.0
 pylint==2.17.7
