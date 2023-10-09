@@ -15,12 +15,12 @@ known_first_party = [
   "tests",
 ]
 
-[tool.pylint.MASTER]
+[tool.pylint.MAIN]
 ignore = []
 py-version = "3.10"
 # Use a conservative default here; 2 should speed up most setups and not hurt
 # any too bad. Override on command line as appropriate.
-extension-pkg-whitelist = "pydantic"
+extension-pkg-allow-list = "pydantic"
 init-hook = 'from pylint.config.find_default_config_files import find_default_config_files; from pathlib import Path; import sys; sys.path.append(str(Path(Path(list(find_default_config_files())[0]).parent, "pylint/plugins")))'
 jobs = 2
 load-plugins = [
@@ -29,6 +29,7 @@ load-plugins = [
   "pylint_strict_informational",
 ]
 persistent = false
+score = false
 
 [tool.pylint.BASIC]
 class-const-naming-style = "any"
@@ -41,7 +42,8 @@ good-names = [
   "Run",
   "T",
 ]
-max-args = 7
+[tool.pylint.DESIGN]
+max-args = 9
 
 [tool.pylint."MESSAGES CONTROL"]
 disable = [
@@ -67,9 +69,6 @@ enable = [
   "useless-suppression",
   "use-symbolic-message-instead",
 ]
-
-[tool.pylint.REPORTS]
-score = false
 
 [tool.pylint.FORMAT]
 expected-line-ending-format = "LF"
