@@ -43,7 +43,7 @@ class DeviceInfoResponse(BaseModel):
     manufacturer: str = Field(alias=ATTR_DEVICE_MANUFACTURER)
     model_number: str = Field(alias=ATTR_DEVICE_MODEL_NUMBER)
     serial: str = Field(alias=ATTR_DEVICE_SERIAL)
-    firmware_version: str = Field(alias=ATTR_DEVICE_FIRMWARE_VERSION)
+    firmware_version: str | None = Field(alias=ATTR_DEVICE_FIRMWARE_VERSION)
     power_source: int | None = Field(alias=ATTR_DEVICE_POWER_SOURCE)
     battery_level: int | None = Field(alias=ATTR_DEVICE_BATTERY)
 
@@ -201,7 +201,7 @@ class DeviceInfo:
         return self.raw.serial
 
     @property
-    def firmware_version(self) -> str:
+    def firmware_version(self) -> str | None:
         """Return current firmware version of device."""
         return self.raw.firmware_version
 
