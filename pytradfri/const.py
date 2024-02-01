@@ -1,4 +1,5 @@
 """Constants."""
+
 from typing import Final
 
 ROOT_DEVICES: Final = "15001"

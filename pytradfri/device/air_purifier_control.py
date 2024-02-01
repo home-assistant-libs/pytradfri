@@ -1,4 +1,5 @@
 """Class to control the air purifiers."""
+
 from __future__ import annotations
 
 from ..command import Command

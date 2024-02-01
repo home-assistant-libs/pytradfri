@@ -1,4 +1,5 @@
 """Test mood."""
+
 import pytest
 
 from pytradfri.const import ROOT_MOODS

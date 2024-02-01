@@ -1,4 +1,5 @@
 """Class to control the blinds."""
+
 from __future__ import annotations
 
 from ..command import Command

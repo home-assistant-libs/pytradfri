@@ -1,4 +1,5 @@
 """COAP implementation using aiocoap."""
+
 from __future__ import annotations
 
 import asyncio
@@ -41,14 +42,12 @@ class APIRequestProtocol(Protocol):
     @overload
     async def __call__(
         self, api_commands: Command[T], timeout: float | None = None
-    ) -> T:
-        ...
+    ) -> T: ...
 
     @overload
     async def __call__(
         self, api_commands: list[Command[T]], timeout: float | None = None
-    ) -> list[T]:
-        ...
+    ) -> list[T]: ...
 
     async def __call__(
         self, api_commands: Command[T] | list[Command[T]], timeout: float | None = None
@@ -214,14 +213,12 @@ class APIFactory:
     @overload
     async def request(
         self, api_commands: Command[T], timeout: float | None = None
-    ) -> T:
-        ...
+    ) -> T: ...
 
     @overload
     async def request(
         self, api_commands: list[Command[T]], timeout: float | None = None
-    ) -> list[T]:
-        ...
+    ) -> list[T]: ...
 
     async def request(
         self, api_commands: Command[T] | list[Command[T]], timeout: float | None = None

@@ -1,4 +1,5 @@
 """Devices: Retrieved from Gateway running on 1.2.42."""
+
 LIGHT_W = {
     "3": {
         "0": "IKEA of Sweden",

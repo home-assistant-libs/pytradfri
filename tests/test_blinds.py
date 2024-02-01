@@ -1,4 +1,5 @@
 """Test Blinds."""
+
 import pytest
 
 from pytradfri.device import Device

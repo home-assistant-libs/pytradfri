@@ -1,4 +1,5 @@
 """Implement an API wrapper around Ikea Tradfri."""
+
 from pathlib import Path
 
 from .error import (

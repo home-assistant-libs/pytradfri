@@ -1,4 +1,5 @@
 """Test Light."""
+
 import pytest
 
 from pytradfri import error
