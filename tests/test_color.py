@@ -1,4 +1,5 @@
 """Test Color."""
+
 from pytradfri.color import supported_features
 from pytradfri.const import (
     ATTR_LIGHT_CONTROL,

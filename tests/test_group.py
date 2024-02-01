@@ -1,4 +1,5 @@
 """Test Group."""
+
 import pytest
 
 from pytradfri import error

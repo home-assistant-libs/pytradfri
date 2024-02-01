@@ -1,4 +1,5 @@
 """COAP implementation."""
+
 from __future__ import annotations
 
 import json
@@ -21,14 +22,12 @@ class APIRequestProtocol(Protocol):
     """Represent the protocol for the APIFactory request method."""
 
     @overload
-    def __call__(self, api_commands: Command[T], timeout: int | None = None) -> T:
-        ...
+    def __call__(self, api_commands: Command[T], timeout: int | None = None) -> T: ...
 
     @overload
     def __call__(
         self, api_commands: list[Command[T]], timeout: int | None = None
-    ) -> list[T]:
-        ...
+    ) -> list[T]: ...
 
     def __call__(
         self, api_commands: Command[T] | list[Command[T]], timeout: int | None = None
@@ -125,14 +124,12 @@ class APIFactory:
         return api_command.result
 
     @overload
-    def request(self, api_commands: Command[T], timeout: int | None = None) -> T:
-        ...
+    def request(self, api_commands: Command[T], timeout: int | None = None) -> T: ...
 
     @overload
     def request(
         self, api_commands: list[Command[T]], timeout: int | None = None
-    ) -> list[T]:
-        ...
+    ) -> list[T]: ...
 
     def request(
         self, api_commands: Command[T] | list[Command[T]], timeout: int | None = None

@@ -1,4 +1,5 @@
 """Provide a CLI for Tradfri."""
+
 from __future__ import annotations
 
 import argparse

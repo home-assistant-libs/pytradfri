@@ -1,4 +1,5 @@
 """Test Command."""
+
 from pytradfri.command import Command
 
 

@@ -1,4 +1,5 @@
 """Test API utilities."""
+
 import json
 
 from pytradfri.api.libcoap_api import APIFactory

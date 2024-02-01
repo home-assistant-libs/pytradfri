@@ -1,4 +1,5 @@
 """Test Socket."""
+
 from pytradfri.device import Device
 
 from .devices import OUTLET

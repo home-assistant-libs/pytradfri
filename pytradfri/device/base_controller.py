@@ -1,4 +1,5 @@
 """Base class for a controller."""
+
 from __future__ import annotations
 
 from abc import abstractmethod

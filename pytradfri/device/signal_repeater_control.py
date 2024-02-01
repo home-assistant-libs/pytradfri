@@ -1,4 +1,5 @@
 """Class to control the signal repeater."""
+
 from __future__ import annotations
 
 from .base_controller import BaseController

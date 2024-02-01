@@ -1,4 +1,5 @@
 """Test aiocoap API."""
+
 from typing import Any
 
 from aiocoap import Message

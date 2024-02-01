@@ -1,4 +1,5 @@
 """Class to control the sockets."""
+
 from __future__ import annotations
 
 from ..command import Command

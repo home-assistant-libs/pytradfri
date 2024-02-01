@@ -1,6 +1,5 @@
 """Test for the signal repeater device."""
 
-
 from pytradfri.device import Device
 
 from tests.devices import SIGNAL_REPEATER

@@ -1,4 +1,5 @@
 """Represent a mood on the gateway."""
+
 from __future__ import annotations
 
 from .const import ROOT_MOODS

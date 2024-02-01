@@ -1,4 +1,5 @@
 """Test smart_task."""
+
 import datetime
 
 from pytradfri.gateway import Gateway

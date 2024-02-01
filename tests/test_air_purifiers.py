@@ -1,4 +1,5 @@
 """Test Air Purifiers."""
+
 import pytest
 
 from pytradfri.device import Device
