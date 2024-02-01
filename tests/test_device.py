@@ -27,6 +27,7 @@ from pytradfri.device import Device
 
 from .devices import (
     BLIND,
+    DEVICE_WITHOUT_FIRMWARE_VERSION,
     LIGHT_CWS,
     LIGHT_PHILIPS,
     LIGHT_W,
@@ -378,6 +379,14 @@ def test_device_info_properties(device):
     assert info.firmware_version == "1.2.217"
     assert info.power_source == 1
     assert info.power_source_str == "Internal Battery"
+
+
+@pytest.mark.parametrize(
+    "device", [DEVICE_WITHOUT_FIRMWARE_VERSION], indirect=["device"]
+)
+def test_device_without_firmware_version(device):
+    """Test device without firmware version."""
+    assert device.device_info.firmware_version is None
 
 
 def test_set_name(device):
