@@ -141,3 +141,36 @@ async def test_context_shutdown_request(
     assert context.shutdown.call_count == 1
     assert context.request.call_count == 2
     assert result == {"one": 1}
+
+
+async def test_shutdown_after_reset_protocol_error(
+    context: MagicMock, response: AsyncMock
+) -> None:
+    """Test shutdown after unexpected error during protocol reset."""
+    # Pass a psk to create a protocol.
+    factory = await APIFactory.init("127.0.0.1", psk="test-psk")
+    assert context.create_client_context.call_count == 1
+    assert context.shutdown.call_count == 0
+
+    class UnknownError(Exception):
+        """Unknown error."""
+
+    context.shutdown.side_effect = UnknownError("Unexpected error!")
+    response.side_effect = Error("Boom!")
+
+    request_task = asyncio.create_task(
+        factory.request(Command("", [""], process_result=process_result))
+    )
+    await asyncio.sleep(0)
+
+    assert context.create_client_context.call_count == 1
+    assert context.shutdown.call_count == 1
+
+    with pytest.raises(UnknownError):
+        await request_task
+
+    # Shutdown will create a new protocol context and then shut it down.
+    await factory.shutdown()
+
+    assert context.create_client_context.call_count == 2
+    assert context.shutdown.call_count == 2
