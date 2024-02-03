@@ -129,12 +129,14 @@ class APIFactory:
 
             # Be responsible and clean up.
             protocol = await self._get_protocol(check_reset_lock=False)
-            await protocol.shutdown()
-            self._protocol = None
 
-            # The error callbacks are called when shutting down the protocol.
-            # Clear the saved callbacks
-            self._observations_err_callbacks.clear()
+            try:
+                await protocol.shutdown()
+            finally:
+                self._protocol = None
+                # The error callbacks are called when shutting down the protocol.
+                # Clear the saved callbacks
+                self._observations_err_callbacks.clear()
 
     async def shutdown(self, exc: Exception | None = None) -> None:
         """Shutdown the API events.
