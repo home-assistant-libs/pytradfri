@@ -97,8 +97,14 @@ class APIFactory:
         """Return psk."""
         return self._psk
 
-    async def _get_protocol(self) -> Context:
+    async def _get_protocol(self, check_reset_lock: bool = True) -> Context:
         """Get the protocol for the request."""
+        if check_reset_lock and self._reset_lock.locked():
+            # If the reset lock is held, it means that the protocol is being reset.
+            # We are not allowed to make a request with a protocol that is shut down.
+            # We need to wait for the lock in that case.
+            async with self._reset_lock:
+                return await self._get_protocol(check_reset_lock=False)
         if self._protocol is None:
             self._protocol = asyncio.create_task(Context.create_client_context())
         return await self._protocol
@@ -122,7 +128,7 @@ class APIFactory:
             _LOGGER.debug("Resetting protocol")
 
             # Be responsible and clean up.
-            protocol = await self._get_protocol()
+            protocol = await self._get_protocol(check_reset_lock=False)
             await protocol.shutdown()
             self._protocol = None
 
