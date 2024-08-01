@@ -1,6 +1,8 @@
 [![PyPI version](https://badge.fury.io/py/pytradfri.svg)](https://badge.fury.io/py/pytradfri)
 
-Python package to communicate with the [IKEA Trådfri](http://www.ikea.com/us/en/catalog/products/00337813/) (Tradfri) ZigBee gateway compatible with ZigBee light link products. By using this library you can communicate with the gateway and control IKEA's lights, wall plugs and other peripherals.
+Python package to communicate with IKEA's Trådfri (Tradfri) ZigBee gateway. By using this library you can communicate with the gateway and control IKEA's lights, wall plugs and other peripherals.
+
+In July 2024, IKEA announced they will no longer provide updates to the gateway in favor of their Dirigera hub, which this library does not support. We will continue to update this library with security patches and bug fixes.
 
 This library is [strictly typed](https://docs.python.org/3/library/typing.html).
 
