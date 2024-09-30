@@ -119,3 +119,5 @@ We encourage contributions to this library. Please make sure contributions meet 
 
 - Your contribution contains [type annotations](https://docs.python.org/3/library/typing.html). This is a strictly typed library: new contributions will not be merged unless they contain type annotations.
 - Your contribution is covered by tests.
+
+[![Pytradfri - A library from the Open Home Foundation](https://www.openhomefoundation.org/badges/pytradfri.png)](https://www.openhomefoundation.org/)
