@@ -286,7 +286,7 @@ class StartAction:
 class StartActionItem:
     """Class to show settings for a task."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         task: SmartTask,
         index: int,
@@ -364,7 +364,7 @@ class StartActionItem:
 class StartActionItemController:
     """Class to edit settings for a task."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         item: StartActionItem,
         raw: StartActionResponse,
