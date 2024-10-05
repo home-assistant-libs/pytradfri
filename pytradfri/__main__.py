@@ -18,7 +18,7 @@ from .gateway import Gateway
 
 CONFIG_FILE = "tradfri_standalone_psk.conf"
 
-# pylint: disable=invalid-name, not-an-iterable, unsubscriptable-object
+# pylint: disable=invalid-name
 
 
 if __name__ == "__main__":
