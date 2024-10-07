@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.6.8
+    rev: v0.6.9
     hooks:
       - id: ruff
         args:
@@ -20,7 +20,7 @@ repos:
       - id: isort
         name: isort
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: requirements-txt-fixer
       - id: check-json
@@ -36,7 +36,7 @@ repos:
           - --timeout=30
           - --cov=pytradfri
           - --cov-report=html
-        stages: [push, manual]
+        stages: [pre-push, manual]
         entry: pytest
         language: system
         types: [python]
