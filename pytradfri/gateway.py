@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic.v1 import BaseModel, Field
 
 from .command import Command
 from .const import (
@@ -280,7 +280,7 @@ class GatewayInfo:
 
     def __init__(self, raw: TypeRaw) -> None:
         """Create object of class."""
-        self.raw = GatewayInfoResponse(**raw)
+        self.raw = GatewayInfoResponse(**raw)  # type: ignore[arg-type]
 
     @property
     def certificate_provisioned(self) -> int:
@@ -383,7 +383,7 @@ class GatewayInfo:
 
         def process_result(result: TypeRaw) -> None:
             """Define callback to process result."""
-            self.raw = GatewayInfoResponse(**result)
+            self.raw = GatewayInfoResponse(**result)  # type: ignore[arg-type]
 
         return Command("get", self.path, process_result=process_result)
 
