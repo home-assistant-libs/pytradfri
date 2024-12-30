@@ -7,7 +7,7 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic.v1 import BaseModel, Field
 
 from .command import Command
 from .const import ATTR_CREATED_AT, ATTR_ID, ATTR_NAME, ATTR_OTA_UPDATE_STATE
@@ -38,7 +38,7 @@ class ApiResource:
 
     def __init__(self, raw: TypeRaw) -> None:
         """Initialize base object."""
-        self.raw = self._model_class(**raw)
+        self.raw = self._model_class(**raw)  # type: ignore[arg-type]
 
     @property
     def id(self) -> int:
@@ -75,7 +75,7 @@ class ApiResource:
 
             Returns a Command.
             """
-            self.raw = self._model_class(**value)
+            self.raw = self._model_class(**value)  # type: ignore[arg-type]
 
             if callback:
                 callback(self)
@@ -108,6 +108,6 @@ class ApiResource:
         """
 
         def process_result(result: TypeRaw) -> None:
-            self.raw = self._model_class(**result)
+            self.raw = self._model_class(**result)  # type: ignore[arg-type]
 
         return Command("get", self.path, process_result=process_result)

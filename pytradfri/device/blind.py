@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from pydantic import Field
+from pydantic.v1 import Field
 
 from ..const import ATTR_BLIND_CURRENT_POSITION
 from ..resource import BaseResponse
