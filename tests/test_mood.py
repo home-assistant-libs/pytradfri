@@ -9,11 +9,11 @@ from .moods import MOOD
 
 
 @pytest.fixture(name="mood")
-def mood_fixture():
+def mood_fixture() -> Mood:
     """Return Mood object."""
     return Mood(MOOD, 131080)
 
 
-def test_mood_properties(mood):
+def test_mood_properties(mood: Mood) -> None:
     """Test properties of mood."""
     assert mood.path == [ROOT_MOODS, "131080", "196625"]
