@@ -1,16 +1,21 @@
 """Test API utilities."""
 
 import json
+from typing import Any
+
+import pytest
 
 from pytradfri.api.libcoap_api import APIFactory
 from pytradfri.gateway import Gateway
 
 
-def test_constructor_timeout_passed_to_subprocess(monkeypatch):
+def test_constructor_timeout_passed_to_subprocess(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Test that original timeout is passed to subprocess."""
     capture = {}
 
-    def capture_args(*args, **kwargs):
+    def capture_args(*args: Any, **kwargs: Any) -> str:
         capture.update(kwargs)
         return json.dumps([])
 
@@ -21,11 +26,11 @@ def test_constructor_timeout_passed_to_subprocess(monkeypatch):
     assert capture["timeout"] == 20
 
 
-def test_custom_timeout_passed_to_subprocess(monkeypatch):
+def test_custom_timeout_passed_to_subprocess(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test that custom timeout is passed to subprocess."""
     capture = {}
 
-    def capture_args(*args, **kwargs):
+    def capture_args(*args: Any, **kwargs: Any) -> str:
         capture.update(kwargs)
         return json.dumps([])
 
