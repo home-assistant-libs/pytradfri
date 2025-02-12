@@ -3,10 +3,10 @@
 from pytradfri.command import Command
 
 
-def test_property_access():
+def test_property_access() -> None:
     """Test property access in Command."""
 
-    def error_callback():
+    def error_callback() -> None:
         pass
 
     command = Command(
@@ -27,10 +27,10 @@ def test_property_access():
     assert command.err_callback is error_callback
 
 
-def test_result():
+def test_result() -> None:
     """Test callback process_result."""
 
-    def process_result(value):
+    def process_result(value: int) -> int:
         return value + 1
 
     command = Command("method", "path", {}, process_result=process_result)
@@ -42,7 +42,7 @@ def test_result():
     assert command.raw_result == 0
 
 
-def test_url():
+def test_url() -> None:
     """Test url is recognized."""
     command = Command("method", ["path"], {})
     url = command.url("host")
