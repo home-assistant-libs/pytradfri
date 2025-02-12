@@ -16,7 +16,7 @@ from pytradfri.util import BitChoices, load_json, save_json
 class UtilTestsBitChoices(unittest.TestCase):
     """Utility bit choices."""
 
-    def test_bitchoices(self):
+    def test_bitchoices(self) -> None:
         """Test bit choices."""
         weekdays = BitChoices((("tue", "Tuesday"),))
 
@@ -28,15 +28,15 @@ class UtilTestsBitChoices(unittest.TestCase):
 class UtilTestsJSON(unittest.TestCase):
     """Utility JSON."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Create test suite."""
         self.test_dir = tempfile.mkdtemp()
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Teardown test suite."""
         shutil.rmtree(self.test_dir)
 
-    def test_json_save(self):
+    def test_json_save(self) -> None:
         """Test json save."""
         filename = path.join(self.test_dir, "sample_psk_file.txt")
         conf = {"identity": "pytradfri", "key": "123abc"}
@@ -44,7 +44,7 @@ class UtilTestsJSON(unittest.TestCase):
         written_file = save_json(filename, conf)
         self.assertTrue(written_file)
 
-    def test_json_load(self):
+    def test_json_load(self) -> None:
         """Test json load."""
         config = {"identity": "hashstring", "key": "secretkey"}
         data = json.dumps(config, sort_keys=True, indent=4)
@@ -56,11 +56,11 @@ class UtilTestsJSON(unittest.TestCase):
         json_data = load_json(path.join(self.test_dir, "sample_psk_file2.txt"))
         self.assertEqual(json_data, {"identity": "hashstring", "key": "secretkey"})
 
-    def test_load_file_not_found(self):
+    def test_load_file_not_found(self) -> None:
         """Test json file missing."""
         assert not load_json(path.join(self.test_dir, "not_a_file"))
 
-    def test_load_not_json(self):
+    def test_load_not_json(self) -> None:
         """Test of load not json."""
         data = "{not valid json"
         with open(
@@ -71,14 +71,14 @@ class UtilTestsJSON(unittest.TestCase):
         with pytest.raises(PytradfriError):
             load_json(path.join(self.test_dir, "sample_psk_file3.txt"))
 
-    def test_save_not_serializable(self):
+    def test_save_not_serializable(self) -> None:
         """Test save of illegal path."""
         filename = path.join(self.test_dir, "should_not_save")
         conf = b"bytes are not serializable"
         with pytest.raises(PytradfriError):
             save_json(filename, conf)
 
-    def test_os_error(self):
+    def test_os_error(self) -> None:
         """Test os error is thrown."""
         with patch("builtins.open", side_effect=OSError(-1)):
             with pytest.raises(PytradfriError):
