@@ -4,6 +4,7 @@ import pytest
 
 from pytradfri import error
 from pytradfri.device import Device
+from pytradfri.resource import TypeRaw
 
 from .devices import (
     LIGHT_CWS,
@@ -14,12 +15,12 @@ from .devices import (
 )
 
 
-def light(raw):
+def light(raw: TypeRaw) -> Device:
     """Return Light."""
     return Device(raw).light_control.lights[0]
 
 
-def test_white_bulb():
+def test_white_bulb() -> None:
     """Test white bulb."""
     bulb = light(LIGHT_W)
 
@@ -32,7 +33,7 @@ def test_white_bulb():
     assert not bulb.supports_hsb_xy_color
 
 
-def test_spectrum_bulb():
+def test_spectrum_bulb() -> None:
     """Test spectrum bulb."""
     bulb = light(LIGHT_WS)
 
@@ -46,7 +47,7 @@ def test_spectrum_bulb():
     assert not bulb.supports_hsb_xy_color
 
 
-def test_spectrum_bulb_custom_color():
+def test_spectrum_bulb_custom_color() -> None:
     """Test spectrum custom color."""
     bulb = light(LIGHT_WS_CUSTOM_COLOR)
 
@@ -59,7 +60,7 @@ def test_spectrum_bulb_custom_color():
     assert not bulb.supports_hsb_xy_color
 
 
-def test_color_bulb():
+def test_color_bulb() -> None:
     """Test color."""
     bulb = light(LIGHT_CWS)
 
@@ -72,7 +73,7 @@ def test_color_bulb():
     assert bulb.supports_hsb_xy_color
 
 
-def test_color_bulb_custom_color():
+def test_color_bulb_custom_color() -> None:
     """Test custom color."""
     bulb = light(LIGHT_CWS_CUSTOM_COLOR)
 
@@ -85,7 +86,7 @@ def test_color_bulb_custom_color():
     assert bulb.supports_hsb_xy_color
 
 
-def test_setters():
+def test_setters() -> None:
     """Test light setters."""
     cmd = Device(LIGHT_CWS).light_control.set_predefined_color("Warm glow")
     assert cmd.data == {"3311": [{"5706": "efd275"}]}
@@ -94,7 +95,7 @@ def test_setters():
         Device(LIGHT_CWS).light_control.set_predefined_color("Ggravlingen")
 
 
-def test_combine_command():
+def test_combine_command() -> None:
     """Test light control combine command."""
     device = Device(LIGHT_CWS)
 
