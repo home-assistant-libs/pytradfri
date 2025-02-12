@@ -4,6 +4,7 @@ import pytest
 
 from pytradfri import error
 from pytradfri.device import Device
+from pytradfri.device.light import Light
 from pytradfri.resource import TypeRaw
 
 from .devices import (
@@ -15,9 +16,11 @@ from .devices import (
 )
 
 
-def light(raw: TypeRaw) -> Device:
+def light(raw: TypeRaw) -> Light:
     """Return Light."""
-    return Device(raw).light_control.lights[0]
+    light_control = Device(raw).light_control
+    assert light_control is not None
+    return light_control.lights[0]
 
 
 def test_white_bulb() -> None:
@@ -88,11 +91,15 @@ def test_color_bulb_custom_color() -> None:
 
 def test_setters() -> None:
     """Test light setters."""
-    cmd = Device(LIGHT_CWS).light_control.set_predefined_color("Warm glow")
+    light_control = Device(LIGHT_CWS).light_control
+    assert light_control is not None
+    cmd = light_control.set_predefined_color("Warm glow")
     assert cmd.data == {"3311": [{"5706": "efd275"}]}
 
+    light_control = Device(LIGHT_CWS).light_control
+    assert light_control is not None
     with pytest.raises(error.ColorError):
-        Device(LIGHT_CWS).light_control.set_predefined_color("Ggravlingen")
+        light_control.set_predefined_color("Ggravlingen")
 
 
 def test_combine_command() -> None:
