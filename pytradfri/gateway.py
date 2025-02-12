@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from pydantic.v1 import BaseModel, Field
@@ -295,7 +295,7 @@ class GatewayInfo:
     def current_time(self) -> datetime | None:
         """Return current time (normal timestamp)."""
         if self.raw.current_time is not None:
-            return datetime.utcfromtimestamp(self.raw.current_time)
+            return datetime.fromtimestamp(self.raw.current_time, tz=timezone.utc)
 
         return None
 
@@ -318,7 +318,7 @@ class GatewayInfo:
     def first_setup(self) -> datetime | None:
         """Return the time when gateway was first set up."""
         if self.raw.first_setup is not None:
-            return datetime.utcfromtimestamp(self.raw.first_setup)
+            return datetime.fromtimestamp(self.raw.first_setup, tz=timezone.utc)
 
         return None
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from pydantic.v1 import BaseModel, Field
 
@@ -91,7 +91,7 @@ class Device(ApiResource):
     def last_seen(self) -> datetime | None:
         """Return timestamp when last seen."""
         if (last_seen := self.raw.last_seen) is not None:
-            return datetime.utcfromtimestamp(last_seen)
+            return datetime.fromtimestamp(last_seen, tz=timezone.utc)
 
         return None
 
