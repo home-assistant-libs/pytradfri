@@ -29,7 +29,7 @@ MIN_KELVIN_WS = 2200
 MAX_KELVIN_WS = 4000
 
 
-def test_supported_colors():
+def test_supported_colors() -> None:
     """Test supported colors."""
     assert (
         supported_features(LightResponse(**LIGHT_W[ATTR_LIGHT_CONTROL][0]))
