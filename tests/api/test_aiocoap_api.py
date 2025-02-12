@@ -62,7 +62,7 @@ def response_fixture() -> AsyncMock:
 
 
 @pytest.fixture(name="context")
-def context_fixture(response: AsyncMock) -> Generator[MagicMock, None, None]:
+def context_fixture(response: AsyncMock) -> Generator[MagicMock]:
     """Mock context."""
     with patch(
         "pytradfri.api.aiocoap_api.Context.create_client_context"
