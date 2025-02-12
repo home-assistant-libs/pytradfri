@@ -126,13 +126,13 @@ class Gateway:
         Returns a Command.
         """
 
-        def process_result(result: list[str]) -> list[Command[Device]]:
+        def process_result(result: list[int]) -> list[Command[Device]]:
             return [self.get_device(dev) for dev in result]
 
         return Command("get", [ROOT_DEVICES], process_result=process_result)
 
     @classmethod
-    def get_device(cls, device_id: str) -> Command[Device]:
+    def get_device(cls, device_id: int) -> Command[Device]:
         """Return specified device.
 
         Returns a Command.
@@ -141,7 +141,9 @@ class Gateway:
         def process_result(result: TypeRaw) -> Device:
             return Device(result)
 
-        return Command("get", [ROOT_DEVICES, device_id], process_result=process_result)
+        return Command(
+            "get", [ROOT_DEVICES, str(device_id)], process_result=process_result
+        )
 
     def get_groups(self) -> Command[list[Command[Group]]]:
         """Return the groups linked to the gateway.
@@ -149,12 +151,12 @@ class Gateway:
         Returns a Command.
         """
 
-        def process_result(result: list[str]) -> list[Command[Group]]:
+        def process_result(result: list[int]) -> list[Command[Group]]:
             return [self.get_group(group) for group in result]
 
         return Command("get", [ROOT_GROUPS], process_result=process_result)
 
-    def get_group(self, group_id: str) -> Command[Group]:
+    def get_group(self, group_id: int) -> Command[Group]:
         """Return specified group.
 
         Returns a Command.
@@ -163,7 +165,9 @@ class Gateway:
         def process_result(result: TypeRaw) -> Group:
             return Group(self, result)
 
-        return Command("get", [ROOT_GROUPS, group_id], process_result=process_result)
+        return Command(
+            "get", [ROOT_GROUPS, str(group_id)], process_result=process_result
+        )
 
     @classmethod
     def add_group_member(cls, values: dict[str, Any]) -> Command[None]:
@@ -195,7 +199,7 @@ class Gateway:
         Returns a Command.
         """
 
-        def process_result(result: list[str]) -> list[Command[Mood]]:
+        def process_result(result: list[int]) -> list[Command[Mood]]:
             return [self.get_mood(mood, mood_parent=group_id) for mood in result]
 
         return Command(
@@ -203,7 +207,7 @@ class Gateway:
         )
 
     @classmethod
-    def get_mood(cls, mood_id: str, *, mood_parent: int) -> Command[Mood]:
+    def get_mood(cls, mood_id: int, *, mood_parent: int) -> Command[Mood]:
         """Return a mood.
 
         Returns a Command.
@@ -214,7 +218,7 @@ class Gateway:
 
         return Command(
             "get",
-            [ROOT_MOODS, str(mood_parent), mood_id],
+            [ROOT_MOODS, str(mood_parent), str(mood_id)],
             mood_parent,
             process_result=process_result,
         )
@@ -225,12 +229,12 @@ class Gateway:
         Returns a Command.
         """
 
-        def process_result(result: list[str]) -> list[Command[SmartTask]]:
+        def process_result(result: list[int]) -> list[Command[SmartTask]]:
             return [self.get_smart_task(task) for task in result]
 
         return Command("get", [ROOT_SMART_TASKS], process_result=process_result)
 
-    def get_smart_task(self, task_id: str) -> Command[SmartTask]:
+    def get_smart_task(self, task_id: int) -> Command[SmartTask]:
         """Return specified transition.
 
         Returns a Command.
@@ -240,7 +244,7 @@ class Gateway:
             return SmartTask(self, result)
 
         return Command(
-            "get", [ROOT_SMART_TASKS, task_id], process_result=process_result
+            "get", [ROOT_SMART_TASKS, str(task_id)], process_result=process_result
         )
 
     @classmethod

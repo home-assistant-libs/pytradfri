@@ -46,7 +46,7 @@ class GroupResponse(ApiResourceResponse):
     color_hex: str | None = Field(alias=ATTR_LIGHT_COLOR_HEX)
     dimmer: int = Field(alias=ATTR_LIGHT_DIMMER)
     group_members: dict[str, dict[str, list[int]]] = Field(alias=ATTR_GROUP_MEMBERS)
-    mood_id: str = Field(alias=ATTR_MOOD)
+    mood_id: int = Field(alias=ATTR_MOOD)
     state: int = Field(alias=ATTR_DEVICE_STATE)
 
 
@@ -100,21 +100,21 @@ class Group(ApiResource):
         return self.raw.group_members[ATTR_HS_LINK][ATTR_ID]
 
     @property
-    def mood_id(self) -> str:
+    def mood_id(self) -> int:
         """Active mood."""
         return self.raw.mood_id
 
     def members(self) -> list[Command[Device]]:
         """Return device objects of members of this group."""
-        return [self._gateway.get_device(str(dev)) for dev in self.member_ids]
+        return [self._gateway.get_device(dev) for dev in self.member_ids]
 
-    def add_member(self, memberid: str) -> Command[None]:
+    def add_member(self, memberid: int) -> Command[None]:
         """Add a member to this group."""
         return self._gateway.add_group_member(
             {ATTR_GROUP_ID: self.id, ATTR_ID: [memberid]}
         )
 
-    def remove_member(self, memberid: str) -> Command[None]:
+    def remove_member(self, memberid: int) -> Command[None]:
         """Remove a member from this group."""
         return self._gateway.remove_group_member(
             {ATTR_GROUP_ID: self.id, ATTR_ID: [memberid]}
@@ -128,7 +128,7 @@ class Group(ApiResource):
         """Active mood."""
         return self._gateway.get_mood(self.mood_id, mood_parent=self.id)
 
-    def activate_mood(self, mood_id: str) -> Command[None]:
+    def activate_mood(self, mood_id: int) -> Command[None]:
         """Activate a mood."""
         return self.set_values({ATTR_MOOD: mood_id, ATTR_DEVICE_STATE: int(self.state)})
 
