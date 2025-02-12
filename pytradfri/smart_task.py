@@ -293,7 +293,7 @@ class StartActionItem:
         state: bool,
         path: list[str],
         raw: RootStartActionResponse,
-    ):
+    ) -> None:
         """Initialize TaskInfo."""
         self.task = task
         self.index = index
@@ -371,7 +371,7 @@ class StartActionItemController:
         state: bool,
         path: list[str],
         devices_list: list[dict[str, int]],
-    ):
+    ) -> None:
         """Initialize StartActionItemController."""
         self._item = item
         self.raw = raw
