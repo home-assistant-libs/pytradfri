@@ -40,12 +40,12 @@ GATEWAY_INFO = {
 
 
 @pytest.fixture(name="gateway")
-def gateway_fixture():
+def gateway_fixture() -> Gateway:
     """Fixture that returns a gateway."""
     return Gateway()
 
 
-def test_get_device(gateway):
+def test_get_device(gateway: Gateway) -> None:
     """Test get device."""
     command = gateway.get_device(123)
 
@@ -53,7 +53,7 @@ def test_get_device(gateway):
     assert command.path == [ROOT_DEVICES, "123"]
 
 
-def test_gateway_info():
+def test_gateway_info() -> None:
     """Test retrieval of gateway info."""
     gateway_info = GatewayInfo(GATEWAY_INFO)
 
@@ -79,7 +79,7 @@ def test_gateway_info():
     assert gateway_info_empty.first_setup is None
 
 
-def test_generate_psk(gateway):
+def test_generate_psk(gateway: Gateway) -> None:
     """Test psk generation."""
     command = gateway.generate_psk("identityString")
 
