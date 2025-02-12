@@ -82,7 +82,7 @@ WEEKDAYS = BitChoices(
 )
 
 
-def test_smart_task():
+def test_smart_task() -> None:
     """Test smart task."""
     gateway = Gateway()
     task = SmartTask(gateway, TASK)
@@ -103,7 +103,7 @@ def test_smart_task():
     assert task2.task_type_name == "Not At Home"
 
 
-def test_smart_task_info():
+def test_smart_task_info() -> None:
     """Test gateway info."""
     gateway = Gateway()
 
@@ -112,12 +112,12 @@ def test_smart_task_info():
     assert task.dimmer == 254
 
 
-def test_smart_task_bit_choices():
+def test_smart_task_bit_choices() -> None:
     """Test smart task with bit choices."""
     assert WEEKDAYS.get_selected_values(3) == ["Monday", "Tuesday"]
 
 
-def test_smart_task_set_state():
+def test_smart_task_set_state() -> None:
     """Test smart task set state."""
     gateway = Gateway()
     task_control = SmartTask(gateway, TASK).task_control
@@ -129,7 +129,7 @@ def test_smart_task_set_state():
     assert cmd.data == {"5850": 0, "9001": "Sample Name"}
 
 
-def test_optional_dimmer():
+def test_optional_dimmer() -> None:
     """Test a smart task with missing dimmer attribute."""
     gateway = Gateway()
     task = SmartTask(gateway, TASK_OPTIONAL_DIMMER).task_control.tasks[0]
