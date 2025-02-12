@@ -50,7 +50,7 @@ def test_get_device(gateway):
     command = gateway.get_device(123)
 
     assert command.method == "get"
-    assert command.path == [ROOT_DEVICES, 123]
+    assert command.path == [ROOT_DEVICES, "123"]
 
 
 def test_gateway_info():

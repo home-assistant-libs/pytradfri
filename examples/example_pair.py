@@ -13,6 +13,7 @@ Where <IP> is the address to your IKEA gateway. The first time
 running you will be asked to input the 'Security Code' found on
 the back of your IKEA gateway.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -125,9 +126,9 @@ async def run(shutdown: asyncio.Future[None]) -> None:
     # monitor the device list and give instructions
     #
 
-    last_devices: list[str] | None = None
+    last_devices: list[int] | None = None
 
-    def devices_updated(result: list[str]) -> None:
+    def devices_updated(result: list[int]) -> None:
         nonlocal last_devices
 
         if last_devices is None:
@@ -139,7 +140,7 @@ async def run(shutdown: asyncio.Future[None]) -> None:
 
         last_devices = result
 
-    async def new_device(device_id: str) -> None:
+    async def new_device(device_id: int) -> None:
         nonlocal commissioning
 
         print("New device, fetching details...", end="", flush=True)
