@@ -1,7 +1,7 @@
 """Test Device."""
 
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 
@@ -365,7 +365,7 @@ def test_device_properties(device):
     assert device.application_type == 2
     assert device.name == "Löng name containing viking lättårs [letters]"
     assert device.id == 65539
-    assert device.created_at == datetime.utcfromtimestamp(1509923713)
+    assert device.created_at == datetime.fromtimestamp(1509923713, tz=timezone.utc)
     assert device.reachable
     assert device.path == [ROOT_DEVICES, "65539"]
 

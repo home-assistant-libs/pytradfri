@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from collections.abc import Callable
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from pydantic.v1 import BaseModel, Field
@@ -55,7 +55,7 @@ class ApiResource:
         """Return timestamp of creation."""
         if (created_at := self.raw.created_at) is None:
             return None
-        return datetime.utcfromtimestamp(created_at)
+        return datetime.fromtimestamp(created_at, tz=timezone.utc)
 
     @property
     @abstractmethod
