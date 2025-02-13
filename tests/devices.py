@@ -235,27 +235,6 @@ GROUP = {
     "9018": {"15002": {"9003": [65536, 65537, 65538, 65539]}},
 }
 
-# Retrieved from Gateway running on 1.x.x
-BLIND = {
-    "15015": [{"5536": 50.0, "9003": 0}],
-    "3": {
-        "0": "IKEA of Sweden",
-        "1": "FYRTUR block-out roller blind",
-        "2": "",
-        "3": "2.2.007",
-        "6": 3,
-        "9": 77,
-    },
-    "5750": 7,
-    "9001": "Roller blind",
-    "9002": 1566141494,
-    "9003": 65601,
-    "9019": 1,
-    "9020": 1566402653,
-    "9054": 0,
-    "9084": " 9d 58 b0 2 4 6a df be 77 e5 c1 e0 a2 26 2e 57",
-}
-
 # Retrieved from Gateway running on 1.15.55
 AIR_PURIFIER = {
     "3": {

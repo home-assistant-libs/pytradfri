@@ -27,7 +27,6 @@ from pytradfri.const import (
 from pytradfri.device import Device
 
 from .devices import (
-    BLIND,
     DEVICE_WITHOUT_FIRMWARE_VERSION,
     LIGHT_CWS,
     LIGHT_PHILIPS,
@@ -68,8 +67,6 @@ output_devices = (
 )
 
 wall_plugs = (("comment", "device"), [("Wall plug", Device(OUTLET))])
-
-roller_blinds = (("comment", "device"), [("Blind", Device(BLIND))])
 
 lamp_value_setting_test_cases = [
     ["function_name", "comment", "test_input", "expected_result"],
