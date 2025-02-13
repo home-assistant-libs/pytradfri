@@ -64,7 +64,7 @@ class APIFactory:
         psk_id: str = "pytradfri",
         psk: str | None = None,
         internal_create: UndefinedType | None = None,
-    ):
+    ) -> None:
         """Create object of class."""
         if internal_create is not _SENTINEL:
             raise ValueError("Use APIFactory.init(…) to initialize APIFactory")

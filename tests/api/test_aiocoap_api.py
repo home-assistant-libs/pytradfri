@@ -1,7 +1,7 @@
 """Test aiocoap API."""
 
 import asyncio
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Generator
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -40,7 +40,7 @@ class MockResponse:
 class MockRequest:
     """Mock Protocol."""
 
-    def __init__(self, response: Callable[[], Awaitable]) -> None:
+    def __init__(self, response: Callable[[], Awaitable[Any]]) -> None:
         """Create the request."""
         self._response = response
 
@@ -62,7 +62,7 @@ def response_fixture() -> AsyncMock:
 
 
 @pytest.fixture(name="context")
-def context_fixture(response) -> MagicMock:
+def context_fixture(response: AsyncMock) -> Generator[MagicMock]:
     """Mock context."""
     with patch(
         "pytradfri.api.aiocoap_api.Context.create_client_context"

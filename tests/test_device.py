@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 from datetime import datetime, timezone
+from typing import Any
 
 import pytest
 
@@ -294,8 +295,12 @@ lamp_value_setting_test_cases[1] = new_list
 
 @pytest.mark.parametrize(*lamp_value_setting_test_cases)
 def test_lamp_value_setting(
-    function_name, comment, test_input, expected_result, device
-):
+    function_name: str,
+    comment: str,
+    test_input: dict[str, Any],
+    expected_result: dict[str, Any],
+    device: Device,
+) -> None:
     """Test lamp value."""
     function = getattr(device[1].light_control, function_name)
     command = function(**test_input)
@@ -328,7 +333,12 @@ def test_lamp_value_setting(
         ],
     ],
 )
-def test_socket_value_setting(function_name, comment, test_input, expected_result):
+def test_socket_value_setting(
+    function_name: str,
+    comment: str,
+    test_input: dict[str, bool],
+    expected_result: dict[str, bool],
+) -> None:
     """Test socket values."""
     function = getattr(Device(deepcopy(OUTLET)).socket_control, function_name)
     command = function(**test_input)
@@ -336,7 +346,7 @@ def test_socket_value_setting(function_name, comment, test_input, expected_resul
     assert data == expected_result
 
 
-def test_socket_state_off():
+def test_socket_state_off() -> None:
     """Test socket off."""
     socket_response = deepcopy(OUTLET)
     socket_response[ATTR_SWITCH_PLUG][0][ATTR_DEVICE_STATE] = 0
@@ -345,7 +355,7 @@ def test_socket_state_off():
     assert socket.state is False
 
 
-def test_socket_state_on():
+def test_socket_state_on() -> None:
     """Test socket on."""
     socket_response = deepcopy(OUTLET)
     socket_response[ATTR_SWITCH_PLUG][0][ATTR_DEVICE_STATE] = 1
@@ -354,13 +364,13 @@ def test_socket_state_on():
     assert socket.state is True
 
 
-def test_set_predefined_color_invalid(device):
+def test_set_predefined_color_invalid(device: Device) -> None:
     """Test set invalid color."""
     with pytest.raises(error.ColorError):
         device.light_control.set_predefined_color("RandomString")
 
 
-def test_device_properties(device):
+def test_device_properties(device: Device) -> None:
     """Test device properties."""
     assert device.application_type == 2
     assert device.name == "Löng name containing viking lättårs [letters]"
@@ -370,7 +380,7 @@ def test_device_properties(device):
     assert device.path == [ROOT_DEVICES, "65539"]
 
 
-def test_device_info_properties(device):
+def test_device_info_properties(device: Device) -> None:
     """Test device info."""
     info = device.device_info
 
@@ -384,12 +394,12 @@ def test_device_info_properties(device):
 @pytest.mark.parametrize(
     "device", [DEVICE_WITHOUT_FIRMWARE_VERSION], indirect=["device"]
 )
-def test_device_without_firmware_version(device):
+def test_device_without_firmware_version(device: Device) -> None:
     """Test device without firmware version."""
     assert device.device_info.firmware_version is None
 
 
-def test_set_name(device):
+def test_set_name(device: Device) -> None:
     """Test set name."""
     command = device.set_name("New name")
 
@@ -398,7 +408,7 @@ def test_set_name(device):
     assert command.data == {ATTR_NAME: "New name"}
 
 
-def test_binary_division():
+def test_binary_division() -> None:
     """Test binary division."""
     dev_ws = Device(LIGHT_WS).light_control.lights[0]
     dev_color = Device(LIGHT_CWS).light_control.lights[0]
@@ -410,7 +420,7 @@ def test_binary_division():
 
 
 # Test has_light_control function
-def test_has_light_control_true():
+def test_has_light_control_true() -> None:
     """Test light has control."""
     response = deepcopy(LIGHT_WS)
     dev = Device(response)
@@ -418,7 +428,7 @@ def test_has_light_control_true():
     assert dev.has_light_control is True
 
 
-def test_has_light_control_false():
+def test_has_light_control_false() -> None:
     """Test light do not have control."""
     response = deepcopy(LIGHT_WS)
     response.pop(ATTR_LIGHT_CONTROL)
@@ -428,7 +438,7 @@ def test_has_light_control_false():
 
 
 # Test light state function
-def test_light_state_on():
+def test_light_state_on() -> None:
     """Test light on."""
     device_data = deepcopy(LIGHT_WS)
     device_data[ATTR_LIGHT_CONTROL][0][ATTR_DEVICE_STATE] = 1
@@ -437,7 +447,7 @@ def test_light_state_on():
     assert light.state is True
 
 
-def test_light_state_off():
+def test_light_state_off() -> None:
     """Test light off."""
     device_data = deepcopy(LIGHT_WS)
     device_data[ATTR_LIGHT_CONTROL][0][ATTR_DEVICE_STATE] = 0
@@ -446,7 +456,7 @@ def test_light_state_off():
     assert light.state is False
 
 
-def test_light_state_mangled():
+def test_light_state_mangled() -> None:
     """Test mangled light state."""
     device_data = deepcopy(LIGHT_WS)
     device_data[ATTR_LIGHT_CONTROL][0][ATTR_DEVICE_STATE] = "RandomString"
@@ -457,7 +467,7 @@ def test_light_state_mangled():
 
 
 # Test light hsb_xy_color function
-def test_light_hsb_xy_color():
+def test_light_hsb_xy_color() -> None:
     """Very basic test, just to touch it."""
     device_data = deepcopy(LIGHT_CWS)
     device = Device(device_data)
@@ -466,12 +476,12 @@ def test_light_hsb_xy_color():
 
 
 # Test last_seen function
-def test_last_seen_valid(device):
+def test_last_seen_valid(device: Device) -> None:
     """Test last seen."""
     assert device.last_seen is not None
 
 
-def test_last_seen_none():
+def test_last_seen_none() -> None:
     """Test last seen none."""
     response = deepcopy(LIGHT_WS)
     del response[ATTR_LAST_SEEN]
@@ -480,7 +490,7 @@ def test_last_seen_none():
 
 
 # Test _value_validate function
-def test_value_validate_lower_edge(device):
+def test_value_validate_lower_edge(device: Device) -> None:
     """Test value lower edge."""
     # pylint: disable=protected-access
     rnge = (10, 100)
@@ -490,7 +500,7 @@ def test_value_validate_lower_edge(device):
     assert device.light_control._value_validate(11, rnge) is None
 
 
-def test_value_validate_upper_edge(device):
+def test_value_validate_upper_edge(device: Device) -> None:
     """Test value upper edge."""
     # pylint: disable=protected-access
     rnge = (10, 100)
@@ -500,7 +510,7 @@ def test_value_validate_upper_edge(device):
         device.light_control._value_validate(101, rnge)
 
 
-def test_value_validate_none(device):
+def test_value_validate_none(device: Device) -> None:
     """Test value none."""
     # pylint: disable=protected-access
     rnge = (10, 100)
@@ -508,7 +518,7 @@ def test_value_validate_none(device):
 
 
 # Test deviceInfo serial function
-def test_device_info_serial():
+def test_device_info_serial() -> None:
     """Test serial number."""
     response = deepcopy(LIGHT_WS)
     response[ATTR_DEVICE_INFO]["2"] = "SomeRandomSerial"
@@ -518,14 +528,14 @@ def test_device_info_serial():
 
 
 # Test deviceInfo power_source_str function
-def test_device_info_power_source_str_known():
+def test_device_info_power_source_str_known() -> None:
     """Test power source known."""
     info = Device(deepcopy(LIGHT_WS)).device_info
     assert info.power_source_str is not None
     assert info.power_source_str != "Unknown"
 
 
-def test_device_info_power_source_str_unknown():
+def test_device_info_power_source_str_unknown() -> None:
     """Test power source unknown."""
     response = deepcopy(LIGHT_WS)
     response[ATTR_DEVICE_INFO]["6"] = 99999
@@ -534,7 +544,7 @@ def test_device_info_power_source_str_unknown():
     assert info.power_source_str == "Unknown"
 
 
-def test_device_info_power_source_not_present():
+def test_device_info_power_source_not_present() -> None:
     """Test power source not present."""
     response = deepcopy(LIGHT_WS)
     del response[ATTR_DEVICE_INFO]["6"]
@@ -554,7 +564,9 @@ def test_device_info_battery_level(comment: str, device: Device) -> None:
 
 
 @pytest.mark.parametrize(*input_devices)
-def test_device_info_battery_level_unknown(comment: str, device: Device) -> None:
+def test_device_info_battery_level_unknown(
+    comment: str, device: dict[str, Any]
+) -> None:
     """Test battery level unknown."""
     response = deepcopy(device)
     response[ATTR_DEVICE_INFO].pop("9")
