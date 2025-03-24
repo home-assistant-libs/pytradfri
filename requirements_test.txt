@@ -1,7 +1,7 @@
 black==25.1.0
 coverage==7.7.0
 mypy==1.15.0
-pre-commit==4.1.0
+pre-commit==4.2.0
 pylint==3.3.4
 pylint_strict_informational==0.1
 pytest==8.3.5
