@@ -5,6 +5,6 @@ pre-commit==4.3.0
 pylint==3.3.8
 pylint_strict_informational==0.1
 pytest==8.4.2
-pytest-asyncio==1.1.0
+pytest-asyncio==1.2.0
 pytest-cov==7.0.0
 pytest-timeout==2.4.0
