@@ -18,8 +18,6 @@ from .gateway import Gateway
 
 CONFIG_FILE = "tradfri_standalone_psk.conf"
 
-# pylint: disable=invalid-name
-
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
@@ -39,8 +37,7 @@ if __name__ == "__main__":
 
     if org_args.host not in load_json(CONFIG_FILE) and org_args.key is None:
         print(
-            "Please provide the 'Security Code' on the back of your "
-            "Tradfri gateway:",
+            "Please provide the 'Security Code' on the back of your Tradfri gateway:",
             end=" ",
         )
         key = input().strip()
