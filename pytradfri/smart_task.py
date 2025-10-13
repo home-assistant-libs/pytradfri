@@ -19,7 +19,6 @@ from pydantic.v1 import BaseModel, Field
 from .command import Command
 from .const import (
     ATTR_DEVICE_STATE,
-    ATTR_GATEWAY_INFO,
     ATTR_ID,
     ATTR_LIGHT_DIMMER,
     ATTR_NAME,
@@ -34,7 +33,6 @@ from .const import (
     ATTR_START_ACTION,
     ATTR_TIME_START_TIME_MINUTE,
     ATTR_TRANSITION_TIME,
-    ROOT_GATEWAY,
     ROOT_SMART_TASKS,
     ROOT_START_ACTION,
 )
@@ -42,7 +40,7 @@ from .resource import ApiResource, ApiResourceResponse, BaseResponse, TypeRaw
 from .util import BitChoices
 
 if TYPE_CHECKING:
-    from .gateway import Gateway, GatewayInfo
+    from .gateway import Gateway
 
 
 WEEKDAYS: BitChoices = BitChoices(
@@ -217,9 +215,10 @@ class TaskControl:
 
     def calibrate_time(self) -> Command[None]:
         """Calibrate difference between local time and gateway time."""
+        get_gateway_info_command = self._gateway.get_gateway_info()
 
         def process_result(result: TypeRaw) -> None:
-            gateway_info: GatewayInfo = GatewayInfo(result)
+            gateway_info = get_gateway_info_command.process_result(result)
             if not gateway_info.current_time:
                 return
 
@@ -230,7 +229,9 @@ class TaskControl:
             self._task.delta_time_gateway_local = diff
 
         return Command(
-            "get", [ROOT_GATEWAY, ATTR_GATEWAY_INFO], process_result=process_result
+            method=get_gateway_info_command.method,
+            path=get_gateway_info_command.path,
+            process_result=process_result,
         )
 
     def set_dimmer_start_time(self, hour: int, minute: int) -> Command[None]:
