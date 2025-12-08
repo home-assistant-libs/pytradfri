@@ -54,7 +54,7 @@ if __name__ == "__main__":
         psk = conf[org_args.host].get("key")
         api_factory = APIFactory(host=org_args.host, psk_id=identity, psk=psk)
     except KeyError:
-        identity = uuid.uuid4().hex
+        identity = uuid.uuid4().hex  # pylint: disable=invalid-name
         api_factory = APIFactory(host=org_args.host, psk_id=identity)
 
         try:
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         light: Device | None = lights[0]
     else:
         print("No lights found!")
-        light = None
+        light = None  # pylint: disable=invalid-name
     groups_commands = api(gateway.get_groups())
     groups = api(groups_commands)
     moods = []
