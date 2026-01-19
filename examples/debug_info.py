@@ -10,6 +10,7 @@ Where <IP> is the address to your IKEA gateway. The first time
 running you will be asked to input the 'Security Code' found on
 the back of your IKEA gateway.
 """
+
 from __future__ import annotations
 
 import argparse
