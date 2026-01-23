@@ -8,7 +8,7 @@ jobs:
   auto-update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
       - name: Set up Python
         uses: actions/setup-python@v6.2.0
         with:
