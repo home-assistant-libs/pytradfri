@@ -1,5 +1,5 @@
 coverage==7.13.5
-mypy==2.0.0
+mypy==2.1.0
 pre-commit==4.6.0
 pylint==4.0.5
 pylint_strict_informational==0.1
