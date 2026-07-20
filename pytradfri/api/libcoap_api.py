@@ -163,7 +163,7 @@ class APIFactory:
         ]
 
         try:
-            proc = subprocess.Popen(  # pylint: disable=consider-using-with
+            proc: subprocess.Popen[str] = subprocess.Popen(  # pylint: disable=consider-using-with
                 command,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL,
@@ -181,7 +181,7 @@ class APIFactory:
             """Read from stdout."""
             if TYPE_CHECKING:
                 assert proc.stdout
-            return proc.stdout.read(1)
+            return cast(str, proc.stdout.read(1))
 
         for data in iter(read_stdout, ""):
             if data == "\n":
