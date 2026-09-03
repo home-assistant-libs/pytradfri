@@ -94,7 +94,8 @@ Observe a light for changes:
 
 ```python
 def change_listener(device):
-  print(device.name + " is now " + str(device.light_control.lights[0].state))
+    print(device.name + " is now " + str(device.light_control.lights[0].state))
+
 
 api(lights[0].observe(change_listener))
 ```
