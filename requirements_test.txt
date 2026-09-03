@@ -1,4 +1,4 @@
-coverage==7.15.4
+coverage==7.16.0
 mypy==2.3.1
 pre-commit==4.6.2
 pylint==4.0.8
