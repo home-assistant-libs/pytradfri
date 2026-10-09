@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class SocketResponse(BaseResponse):
     """Represent API response for a blind."""
 
-    state: int = Field(alias=ATTR_DEVICE_STATE)
+    state: int | None = Field(alias=ATTR_DEVICE_STATE)
 
 
 class Socket:

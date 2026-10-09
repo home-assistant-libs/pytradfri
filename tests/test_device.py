@@ -20,8 +20,10 @@ from pytradfri.const import (
     ATTR_LIGHT_DIMMER,
     ATTR_LIGHT_MIREDS,
     ATTR_NAME,
+    ATTR_START_BLINDS,
     ATTR_SWITCH_PLUG,
     ATTR_TRANSITION_TIME,
+    ROOT_AIR_PURIFIER,
     ROOT_DEVICES,
 )
 from pytradfri.device import Device
@@ -570,3 +572,51 @@ def test_device_info_battery_level_unknown(
     info = Device(response).device_info
 
     assert info.battery_level is None
+
+
+def _device_with_empty_control(control: str) -> Device:
+    """Return a device whose control reports only its index."""
+    response = deepcopy(OUTLET)
+    del response[ATTR_SWITCH_PLUG]
+    response[control] = [{"9003": 0}]
+    return Device(response)
+
+
+def test_light_control_without_values() -> None:
+    """Test a light that reports no state, like an unreachable bulb."""
+    light = _device_with_empty_control(ATTR_LIGHT_CONTROL).light_control.lights[0]
+
+    assert light.state is False
+    assert light.dimmer is None
+
+
+def test_socket_control_without_values() -> None:
+    """Test a socket that reports no state."""
+    device = _device_with_empty_control(ATTR_SWITCH_PLUG)
+
+    assert device.socket_control.sockets[0].state is False
+
+
+def test_blind_control_without_values() -> None:
+    """Test a blind that reports no position."""
+    device = _device_with_empty_control(ATTR_START_BLINDS)
+
+    assert device.blind_control.blinds[0].current_cover_position is None
+
+
+def test_air_purifier_control_without_values() -> None:
+    """Test an air purifier that reports no values."""
+    device = _device_with_empty_control(ROOT_AIR_PURIFIER)
+    air_purifier = device.air_purifier_control.air_purifiers[0]
+
+    assert air_purifier.state is False
+    assert air_purifier.is_auto_mode is False
+    assert air_purifier.air_quality is None
+    assert air_purifier.fan_speed is None
+    assert air_purifier.filter_lifetime_remaining is None
+    assert air_purifier.filter_lifetime_total is None
+    assert air_purifier.filter_runtime is None
+    assert air_purifier.filter_status is False
+    assert air_purifier.controls_locked is False
+    assert air_purifier.leds_off is False
+    assert air_purifier.motor_runtime_total is None
