@@ -25,18 +25,20 @@ from ..resource import BaseResponse
 class AirPurifierResponse(BaseResponse):
     """Represent API response for a blind."""
 
-    air_quality: int = Field(alias=ATTR_AIR_PURIFIER_AIR_QUALITY)
-    controls_locked: int = Field(alias=ATTR_AIR_PURIFIER_CONTROLS_LOCKED)
-    fan_speed: int = Field(alias=ATTR_AIR_PURIFIER_FAN_SPEED)
-    filter_lifetime_remaining: int = Field(
+    air_quality: int | None = Field(alias=ATTR_AIR_PURIFIER_AIR_QUALITY)
+    controls_locked: int | None = Field(alias=ATTR_AIR_PURIFIER_CONTROLS_LOCKED)
+    fan_speed: int | None = Field(alias=ATTR_AIR_PURIFIER_FAN_SPEED)
+    filter_lifetime_remaining: int | None = Field(
         alias=ATTR_AIR_PURIFIER_FILTER_LIFETIME_REMAINING
     )
-    filter_lifetime_total: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_LIFETIME_TOTAL)
-    filter_runtime: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_RUNTIME)
-    filter_status: int = Field(alias=ATTR_AIR_PURIFIER_FILTER_STATUS)
-    leds_off: int = Field(alias=ATTR_AIR_PURIFIER_LEDS_OFF)
-    mode: int = Field(alias=ATTR_AIR_PURIFIER_MODE)
-    motor_runtime_total: int = Field(alias=ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL)
+    filter_lifetime_total: int | None = Field(
+        alias=ATTR_AIR_PURIFIER_FILTER_LIFETIME_TOTAL
+    )
+    filter_runtime: int | None = Field(alias=ATTR_AIR_PURIFIER_FILTER_RUNTIME)
+    filter_status: int | None = Field(alias=ATTR_AIR_PURIFIER_FILTER_STATUS)
+    leds_off: int | None = Field(alias=ATTR_AIR_PURIFIER_LEDS_OFF)
+    mode: int | None = Field(alias=ATTR_AIR_PURIFIER_MODE)
+    motor_runtime_total: int | None = Field(alias=ATTR_AIR_PURIFIER_MOTOR_RUNTIME_TOTAL)
 
 
 if TYPE_CHECKING:
@@ -53,7 +55,7 @@ class AirPurifier:
         self.index = index
 
     @property
-    def air_quality(self) -> int:
+    def air_quality(self) -> int | None:
         """Get the current air quality measured by the air purifier.
 
         0..35: Good
@@ -69,7 +71,7 @@ class AirPurifier:
         return self.raw.controls_locked == 1
 
     @property
-    def fan_speed(self) -> int:
+    def fan_speed(self) -> int | None:
         """Get the current fan speed of the air purifier.
 
         0: Device is off
@@ -78,17 +80,17 @@ class AirPurifier:
         return self.raw.fan_speed
 
     @property
-    def filter_lifetime_remaining(self) -> int:
+    def filter_lifetime_remaining(self) -> int | None:
         """Return remaining lifetime of filter, expressed in minutes."""
         return self.raw.filter_lifetime_remaining
 
     @property
-    def filter_lifetime_total(self) -> int:
+    def filter_lifetime_total(self) -> int | None:
         """Return total lifetime of filter, expressed in minutes."""
         return self.raw.filter_lifetime_total
 
     @property
-    def filter_runtime(self) -> int:
+    def filter_runtime(self) -> int | None:
         """Return filter runtime, expressed in minutes."""
         return self.raw.filter_runtime
 
@@ -114,7 +116,7 @@ class AirPurifier:
         return self.raw.leds_off == 1
 
     @property
-    def motor_runtime_total(self) -> int:
+    def motor_runtime_total(self) -> int | None:
         """Return runtime of fan motor, expressed in minutes."""
         return self.raw.motor_runtime_total
 
@@ -128,4 +130,4 @@ class AirPurifier:
     @property
     def state(self) -> bool:
         """Return device state, ie on or off."""
-        return self.raw.mode > 0
+        return self.raw.mode is not None and self.raw.mode > 0

@@ -39,7 +39,7 @@ class LightResponse(BaseResponse):
     color_hue: int | None = Field(alias=ATTR_LIGHT_COLOR_HUE)
     color_saturation: int | None = Field(alias=ATTR_LIGHT_COLOR_SATURATION)
     dimmer: int | None = Field(alias=ATTR_LIGHT_DIMMER)
-    state: int = Field(alias=ATTR_DEVICE_STATE)
+    state: int | None = Field(alias=ATTR_DEVICE_STATE)
 
 
 class Light:
