@@ -181,7 +181,7 @@ class APIFactory:
             """Read from stdout."""
             if TYPE_CHECKING:
                 assert proc.stdout
-            return cast(str, proc.stdout.read(1))
+            return proc.stdout.read(1)
 
         for data in iter(read_stdout, ""):
             if data == "\n":
