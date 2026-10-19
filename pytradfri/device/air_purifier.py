@@ -128,6 +128,9 @@ class AirPurifier:
         return air_purifier_control_response[self.index]
 
     @property
-    def state(self) -> bool:
+    def state(self) -> bool | None:
         """Return device state, ie on or off."""
-        return self.raw.mode is not None and self.raw.mode > 0
+        if self.raw.mode is None:
+            return None
+
+        return self.raw.mode > 0

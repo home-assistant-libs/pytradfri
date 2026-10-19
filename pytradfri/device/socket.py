@@ -29,8 +29,11 @@ class Socket:
         self.index = index
 
     @property
-    def state(self) -> bool:
+    def state(self) -> bool | None:
         """State."""
+        if self.raw.state is None:
+            return None
+
         return self.raw.state == 1
 
     @property

@@ -85,8 +85,11 @@ class Light:
         return bool(self.supported_features & SUPPORT_RGB_COLOR)
 
     @property
-    def state(self) -> bool:
+    def state(self) -> bool | None:
         """Return device state."""
+        if self.raw.state is None:
+            return None
+
         return self.raw.state == 1
 
     @property

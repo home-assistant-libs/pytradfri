@@ -586,7 +586,7 @@ def test_light_control_without_values() -> None:
     """Test a light that reports no state, like an unreachable bulb."""
     light = _device_with_empty_control(ATTR_LIGHT_CONTROL).light_control.lights[0]
 
-    assert light.state is False
+    assert light.state is None
     assert light.dimmer is None
 
 
@@ -594,7 +594,7 @@ def test_socket_control_without_values() -> None:
     """Test a socket that reports no state."""
     device = _device_with_empty_control(ATTR_SWITCH_PLUG)
 
-    assert device.socket_control.sockets[0].state is False
+    assert device.socket_control.sockets[0].state is None
 
 
 def test_blind_control_without_values() -> None:
@@ -609,7 +609,7 @@ def test_air_purifier_control_without_values() -> None:
     device = _device_with_empty_control(ROOT_AIR_PURIFIER)
     air_purifier = device.air_purifier_control.air_purifiers[0]
 
-    assert air_purifier.state is False
+    assert air_purifier.state is None
     assert air_purifier.is_auto_mode is False
     assert air_purifier.air_quality is None
     assert air_purifier.fan_speed is None
