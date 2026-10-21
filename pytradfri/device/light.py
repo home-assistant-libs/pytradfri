@@ -39,7 +39,7 @@ class LightResponse(BaseResponse):
     color_hue: int | None = Field(alias=ATTR_LIGHT_COLOR_HUE)
     color_saturation: int | None = Field(alias=ATTR_LIGHT_COLOR_SATURATION)
     dimmer: int | None = Field(alias=ATTR_LIGHT_DIMMER)
-    state: int = Field(alias=ATTR_DEVICE_STATE)
+    state: int | None = Field(alias=ATTR_DEVICE_STATE)
 
 
 class Light:
@@ -85,8 +85,11 @@ class Light:
         return bool(self.supported_features & SUPPORT_RGB_COLOR)
 
     @property
-    def state(self) -> bool:
+    def state(self) -> bool | None:
         """Return device state."""
+        if self.raw.state is None:
+            return None
+
         return self.raw.state == 1
 
     @property
@@ -142,7 +145,11 @@ class Light:
 
     def __repr__(self) -> str:
         """Return representation of class object."""
-        state = "on" if self.state else "off"
+        if self.state is None:
+            state = "unknown"
+        else:
+            state = "on" if self.state else "off"
+
         return (
             f"<Light #{self.index} - name: {self.device.name}, state: {state}, "
             f"dimmer: {self.dimmer}, "

@@ -13,7 +13,7 @@ from ..resource import BaseResponse
 class BlindResponse(BaseResponse):
     """Represent API response for a blind."""
 
-    current_cover_position: int = Field(alias=ATTR_BLIND_CURRENT_POSITION)
+    current_cover_position: int | None = Field(alias=ATTR_BLIND_CURRENT_POSITION)
 
 
 if TYPE_CHECKING:
@@ -37,6 +37,6 @@ class Blind:
         return blind_control_response[self.index]
 
     @property
-    def current_cover_position(self) -> int:
+    def current_cover_position(self) -> int | None:
         """Get the current position of the blind."""
         return self.raw.current_cover_position

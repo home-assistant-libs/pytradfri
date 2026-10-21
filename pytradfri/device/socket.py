@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class SocketResponse(BaseResponse):
     """Represent API response for a blind."""
 
-    state: int = Field(alias=ATTR_DEVICE_STATE)
+    state: int | None = Field(alias=ATTR_DEVICE_STATE)
 
 
 class Socket:
@@ -29,8 +29,11 @@ class Socket:
         self.index = index
 
     @property
-    def state(self) -> bool:
+    def state(self) -> bool | None:
         """State."""
+        if self.raw.state is None:
+            return None
+
         return self.raw.state == 1
 
     @property
@@ -42,5 +45,9 @@ class Socket:
 
     def __repr__(self) -> str:
         """Return representation of class object."""
-        state = "on" if self.state else "off"
+        if self.state is None:
+            state = "unknown"
+        else:
+            state = "on" if self.state else "off"
+
         return f"<Socket #{self.index} - name: {self.device.name}, state: {state}>"
