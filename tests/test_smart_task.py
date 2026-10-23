@@ -1,6 +1,6 @@
 """Test smart_task."""
 
-import datetime
+import datetime as dt
 
 from pytradfri.gateway import Gateway
 from pytradfri.smart_task import BitChoices, SmartTask
@@ -93,7 +93,7 @@ def test_smart_task() -> None:
     assert task.id == 317094
     assert task.task_type_id == 4
     assert task.repeat_days == 48
-    assert task.task_start_time == datetime.time(8, 15)
+    assert task.task_start_time == dt.time(8, 15)
     assert task.task_type_name == "Wake Up"
 
     assert task1.task_type_id == 2
